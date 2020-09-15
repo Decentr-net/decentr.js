@@ -1,17 +1,10 @@
-<p align="center">
-  <img src="https://user-images.githubusercontent.com/1223799/50992071-73562500-1516-11e9-99fa-9f73b0f0eee2.png" width="597" alt="decentr-js">
-</p>
-
 # decentr-js
 
 > decentr-js
 
-[![Build Status](https://travis-ci.org/timaley/decentr-js.svg?branch=master)](https://travis-ci.org/timaley/decentr-js)
 [![NPM version](https://img.shields.io/npm/v/decentr-js.svg)](https://www.npmjs.com/package/decentr-js)
 ![Downloads](https://img.shields.io/npm/dm/decentr-js.svg)
-[![Standard Version](https://img.shields.io/badge/release-standard%20version-brightgreen.svg)](https://github.com/conventional-changelog/standard-version)
 [![styled with prettier](https://img.shields.io/badge/styled_with-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
-[![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg)](https://conventionalcommits.org)
 
 ---
 
@@ -23,7 +16,7 @@
 ## 🔧 Installation
 
 ```sh
-yarn add decentr-js
+npm install decentr-js
 ```
 
 ## 🎬 Getting started
