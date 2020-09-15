@@ -91,9 +91,6 @@ function updatePackageJson() {
     config: {
       ...starterPkg.config,
     },
-    husky: {
-      ...starterPkg.husky,
-    },
     peerDependencies: sortObjectByKeyNameList({
       ...libPackagePkg.peerDependencies,
       ...starterPkg.peerDependencies,

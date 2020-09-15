@@ -12,6 +12,9 @@
     "type": "git",
     "url": "git+https://github.com/Decentr-net/decentr.js.git"
   },
+  "np": {
+    "contents": "dist"
+  },
   "author": "aseradzinski <artsiom.seradzinski@aiolane.com>",
   "license": "MIT",
   "engines": {
@@ -32,10 +35,10 @@
     "validate-js": "tsc -p ./config && tsc -p ./scripts",
     "verify": "npm run validate-js && npm run style && npm run test:ci",
     "commit": "git-cz",
-    "style": "npm run format -- --list-different && npm run lint",
-    "style:fix": "npm run format:fix && npm run lint:fix",
-    "format": "prettier \"**/*.{ts,tsx,js,jsx,css,scss,sass,less,md}\"",
-    "format:fix": "npm run format -- --write",
+    "style": "",
+    "style:fix": "",
+    "format": "",
+    "format:fix": "",
     "lint": "tslint --project tsconfig.json --format codeFrame",
     "lint:fix": "npm run lint -- --fix",
     "prerelease": "npm run build",
@@ -69,6 +72,7 @@
     "@commitlint/cli": "7.2.1",
     "@commitlint/config-conventional": "7.1.2",
     "@types/jest": "23.3.10",
+    "@types/json5": "0.0.30",
     "@types/node": "8.10.*",
     "@types/prettier": "1.15.2",
     "@types/webpack-config-utils": "2.3.0",
