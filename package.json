@@ -1,6 +1,6 @@
 {
   "name": "decentr-js",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "decentr-js",
   "keywords": [],
   "main": "./bundles/index.umd.js",
