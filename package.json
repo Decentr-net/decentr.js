@@ -1,6 +1,6 @@
 {
   "name": "decentr-js",
-  "version": "0.0.0",
+  "version": "1.0.2",
   "description": "decentr-js",
   "keywords": [],
   "main": "./bundles/index.umd.js",
@@ -49,13 +49,6 @@
   "config": {
     "commitizen": {
       "path": "cz-conventional-changelog"
-    }
-  },
-  "husky": {
-    "hooks": {
-      "commit-msg": "commitlint --config config/commitlint.config.js -E HUSKY_GIT_PARAMS",
-      "pre-commit": "lint-staged",
-      "pre-push": "npm run style && npm test -- --bail --onlyChanged"
     }
   },
   "lint-staged": {
