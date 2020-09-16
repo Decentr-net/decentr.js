@@ -63,7 +63,7 @@ const plugins = /** @type {Plugin[]} */ ([
 
   // Resolve source maps to the original source
   sourceMaps(),
-
+  'bip39',
   // properly set process.env.NODE_ENV within `./environment.ts`
   replace({
     exclude: 'node_modules/**',
@@ -98,7 +98,7 @@ const UMDconfig = {
     sourcemap: true,
   },
   plugins: removeEmpty(
-    /** @type {Plugin[]} */ ([...plugins, ifProduction(uglify())])
+    /** @type {Plugin[]} */ ([...plugins, ifProduction(terser())])
   ),
 }
 

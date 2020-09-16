@@ -1,9 +1,13 @@
 import { IS_DEV } from './environment'
-
+import { generateMnemonic } from 'bip39';
 export class Greeter {
   constructor(private greeting: string) {}
   greet() {
     return `Hello, ${this.greeting}!`
+  }
+
+  generate() {
+    return generateMnemonic();
   }
 
   greetMe() {
