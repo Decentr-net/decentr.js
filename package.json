@@ -68,6 +68,8 @@
     "tslib": ">=1.9.0"
   },
   "dependencies": {
+    "axios": "0.20.0",
+    "bip32": "2.0.5",
     "bip39": "3.0.2"
   },
   "devDependencies": {
