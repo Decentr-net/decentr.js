@@ -1,1 +1,1 @@
-export * from './mnemonic'
+export { Mnemonic } from './mnemonic'
