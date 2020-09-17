@@ -2,119 +2,109 @@
   "name": "decentr-js",
   "version": "1.1.5",
   "description": "decentr-js",
-  "keywords": [],
-  "main": "./bundles/index.umd.js",
-  "module": "./esm5/index.js",
-  "es2015": "./esm2015/index.js",
-  "typings": "./types/index.d.ts",
-  "sideEffects": true,
+  "main": "lib/cosmos-keys.js",
+  "typings": "lib/types/cosmos-keys.d.ts",
+  "author": "aseradzinski <artsiom.seradzinski@aiolane.com>",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Decentr-net/decentr.js.git"
+    "url": "https://github.com/Decentr-net/decentr.js.git"
   },
-  "np": {
-    "contents": "dist"
-  },
-  "author": "aseradzinski <artsiom.seradzinski@aiolane.com>",
   "license": "MIT",
   "engines": {
-    "node": ">=8.5",
-    "npm": ">=6.0",
-    "yarn": "^1.0"
+    "node": ">=6.0.0"
   },
+  "files": [
+    "lib"
+  ],
   "scripts": {
-    "cleanup": "shx rm -rf dist",
-    "prebuild": "npm run cleanup && npm run verify",
-    "build": "tsc && tsc --target es2018 --outDir dist/esm2015 && rollup -c config/rollup.config.js && rollup -c config/rollup.config.js --environment NODE_ENV:production",
-    "postbuild": "node scripts/copy && npm run size",
-    "docs": "typedoc -p . --theme minimal --target 'es6' --excludeNotExported --excludePrivate --ignoreCompilerErrors --exclude \"**/src/**/__tests__/*.*\" --out docs src/",
-    "test": "jest -c ./config/jest.config.js",
-    "test:watch": "npm t -- --watch",
-    "test:coverage": "npm t -- --coverage",
-    "test:ci": "npm t -- --ci",
-    "validate-js": "tsc -p ./config && tsc -p ./scripts",
-    "verify": "npm run validate-js && npm run style && npm run test:ci",
-    "commit": "git-cz",
-    "style": "",
-    "style:fix": "",
-    "format": "",
-    "format:fix": "",
-    "lint": "tslint --project tsconfig.json --format codeFrame",
-    "lint:fix": "npm run lint -- --fix",
-    "prerelease": "npm run build",
-    "release": "standard-version",
-    "postrelease": "node scripts/copy && node scripts/build && npm run release:github && npm run release:npm",
-    "release:github": "git push --no-verify --follow-tags origin master",
-    "release:npm": "npm publish --access public dist",
-    "release:preflight": "npm pack ./dist --dry-run",
-    "size": "node scripts/file-size ./dist/bundles/index.umd.min.js ./dist/bundles/index.esm.min.js"
+    "lint": "tslint --project tsconfig.json -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
+    "lint:fix": "tslint --fix --project tsconfig.json -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
+    "prebuild": "rimraf lib",
+    "build": "webpack",
+    "test": "jest --coverage",
+    "test:watch": "jest --coverage --watch",
+    "test:prod": "npm run lint && npm run test -- --no-cache",
+    "report-coverage": "cat ./coverage/lcov.info | coveralls",
+    "prepublishOnly": "npm run build"
   },
-  "config": {
-    "commitizen": {
-      "path": "cz-conventional-changelog"
+  "lint-prepush": {
+    "base": "develop",
+    "tasks": {
+      "{src,test}/**/*.ts": [
+        "prettier --write",
+        "jest --bail --findRelatedTests",
+        "git add"
+      ]
     }
   },
-  "lint-staged": {
-    "**/*.{ts,tsx,js,jsx,css,scss,sass,less,md}": [
-      "prettier --write",
-      "git add"
+  "jest": {
+    "transform": {
+      ".(ts|tsx)": "ts-jest"
+    },
+    "testEnvironment": "node",
+    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js"
     ],
-    "src/**/*.{ts,tsx}": [
-      "npm run lint:fix",
-      "git add"
+    "coveragePathIgnorePatterns": [
+      "/node_modules/",
+      "/test/"
+    ],
+    "coverageThreshold": {
+      "global": {
+        "branches": 0,
+        "functions": 95,
+        "lines": 95,
+        "statements": 95
+      }
+    },
+    "collectCoverageFrom": [
+      "src/*.{js,ts}"
+    ],
+    "setupFiles": [
+      "jest-localstorage-mock"
     ]
   },
-  "peerDependencies": {
-    "tslib": ">=1.9.0"
-  },
-  "dependencies": {
-    "@types/axios": "0.14.0",
-    "axios": "0.20.0",
-    "bip32": "2.0.5",
-    "bip39": "3.0.2",
-    "stream": "0.0.2"
+  "prettier": {
+    "semi": false,
+    "singleQuote": true
   },
   "devDependencies": {
-    "@commitlint/cli": "7.2.1",
-    "@commitlint/config-conventional": "7.1.2",
-    "@types/jest": "23.3.10",
-    "@types/json5": "0.0.30",
-    "@types/node": "8.10.*",
-    "@types/prettier": "1.15.2",
-    "@types/shelljs": "0.8.8",
-    "@types/webpack-config-utils": "2.3.0",
-    "brotli-size": "0.0.3",
-    "commitizen": "3.0.5",
-    "cross-var": "1.1.0",
-    "cz-conventional-changelog": "2.1.0",
-    "gzip-size": "5.0.0",
-    "husky": "1.3.0",
-    "jest": "23.6.0",
-    "jest-watch-typeahead": "0.2.0",
-    "kleur": "3.0.1",
-    "lint-staged": "8.1.0",
-    "prettier": "1.15.3",
-    "pretty-bytes": "5.1.0",
-    "rollup": "0.68.2",
-    "rollup-plugin-commonjs": "9.2.0",
-    "rollup-plugin-json": "3.1.0",
-    "rollup-plugin-node-resolve": "4.0.0",
-    "rollup-plugin-replace": "2.1.0",
-    "rollup-plugin-sourcemaps": "0.4.2",
-    "rollup-plugin-terser": "3.0.0",
-    "rollup-plugin-uglify": "6.0.0",
-    "shx": "0.3.2",
-    "standard-version": "4.4.0",
-    "ts-jest": "23.10.5",
-    "tslib": "1.9.3",
-    "tslint": "5.12.0",
-    "tslint-config-prettier": "1.17.0",
-    "tslint-config-standard": "8.0.1",
-    "tslint-etc": "1.2.12",
-    "tslint-react": "3.6.0",
-    "typedoc": "0.19.1",
-    "typescript": "3.2.2",
-    "typescript-tslint-plugin": "0.2.1",
-    "webpack-config-utils": "2.3.1"
+    "@types/bech32": "^1.1.1",
+    "@types/crypto-js": "^3.1.43",
+    "@types/jest": "^26.0.3",
+    "@types/node": "^14.0.1",
+    "coveralls": "^3.0.2",
+    "cross-env": "^7.0.2",
+    "husky": "^4.2.5",
+    "jest": "^24.9.0",
+    "jest-config": "^26.0.1",
+    "jest-localstorage-mock": "^2.4.0",
+    "lint-prepush": "^2.0.1",
+    "lodash.camelcase": "^4.3.0",
+    "prettier": "^2.0.5",
+    "rimraf": "^3.0.2",
+    "simsala": "0.0.22",
+    "ts-jest": "^24.1.0",
+    "ts-loader": "^7.0.4",
+    "ts-node": "^8.10.1",
+    "tslint": "^6.1.2",
+    "tslint-config-prettier": "^1.15.0",
+    "tslint-config-standard": "^9.0.0",
+    "typedoc": "^0.17.6",
+    "typescript": "^3.5.1",
+    "webpack": "^4.32.2",
+    "webpack-bundle-analyzer": "^3.4.1",
+    "webpack-cli": "^3.3.2"
+  },
+  "dependencies": {
+    "bcrypto": "^5.1.0",
+    "bech32": "^1.1.3",
+    "bip32": "^2.0.4",
+    "bip39": "^3.0.2",
+    "crypto-js": "^4.0.0",
+    "np": "^6.5.0"
   }
 }
