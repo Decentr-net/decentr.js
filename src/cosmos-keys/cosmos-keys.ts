@@ -4,7 +4,7 @@ import * as bech32 from 'bech32'
 // @ts-ignore - there are no types for bcrypto
 import { secp256k1 } from 'bcrypto'
 import * as CryptoJS from 'crypto-js'
-import { Wallet, StdSignMsg, KeyPair } from './types'
+import { Wallet, StdSignMsg, KeyPair } from '../types'
 
 const hdPathAtom = `m/44'/118'/0'/0/0` // key controlling ATOM allocation
 
