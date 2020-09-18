@@ -10,8 +10,8 @@
 
 ## ✨ Features
 
-- feature one
-- feature two
+- Generate mnemonic
+- Create wallet (address, private key, publick key)
 
 ## 🔧 Installation
 
@@ -21,10 +21,21 @@ npm install decentr-js
 
 ## 🎬 Getting started
 
-Let's demonstrate simple usage with ... example:
+Let's demonstrate simple usage:
 
 ```ts
-// your code example
+// Generate mnemonic phrase (12 words)
+import { generateMnemonic } from 'decentr-js';
+const mnemonic = generateMnemonic();
+
+//Create wallet with address and keys
+import { getNewWalletFromSeed } from "decentr-js"
+
+const seed = ...12 seed words here  
+
+const bech32prefix = 'cosmos';
+const { cosmosAddress, privateKey, publicKey } = getNewWalletFromSeed(seed, bech32prefix)
+
 ```
 
 ## 🎭 Examples

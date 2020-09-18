@@ -6,8 +6,8 @@ const config = {
   entry: ['./src/index.ts'],
   output: {
     path: __dirname + '/lib',
-    filename: 'decentr-js.js',
-    library: 'decentr-js',
+    filename: 'cosmos-keys.js',
+    library: 'cosmos-keys',
     libraryTarget: 'umd',
     umdNamedDefine: true,
     globalObject: 'typeof self !== \'undefined\' ? self : this',
