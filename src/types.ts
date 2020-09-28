@@ -39,3 +39,18 @@ export interface StdSignMsg {
   msgs: any[]
   memo: string
 }
+export interface Tx {
+  msg: Msg[];
+  fee: Fee;
+  memo: string;
+}
+export interface Msg {
+  type: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  value: any;
+}
+export interface SignMeta {
+  account_number: string;
+  chain_id: string;
+  sequence: string;
+}
