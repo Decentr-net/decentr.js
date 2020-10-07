@@ -1,144 +1,348 @@
-import * as bip39 from 'bip39'
-import * as bip32 from 'bip32'
-import * as bech32 from 'bech32'
-// @ts-ignore - there are no types for bcrypto
-import { secp256k1 } from 'bcrypto'
-import * as CryptoJS from 'crypto-js'
-import { Wallet, StdSignMsg, KeyPair } from '../types'
+import {
+  base64ToBytes,
+  bufferToBytes,
+  bytesToBase64,
+  toCanonicalJSONBytes
+} from '@tendermint/belt';
 
-const hdPathAtom = `m/44'/118'/0'/0/0` // key controlling ATOM allocation
+import {
+  Bech32String,
+  Bytes
+} from '@tendermint/types';
 
-/* tslint:disable-next-line:strict-type-predicates */
-const windowObject: Window | null = typeof window === 'undefined' ? null : window
+import {
+  encode as bech32Encode,
+  toWords as bech32ToWords
+} from 'bech32';
 
-// returns a byte buffer of the size specified
-export function randomBytes(size: number, window = windowObject): Buffer {
-  // in browsers
-  if (window && window.crypto) {
-    return windowRandomBytes(size, window)
-  }
+import {
+  BIP32Interface,
+  fromSeed as bip32FromSeed
+} from 'bip32';
 
-  try {
-    // native node crypto
-    const crypto = require('crypto')
-    return crypto.randomBytes(size)
-  } catch (err) {
-    // no native node crypto available
-  }
+import { mnemonicToSeedSync as bip39MnemonicToSeed } from 'bip39';
 
-  throw new Error(
-    'There is no native support for random bytes on this system. Key generation is not safe here.'
-  )
+import {
+  publicKeyCreate as secp256k1PublicKeyCreate,
+  ecdsaSign as secp256k1EcdsaSign,
+  ecdsaVerify as secp256k1EcdsaVerify
+} from 'secp256k1';
+
+import {
+  COSMOS_PREFIX,
+  COSMOS_PATH,
+  BROADCAST_MODE_SYNC
+} from '../constants';
+
+import createHash from 'create-hash';
+
+import {
+  BroadcastMode,
+  BroadcastTx,
+  KeyPair,
+  StdSignature,
+  StdSignMsg,
+  StdTx,
+  Tx,
+  SignMeta,
+  Wallet, SignMsg
+} from '../types';
+
+ /**
+  * Create a {@link Wallet|`Wallet`} from a known mnemonic.
+  *
+  * @param   mnemonic - BIP39 mnemonic seed
+  * @param   prefix   - Bech32 human readable part, defaulting to {@link COSMOS_PREFIX|`COSMOS_PREFIX`}
+  * @param   path     - BIP32 derivation path, defaulting to {@link COSMOS_PATH|`COSMOS_PATH`}
+  *
+  * @returns a keypair and address derived from the provided mnemonic
+  * @throws  will throw if the provided mnemonic is invalid
+  */
+export function createWalletFromMnemonic (mnemonic: string, prefix: string = COSMOS_PREFIX, path: string = COSMOS_PATH): Wallet {
+  const masterKey = createMasterKeyFromMnemonic(mnemonic);
+
+  return createWalletFromMasterKey(masterKey, prefix, path);
 }
 
-export function getNewWalletFromSeed(
-  mnemonic: string,
-  bech32Prefix: string,
-  hdPath: string = hdPathAtom
-): Wallet {
-  const masterKey = deriveMasterKey(mnemonic)
-  const { privateKey, publicKey } = deriveKeypair(masterKey, hdPath)
-  const cosmosAddress = getCosmosAddress(publicKey, bech32Prefix)
+ /**
+  * Derive a BIP32 master key from a mnemonic.
+  *
+  * @param   mnemonic - BIP39 mnemonic seed
+  *
+  * @returns BIP32 master key
+  * @throws  will throw if the provided mnemonic is invalid
+  */
+export function createMasterKeyFromMnemonic (mnemonic: string): BIP32Interface {
+  const seed = bip39MnemonicToSeed(mnemonic);
+
+  return bip32FromSeed(seed);
+}
+
+ /**
+  * Create a {@link Wallet|`Wallet`} from a BIP32 master key.
+  *
+  * @param   masterKey - BIP32 master key
+  * @param   prefix    - Bech32 human readable part, defaulting to {@link COSMOS_PREFIX|`COSMOS_PREFIX`}
+  * @param   path      - BIP32 derivation path, defaulting to {@link COSMOS_PATH|`COSMOS_PATH`}
+  *
+  * @returns a keypair and address derived from the provided master key
+  */
+export function createWalletFromMasterKey (masterKey: BIP32Interface, prefix: string = COSMOS_PREFIX, path: string = COSMOS_PATH): Wallet {
+  const { privateKey, publicKey } = createKeyPairFromMasterKey(masterKey, path);
+
+  const address = createAddress(publicKey, prefix);
+
   return {
-    privateKey: privateKey.toString('hex'),
-    publicKey: publicKey.toString('hex'),
-    cosmosAddress,
-    seedPhrase: mnemonic,
+      privateKey,
+      publicKey,
+      address
+  };
+}
+
+ /**
+  * Derive a keypair from a BIP32 master key.
+  *
+  * @param   masterKey - BIP32 master key
+  * @param   path      - BIP32 derivation path, defaulting to {@link COSMOS_PATH|`COSMOS_PATH`}
+  *
+  * @returns derived public and private key pair
+  * @throws  will throw if a private key cannot be derived
+  */
+export function createKeyPairFromMasterKey (masterKey: BIP32Interface, path: string = COSMOS_PATH): KeyPair {
+  const buffer = masterKey.derivePath(path).privateKey;
+  if (!buffer) {
+      throw new Error('could not derive private key');
   }
-}
 
-export function getSeed(randomBytesFunc: (size: number) => Buffer = randomBytes): string {
-  const entropy = randomBytesFunc(32)
-  if (entropy.length !== 32) throw Error(`Entropy has incorrect length`)
-  const mnemonic = bip39.entropyToMnemonic(entropy.toString('hex'))
-
-  return mnemonic
-}
-
-export function getNewWallet(
-  randomBytesFunc: (size: number) => Buffer = randomBytes,
-  bech32Prefix: string,
-  hdPath: string = hdPathAtom
-): Wallet {
-  const mnemonic = getSeed(randomBytesFunc)
-  return getNewWalletFromSeed(mnemonic, bech32Prefix, hdPath)
-}
-
-// NOTE: this only works with a compressed public key (33 bytes)
-export function getCosmosAddress(publicKey: Buffer, bech32Prefix: string): string {
-  const message = CryptoJS.enc.Hex.parse(publicKey.toString('hex'))
-  const address = CryptoJS.RIPEMD160(CryptoJS.SHA256(message) as any).toString()
-  const cosmosAddress = bech32ify(address, bech32Prefix)
-
-  return cosmosAddress
-}
-
-function deriveMasterKey(mnemonic: string): bip32.BIP32Interface {
-  // throws if mnemonic is invalid
-  bip39.validateMnemonic(mnemonic)
-
-  const seed = bip39.mnemonicToSeedSync(mnemonic)
-  const masterKey = bip32.fromSeed(seed)
-  return masterKey
-}
-
-function deriveKeypair(masterKey: bip32.BIP32Interface, hdPath: string): KeyPair {
-  const cosmosHD = masterKey.derivePath(hdPath)
-  const privateKey = cosmosHD.privateKey as Buffer
-
-  const publicKey = secp256k1.publicKeyCreate(privateKey, true)
+  const privateKey = bufferToBytes(buffer);
+  const publicKey  = secp256k1PublicKeyCreate(privateKey, true);
 
   return {
-    privateKey,
-    publicKey,
+      privateKey,
+      publicKey
+  };
+}
+
+ /**
+  * Derive a Bech32 address from a public key.
+  *
+  * @param   publicKey - public key bytes
+  * @param   prefix    - Bech32 human readable part, defaulting to {@link COSMOS_PREFIX|`COSMOS_PREFIX`}
+  *
+  * @returns Bech32-encoded address
+  */
+export function createAddress (publicKey: Bytes, prefix: string = COSMOS_PREFIX): Bech32String {
+  const hash1 = sha256(publicKey);
+  const hash2 = ripemd160(hash1);
+  const words = bech32ToWords(hash2);
+
+  return bech32Encode(prefix, words);
+}
+
+ /**
+  * Sign a transaction.
+  *
+  * This combines the {@link Tx|`Tx`} and {@link SignMeta|`SignMeta`} into a {@link StdSignMsg|`StdSignMsg`}, signs it,
+  * and attaches the signature to the transaction. If the transaction is already signed, the signature will be
+  * added to the existing signatures.
+  *
+  * @param   tx      - transaction (signed or unsigned)
+  * @param   meta    - metadata for signing
+  * @param   keyPair - public and private key pair (or {@link Wallet|`Wallet`})
+  *
+  * @returns a signed transaction
+  */
+export function signTx (tx: Tx | StdTx, meta: SignMeta, keyPair: KeyPair): StdTx {
+  const signMsg    = createSignMsg(tx, meta);
+  const signature  = createSignature(signMsg, keyPair);
+  // tslint:disable-next-line: strict-type-predicates
+  const signatures = (('signatures' in tx) && (tx.signatures != null)) ? [...tx.signatures, signature] : [signature];
+
+  return {
+      ...tx,
+      signatures
+  };
+}
+
+ /**
+  * Create a transaction with metadata for signing.
+  *
+  * @param   tx   - unsigned transaction
+  * @param   meta - metadata for signing
+  *
+  * @returns a transaction with metadata for signing
+  */
+export function createSignMsg (tx: Tx, meta: SignMeta): StdSignMsg {
+  return {
+      account_number: meta.account_number,
+      chain_id:       meta.chain_id,
+      fee:            tx.fee,
+      memo:           tx.memo,
+      msg:            tx.msg,
+      sequence:       meta.sequence
+  };
+  //   return {
+  //     fee:            tx.fee,
+  //     memo:           tx.memo,
+  //     msg:            tx.msg,
+  // };
+}
+
+ /**
+  * Create a signature from a {@link StdSignMsg|`StdSignMsg`}.
+  *
+  * @param   signMsg - transaction with metadata for signing
+  * @param   keyPair - public and private key pair (or {@link Wallet|`Wallet`})
+  *
+  * @returns a signature and corresponding public key
+  */
+export function createSignature (signMsg: StdSignMsg, { privateKey, publicKey }: KeyPair): StdSignature {
+  const signatureBytes = createSignatureBytes(signMsg, privateKey);
+
+  return {
+      signature: bytesToBase64(signatureBytes),
+      pub_key:   {
+          type:  'tendermint/PubKeySecp256k1',
+          value: bytesToBase64(publicKey)
+      }
+  };
+}
+
+ /**
+  * Create signature bytes from a {@link StdSignMsg|`StdSignMsg`}.
+  *
+  * @param   signMsg    - transaction with metadata for signing
+  * @param   privateKey - private key bytes
+  *
+  * @returns signature bytes
+  */
+export function createSignatureBytes (signMsg: StdSignMsg, privateKey: Bytes): Bytes {
+  const bytes = toCanonicalJSONBytes(signMsg);
+
+  return sign(bytes, privateKey);
+}
+
+ /**
+  * Sign the sha256 hash of `bytes` with a secp256k1 private key.
+  *
+  * @param   bytes      - bytes to hash and sign
+  * @param   privateKey - private key bytes
+  *
+  * @returns signed hash of the bytes
+  * @throws  will throw if the provided private key is invalid
+  */
+export function sign (bytes: Bytes, privateKey: Bytes): Bytes {
+  const hash = sha256(bytes);
+
+  const { signature } = secp256k1EcdsaSign(hash, privateKey);
+
+  return signature;
+}
+
+ /**
+  * Verify a signed transaction's signatures.
+  *
+  * @param   tx   - signed transaction
+  * @param   meta - metadata for signing
+  *
+  * @returns `true` if all signatures are valid and match, `false` otherwise or if no signatures were provided
+  */
+export function verifyTx (tx: StdTx, meta: SignMeta): boolean {
+  const signMsg = createSignMsg(tx, meta);
+
+  return verifySignatures(signMsg, tx.signatures);
+}
+
+ /**
+  * Verify a {@link StdSignMsg|`StdSignMsg`} against multiple {@link StdSignature|`StdSignature`}s.
+  *
+  * @param   signMsg    - transaction with metadata for signing
+  * @param   signatures - signatures
+  *
+  * @returns `true` if all signatures are valid and match, `false` otherwise or if no signatures were provided
+  */
+export function verifySignatures (signMsg: StdSignMsg, signatures: StdSignature[]): boolean {
+  if (signatures.length > 0) {
+      return signatures.every(function (signature: StdSignature): boolean {
+          return verifySignature(signMsg, signature);
+      });
+  }
+  else {
+      return false;
   }
 }
 
-export function deriveAddressFromPrivateKey(privateKey: Buffer, bech32Prefix: string): String {
-  const publicKey = secp256k1.publicKeyCreate(privateKey, true)
-  const cosmosAddress = getCosmosAddress(publicKey, bech32Prefix)
-  return cosmosAddress
+ /**
+  * Verify a {@link StdSignMsg|`StdSignMsg`} against a {@link StdSignature|`StdSignature`}.
+  *
+  * @param   signMsg   - transaction with metadata for signing
+  * @param   signature - signature
+  *
+  * @returns `true` if the signature is valid and matches, `false` otherwise
+  */
+export function verifySignature (signMsg: StdSignMsg, signature: StdSignature): boolean {
+  const signatureBytes = base64ToBytes(signature.signature);
+  const publicKey      = base64ToBytes(signature.pub_key.value);
+
+  return verifySignatureBytes(signMsg, signatureBytes, publicKey);
 }
 
-// converts a string to a bech32 version of that string which shows a type and has a checksum
-function bech32ify(address: string, prefix: string) {
-  const words = bech32.toWords(Buffer.from(address, 'hex'))
-  return bech32.encode(prefix, words)
+ /**
+  * Verify a signature against a {@link StdSignMsg|`StdSignMsg`}.
+  *
+  * @param   signMsg   - transaction with metadata for signing
+  * @param   signature - signature bytes
+  * @param   publicKey - public key bytes
+  *
+  * @returns `true` if the signature is valid and matches, `false` otherwise
+  */
+export function verifySignatureBytes (signMsg: StdSignMsg, signature: Bytes, publicKey: Bytes): boolean {
+  const bytes = toCanonicalJSONBytes(signMsg);
+  const hash  = sha256(bytes);
+
+  return secp256k1EcdsaVerify(signature, hash, publicKey);
 }
 
-// produces the signature for a message (returns Buffer)
-export function signWithPrivateKey(signMessage: StdSignMsg | string, privateKey: Buffer): Buffer {
-  const signMessageString: string =
-    typeof signMessage === 'string' ? signMessage : JSON.stringify(signMessage)
-  const signHash = Buffer.from(CryptoJS.SHA256(signMessageString).toString(), `hex`)
-  return secp256k1.sign(signHash, privateKey)
+ /**
+  * Prepare a signed transaction for broadcast.
+  *
+  * @param   tx   - signed transaction
+  * @param   mode - broadcast mode
+  *
+  * @returns a transaction broadcast
+  */
+export function createBroadcastTx (tx: StdTx, mode: BroadcastMode = BROADCAST_MODE_SYNC): BroadcastTx {
+  return {
+      tx,
+      mode
+  };
 }
 
-export function verifySignature(
-  signMessage: StdSignMsg | string,
-  signature: Buffer,
-  publicKey: Buffer
-): boolean {
-  const signMessageString: string =
-    typeof signMessage === 'string' ? signMessage : JSON.stringify(signMessage)
-  const signHash = Buffer.from(CryptoJS.SHA256(signMessageString).toString(), `hex`)
 
-  return secp256k1.verify(signHash, signature, publicKey)
+/**
+ * Hash bytes using SHA256.
+ *
+ * @param   bytes - bytes to hash
+ *
+ * @returns hashed bytes
+ */
+export function sha256 (bytes: Bytes): Bytes {
+  const buffer1 = (bytes instanceof Buffer) ? bytes : Buffer.from(bytes);
+  const buffer2 = createHash('sha256').update(buffer1).digest();
+
+  return bufferToBytes(buffer2);
 }
 
-function windowRandomBytes(size: number, window: Window) {
-  const chunkSize = size / 4
-  let hexString = ''
-  let keyContainer = new Uint32Array(chunkSize)
-  keyContainer = window.crypto.getRandomValues(keyContainer)
+ /**
+  * Hash bytes using RIPEMD160.
+  *
+  * @param   bytes - bytes to hash
+  *
+  * @returns hashed bytes
+  */
+export function ripemd160 (bytes: Bytes): Bytes {
+  const buffer1 = (bytes instanceof Buffer) ? bytes : Buffer.from(bytes);
+  const buffer2 = createHash('ripemd160').update(buffer1).digest();
 
-  for (let keySegment = 0; keySegment < keyContainer.length; keySegment++) {
-    let chunk = keyContainer[keySegment].toString(16) // Convert int to hex
-    while (chunk.length < chunkSize) {
-      // fill up so we get equal sized chunks
-      chunk = '0' + chunk
-    }
-    hexString += chunk // join
-  }
-  return Buffer.from(hexString, 'hex')
+  return bufferToBytes(buffer2);
 }

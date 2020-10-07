@@ -100,11 +100,17 @@
     "webpack-cli": "^3.3.2"
   },
   "dependencies": {
+    "@tendermint/belt": "0.3.0",
+    "@tendermint/types": "0.1.2",
+    "@types/create-hash": "^1.2.2",
+    "@types/secp256k1": "^4.0.1",
     "bcrypto": "^5.1.0",
     "bech32": "^1.1.3",
     "bip32": "^2.0.4",
     "bip39": "^3.0.2",
+    "create-hash": "^1.2.0",
     "crypto-js": "^4.0.0",
-    "np": "^6.5.0"
+    "np": "^6.5.0",
+    "secp256k1": "^4.0.1"
   }
 }

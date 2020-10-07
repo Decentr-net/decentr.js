@@ -1,56 +1,114 @@
+import { Base64String, Bech32String, Bytes } from '@tendermint/types';
+
+/**
+ * A private and public key pair.
+ */
 export interface KeyPair {
-  privateKey: Buffer
-  publicKey: Buffer
+    privateKey: Bytes;
+    publicKey: Bytes;
 }
-export interface Wallet {
-  privateKey: string
-  publicKey: string
-  cosmosAddress: string
-  seedPhrase: string
+
+/**
+ * A {@link KeyPair|`KeyPair`} with a Bech32-encoded address derived from the public key.
+ */
+export interface Wallet extends KeyPair {
+    address: Bech32String;
 }
-export interface StoredWallet {
-  name: string
-  address: string
-  wallet: string // encrypted wallet
-  network: string
-  HDPath: string
-  curve: string
-}
-export interface WalletIndex {
-  name: string
-  address: string
-  network?: string // not stored, but enriched with
-  HDPath?: string // not stored, but enriched with
-  curve?: string // not stored, but enriched with
-}
-export interface Coin {
-  denom: string
-  amount: string
-}
-export interface Fee {
-  amount: Coin[]
-  gas: string
-}
-export interface StdSignMsg {
-  chain_id: string
-  account_number: string
-  sequence: string
-  fee: Fee
-  msgs: any[]
-  memo: string
-}
-export interface Tx {
-  msg: Msg[];
-  fee: Fee;
-  memo: string;
-}
+
+/**
+ * A transaction message.
+ */
 export interface Msg {
-  type: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  value: any;
+    type: string;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    value: any;
 }
+
+/**
+ * A denominated amount.
+ */
+export interface Coin {
+    denom: string;
+    amount: string;
+}
+
+/**
+ * A fee for a transaction.
+ */
+export interface StdFee {
+    amount: Coin[];
+    gas: string;
+}
+
+/**
+ * Metadata for signing a transaction.
+ */
 export interface SignMeta {
-  account_number: string;
-  chain_id: string;
-  sequence: string;
+    account_number: string;
+    chain_id: string;
+    sequence: string;
+}
+
+/**
+ * A transaction with metadata for signing.
+ */
+export interface StdSignMsg extends SignMeta {
+    fee: StdFee;
+    memo: string;
+    msg: Msg[];
+}
+
+export interface SignMsg {
+  fee: StdFee;
+  memo: string;
+  msg: Msg[];
+}
+
+/**
+ * A public key.
+ */
+export interface PubKey {
+    type: string;
+    value: Base64String;
+}
+
+/**
+ * A signature and corresponding public key.
+ */
+export interface StdSignature {
+    signature: Base64String;
+    pub_key: PubKey;
+}
+
+/**
+ * An unsigned transaction.
+ */
+export interface Tx {
+    msg: Msg[];
+    fee: StdFee;
+    memo: string;
+}
+
+/**
+ * A signed transaction.
+ */
+export interface StdTx extends Tx {
+    signatures: StdSignature[];
+}
+
+/**
+ * A transaction broadcast mode.
+ *
+ * - `'sync'`  defines a transaction broadcasting mode where the client returns immediately.
+ * - `'async'` defines a transaction broadcasting mode where the client waits for a `CheckTx` execution response only.
+ * - `'block'` defines a transaction broadcasting mode where the client waits for the transaction to be committed in a block.
+ */
+export type BroadcastMode = 'sync' | 'async' | 'block';
+
+/**
+ * A signed transaction with a mode for broadcast.
+ */
+export interface BroadcastTx {
+    tx: StdTx;
+    mode: BroadcastMode;
 }
