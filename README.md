@@ -90,6 +90,30 @@ Get Accaunt information
 */
 ```
 
+Set public profile data
+```ts
+import {
+  Cosmos,
+  setPublicProfile,
+  signMessage,
+  broadcastTx
+} from 'decentr-js';
+
+const cosmos = new Cosmos(REST_URL, CHAIN_ID);
+
+const publicData = {
+    gender: 'male',
+    birthday: '2019-12-11'
+}
+const publicProfileTx = from(this.cosmos.setPublicProfile(wallet.address,publicData));
+
+publicProfileTx.subscribe(message => {
+    const signedMsg = signMessage(message, wallet.privateKey)
+    this.cosmos.broadcastTx(signedMsg);
+});
+```
+
+
 
 ## 🎭 Examples
 

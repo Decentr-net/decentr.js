@@ -83,7 +83,7 @@ export interface StdSignature {
 /**
  * An unsigned transaction.
  */
-export interface Tx {
+export interface Tx extends SignMeta {
     msg: Msg[];
     fee: StdFee;
     memo: string;

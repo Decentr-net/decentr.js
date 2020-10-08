@@ -25,7 +25,7 @@ import { mnemonicToSeedSync as bip39MnemonicToSeed } from 'bip39';
 import {
   publicKeyCreate as secp256k1PublicKeyCreate,
   ecdsaSign as secp256k1EcdsaSign,
-  ecdsaVerify as secp256k1EcdsaVerify
+  ecdsaVerify as secp256k1EcdsaVerify, publicKeyCreate
 } from 'secp256k1';
 
 import {
@@ -35,7 +35,6 @@ import {
 } from '../constants';
 
 import createHash from 'create-hash';
-
 import {
   BroadcastMode,
   BroadcastTx,
@@ -345,4 +344,81 @@ export function ripemd160 (bytes: Bytes): Bytes {
   const buffer2 = createHash('ripemd160').update(buffer1).digest();
 
   return bufferToBytes(buffer2);
+}
+
+
+
+
+
+
+
+export function newStdMsg(input: any) {
+	const stdSignMsg: any = {};
+	stdSignMsg.json = input;
+	stdSignMsg.bytes = convertStringToBytes(JSON.stringify(sortObject(stdSignMsg.json)));
+	return stdSignMsg;
+}
+
+function getPubKeyBase64(ecpairPriv: any) {
+	const pubKeyByte = publicKeyCreate(ecpairPriv);
+	return Buffer.from(pubKeyByte).toString('base64');
+}
+
+export function signMessage(stdSignMsg: any, ecpairPriv: any, modeType = "block") {
+	// The supported return types includes "block"(return after tx commit), "sync"(return after CheckTx) and "async"(return right away).
+  let signMessage = new Object;
+  const priv = Buffer.from(ecpairPriv)
+	signMessage = stdSignMsg.json;
+	const hash = createHash('sha256').update(JSON.stringify(sortObject(signMessage))).digest('hex');
+	const buf = Buffer.from(hash, 'hex');
+	let signObj = secp256k1EcdsaSign(buf, priv);
+	let signatureBase64 = Buffer.from(signObj.signature).toString('base64');
+	let signedTx = new Object;
+		signedTx = {
+		    "tx": {
+		        "msg": stdSignMsg.json.msgs,
+		        "fee": stdSignMsg.json.fee,
+		        "signatures": [
+		            {
+		            	"account_number": stdSignMsg.json.account_number,
+		            	"sequence": stdSignMsg.json.sequence,
+		                "signature": signatureBase64,
+		                "pub_key": {
+		                    "type": "tendermint/PubKeySecp256k1",
+		                    "value": getPubKeyBase64(ecpairPriv)
+		                }
+		            }
+		        ],
+		        "memo": stdSignMsg.json.memo
+		    },
+		    "mode": modeType
+		}
+
+
+	return signedTx;
+}
+
+function convertStringToBytes(str: string) {
+	// tslint:disable-next-line: strict-type-predicates
+	if (typeof str !== "string") {
+	    throw new Error("str expects a string")
+	}
+	let myBuffer = [];
+	let buffer = Buffer.from(str, 'utf8');
+	for (let i = 0; i < buffer.length; i++) {
+	    myBuffer.push(buffer[i]);
+	}
+	return myBuffer;
+}
+
+function sortObject(obj: any): any {
+	if (obj === null) return null;
+	if (typeof obj !== "object") return obj;
+	if (Array.isArray(obj)) return obj.map(sortObject);
+	const sortedKeys = Object.keys(obj).sort();
+	const result: any = {};
+	sortedKeys.forEach((key: any) => {
+		result[key] = sortObject(obj[key])
+	});
+	return result;
 }
