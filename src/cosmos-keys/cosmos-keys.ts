@@ -32,10 +32,12 @@ import {
 } from '../constants';
 
 import createHash from 'create-hash';
+import AES from 'crypto-js'
 import {
   KeyPair,
   Wallet,
 } from '../types';
+import CryptoJS from 'crypto-js';
 
  /**
   * Create a {@link Wallet|`Wallet`} from a known mnemonic.
@@ -227,4 +229,17 @@ function sortObject(obj: any): any {
 		result[key] = sortObject(obj[key])
 	});
 	return result;
+}
+
+export function encryptWithPrivatekey(data: any, privateKey: any){
+  const secret = Buffer.from(privateKey).toString('hex');
+  const encryptedData = CryptoJS.AES.encrypt(JSON.stringify(data), secret).toString();
+  return encryptedData
+}
+
+export function decryptWithPrivatekey(data: any, privateKey: any){
+  const secret = Buffer.from(privateKey).toString('hex');
+  const bytes  = CryptoJS.AES.decrypt(data, secret);
+  const decryptedData = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
+  return decryptedData;
 }

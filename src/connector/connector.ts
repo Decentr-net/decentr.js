@@ -20,7 +20,7 @@ export class Cosmos {
     })
   }
 
-  public QueryPublicProfile(address: string ,publicData: {gender: string, birthday: string}){
+  public QueryPublicProfile(address: string ,publicData: {gender: string, birthday: string}) {
     const url = this.url + '/profile/public/' + address;
     const proxyurl = "https://cors-anywhere.herokuapp.com/"
     const data = {
@@ -37,9 +37,21 @@ export class Cosmos {
   return this.postData(proxyurl+url, data)
   }
 
+  public QueryPrivateProfile(address: string, privateData: string) {
+    const url = this.url + '/profile/private/' + address;
+    const proxyurl = "https://cors-anywhere.herokuapp.com/"
+    const data = {
+      base_req: {
+          chain_id: this.chainId,
+          from: address
+      },
+      private: privateData
+  }
+  // tslint:disable-next-line: no-floating-promises
+  return this.postData(proxyurl+url, data)
+  }
+
   public async setPublicProfile(address: string, publicData: any){
-    console.log(address);
-    console.log(publicData);
     // tslint:disable-next-line: no-floating-promises
     const tx = await this.QueryPublicProfile(address, publicData);
     const acc = await this.get.account(address);
@@ -47,7 +59,7 @@ export class Cosmos {
       {
         msgs: [
           {
-                type: "profile/SetPublic",
+                type: tx.value.msg[0].type,
                 value: tx.value.msg[0].value
               }
         ],
@@ -59,17 +71,28 @@ export class Cosmos {
       }
     )
     return msg
-    // const url = this.url + '/txs'
-    // const proxyurl = "https://cors-anywhere.herokuapp.com/"
-    // const metaData = {
-    //   sequence: meta.sequence,
-    //   account_number: meta.account_number,
-    //   chain_id: this.chainId
-    // };
-    // const signedTx = signTx(data, metaData, wallet)
-    // const broadcastBody = createBroadcastTx(signedTx, 'block')
-    // console.log('BODY!!!:  ', JSON.stringify(broadcastBody));
-    // return this.postData(proxyurl+url, broadcastBody);
+  }
+
+  public async setPrivateProfile(address: string, privateData: string){
+    // tslint:disable-next-line: no-floating-promises
+    const tx = await this.QueryPrivateProfile(address, privateData);
+    const acc = await this.get.account(address);
+    const msg = newStdMsg(
+      {
+        msgs: [
+          {
+                type: tx.value.msg[0].type,
+                value: tx.value.msg[0].value
+              }
+        ],
+        chain_id: this.chainId,
+        fee: { amount: [ { amount: String(5000), denom: "udec" } ], gas: String(200000) },
+        memo: "",
+        account_number: String(acc.account_number),
+        sequence: String(acc.sequence)
+      }
+    )
+    return msg
   }
 
   public broadcastTx(tx: any) {
