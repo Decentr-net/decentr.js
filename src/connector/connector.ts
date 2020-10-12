@@ -1,5 +1,4 @@
 import { newStdMsg } from '../cosmos-keys';
-import { Wallet, BroadcastMode } from './../types';
 import _Getters  from './getters'
 
 export class Cosmos {
@@ -9,8 +8,6 @@ export class Cosmos {
 
 
   constructor (cosmosRESTURL: string, chainId: string) {
-    console.log(cosmosRESTURL);
-    console.log(chainId);
     this.url = cosmosRESTURL
     this.chainId = chainId
 
@@ -22,7 +19,6 @@ export class Cosmos {
 
   public QueryPublicProfile(address: string ,publicData: {gender: string, birthday: string}) {
     const url = this.url + '/profile/public/' + address;
-    const proxyurl = "https://cors-anywhere.herokuapp.com/"
     const data = {
       base_req: {
           chain_id: this.chainId,
@@ -34,12 +30,11 @@ export class Cosmos {
       }
   }
   // tslint:disable-next-line: no-floating-promises
-  return this.postData(proxyurl+url, data)
+  return this.postData(url, data)
   }
 
   public QueryPrivateProfile(address: string, privateData: string) {
     const url = this.url + '/profile/private/' + address;
-    const proxyurl = "https://cors-anywhere.herokuapp.com/"
     const data = {
       base_req: {
           chain_id: this.chainId,
@@ -48,7 +43,7 @@ export class Cosmos {
       private: privateData
   }
   // tslint:disable-next-line: no-floating-promises
-  return this.postData(proxyurl+url, data)
+  return this.postData(url, data)
   }
 
   public async setPublicProfile(address: string, publicData: any){
@@ -64,7 +59,7 @@ export class Cosmos {
               }
         ],
         chain_id: this.chainId,
-        fee: { amount: [ { amount: String(5000), denom: "udec" } ], gas: String(200000) },
+        fee: { amount: [ { amount: "5000", denom: "udec" } ], gas: String(200000) },
         memo: "",
         account_number: String(acc.account_number),
         sequence: String(acc.sequence)
@@ -86,7 +81,7 @@ export class Cosmos {
               }
         ],
         chain_id: this.chainId,
-        fee: { amount: [ { amount: String(5000), denom: "udec" } ], gas: String(200000) },
+        fee: { amount: [ { amount: "5000", denom: "udec" } ], gas: String(200000) },
         memo: "",
         account_number: String(acc.account_number),
         sequence: String(acc.sequence)
@@ -97,9 +92,8 @@ export class Cosmos {
 
   public broadcastTx(tx: any) {
     const url = this.url + '/txs'
-    const proxyurl = "https://cors-anywhere.herokuapp.com/"
     // tslint:disable-next-line: no-floating-promises
-    this.postData(proxyurl+url, tx);
+    this.postData(url, tx);
   }
 
   private async postData(url = '', data = {}): Promise<any> {
@@ -107,7 +101,6 @@ export class Cosmos {
       method: 'POST', // *GET, POST, PUT, DELETE, etc.
       headers: {
         'Content-Type': 'application/json'
-        // 'Content-Type': 'application/x-www-form-urlencoded',
       },
       body: JSON.stringify(data) // body data type must match "Content-Type" header
     });

@@ -32,12 +32,12 @@ import {
 } from '../constants';
 
 import createHash from 'create-hash';
-import AES from 'crypto-js'
 import {
   KeyPair,
   Wallet,
 } from '../types';
 import CryptoJS from 'crypto-js';
+// tslint:disable-next-line: no-duplicate-imports
 
  /**
   * Create a {@link Wallet|`Wallet`} from a known mnemonic.

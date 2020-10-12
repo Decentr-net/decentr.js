@@ -12,14 +12,9 @@ export default function Getters (cosmosRESTURL: any) {
         let url = cosmosRESTURL + path
         const isTxsPagination = path.startsWith('/txs?')
         if (isTxsPagination) url = url + `&page=${page}&limit=${limit}`
-        const proxyurl = "https://cors-anywhere.herokuapp.com/";
         let headersDec = new Headers();
         headersDec.append('Access-Control-Allow-Origin', '*')
-        const options: RequestInit = {
-          mode: 'no-cors',
-          // headers: headersDec
-        };
-        const response = await fetch(proxyurl+url).then(res => {
+        const response = await fetch(url).then(res => {
           return res.json();
         })
 
