@@ -79,9 +79,12 @@ export function createMasterKeyFromMnemonic (mnemonic: string): BIP32Interface {
   * @returns a keypair and address derived from the provided master key
   */
 export function createWalletFromMasterKey (masterKey: BIP32Interface, prefix: string = COSMOS_PREFIX, path: string = COSMOS_PATH): Wallet {
-  const { privateKey, publicKey } = createKeyPairFromMasterKey(masterKey, path);
+  const { privateKeyBuff, publicKeyBuff } = createKeyPairFromMasterKey(masterKey, path);
 
-  const address = createAddress(publicKey, prefix);
+  const address = createAddress(privateKeyBuff, prefix);
+
+  const privateKey = privateKeyBuff.toString();
+  const publicKey = publicKeyBuff.toString();
 
   return {
       privateKey,
@@ -99,18 +102,18 @@ export function createWalletFromMasterKey (masterKey: BIP32Interface, prefix: st
   * @returns derived public and private key pair
   * @throws  will throw if a private key cannot be derived
   */
-export function createKeyPairFromMasterKey (masterKey: BIP32Interface, path: string = COSMOS_PATH): KeyPair {
+export function createKeyPairFromMasterKey (masterKey: BIP32Interface, path: string = COSMOS_PATH) {
   const buffer = masterKey.derivePath(path).privateKey;
   if (!buffer) {
       throw new Error('could not derive private key');
   }
 
-  const privateKey = bufferToBytes(buffer);
-  const publicKey  = secp256k1PublicKeyCreate(privateKey, true);
+  const privateKeyBuff = bufferToBytes(buffer);
+  const publicKeyBuff  = secp256k1PublicKeyCreate(privateKeyBuff, true);
 
   return {
-      privateKey,
-      publicKey
+      privateKeyBuff,
+      publicKeyBuff
   };
 }
 
@@ -175,7 +178,8 @@ function getPubKeyBase64(ecpairPriv: any) {
 export function signMessage(stdSignMsg: any, ecpairPriv: any, modeType = "block") {
 	// The supported return types includes "block"(return after tx commit), "sync"(return after CheckTx) and "async"(return right away).
   let signMessage = new Object;
-  const priv = Buffer.from(ecpairPriv)
+  const enc = new Uint8Array(ecpairPriv.split(','));
+  const priv = Buffer.from(enc);
 	signMessage = stdSignMsg.json;
 	const hash = createHash('sha256').update(JSON.stringify(sortObject(signMessage))).digest('hex');
 	const buf = Buffer.from(hash, 'hex');
@@ -193,7 +197,7 @@ export function signMessage(stdSignMsg: any, ecpairPriv: any, modeType = "block"
 		                "signature": signatureBase64,
 		                "pub_key": {
 		                    "type": "tendermint/PubKeySecp256k1",
-		                    "value": getPubKeyBase64(ecpairPriv)
+		                    "value": getPubKeyBase64(priv)
 		                }
 		            }
 		        ],

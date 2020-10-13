@@ -1,7 +1,7 @@
 import { newStdMsg } from '../cosmos-keys';
 import _Getters  from './getters'
 
-export class Cosmos {
+export class Decentr {
   url: any = '';
   get: any = {};
   chainId = '';
@@ -90,10 +90,9 @@ export class Cosmos {
     return msg
   }
 
-  public broadcastTx(tx: any) {
+  public broadcastTx(tx: any): Promise<any> {
     const url = this.url + '/txs'
-    // tslint:disable-next-line: no-floating-promises
-    this.postData(url, tx);
+    return this.postData(url, tx);
   }
 
   private async postData(url = '', data = {}): Promise<any> {

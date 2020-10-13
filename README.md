@@ -57,21 +57,21 @@ const wallet = createWalletFromMnemonic(seed);
 */
 ```
 
-Create Cosmos connector
+Create Decentr connector
 ```ts
-import { Cosmos } from 'decentr-js';
+import { Decentr } from 'decentr-js';
 
   REST_URL = 'http://rest.testnet.decentr.xyz';
   CHAIN_ID = 'testnet';
   
-  const cosmos = new Cosmos(REST_URL, CHAIN_ID);
+  const decentr = new Decentr(REST_URL, CHAIN_ID);
 ```
 
 Get Accaunt information
 ```ts
     const address = 'decentr1p4s4djk5dqstfswg6k8sljhkzku4a6ve9dmng5';
     
-    const account = from(cosmos.get.account(address));
+    const account = from(decentr.get.account(address));
     account.subscribe(/*do something*/);
     
     /*
@@ -110,36 +110,36 @@ const decrypted = decryptWithPrivatekey(encrypted, wallet.privateKey);
 Set public profile data
 ```ts
 import {
-  Cosmos,
+  Decentr,
   setPublicProfile,
   signMessage,
   broadcastTx
 } from 'decentr-js';
 
-const cosmos = new Cosmos(REST_URL, CHAIN_ID);
+const decentr = new Decentr(REST_URL, CHAIN_ID);
 
 const publicData = {
     gender: 'male',
     birthday: '2019-12-11'
 }
-const publicProfileTx = from(this.cosmos.setPublicProfile(wallet.address,publicData));
+const publicProfileTx = from(this.decentr.setPublicProfile(wallet.address,publicData));
 
 publicProfileTx.subscribe(message => {
     const signedMsg = signMessage(message, wallet.privateKey)
-    this.cosmos.broadcastTx(signedMsg);
+    this.decentr.broadcastTx(signedMsg);
 });
 ```
 
 Set private profile data
 ```ts
 import {
-  Cosmos,
+  Decentr,
   setPrivateProfile,
   signMessage,
   broadcastTx
 } from 'decentr-js';
 
-const cosmos = new Cosmos(REST_URL, CHAIN_ID);
+const decentr = new Decentr(REST_URL, CHAIN_ID);
 
 const privateData = {
   email: 'ex@mex.com',
@@ -147,11 +147,11 @@ const privateData = {
 }
 
 const encrypted = encryptWithPrivatekey(privateData, wallet.privateKey);
-const privateProfileTx = from(this.cosmos.setPrivateProfile(wallet.address ,encrypted));
+const privateProfileTx = from(this.decentr.setPrivateProfile(wallet.address ,encrypted));
 
 privateProfileTx.subscribe(message => {
     const signedMsg = signMessage(message, wallet.privateKey)
-    this.cosmos.broadcastTx(signedMsg);
+    this.decentr.broadcastTx(signedMsg);
 });
 ```
 
