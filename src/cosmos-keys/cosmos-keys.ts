@@ -81,7 +81,7 @@ export function createMasterKeyFromMnemonic (mnemonic: string): BIP32Interface {
 export function createWalletFromMasterKey (masterKey: BIP32Interface, prefix: string = COSMOS_PREFIX, path: string = COSMOS_PATH): Wallet {
   const { privateKeyBuff, publicKeyBuff } = createKeyPairFromMasterKey(masterKey, path);
 
-  const address = createAddress(privateKeyBuff, prefix);
+  const address = createAddress(publicKeyBuff, prefix);
 
   const privateKey = privateKeyBuff.toString();
   const publicKey = publicKeyBuff.toString();
