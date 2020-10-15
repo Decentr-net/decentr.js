@@ -71,10 +71,10 @@ export class Decentr {
     return msg
   }
 
-  public async setPrivateProfile(address: string, privateData: string, privateKey: string){
+  public async setPrivateProfile(privateData: string, wallet: any){
     // tslint:disable-next-line: no-floating-promises
-    const tx = await this.QueryPrivateProfile(address, privateData, privateKey);
-    const acc = await this.get.account(address);
+    const tx = await this.QueryPrivateProfile(wallet.address, privateData, wallet.privateKey);
+    const acc = await this.get.account(wallet.address);
     const msg = newStdMsg(
       {
         msgs: [

@@ -111,7 +111,6 @@ Set public profile data
 ```ts
 import {
   Decentr,
-  setPublicProfile,
   signMessage,
   broadcastTx
 } from 'decentr-js';
@@ -134,24 +133,24 @@ Set private profile data
 ```ts
 import {
   Decentr,
-  setPrivateProfile,
+  createWalletFromMnemonic,
   signMessage,
   broadcastTx
 } from 'decentr-js';
 
 const decentr = new Decentr(REST_URL, CHAIN_ID);
 
+const wallet = createWalletFromMnemonic(seed);
+
 const privateData = {
   email: 'ex@mex.com',
   name: 'Ex'
 }
 
-const encrypted = encryptWithPrivatekey(privateData, wallet.privateKey);
-const privateProfileTx = from(this.decentr.setPrivateProfile(wallet.address ,encrypted));
-
+const privateProfileTx = from(this.decentr.setPrivateProfile(privateData, wallet));
 privateProfileTx.subscribe(message => {
-    const signedMsg = signMessage(message, wallet.privateKey)
-    this.decentr.broadcastTx(signedMsg);
+  const signedMsg = signMessage(message, wallet.privateKey);
+  this.decentr.broadcastTx(signedMsg);
 });
 ```
 
@@ -166,7 +165,7 @@ const decentr = new Decentr(REST_URL, CHAIN_ID);
 
 const wallet = createWalletFromMnemonic(seed);
 
-const privateData = from(this.cosmos.get.privateProfile(wallet));
+const privateData = from(this.decentr.get.privateProfile(wallet));
 privateData.subscribe(data => console.log(data));
 });
 ```
@@ -182,7 +181,7 @@ const decentr = new Decentr(REST_URL, CHAIN_ID);
 
 const wallet = createWalletFromMnemonic(seed);
 
-const publicData = from(this.cosmos.get.publicProfile(wallet.address));
+const publicData = from(this.decentr.get.publicProfile(wallet.address));
 publicDatan.subscribe(data => console.log(data));
 });
 ```
