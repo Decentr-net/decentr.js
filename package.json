@@ -1,6 +1,6 @@
 {
   "name": "decentr-js",
-  "version": "1.1.16",
+  "version": "1.1.17",
   "description": "decentr-js",
   "main": "lib/cosmos-keys.js",
   "typings": "lib/types/cosmos-keys.d.ts",
