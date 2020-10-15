@@ -155,6 +155,37 @@ privateProfileTx.subscribe(message => {
 });
 ```
 
+Get private profile data
+```ts
+import {
+  Decentr,
+  createWalletFromMnemonic
+} from 'decentr-js';
+
+const decentr = new Decentr(REST_URL, CHAIN_ID);
+
+const wallet = createWalletFromMnemonic(seed);
+
+const privateData = from(this.cosmos.get.privateProfile(wallet));
+privateData.subscribe(data => console.log(data));
+});
+```
+
+Get public profile data
+```ts
+import {
+  Decentr,
+  createWalletFromMnemonic
+} from 'decentr-js';
+
+const decentr = new Decentr(REST_URL, CHAIN_ID);
+
+const wallet = createWalletFromMnemonic(seed);
+
+const publicData = from(this.cosmos.get.publicProfile(wallet.address));
+publicData.subscribe(data => console.log(data));
+});
+```
 
 
 ## 🎭 Examples

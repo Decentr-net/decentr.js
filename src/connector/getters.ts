@@ -1,4 +1,7 @@
+import { Wallet } from './../types';
 'use strict'
+
+import { decryptWithPrivatekey } from "../cosmos-keys"
 
 /* eslint-env browser */
 
@@ -49,6 +52,14 @@ export default function Getters (cosmosRESTURL: any) {
     },
 
     nodeVersion: () => fetch(cosmosRESTURL + `/node_version`).then(res => res.text()),
+    // profiles
+
+    publicProfile: (address: string) => get(`/profile/public/${address}`),
+
+    privateProfile: function (wallet: any) {
+      // tslint:disable-next-line: no-floating-promises
+      return get(`/profile/private/${wallet.address}`).then(res => decryptWithPrivatekey(res, wallet.privateKey))
+    },
 
     // coins
     account: function (address: string) {

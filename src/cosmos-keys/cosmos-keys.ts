@@ -175,11 +175,16 @@ function getPubKeyBase64(ecpairPriv: any) {
 	return Buffer.from(pubKeyByte).toString('base64');
 }
 
+export function getKeyBytes(strKey: any) {
+  const enc = new Uint8Array(strKey.split(','));
+  const key = Buffer.from(enc);
+  return key;
+}
+
 export function signMessage(stdSignMsg: any, ecpairPriv: any, modeType = "block") {
 	// The supported return types includes "block"(return after tx commit), "sync"(return after CheckTx) and "async"(return right away).
   let signMessage = new Object;
-  const enc = new Uint8Array(ecpairPriv.split(','));
-  const priv = Buffer.from(enc);
+  const priv = getKeyBytes(ecpairPriv)
 	signMessage = stdSignMsg.json;
 	const hash = createHash('sha256').update(JSON.stringify(sortObject(signMessage))).digest('hex');
 	const buf = Buffer.from(hash, 'hex');
@@ -236,14 +241,16 @@ function sortObject(obj: any): any {
 }
 
 export function encryptWithPrivatekey(data: any, privateKey: any){
-  const secret = Buffer.from(privateKey).toString('hex');
-  const encryptedData = CryptoJS.AES.encrypt(JSON.stringify(data), secret).toString();
+  // const buffKey = getKeyBytes(privateKey);
+  // const secret = Buffer.from(buffKey).toString('hex');
+  const encryptedData = CryptoJS.AES.encrypt(JSON.stringify(data), privateKey).toString();
   return encryptedData
 }
 
 export function decryptWithPrivatekey(data: any, privateKey: any){
-  const secret = Buffer.from(privateKey).toString('hex');
-  const bytes  = CryptoJS.AES.decrypt(data, secret);
+  // const buffKey = getKeyBytes(privateKey);
+  // const secret = Buffer.from(buffKey).toString('hex');
+  const bytes  = CryptoJS.AES.decrypt(atob(data), privateKey);
   const decryptedData = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
   return decryptedData;
 }

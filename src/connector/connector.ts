@@ -1,4 +1,4 @@
-import { newStdMsg } from '../cosmos-keys';
+import { decryptWithPrivatekey, encryptWithPrivatekey, getKeyBytes, newStdMsg } from '../cosmos-keys';
 import _Getters  from './getters'
 
 export class Decentr {
@@ -33,14 +33,17 @@ export class Decentr {
   return this.postData(url, data)
   }
 
-  public QueryPrivateProfile(address: string, privateData: string) {
-    const url = this.url + '/profile/private/' + address;
+  public QueryPrivateProfile(address: string, privateData: any, privateKey: string) {
+    const url =this.url + '/profile/private/' + address;
+    const encrypted = encryptWithPrivatekey(privateData, privateKey);
+    console.log(encrypted);
+    // const privKeyBytes = getKeyBytes(privateKey);
     const data = {
       base_req: {
           chain_id: this.chainId,
           from: address
       },
-      private: privateData
+      private: encrypted
   }
   // tslint:disable-next-line: no-floating-promises
   return this.postData(url, data)
@@ -68,17 +71,17 @@ export class Decentr {
     return msg
   }
 
-  public async setPrivateProfile(address: string, privateData: string){
+  public async setPrivateProfile(address: string, privateData: string, privateKey: string){
     // tslint:disable-next-line: no-floating-promises
-    const tx = await this.QueryPrivateProfile(address, privateData);
+    const tx = await this.QueryPrivateProfile(address, privateData, privateKey);
     const acc = await this.get.account(address);
     const msg = newStdMsg(
       {
         msgs: [
           {
-                type: tx.value.msg[0].type,
-                value: tx.value.msg[0].value
-              }
+            type: tx.value.msg[0].type,
+            value: tx.value.msg[0].value
+          }
         ],
         chain_id: this.chainId,
         fee: { amount: [ { amount: "5000", denom: "udec" } ], gas: String(200000) },
