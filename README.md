@@ -183,7 +183,7 @@ const decentr = new Decentr(REST_URL, CHAIN_ID);
 const wallet = createWalletFromMnemonic(seed);
 
 const publicData = from(this.cosmos.get.publicProfile(wallet.address));
-publicData.subscribe(data => console.log(data));
+publicDatan.subscribe(data => console.log(data));
 });
 ```
 
