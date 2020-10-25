@@ -186,7 +186,7 @@ const decentr = new Decentr(REST_URL, CHAIN_ID);
 const wallet = createWalletFromMnemonic(seed);
 
 const publicData = from(this.decentr.get.publicProfile(wallet.address));
-publicDatan.subscribe(data => console.log(data));
+publicData.subscribe(data => console.log(data));
 });
 ```
 
