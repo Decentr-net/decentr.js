@@ -12,6 +12,10 @@
 
 - Generate mnemonic
 - Create wallet (address, private key, publick key)
+- Enrypting/decrypting data
+- Create transactions
+- Signing transactions
+- Broadcasting transactions
 
 ## 🔧 Installation
 
@@ -21,7 +25,7 @@ npm install decentr-js
 
 ## 🎬 Getting started
 
-Generate mnemonic phrase (24 words)
+**Generate mnemonic phrase (24 words)**
 
 ```ts
 import { generateMnemonic } from 'decentr-js';
@@ -30,7 +34,7 @@ const mnemonic = generateMnemonic();
     fantasy scatter misery seminar resist file unique coral ordinary wash shoulder demise bubble calm sail protect divide write lend card sudden rally depart park
 */
 ```
-Create wallet with address and keys
+**Create wallet with address and keys**
 ```ts
 import { createWalletFromMnemonic } from "decentr-js"
 
@@ -57,7 +61,7 @@ const wallet = createWalletFromMnemonic(seed);
 */
 ```
 
-Create Decentr connector
+**Create Decentr connector**
 ```ts
 import { Decentr } from 'decentr-js';
 
@@ -67,7 +71,7 @@ import { Decentr } from 'decentr-js';
   const decentr = new Decentr(REST_URL, CHAIN_ID);
 ```
 
-Get Accaunt information
+**Get Accaunt information**
 ```ts
     const address = 'decentr1p4s4djk5dqstfswg6k8sljhkzku4a6ve9dmng5';
     
@@ -90,7 +94,7 @@ Get Accaunt information
 */
 ```
 
-Encrypt/decrypt private data
+**Encrypt/decrypt private data**
 ```ts
 import { encryptWithPrivatekey, decryptWithPrivatekey } from 'decentr-js';
 
@@ -107,7 +111,7 @@ const decrypted = decryptWithPrivatekey(encrypted, wallet.privateKey);
 
 ```
 
-Set public profile data
+**Set public profile data**
 ```ts
 import {
   Decentr,
@@ -129,7 +133,7 @@ publicProfileTx.subscribe(message => {
 });
 ```
 
-Set private profile data
+**Set private profile data**
 ```ts
 import {
   Decentr,
@@ -154,7 +158,7 @@ privateProfileTx.subscribe(message => {
 });
 ```
 
-Get private profile data
+**Get private profile data**
 ```ts
 import {
   Decentr,
@@ -170,7 +174,7 @@ privateData.subscribe(data => console.log(data));
 });
 ```
 
-Get public profile data
+**Get public profile data**
 ```ts
 import {
   Decentr,
@@ -187,33 +191,94 @@ publicDatan.subscribe(data => console.log(data));
 ```
 
 
-## 🎭 Examples
+## 📜 PDV (Personal Data Value) Data
 
-Go checkout [examples](./examples) !
-
-## 📜 API
-
-> Document your API here
-
-### `publicMethodOne(value:string): string`
-
-This methods does foo bar moo...
-
-**Example:**
-
+**Set PDV data**
 ```ts
-// example
+import {
+  Decentr,
+  createWalletFromMnemonic,
+  signMessage,
+  broadcastTx
+} from 'decentr-js';
+
+const decentr = new Decentr(REST_URL, CHAIN_ID);
+
+const wallet = createWalletFromMnemonic(seed);
+
+const pdv = {
+    version: 'v1',
+    pdv: {
+    domain: 'test.net',
+    path: '/',
+    data: [{
+        version: 'v1',
+        type: 'cookie',
+        name: 'my cookie 123',
+        value: 'some value 123',
+        domain: '*',
+        host_only: true,
+        path: '*',
+        secure: true,
+        same_site: 'None',
+        expiration_date: 1861920000
+    }
+]}
+
+const pdvTx = from(this.decentr.sendPDV(pdv, wallet));
+pdvTx.subscribe(message => {
+    const signedMsg = signMessage(message, wallet.privateKey);
+    this.decentr.broadcastTx(signedMsg);
+});
 ```
 
-## 🎓 Guides
+**PDV getters**
+```ts
+// Query pdv token balance
+const balance = from(this.decentr.get.tokenBalance(wallet.address));
+balance.subscribe(res => console.log(res));
+/*{"balance":2e-7}*/
 
-<details>
-<summary>How to do Foo</summary>
-Today we're gonna build Foo....
-</details>
 
-### 🕵️ Troubleshooting
+// List account's pdv
+const pdvList = from(this.decentr.get.pdvList(wallet.address));
+pdvList.subscribe(res => console.log(res));
+/*
+[
+   {
+      "timestamp":"2020-10-25T20:06:34Z",
+      "address":"ad77fe23822de7f27c416a7a13d60c7255f5fcc0-68fd4835e28af2d6e148efde72c652d9711e7bdba016af9d05cf58aaa38d298e",
+      "owner":"decentr144mluguz9hnlylzpdfap84svwf2ltlxqer2tsw",
+      "type":"1"
+   },
+   {
+      "timestamp":"2020-10-25T16:19:56Z",
+      "address":"ad77fe23822de7f27c416a7a13d60c7255f5fcc0-3c873a4d5abe8e0d5d3ebb0c91f1012d1423db59abf14a23f27a57b5f920542d",
+      "owner":"decentr144mluguz9hnlylzpdfap84svwf2ltlxqer2tsw",
+      "type":"1"
+   }
+]
+*/
 
+
+// List account's daily stats
+const pdvStats = from(this.decentr.get.pdvStats(wallet.address));
+pdvStats.subscribe(res => console.log(res));
+/*{"2020-10-25":"2","0001-01-01":"0"}*/
+
+
+// Query pdv full
+const pdvFull = from(this.decentr.get.pdvFull(pdvAddress));
+pdvFull.subscribe(res => console.log(res));
+/*
+{
+   "timestamp":"2020-10-25T16:19:56.797487841Z",
+   "address":"ad77fe23822de7f27c416a7a13d60c7255f5fcc0-3c873a4d5abe8e0d5d3ebb0c91f1012d1423db59abf14a23f27a57b5f920542d",
+   "owner":"decentr144mluguz9hnlylzpdfap84svwf2ltlxqer2tsw",
+   "type":"1"
+}
+*/
+```
 ## 🥂 License
 
 [MIT](./LICENSE.md) as always

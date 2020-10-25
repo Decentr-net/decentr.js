@@ -14,6 +14,7 @@ import {
 
 import {
   BIP32Interface,
+  fromBase58,
   fromSeed as bip32FromSeed
 } from 'bip32';
 
@@ -22,7 +23,8 @@ import { mnemonicToSeedSync as bip39MnemonicToSeed } from 'bip39';
 import {
   publicKeyCreate as secp256k1PublicKeyCreate,
   ecdsaSign as secp256k1EcdsaSign,
-  ecdsaVerify as secp256k1EcdsaVerify, publicKeyCreate
+  ecdsaVerify as secp256k1EcdsaVerify, publicKeyCreate,
+  publicKeyVerify
 } from 'secp256k1';
 
 import {
@@ -37,6 +39,7 @@ import {
   Wallet,
 } from '../types';
 import CryptoJS from 'crypto-js';
+
 // tslint:disable-next-line: no-duplicate-imports
 
  /**
@@ -163,6 +166,22 @@ export function ripemd160 (bytes: Bytes): Bytes {
   return bufferToBytes(buffer2);
 }
 
+export function msgData(tx: any, acc: any, chain: string){
+  return {
+    msgs: [
+      {
+            type: tx.value.msg[0].type,
+            value: tx.value.msg[0].value
+          }
+    ],
+    chain_id: chain,
+    fee: { amount: [ { amount: "5000", denom: "udec" } ], gas: String(200000) },
+    memo: "",
+    account_number: String(acc.account_number),
+    sequence: String(acc.sequence)
+  }
+}
+
 export function newStdMsg(input: any) {
 	const stdSignMsg: any = {};
 	stdSignMsg.json = input;
@@ -253,4 +272,17 @@ export function decryptWithPrivatekey(data: any, privateKey: any){
   const bytes  = CryptoJS.AES.decrypt(atob(data), privateKey);
   const decryptedData = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
   return decryptedData;
+}
+
+
+export function getPdvHeaders(data: any, wallet: any){
+  const hackPubKey = wallet.publicKey
+  const publicKey = getKeyBytes(hackPubKey);
+  const publicKeyHex = Buffer.from(publicKey).toString('hex');
+  const priv = getKeyBytes(wallet.privateKey);
+  const hash = createHash('sha256').update(JSON.stringify(data) + '/v1/pdv').digest('hex');
+  const buf = Buffer.from(hash, 'hex');
+  let signObj = secp256k1EcdsaSign(buf, priv);
+  let signatureString = Buffer.from(signObj.signature).toString('hex');
+  return {publicKeyHex, signatureString}
 }

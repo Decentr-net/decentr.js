@@ -1,4 +1,5 @@
 import { Wallet } from './../types';
+// tslint:disable-next-line: no-unused-expression
 'use strict'
 
 import { decryptWithPrivatekey } from "../cosmos-keys"
@@ -60,6 +61,28 @@ export default function Getters (cosmosRESTURL: any) {
       // tslint:disable-next-line: no-floating-promises
       return get(`/profile/private/${wallet.address}`).then(res => decryptWithPrivatekey(res, wallet.privateKey))
     },
+
+
+    // PDV
+
+    // Get cerberus address
+    cerberusAddress: () => get('/pdv/cerberus-addr').then(res => res.address),
+
+    // Query pdv token balance
+    tokenBalance: (address: string) => get(`/token/balance/${address}`).then(res => res),
+
+    // List account's pdv
+    pdvList: (owner: string) => get(`/pdv/${owner}/list`),
+
+    // List account's daily stats
+    pdvStats: (owner: string) => get(`/pdv/${owner}/stats`),
+
+    // Query pdv full
+    pdvFull: (address: string) => get(`/pdv/${address}/show`),
+
+    // Query pdv owner by its address
+    pdvOwner: (address: string) => get(`/pdv/${address}/owner`),
+
 
     // coins
     account: function (address: string) {
