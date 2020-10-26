@@ -232,6 +232,15 @@ pdvTx.subscribe(message => {
 });
 ```
 
+**Get decrypted PDV data**
+```ts
+const pdvData = from(this.decentr.getPdvByAddress('Address from Cerberus', wallet))
+pdvData.subscribe(message => {
+    console.log(message);
+});
+```
+
+
 **PDV getters**
 ```ts
 // Query pdv token balance

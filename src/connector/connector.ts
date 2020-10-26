@@ -30,7 +30,7 @@ export class Decentr {
       }
   }
   // tslint:disable-next-line: no-floating-promises
-  return this.postData(url, data)
+  return this.fetchData('POST' , url, data)
   }
 
   public QueryPrivateProfile(privateData: any, wallet: any) {
@@ -45,10 +45,10 @@ export class Decentr {
       private: encrypted
   }
   // tslint:disable-next-line: no-floating-promises
-  return this.postData(url, data)
+  return this.fetchData('POST', url, data)
   }
 
-  public QueryPdvTx(pdvAddress: string, accAddress: string) {
+  private QueryPdvTx(pdvAddress: string, accAddress: string) {
     const url =this.url + '/pdv';
     const data = {
       base_req: {
@@ -58,17 +58,17 @@ export class Decentr {
       address: pdvAddress
   }
   // tslint:disable-next-line: no-floating-promises
-  return this.postData(url, data)
+  return this.fetchData('POST', url, data)
   }
 
-  public async QueryPdvAddress(pdv: any, wallet: any){
+  private async QueryPdvAddress(pdv: any, wallet: any){
     const url = await this.get.cerberusAddress() + '/v1/pdv';
     const headersData = getPdvHeaders(pdv, wallet);
     const headers = {
       'Public-Key': headersData.publicKeyHex,
       'Signature': headersData.signatureString
     }
-    const address = await this.postData(url, pdv, headers).then(res => res.address);
+    const address = await this.fetchData('POST', url, pdv, headers).then(res => res.address);
     return address;
   }
 
@@ -99,16 +99,27 @@ export class Decentr {
     return msg;
   }
 
-  public broadcastTx(tx: any): Promise<any> {
-    const url = this.url + '/txs'
-    return this.postData(url, tx);
+  public async getPdvByAddress(pdvAddress: string, wallet: any){
+    const url = await this.get.cerberusAddress() + '/v1/pdv/' + pdvAddress;
+    const headersData = getPdvHeaders(pdvAddress, wallet);
+    const headers = {
+      'Public-Key': headersData.publicKeyHex,
+      'Signature': headersData.signatureString
+    }
+    const address = await this.fetchData('GET', url, {}, headers).then(res => res);
+    return address;
   }
 
-  private async postData(url = '', data = {}, options?: any): Promise<any> {
+  public broadcastTx(tx: any): Promise<any> {
+    const url = this.url + '/txs'
+    return this.fetchData('POST', url, tx);
+  }
+
+  private async fetchData(method: string ,url = '', data = {}, options?: any): Promise<any> {
     const response = await fetch(url, {
-      method: 'POST', // *GET, POST, PUT, DELETE, etc.
+      method: method, // *GET, POST, PUT, DELETE, etc.
       headers: options,
-      body: JSON.stringify(data) // body data type must match "Content-Type" header
+      body: method === 'POST' ? JSON.stringify(data) : null  // body data type must match "Content-Type" header
     });
     return response.json(); // parses JSON response into native JavaScript objects
   }

@@ -276,11 +276,16 @@ export function decryptWithPrivatekey(data: any, privateKey: any){
 
 
 export function getPdvHeaders(data: any, wallet: any){
+  let hash;
   const hackPubKey = wallet.publicKey
   const publicKey = getKeyBytes(hackPubKey);
   const publicKeyHex = Buffer.from(publicKey).toString('hex');
   const priv = getKeyBytes(wallet.privateKey);
-  const hash = createHash('sha256').update(JSON.stringify(data) + '/v1/pdv').digest('hex');
+  if (data instanceof Object) {
+    hash = createHash('sha256').update(JSON.stringify(data) + '/v1/pdv').digest('hex');
+  } else {
+    hash = createHash('sha256').update('/v1/pdv/' + data).digest('hex');
+  }
   const buf = Buffer.from(hash, 'hex');
   let signObj = secp256k1EcdsaSign(buf, priv);
   let signatureString = Buffer.from(signObj.signature).toString('hex');
