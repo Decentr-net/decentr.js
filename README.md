@@ -207,23 +207,26 @@ const decentr = new Decentr(REST_URL, CHAIN_ID);
 const wallet = createWalletFromMnemonic(seed);
 
 const pdv = {
-    version: 'v1',
-    pdv: {
-    domain: 'test.net',
-    path: '/',
-    data: [{
-        version: 'v1',
-        type: 'cookie',
-        name: 'my cookie 123',
-        value: 'some value 123',
-        domain: '*',
-        host_only: true,
-        path: '*',
-        secure: true,
-        same_site: 'None',
-        expiration_date: 1861920000
-    }
-]}
+      version: 'v1',
+      pdv: {
+        domain: 'decentr.net',
+        path: '/',
+        data: [
+          {
+            version: 'v1',
+            type: 'cookie',
+            name: 'my test cookie',
+            value: 'some test value',
+            domain: '*',
+            host_only: true,
+            path: '*',
+            secure: true,
+            same_site: 'None',
+            expiration_date: 1861920000
+          }
+        ]
+      }
+    };
 
 const pdvTx = from(this.decentr.sendPDV(pdv, wallet));
 pdvTx.subscribe(message => {
