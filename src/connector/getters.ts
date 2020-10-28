@@ -59,7 +59,11 @@ export default function Getters (cosmosRESTURL: any) {
 
     privateProfile: function (wallet: any) {
       // tslint:disable-next-line: no-floating-promises
-      return get(`/profile/private/${wallet.address}`).then(res => decryptWithPrivatekey(res, wallet.privateKey))
+      return get(`/profile/private/${wallet.address}`).then(res => {
+        if (res) {
+          return decryptWithPrivatekey(res, wallet.privateKey)
+        } else return '';
+      })
     },
 
 

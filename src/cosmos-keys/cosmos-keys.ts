@@ -1,3 +1,4 @@
+import { Fee } from './../types';
 import {
   bufferToBytes,
 } from '@tendermint/belt';
@@ -86,8 +87,8 @@ export function createWalletFromMasterKey (masterKey: BIP32Interface, prefix: st
 
   const address = createAddress(publicKeyBuff, prefix);
 
-  const privateKey = privateKeyBuff.toString();
-  const publicKey = publicKeyBuff.toString();
+  const privateKey = Buffer.from(privateKeyBuff).toString('hex');
+  const publicKey = Buffer.from(publicKeyBuff).toString('hex');
 
   return {
       privateKey,
@@ -166,7 +167,7 @@ export function ripemd160 (bytes: Bytes): Bytes {
   return bufferToBytes(buffer2);
 }
 
-export function msgData(tx: any, acc: any, chain: string){
+export function msgData(tx: any, acc: any, chain: string, fee?: Fee){
   return {
     msgs: [
       {
@@ -175,7 +176,7 @@ export function msgData(tx: any, acc: any, chain: string){
           }
     ],
     chain_id: chain,
-    fee: { amount: [ { amount: "5000", denom: "udec" } ], gas: String(200000) },
+    fee: { amount: [ { amount: String(fee?.amount || 5000), denom: fee?.denom || "udec" } ], gas: String(200000) },
     memo: "",
     account_number: String(acc.account_number),
     sequence: String(acc.sequence)
@@ -195,8 +196,7 @@ function getPubKeyBase64(ecpairPriv: any) {
 }
 
 export function getKeyBytes(strKey: any) {
-  const enc = new Uint8Array(strKey.split(','));
-  const key = Buffer.from(enc);
+  const key = new Uint8Array(Buffer.from(strKey, 'hex'))
   return key;
 }
 
@@ -260,15 +260,11 @@ function sortObject(obj: any): any {
 }
 
 export function encryptWithPrivatekey(data: any, privateKey: any){
-  // const buffKey = getKeyBytes(privateKey);
-  // const secret = Buffer.from(buffKey).toString('hex');
   const encryptedData = CryptoJS.AES.encrypt(JSON.stringify(data), privateKey).toString();
   return encryptedData
 }
 
 export function decryptWithPrivatekey(data: any, privateKey: any){
-  // const buffKey = getKeyBytes(privateKey);
-  // const secret = Buffer.from(buffKey).toString('hex');
   const bytes  = CryptoJS.AES.decrypt(atob(data), privateKey);
   const decryptedData = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
   return decryptedData;

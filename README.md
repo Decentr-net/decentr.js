@@ -43,20 +43,9 @@ const wallet = createWalletFromMnemonic(seed);
 
 /*
 {
-    address:    'decentr1p4s4djk5dqstfswg6k8sljhkzku4a6ve9dmng5',
-    privateKey: Uint8Array [
-        202,  60, 140, 106, 178, 180,  60,   1,
-        186,  68, 206, 224, 207, 179,  79,  81,
-        119,  98,  98,   1, 207, 170, 209, 161,
-          1, 124, 151, 236, 205, 151,   3, 229
-    ],
-    publicKey:  Uint8Array [
-          3, 159,  35,  41, 130,  48,   3, 247,
-        139, 242, 113,  41, 200, 176,  73,  27,
-        102, 232, 113, 226,  80, 184, 107, 144,
-        217,  88, 151,  21,  22, 185,  68,  28,
-        211
-    ]
+    address:    'decentr1j6e6j53vh95jcq9k9lnsrsvj3h8dkdgmm20zhu',
+    privateKey: '8c313682470073d56d2d8f5b7fde53c072024a9fd9135501125035d53c8a1f60',
+    publicKey: '03dae8cf229d1db63c8d854bd1c73e280147ebd3bb40df12381d16b0eb071a72b6'
 }
 */
 ```
@@ -125,7 +114,13 @@ const publicData = {
     gender: 'male',
     birthday: '2019-12-11'
 }
-const publicProfileTx = from(this.decentr.setPublicProfile(wallet.address,publicData));
+
+const fee = {
+  amount: 3000,
+  denom: 'udec'
+}
+
+const publicProfileTx = from(this.decentr.setPublicProfile(wallet.address, publicData, fee));
 
 publicProfileTx.subscribe(message => {
     const signedMsg = signMessage(message, wallet.privateKey)
@@ -151,7 +146,12 @@ const privateData = {
   name: 'Ex'
 }
 
-const privateProfileTx = from(this.decentr.setPrivateProfile(privateData, wallet));
+const fee = {
+  amount: 3000,
+  denom: 'udec'
+}
+
+const privateProfileTx = from(this.decentr.setPrivateProfile(privateData, wallet, fee));
 privateProfileTx.subscribe(message => {
   const signedMsg = signMessage(message, wallet.privateKey);
   this.decentr.broadcastTx(signedMsg);
@@ -228,9 +228,14 @@ const pdv = {
       }
     };
 
+const fee = {
+  amount: 3000,
+  denom: 'udec'
+}
+
 const pdvTx = from(this.decentr.sendPDV(pdv, wallet));
 pdvTx.subscribe(message => {
-    const signedMsg = signMessage(message, wallet.privateKey);
+    const signedMsg = signMessage(message, wallet.privateKey, fee);
     this.decentr.broadcastTx(signedMsg);
 });
 ```

@@ -81,6 +81,27 @@ export interface StdSignature {
 }
 
 /**
+ * A public profile data.
+ */
+export interface PublicProfile {
+  gender: string;
+  birthday: string;
+}
+
+/**
+ * A public profile data.
+ */
+export interface PrivateProfile {
+  email: string;
+  username: string;
+}
+
+export interface Fee {
+  amount: number,
+  denom: string
+}
+
+/**
  * An unsigned transaction.
  */
 export interface Tx extends SignMeta {

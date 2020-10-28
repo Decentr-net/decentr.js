@@ -1,3 +1,4 @@
+import { Wallet, PublicProfile, PrivateProfile, Fee } from './../types';
 import { getPdvHeaders, msgData, decryptWithPrivatekey, encryptWithPrivatekey, getKeyBytes, newStdMsg } from '../cosmos-keys';
 import _Getters  from './getters'
 
@@ -17,7 +18,7 @@ export class Decentr {
     })
   }
 
-  public QueryPublicProfile(address: string ,publicData: {gender: string, birthday: string}) {
+  public QueryPublicProfile(address: string ,publicData: PublicProfile) {
     const url = this.url + '/profile/public/' + address;
     const data = {
       base_req: {
@@ -33,7 +34,7 @@ export class Decentr {
   return this.fetchData('POST' , url, data)
   }
 
-  public QueryPrivateProfile(privateData: any, wallet: any) {
+  public QueryPrivateProfile(privateData: PrivateProfile, wallet: Wallet) {
     const url =this.url + '/profile/private/' + wallet.address;
     const encrypted = encryptWithPrivatekey(privateData, wallet.privateKey);
     // const privKeyBytes = getKeyBytes(privateKey);
@@ -61,7 +62,7 @@ export class Decentr {
   return this.fetchData('POST', url, data)
   }
 
-  private async QueryPdvAddress(pdv: any, wallet: any){
+  private async QueryPdvAddress(pdv: any, wallet: Wallet){
     const url = await this.get.cerberusAddress() + '/v1/pdv';
     const headersData = getPdvHeaders(pdv, wallet);
     const headers = {
@@ -72,34 +73,34 @@ export class Decentr {
     return address;
   }
 
-  public async setPublicProfile(address: string, publicData: any){
+  public async setPublicProfile(address: string, publicData: PublicProfile, fee?: Fee){
     // tslint:disable-next-line: no-floating-promises
     const tx = await this.QueryPublicProfile(address, publicData);
     const acc = await this.get.account(address);
-    const msgBody = msgData(tx, acc, this.chainId);
+    const msgBody = msgData(tx, acc, this.chainId, fee);
     const msg = newStdMsg(msgBody)
     return msg
   }
 
-  public async setPrivateProfile(privateData: string, wallet: any){
+  public async setPrivateProfile(privateData: PrivateProfile, wallet: Wallet, fee?: Fee){
     // tslint:disable-next-line: no-floating-promises
-    const tx = await this.QueryPrivateProfile(privateData, wallet);
     const acc = await this.get.account(wallet.address);
-    const msgBody = msgData(tx, acc, this.chainId);
+    const tx = await this.QueryPrivateProfile(privateData, wallet);
+    const msgBody = msgData(tx, acc, this.chainId, fee);
     const msg = newStdMsg(msgBody)
     return msg
   }
 
-  public async sendPDV(pdv: any, wallet: any) {
+  public async sendPDV(pdv: any, wallet: Wallet, fee?: Fee) {
     const pdvAddress = await this.QueryPdvAddress(pdv, wallet);
     const tx = await this.QueryPdvTx(pdvAddress, wallet.address);
     const acc = await this.get.account(wallet.address);
-    const msgBody = msgData(tx, acc, this.chainId);
+    const msgBody = msgData(tx, acc, this.chainId, fee);
     const msg = newStdMsg(msgBody)
     return msg;
   }
 
-  public async getPdvByAddress(pdvAddress: string, wallet: any){
+  public async getPdvByAddress(pdvAddress: string, wallet: Wallet){
     const url = await this.get.cerberusAddress() + '/v1/pdv/' + pdvAddress;
     const headersData = getPdvHeaders(pdvAddress, wallet);
     const headers = {
