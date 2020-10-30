@@ -4,8 +4,8 @@ import { Base64String, Bech32String, Bytes } from '@tendermint/types';
  * A private and public key pair.
  */
 export interface KeyPair {
-    privateKey: Bytes | string;
-    publicKey: Bytes | string;
+    privateKey: string | Bytes;
+    publicKey: string | Bytes;
 }
 
 /**

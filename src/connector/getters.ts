@@ -8,9 +8,9 @@ import { decryptWithPrivatekey } from "../cosmos-keys"
 
 const RETRIES = 4
 
-export default function Getters (cosmosRESTURL: any) {
+export default function Getters(cosmosRESTURL: any) {
   // request and retry
-  async function get (path: any, { page, limit, all } = { page: 1, limit: 30, all: false }, tries = RETRIES): Promise<any> {
+  async function get(path: any, { page, limit, all } = { page: 1, limit: 30, all: false }, tries = RETRIES): Promise<any> {
     while (tries) {
       try {
         let url = cosmosRESTURL + path
