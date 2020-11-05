@@ -16,6 +16,7 @@ export function decrypt<T>(data: string, decryptKey: string): T | undefined {
   try {
     return JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
   } catch {
+    return;
   }
 }
 
