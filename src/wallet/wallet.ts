@@ -6,7 +6,7 @@ import { mnemonicToSeedSync as bip39mnemonicToSeedSync } from 'bip39';
 import { publicKeyCreate as secp256k1PublicKeyCreate } from 'secp256k1';
 
 import { bytesToHex, hashBytes } from '../utils';
-import { COSMOS_DEFAULT_PATH, COSMOS_DEFAULT_PREFIX } from './constants';
+import { DECENTR_DEFAULT_PATH, DECENTR_DEFAULT_PREFIX } from './constants';
 import { KeyPairBytes, Wallet } from './types';
 
 /**
@@ -34,7 +34,7 @@ export function createMasterKeyFromMnemonic(mnemonic: string): BIP32Interface {
  */
 export function createKeyPairFromMasterKey(
   masterKey: BIP32Interface,
-  path: string = COSMOS_DEFAULT_PREFIX,
+  path: string = DECENTR_DEFAULT_PREFIX,
 ): KeyPairBytes {
   const buffer = masterKey.derivePath(path).privateKey;
 
@@ -59,7 +59,7 @@ export function createKeyPairFromMasterKey(
  *
  * @returns Bech32-encoded address
  */
-export function createAddress(publicKey: Bytes, prefix: string = COSMOS_DEFAULT_PREFIX): Bech32String {
+export function createAddress(publicKey: Bytes, prefix: string = DECENTR_DEFAULT_PREFIX): Bech32String {
   const hash1 = hashBytes(publicKey, 'sha256');
   const hash2 = hashBytes(hash1, 'ripemd160');
   const words = bech32toWords(hash2);
@@ -79,8 +79,8 @@ export function createAddress(publicKey: Bytes, prefix: string = COSMOS_DEFAULT_
  */
 export function createWalletFromMnemonic(
   mnemonic: string,
-  prefix: string = COSMOS_DEFAULT_PREFIX,
-  path: string = COSMOS_DEFAULT_PATH,
+  prefix: string = DECENTR_DEFAULT_PREFIX,
+  path: string = DECENTR_DEFAULT_PATH,
 ): Wallet {
   const masterKey = createMasterKeyFromMnemonic(mnemonic);
 
@@ -99,8 +99,8 @@ export function createWalletFromMnemonic(
  */
 export function createWalletFromMasterKey(
   masterKey: BIP32Interface,
-  prefix: string = COSMOS_DEFAULT_PREFIX,
-  path: string = COSMOS_DEFAULT_PATH,
+  prefix: string = DECENTR_DEFAULT_PREFIX,
+  path: string = DECENTR_DEFAULT_PATH,
 ): Wallet {
   const {
     privateKey: privateKeyBytes,
