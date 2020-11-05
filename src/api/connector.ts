@@ -29,7 +29,7 @@ import {
 } from './pdv';
 import { StdTxResponseValue } from './types';
 
-export class DecentrConnector {
+export class Decentr {
   constructor(
     private apiUrl: string,
     private chainId: string,

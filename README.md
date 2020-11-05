@@ -4,18 +4,14 @@
 
 [![NPM version](https://img.shields.io/npm/v/decentr-js.svg)](https://www.npmjs.com/package/decentr-js)
 ![Downloads](https://img.shields.io/npm/dm/decentr-js.svg)
-[![styled with prettier](https://img.shields.io/badge/styled_with-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
 
 ---
 
 ## ✨ Features
 
-- Generate mnemonic
-- Create wallet (address, private key, publick key)
-- Enrypting/decrypting data
-- Create transactions
-- Signing transactions
-- Broadcasting transactions
+- Mnemonic generation (24 words combination)
+- Wallet generation based on mnemonic (address, private key, public key)
+- Transactions with optional broadcasting
 
 ## 🔧 Installation
 
@@ -25,6 +21,7 @@ npm install decentr-js
 
 ## 🎬 Getting started
 
+# Mnemonic
 **Generate mnemonic phrase (24 words)**
 
 ```ts
@@ -34,6 +31,8 @@ const mnemonic = generateMnemonic();
     fantasy scatter misery seminar resist file unique coral ordinary wash shoulder demise bubble calm sail protect divide write lend card sudden rally depart park
 */
 ```
+
+# Wallet
 **Create wallet with address and keys**
 ```ts
 import { createWalletFromMnemonic } from "decentr-js"
@@ -50,252 +49,348 @@ const wallet = createWalletFromMnemonic(seed);
 */
 ```
 
-**Create Decentr connector**
+# Using Decentr api
+
+##! Notice
+**All methods desribed in Decentr class below are available as standalone functions, but require extra parameters:**
+
+```ts
+const restUrl = 'http://rest.testnet.decentr.xyz';
+const chainId = 'testnet';
+const walletAddress = 'decentr1p4s4djk5dqstfswg6k8sljhkzku4a6ve9dmng5';
+
+AND
+
+import { Decentr } from 'decentr-js';
+const decentr = new DecentrConnect(restUrl, chainId);
+
+decentr.getAccount(walletAddress)
+  .then((account) => ...)
+
+OR
+
+import { getAccount } from 'decentr-js';
+
+getAccount(restUrl, chainId, walletAddress)
+  .then((account) => ...)
+```
+
+**Some methods of Decentr class provide optional broadcasting, which is also available as standalone function**
+
+```ts
+const restUrl = 'http://rest.testnet.decentr.xyz';
+const chainId = 'testnet';
+const walletAddress = 'decentr1p4s4djk5dqstfswg6k8sljhkzku4a6ve9dmng5';
+const privateKey = 'fbf265ca5872907c4dbd33bf87c683d84b96987eb42d4a6c50f335eac57ece3e';
+const publicData = {
+  birthday: '1991-02-03',
+  gender: 'male',
+};
+
+  AND
+
+import { Decentr } from 'decentr-js';
+const decentr = new DecentrConnect(restUrl, chainId);
+
+decentr.setPublicProfile(
+  walletAddress,
+  publicData, 
+  {
+    broadcast: true,
+    privateKey,
+  },
+).then(...)
+
+  OR
+
+import { Decentr, broadcast } from 'decentr-js';
+const decentr = new DecentrConnect(restUrl, chainId);
+
+const stdTxResponse = await decentr.setPublicProfile(walletAddress, publicData);
+
+const account = await decentr.getAccount(walletAddress);
+await broadcast(
+  restUrl,
+  chainId,
+  stdTxResponse.value,
+  {
+    ...account,
+    privateKey,
+  },
+);
+
+```
+
+## Decentr connector class
+
+**For less text, we define some basic variables here**
+
 ```ts
 import { Decentr } from 'decentr-js';
 
-  REST_URL = 'http://rest.testnet.decentr.xyz';
-  CHAIN_ID = 'testnet';
-  
-  const decentr = new Decentr(REST_URL, CHAIN_ID);
+const REST_URL = 'http://rest.testnet.decentr.xyz';
+const CHAIN_ID = 'testnet';
+
+const decentr = new Decentr(REST_URL, CHAIN_ID);
 ```
 
-**Get Accaunt information**
+### Methods
+
+**Get account**
 ```ts
-    const address = 'decentr1p4s4djk5dqstfswg6k8sljhkzku4a6ve9dmng5';
-    
-    const account = from(decentr.get.account(address));
-    account.subscribe(/*do something*/);
-    
-    /*
+const walletAddress = 'decentr1p4s4djk5dqstfswg6k8sljhkzku4a6ve9dmng5';
+
+decentr.getAccount(walletAddress).then(console.log);
+
+/* 
+CONSOLE OUTPUT:
+
+{
+  address: "decentr1jejdpqt3xx3vu4h335ml8qmdddhv0nefhxxkdr",
+  coins: [
     {
-   "address":"decentr1p4s4djk5dqstfswg6k8sljhkzku4a6ve9dmng5",
-   "coins":[
-      {
-         "denom":"udec",
-         "amount":"9999900000000000000"
-      }
-   ],
-   "public_key":"decentrpub1addwnpepqdypqhcvrp3eheh0nj4dcccklhx8r9qp89s3yel0aaz7vguy6jj3wwcld2w",
-   "account_number":6,
-   "sequence":1
+      denom: "udec",
+      amount: "790000"
+    }
+  ],
+  public_key: {
+    type: "tendermint/PubKeySecp256k1"
+    value: "A2Y+oEbooAQumYeb9r7jbediO1PMITBnBDiPA5K8ClHh",
+  }
+  account_number: "11",
+  sequence: "42"
 }
 */
 ```
 
-**Encrypt/decrypt private data**
+**Get token balance**
 ```ts
-import { encryptWithPrivatekey, decryptWithPrivatekey } from 'decentr-js';
+const walletAddress = 'decentr1p4s4djk5dqstfswg6k8sljhkzku4a6ve9dmng5';
 
-const privateData = {
-  email: 'ex@mex.com',
-  name: 'Ex'
-}
+decentr.getTokenBalance(walletAddress)
+  .then(console.log);
 
-const encrypted = encryptWithPrivatekey(privateData, wallet.privateKey);
-/*U2FsdGVkX19TdIZKx5yM+38WHLR2bzT6agqSk+HsMqW5aPZT+HXQYcNjQMGKIGNktdwMzfKpxbkCqL6CLp+NUA==*/
+/*
+CONSOLE OUTPUT:
 
-const decrypted = decryptWithPrivatekey(encrypted, wallet.privateKey);
-/*{"email":"ex@mex.com","name":"Ex"}*/
-
+2e-7
+*/
 ```
 
-**Set public profile data**
+**Set public profile**
 ```ts
-import {
-  Decentr,
-  signMessage,
-  broadcastTx
-} from 'decentr-js';
+import { PublicProfile } from 'decentr-js';
 
-const decentr = new Decentr(REST_URL, CHAIN_ID);
+const walletAddress = 'decentr1p4s4djk5dqstfswg6k8sljhkzku4a6ve9dmng5';
+const privateKey = 'fbf265ca5872907c4dbd33bf87c683d84b96987eb42d4a6c50f335eac57ece3e';
 
-const publicData = {
-    gender: 'male',
-    birthday: '2019-12-11'
+const publicProfile: PublicProfile = {
+  birthday: '1991-02-03',
+  gender: 'male',
 }
 
-const fee = {
-  amount: 3000,
-  denom: 'udec'
-}
-
-const publicProfileTx = from(this.decentr.setPublicProfile(wallet.address, publicData, fee));
-
-publicProfileTx.subscribe(message => {
-    const signedMsg = signMessage(message, wallet.privateKey)
-    this.decentr.broadcastTx(signedMsg);
-});
+await decentr.setPrivateProfile<YourPrivateProfile>(
+  walletAddress,
+  privateProfile,
+  {
+    broadcast: true,
+    privateKey,
+  },
+);
 ```
 
-**Set private profile data**
+**Get public profile**
 ```ts
-import {
-  Decentr,
-  createWalletFromMnemonic,
-  signMessage,
-  broadcastTx
-} from 'decentr-js';
+const walletAddress = 'decentr1p4s4djk5dqstfswg6k8sljhkzku4a6ve9dmng5';
 
-const decentr = new Decentr(REST_URL, CHAIN_ID);
+decentr.getPublicProfile(wallet.address).then(console.log);
 
-const wallet = createWalletFromMnemonic(seed);
+/*
+CONSOLE OUTPUT:
 
-const privateData = {
-  email: 'ex@mex.com',
-  name: 'Ex'
+{
+  birthday: '1991-02-03',
+  gender: 'male',
+}
+*/
+```
+
+**Set private profile**
+```ts
+import { PrivateProfile } from 'decentr-js';
+
+interface YourPrivateProfile extends PrivateProfile {
+  emails: string[];
+  usernames: string[];
 }
 
-const fee = {
-  amount: 3000,
-  denom: 'udec'
+const walletAddress = 'decentr1p4s4djk5dqstfswg6k8sljhkzku4a6ve9dmng5';
+const privateKey = 'fbf265ca5872907c4dbd33bf87c683d84b96987eb42d4a6c50f335eac57ece3e';
+
+const privateProfile: YourPrivateProfile = {
+  emails: ['ex@mex.com'],
+  name: ['Ex'],
 }
 
-const privateProfileTx = from(this.decentr.setPrivateProfile(privateData, wallet, fee));
-privateProfileTx.subscribe(message => {
-  const signedMsg = signMessage(message, wallet.privateKey);
-  this.decentr.broadcastTx(signedMsg);
-});
+await decentr.setPrivateProfile<YourPrivateProfile>(
+  walletAddress,
+  privateProfile,
+  privateKey,
+  {
+    broadcast: true,
+  },
+);
 ```
 
 **Get private profile data**
+
+*Type of returned data depends on type set in `setProfileProfile`*
 ```ts
-import {
-  Decentr,
-  createWalletFromMnemonic
-} from 'decentr-js';
-
-const decentr = new Decentr(REST_URL, CHAIN_ID);
-
-const wallet = createWalletFromMnemonic(seed);
-
-const privateData = from(this.decentr.get.privateProfile(wallet));
-privateData.subscribe(data => console.log(data));
-});
-```
-
-**Get public profile data**
-```ts
-import {
-  Decentr,
-  createWalletFromMnemonic
-} from 'decentr-js';
-
-const decentr = new Decentr(REST_URL, CHAIN_ID);
-
-const wallet = createWalletFromMnemonic(seed);
-
-const publicData = from(this.decentr.get.publicProfile(wallet.address));
-publicData.subscribe(data => console.log(data));
-});
-```
-
-
-## 📜 PDV (Personal Data Value) Data
-
-**Set PDV data**
-```ts
-import {
-  Decentr,
-  createWalletFromMnemonic,
-  signMessage,
-  broadcastTx
-} from 'decentr-js';
-
-const decentr = new Decentr(REST_URL, CHAIN_ID);
-
-const wallet = createWalletFromMnemonic(seed);
-
-const pdv = {
-      version: 'v1',
-      pdv: {
-        domain: 'decentr.net',
-        path: '/',
-        data: [
-          {
-            version: 'v1',
-            type: 'cookie',
-            name: 'my test cookie',
-            value: 'some test value',
-            domain: '*',
-            host_only: true,
-            path: '*',
-            secure: true,
-            same_site: 'None',
-            expiration_date: 1861920000
-          }
-        ]
-      }
-    };
-
-const fee = {
-  amount: 3000,
-  denom: 'udec'
+interface YourPrivateProfile extends PrivateProfile {
+  emails: string[];
+  usernames: string[];
 }
 
-const pdvTx = from(this.decentr.sendPDV(pdv, wallet));
-pdvTx.subscribe(message => {
-    const signedMsg = signMessage(message, wallet.privateKey, fee);
-    this.decentr.broadcastTx(signedMsg);
-});
-```
+const walletAddress = 'decentr1p4s4djk5dqstfswg6k8sljhkzku4a6ve9dmng5';
+const privateKey = 'fbf265ca5872907c4dbd33bf87c683d84b96987eb42d4a6c50f335eac57ece3e';
 
-**Get decrypted PDV data**
-```ts
-const pdvData = from(this.decentr.getPdvByAddress('Address from Cerberus', wallet))
-pdvData.subscribe(message => {
-    console.log(message);
-});
-```
+decentr.getPrivateProfile<YourPrivateProfile>(walletAddress, privateKey)
+  .then(console.log);
 
-
-**PDV getters**
-```ts
-// Query pdv token balance
-const balance = from(this.decentr.get.tokenBalance(wallet.address));
-balance.subscribe(res => console.log(res));
-/*{"balance":2e-7}*/
-
-
-// List account's pdv
-const pdvList = from(this.decentr.get.pdvList(wallet.address));
-pdvList.subscribe(res => console.log(res));
 /*
-[
-   {
-      "timestamp":"2020-10-25T20:06:34Z",
-      "address":"ad77fe23822de7f27c416a7a13d60c7255f5fcc0-68fd4835e28af2d6e148efde72c652d9711e7bdba016af9d05cf58aaa38d298e",
-      "owner":"decentr144mluguz9hnlylzpdfap84svwf2ltlxqer2tsw",
-      "type":"1"
-   },
-   {
-      "timestamp":"2020-10-25T16:19:56Z",
-      "address":"ad77fe23822de7f27c416a7a13d60c7255f5fcc0-3c873a4d5abe8e0d5d3ebb0c91f1012d1423db59abf14a23f27a57b5f920542d",
-      "owner":"decentr144mluguz9hnlylzpdfap84svwf2ltlxqer2tsw",
-      "type":"1"
-   }
-]
-*/
+CONSOLE OUTPUT:
 
-
-// List account's daily stats
-const pdvStats = from(this.decentr.get.pdvStats(wallet.address));
-pdvStats.subscribe(res => console.log(res));
-/*{"2020-10-25":"2","0001-01-01":"0"}*/
-
-
-// Query pdv full
-const pdvFull = from(this.decentr.get.pdvFull(pdvAddress));
-pdvFull.subscribe(res => console.log(res));
-/*
 {
-   "timestamp":"2020-10-25T16:19:56.797487841Z",
-   "address":"ad77fe23822de7f27c416a7a13d60c7255f5fcc0-3c873a4d5abe8e0d5d3ebb0c91f1012d1423db59abf14a23f27a57b5f920542d",
-   "owner":"decentr144mluguz9hnlylzpdfap84svwf2ltlxqer2tsw",
-   "type":"1"
+  emails: ['ex@mex.com'],
+  name: ['Ex'],
 }
 */
 ```
+
+## 📜 PDV (Personal Data Value)
+
+**Send PDV data**
+```ts
+const pdv = {
+  version: 'v1',
+  pdv: {
+    domain: 'decentr.net',
+    path: '/',
+    data: [
+      {
+        version: 'v1',
+        type: 'cookie',
+        name: 'my test cookie',
+        value: 'some test value',
+        domain: '*',
+        host_only: true,
+        path: '*',
+        secure: true,
+        same_site: 'None',
+        expiration_date: 1861920000
+      },
+    ],
+  },
+};
+
+const wallet: Wallet = {
+  address:    'decentr1j6e6j53vh95jcq9k9lnsrsvj3h8dkdgmm20zhu',
+  privateKey: '8c313682470073d56d2d8f5b7fde53c072024a9fd9135501125035d53c8a1f60',
+  publicKey:  '03dae8cf229d1db63c8d854bd1c73e280147ebd3bb40df12381d16b0eb071a72b6'
+}
+
+await decentr.sendPDV(pdv, wallet, { broadcast: true });
+```
+
+**Get PDV list**
+```ts
+const walletAddress = 'decentr1p4s4djk5dqstfswg6k8sljhkzku4a6ve9dmng5';
+
+decentr.getPDVlist(walletAddress)
+  .then(console.log);
+
+/*
+CONSOLE OUTPUT:
+
+[
+  {
+    address: "9664d0817131a2ce56f18d37f3836d6b6ec7cf29-1877c66aaa918bd2ad0c3f6d02ce7ef55fb9c28c44abed94117f4782e1d0a952",
+    owner: "decentr1p4s4djk5dqstfswg6k8sljhkzku4a6ve9dmng5",
+    timestamp: "2020-11-05T18:49:39Z",
+    type: "1",
+  },
+[
+*/
+```
+
+**Get PDV statistics**
+```ts
+const walletAddress = 'decentr1p4s4djk5dqstfswg6k8sljhkzku4a6ve9dmng5';
+
+decentr.getPDVStats(walletAddress)
+  .then(console.log);
+
+/*
+CONSOLE OUTPUT:
+
+[
+  {
+    date: "2020-11-04"
+    value: 2e-7,
+  },
+  {
+    date: "2020-11-05"
+    value: 0.0000011,
+  },
+[
+*/
+```
+
+**get PDV details**
+```ts
+const pDVaddress = '9664d0817131a2ce56f18d37f3836d6b6ec7cf29-1877c66aaa918bd2ad0c3f6d02ce7ef55fb9c28c44abed94117f4782e1d0a952';
+const wallet: Wallet = {
+  address:    'decentr1j6e6j53vh95jcq9k9lnsrsvj3h8dkdgmm20zhu',
+  privateKey: '8c313682470073d56d2d8f5b7fde53c072024a9fd9135501125035d53c8a1f60',
+  publicKey:  '03dae8cf229d1db63c8d854bd1c73e280147ebd3bb40df12381d16b0eb071a72b6'
+}
+
+decentr.getPDVDetails(PDVaddress, wallet)
+  .then(console.log);
+
+/*
+CONSOLE OUTPUT:
+
+{
+  calculated_data: {
+    ip: "255.255.255.255",
+    user_agent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.183 Safari/537.36",
+  },
+  user_data: {
+    version: "v1"
+    pdv: {
+      domain: "decentr.net",
+      path: "/",
+      data: [
+        {
+          version: 'v1',
+          type: 'cookie',
+          name: 'my test cookie',
+          value: 'some test value',
+          domain: '*',
+          host_only: true,
+          path: '*',
+          secure: true,
+          same_site: 'None',
+          expiration_date: 1861920000
+        },
+      ],
+    }
+  },
+}
+*/
+```
+
 ## 🥂 License
 
 [MIT](./LICENSE.md) as always
