@@ -6,6 +6,10 @@ export type QueryPrivateProfileResponse = StdTxResponse<'profile/SetPrivate', { 
 
 export type QueryPublicProfileResponse = StdTxResponse<'profile/SetPublic', { public: PublicProfile }>;
 
+export interface AccountResponse {
+  value: Account;
+}
+
 interface BaseBroadcastOptions {
   broadcast: true,
   mode?: BroadcastMode,
@@ -33,7 +37,6 @@ export interface PublicProfile {
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface PrivateProfile {
-  a: number;
 }
 
 export interface AccountCoin {

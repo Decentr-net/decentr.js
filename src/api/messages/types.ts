@@ -6,7 +6,7 @@ export interface StdMessageFee {
 }
 
 export interface StdMessage {
-  readonly msg: StdTxMessage[];
+  readonly msgs: StdTxMessage[];
   readonly chain_id: string;
   readonly fee: StdMessageFee;
   readonly memo: string,

@@ -10,10 +10,13 @@ export function encrypt<T>(data: T, encryptKey: string): string {
   return CryptoJS.AES.encrypt(encryptTarget, encryptKey).toString();
 }
 
-export function decrypt<T>(data: string, decryptKey: string): T {
+export function decrypt<T>(data: string, decryptKey: string): T | undefined {
   const bytes = CryptoJS.AES.decrypt(atob(data), decryptKey);
 
-  return JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
+  try {
+    return JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
+  } catch {
+  }
 }
 
 export function getPublicKeyBase64(privateKeyHex: string): string {

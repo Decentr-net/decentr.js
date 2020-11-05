@@ -51,7 +51,7 @@ export class DecentrConnector {
   public getPrivateProfile<T>(
     walletAddress: Wallet['address'],
     privateKey: Wallet['privateKey'],
-  ): Promise<T> {
+  ): Promise<T | undefined> {
     return getPrivateProfile(this.apiUrl, walletAddress, privateKey);
   }
 
@@ -113,7 +113,7 @@ export class DecentrConnector {
     return getPDVList(this.apiUrl, walletAddress);
   }
 
-  public getPDVStats(walletAddress: Wallet['address']): Promise<PDVStatItem> {
+  public getPDVStats(walletAddress: Wallet['address']): Promise<PDVStatItem[]> {
     return getPDVStats(this.apiUrl, walletAddress);
   }
 

@@ -11,17 +11,24 @@ function createStdMessage(
   chainId: string,
 ): StdMessage {
   return {
-    msg: txResponseValue.msg,
+    account_number: account.account_number,
     chain_id: chainId,
     fee: {
-      amount: txResponseValue.fee.amount.map((amount => ({
-        amount: amount.amount || '5000',
-        denom: amount.denom || 'udec',
-      }))),
+      // TODO
+      amount: [
+        {
+          amount: '5000',
+          denom: 'udec',
+        },
+      ],
+      // amount: txResponseValue.fee.amount.map((amount => ({
+      //   amount: amount.amount || '5000',
+      //   denom: amount.denom || 'udec',
+      // }))),
       gas: txResponseValue.fee.gas,
     },
     memo: txResponseValue.memo,
-    account_number: account.account_number,
+    msgs: txResponseValue.msg,
     sequence: account.sequence,
   }
 }
@@ -32,7 +39,7 @@ function signMessage(message: StdMessage, privateKey: Wallet['privateKey']): Sig
   const publicKeyBase64 = getPublicKeyBase64(privateKey);
 
   return {
-    msg: message.msg,
+    msg: message.msgs,
     fee: message.fee,
     memo: message.memo,
     signatures: [
@@ -55,8 +62,8 @@ function broadcastSignedMessage(
   mode?: BroadcastMode,
 ): Promise<BroadcastResponse> {
   const body: BroadcastBody = {
-    tx: message,
     mode: mode || 'block',
+    tx: message,
   };
 
   return fetchJson<BroadcastResponse, BroadcastBody>(`${apiUrl}/txs`, {

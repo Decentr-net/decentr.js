@@ -3,7 +3,9 @@ import { Wallet } from '../../wallet';
 import { blockchainFetch } from '../api-utils';
 import { broadcast, BroadcastResponse } from '../messages';
 import {
-  Account, PrivateProfile,
+  Account,
+  AccountResponse,
+  PrivateProfile,
   PrivateProfileBroadcastOptions,
   PublicProfile,
   PublicProfileBroadcastOptions,
@@ -25,10 +27,7 @@ function queryPublicProfile(
       chain_id: chainId,
       from: walletAddress,
     },
-    public: {
-      gender: publicProfile.gender,
-      birthday: publicProfile.birthday,
-    },
+    public: publicProfile,
   };
 
   return fetchJson(endpoint, { method: 'POST', body });
@@ -56,23 +55,24 @@ function queryPrivateProfile<T extends PrivateProfile>(
   return fetchJson(url, { method: 'POST', body });
 }
 
-export async function getAccount(apiUrl: string, walletAddress: Wallet['address']): Promise<Account | undefined> {
-  const response = fetchJson(`${apiUrl}/auth/accounts/${walletAddress}`);
+export async function getAccount(
+  apiUrl: string,
+  walletAddress: Wallet['address'],
+): Promise<Account | undefined> {
+  const response = await blockchainFetch<AccountResponse>(`${apiUrl}/auth/accounts/${walletAddress}`)
 
-  if (!response) {
-    return;
-  }
+  return response?.value;
 }
 
 export function getPublicProfile(apiUrl: string, walletAddress: Wallet['address']): Promise<PublicProfile> {
   return blockchainFetch(`${apiUrl}/profile/public/${walletAddress}`);
 }
 
-export function getPrivateProfile<T>(
+export function getPrivateProfile<T extends PrivateProfile>(
   apiUrl: string,
   walletAddress: Wallet['address'],
   privateKey: Wallet['privateKey'],
-): Promise<T> {
+): Promise<T | undefined> {
   return blockchainFetch<string>(`${apiUrl}/profile/private/${walletAddress}`)
     .then((encryptedPrivateProfile) => decrypt(encryptedPrivateProfile, privateKey));
 }

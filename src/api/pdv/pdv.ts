@@ -18,8 +18,8 @@ import {
 function queryPDV(
   apiUrl: string,
   chainId: string,
-  walletAddress: string,
   pdvAddress: string,
+  walletAddress: string,
 ): Promise<QueryPDVResponse> {
   const url = `${apiUrl}/pdv`;
 
@@ -35,9 +35,9 @@ function queryPDV(
 }
 
 async function queryPDVAddress(apiUrl: string, pdv: PDV, keys: KeyPair): Promise<string> {
-  const url = await getCerberusAddress(apiUrl) + 'v1/pdv';
+  const url = await getCerberusAddress(apiUrl) + '/v1/pdv';
 
-  const headers = getPDVHeaders(pdv, keys);
+  const headers = getPDVHeaders(`${JSON.stringify(pdv)}/v1/pdv`, keys);
 
   return fetchJson<QueryPDVAddressResponse, PDV>(url, {
     method: 'POST',
@@ -56,7 +56,7 @@ export function getPDVList(apiUrl: string, walletAddress: Wallet['address']): Pr
   return blockchainFetch(`${apiUrl}/pdv/${walletAddress}/list`);
 }
 
-export function getPDVStats(apiUrl: string, walletAddress: Wallet['address']): Promise<PDVStatItem> {
+export function getPDVStats(apiUrl: string, walletAddress: Wallet['address']): Promise<PDVStatItem[]> {
   return blockchainFetch(`${apiUrl}/pdv/${walletAddress}/stats`);
 }
 
@@ -65,7 +65,7 @@ export async function getPDVDetails(apiUrl: string, pdvAddress: string, keys: Ke
 
   const url = `${cerberusAddress}/v1/pdv/${pdvAddress}`;
 
-  const headers = getPDVHeaders(pdvAddress, keys);
+  const headers = getPDVHeaders(`/v1/pdv/${pdvAddress}`, keys);
 
   return fetchJson(url, { headers });
 }

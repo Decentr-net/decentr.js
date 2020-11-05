@@ -21,7 +21,7 @@ export function fetchJson<T, D>(
     method: options?.method || 'GET',
     headers: options?.headers,
     body: options?.method === 'POST' && options?.body
-      ? JSON.stringify(options)
+      ? JSON.stringify(options.body)
       : undefined
   })
     .then((response) => response.json());
