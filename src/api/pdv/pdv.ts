@@ -1,11 +1,12 @@
 import { bytesToHex, fetchJson } from '../../utils';
 import { KeyPair, Wallet } from '../../wallet';
 import { blockchainFetch, getSignature } from '../api-utils';
-import { broadcast, BroadcastMode, BroadcastResponse } from '../messages';
+import { broadcast, BroadcastResponse } from '../messages';
 import { Account, getAccount } from '../profile';
 import {
   CerberusAddressResponse,
   PDV,
+  PDVBroadcastOptions,
   PDVDetails,
   PDVHeaders,
   PDVListItem,
@@ -33,7 +34,7 @@ function queryPDV(
   return fetchJson(url, { method: 'POST', body });
 }
 
-export async function queryPDVAddress(apiUrl: string, pdv: PDV, keys: KeyPair): Promise<string> {
+async function queryPDVAddress(apiUrl: string, pdv: PDV, keys: KeyPair): Promise<string> {
   const url = await getCerberusAddress(apiUrl) + 'v1/pdv';
 
   const headers = getPDVHeaders(pdv, keys);
@@ -46,7 +47,7 @@ export async function queryPDVAddress(apiUrl: string, pdv: PDV, keys: KeyPair): 
     .then(({ address }) => address);
 }
 
-export function getCerberusAddress(apiUrl: string): Promise<string> {
+function getCerberusAddress(apiUrl: string): Promise<string> {
   return blockchainFetch<CerberusAddressResponse>(`${apiUrl}/pdv/cerberus-addr`)
     .then(({ address }) => address);
 }
@@ -59,7 +60,7 @@ export function getPDVStats(apiUrl: string, walletAddress: Wallet['address']): P
   return blockchainFetch(`${apiUrl}/pdv/${walletAddress}/stats`);
 }
 
-export async function getPdvDetailsByAddress(apiUrl: string, pdvAddress: string, keys: KeyPair): Promise<PDVDetails> {
+export async function getPDVDetails(apiUrl: string, pdvAddress: string, keys: KeyPair): Promise<PDVDetails> {
   const cerberusAddress = await getCerberusAddress(apiUrl);
 
   const url = `${cerberusAddress}/v1/pdv/${pdvAddress}`;
@@ -81,10 +82,7 @@ export async function sendPDV(
   chainId: string,
   pdv: PDV,
   wallet: Wallet,
-  broadcastOptions: {
-    broadcast: true;
-    mode?: BroadcastMode;
-  }
+  broadcastOptions: PDVBroadcastOptions,
 ): Promise<BroadcastResponse>;
 
 export async function sendPDV(
@@ -92,10 +90,7 @@ export async function sendPDV(
   chainId: string,
   pdv: PDV,
   wallet: Wallet,
-  broadcastOptions?: {
-    broadcast: true;
-    mode?: BroadcastMode;
-  },
+  broadcastOptions?: PDVBroadcastOptions,
 ): Promise<QueryPDVResponse | BroadcastResponse> {
   const pdvAddress = await queryPDVAddress(apiUrl, pdv, wallet);
   const stdTxResponse = await queryPDV(apiUrl, chainId, pdvAddress, wallet.address);

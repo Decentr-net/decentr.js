@@ -1,8 +1,21 @@
 import { StdTxResponse } from '../types';
+import { BroadcastMode } from '../messages';
+import { Wallet } from '../../wallet';
 
 export type QueryPrivateProfileResponse = StdTxResponse<'profile/SetPrivate', { private: string }>;
 
 export type QueryPublicProfileResponse = StdTxResponse<'profile/SetPublic', { public: PublicProfile }>;
+
+interface BaseBroadcastOptions {
+  broadcast: true,
+  mode?: BroadcastMode,
+}
+
+export interface PublicProfileBroadcastOptions extends BaseBroadcastOptions {
+  privateKey: Wallet['privateKey'],
+}
+
+export type PrivateProfileBroadcastOptions = BaseBroadcastOptions;
 
 export interface TokenBalanceResponse {
   readonly balance: number;
@@ -16,6 +29,11 @@ export enum Gender {
 export interface PublicProfile {
   readonly birthday: string;
   readonly gender: Gender;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface PrivateProfile {
+  a: number;
 }
 
 export interface AccountCoin {
