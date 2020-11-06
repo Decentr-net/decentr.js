@@ -1,4 +1,5 @@
 import { entropyToMnemonic } from 'bip39';
+import { randomBytes as nodeRandomBytes } from 'crypto';
 
 const ENTROPY_LENGTH = 32;
 
@@ -15,14 +16,26 @@ function getWebCryptoRandomBytesBuffer(): Buffer {
   return Buffer.from(hexString, 'hex');
 }
 
+function getNodeCryptoRandomBytesBuffer(): Buffer {
+  return nodeRandomBytes(ENTROPY_LENGTH);
+}
+
 function getRandomBytesBuffer(): Buffer {
   try {
     return getWebCryptoRandomBytesBuffer();
   } catch {
-    throw new Error(
-      'There is no native support for random bytes on this system. Key generation is not safe here.'
-    );
+    // skip error
   }
+
+  try {
+    return getNodeCryptoRandomBytesBuffer();
+  } catch {
+    // skip error
+  }
+
+  throw new Error(
+    'There is no native support for random bytes on this system. Key generation is not safe here.'
+  );
 }
 
 export function generateMnemonic(entropy: Buffer = getRandomBytesBuffer()): string {
