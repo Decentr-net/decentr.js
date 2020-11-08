@@ -134,7 +134,13 @@ export class Decentr {
     wallet: Wallet,
     broadcastOptions?: PDVBroadcastOptions,
   ): Promise<QueryPDVResponse | BroadcastResponse> {
-    return sendPDV(this.apiUrl, this.chainId, pdv, wallet, broadcastOptions as PDVBroadcastOptions);
+    return sendPDV(
+      this.apiUrl,
+      this.chainId,
+      pdv,
+      wallet,
+      broadcastOptions as PDVBroadcastOptions,
+    );
   }
 
   public broadcast(

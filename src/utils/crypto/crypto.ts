@@ -1,6 +1,6 @@
 import { publicKeyCreate } from 'secp256k1';
 import CryptoJS from 'crypto-js';
-import { bytesToBase64, hexToBytes } from './convert';
+import { bytesToBase64, hexToBytes } from '../convert';
 
 export function encrypt<T>(data: T, encryptKey: string): string {
   const encryptTarget: string = typeof data === 'string'
@@ -11,7 +11,7 @@ export function encrypt<T>(data: T, encryptKey: string): string {
 }
 
 export function decrypt<T>(data: string, decryptKey: string): T | undefined {
-  const bytes = CryptoJS.AES.decrypt(atob(data), decryptKey);
+  const bytes = CryptoJS.AES.decrypt(data, decryptKey);
 
   try {
     return JSON.parse(bytes.toString(CryptoJS.enc.Utf8));

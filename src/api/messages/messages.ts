@@ -3,7 +3,13 @@ import { Wallet } from '../../wallet';
 import { StdTxResponseValue } from '../types';
 import { getSignature } from '../api-utils';
 import { Account } from '../profile';
-import { BroadcastBody, BroadcastMode, BroadcastResponse, SignedMessage, StdMessage } from './types';
+import {
+  BroadcastBody,
+  BroadcastMode,
+  BroadcastResponse,
+  SignedMessage,
+  StdMessage,
+} from './types';
 
 function createStdMessage(
   txResponseValue: StdTxResponseValue,
@@ -33,7 +39,10 @@ function createStdMessage(
   }
 }
 
-function signMessage(message: StdMessage, privateKey: Wallet['privateKey']): SignedMessage {
+function signMessage(
+  message: StdMessage,
+  privateKey: Wallet['privateKey'],
+): SignedMessage {
   const signature = getSignature(message, privateKey);
   const signatureBase64 = bytesToBase64(signature);
   const publicKeyBase64 = getPublicKeyBase64(privateKey);

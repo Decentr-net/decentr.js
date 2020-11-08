@@ -13,5 +13,11 @@ module.exports = {
   plugins: [
   ],
   rules: {
-  }
+    "unicorn/prevent-abbreviations": [
+      "error",
+      {
+        checkFilenames: false,
+      },
+    ],
+  },
 };

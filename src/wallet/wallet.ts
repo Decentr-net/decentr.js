@@ -110,8 +110,8 @@ export function createWalletFromMasterKey(
   const address = createAddress(publicKeyBytes, prefix);
 
   return {
+    address,
     privateKey: bytesToHex(privateKeyBytes),
     publicKey: bytesToHex(publicKeyBytes),
-    address,
   };
 }

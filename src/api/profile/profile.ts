@@ -59,12 +59,17 @@ export async function getAccount(
   apiUrl: string,
   walletAddress: Wallet['address'],
 ): Promise<Account | undefined> {
-  const response = await blockchainFetch<AccountResponse>(`${apiUrl}/auth/accounts/${walletAddress}`)
+  const response = await blockchainFetch<AccountResponse>(
+    `${apiUrl}/auth/accounts/${walletAddress}`,
+  )
 
   return response?.value;
 }
 
-export function getPublicProfile(apiUrl: string, walletAddress: Wallet['address']): Promise<PublicProfile> {
+export function getPublicProfile(
+  apiUrl: string,
+  walletAddress: Wallet['address'],
+): Promise<PublicProfile> {
   return blockchainFetch(`${apiUrl}/profile/public/${walletAddress}`);
 }
 
@@ -74,11 +79,18 @@ export function getPrivateProfile<T extends PrivateProfile>(
   privateKey: Wallet['privateKey'],
 ): Promise<T | undefined> {
   return blockchainFetch<string>(`${apiUrl}/profile/private/${walletAddress}`)
-    .then((encryptedPrivateProfile) => decrypt(encryptedPrivateProfile, privateKey));
+    .then((encryptedPrivateProfile) => {
+      return decrypt(atob(encryptedPrivateProfile), privateKey);
+    });
 }
 
-export function getTokenBalance(apiUrl: string, walletAddress: Wallet['address']): Promise<number> {
-  return blockchainFetch<TokenBalanceResponse>(`${apiUrl}/token/balance/${walletAddress}`)
+export function getTokenBalance(
+  apiUrl: string,
+  walletAddress: Wallet['address'],
+): Promise<number> {
+  return blockchainFetch<TokenBalanceResponse>(
+    `${apiUrl}/token/balance/${walletAddress}`
+  )
     .then(({ balance }) => balance);
 }
 
@@ -104,7 +116,12 @@ export async function setPublicProfile(
   publicProfile: PublicProfile,
   broadcastOptions?: PublicProfileBroadcastOptions,
 ): Promise<QueryPublicProfileResponse | BroadcastResponse> {
-  const stdTxResponse = await queryPublicProfile(apiUrl, chainId, walletAddress, publicProfile);
+  const stdTxResponse = await queryPublicProfile(
+    apiUrl,
+    chainId,
+    walletAddress,
+    publicProfile,
+  );
 
   if (!broadcastOptions) {
     return stdTxResponse;
@@ -150,7 +167,13 @@ export async function setPrivateProfile<T extends PrivateProfile>(
   privateKey: Wallet['privateKey'],
   broadcastOptions?: PrivateProfileBroadcastOptions
 ): Promise<QueryPrivateProfileResponse | BroadcastResponse> {
-  const stdTxResponse = await queryPrivateProfile(apiUrl, chainId, walletAddress, privateProfile, privateKey);
+  const stdTxResponse = await queryPrivateProfile(
+    apiUrl,
+    chainId,
+    walletAddress,
+    privateProfile,
+    privateKey,
+  );
 
   if (!broadcastOptions) {
     return stdTxResponse;

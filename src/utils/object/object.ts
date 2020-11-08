@@ -1,4 +1,4 @@
-export function sortObject<T, K extends keyof T>(target: T): T {
+export function sortObjectKeys<T, K extends keyof T>(target: T): T {
   if (!target) {
     return target;
   }
@@ -8,14 +8,14 @@ export function sortObject<T, K extends keyof T>(target: T): T {
   }
 
   if (Array.isArray(target)) {
-    return target.map((element) => sortObject(element)) as unknown as T;
+    return target.map((element) => sortObjectKeys(element)) as unknown as T;
   }
 
   const sortedKeys = Object.keys(target).sort() as K[];
   const result: Partial<T> = {};
 
   sortedKeys.forEach((key) => {
-    result[key] = sortObject(target[key]);
+    result[key] = sortObjectKeys(target[key]);
   });
 
   return result as T;
