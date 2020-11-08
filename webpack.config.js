@@ -39,11 +39,6 @@ module.exports = {
       openAnalyzer: false,
       reportFilename: '../bundle_analyzer/bundle_sizes.html'
     }),
-    new IgnorePlugin({
-      checkResource: (resource, context) => {
-        return context.includes('bip39/src/wordlists') &&
-          resource !== './english.json';
-      },
-    })
+    new IgnorePlugin(/^\.\/wordlists\/(?!english)/, /bip39\/src$/),
   ],
 }
