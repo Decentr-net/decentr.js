@@ -24,15 +24,3 @@ export function bytesToBase64(bytes: Bytes): string {
 export function hexToBytes(hex: string): Bytes {
   return new Uint8Array(Buffer.from(hex, 'hex'))
 }
-
-// export function utfStringToByteArray(target: string): number[] {
-//   const byteArray = [];
-//
-//   const buffer = Buffer.from(target, 'utf8');
-//
-//   for (const value of buffer) {
-//     byteArray.push(value);
-//   }
-//
-//   return [...buffer.map((value) => value)];
-// }
