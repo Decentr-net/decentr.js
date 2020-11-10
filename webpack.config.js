@@ -1,36 +1,37 @@
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 const { IgnorePlugin } = require('webpack')
 
-const config = {
-  devtool: "cheap-source-map",
+module.exports = {
   entry: ['./src/index.ts'],
   output: {
     path: __dirname + '/lib',
-    filename: 'cosmos-keys.js',
-    library: 'cosmos-keys',
+    filename: 'index.js',
+    library: 'decentr',
     libraryTarget: 'umd',
     umdNamedDefine: true,
     globalObject: 'typeof self !== \'undefined\' ? self : this',
   },
   resolve: {
-    extensions: ['.tsx', '.ts', '.js']
+    extensions: ['.tsx', '.ts', '.js'],
   },
   module: {
     rules: [
       {
-        loader: 'babel-loader',
         test: /\.js$/,
         exclude: /node_modules/,
-        query: {
-          presets: ['@babel/preset-env']
-        }
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: ['@babel/preset-env'],
+          },
+        },
       },
       {
         test: /\.tsx?$/,
         use: 'ts-loader',
         exclude: /node_modules/
-      }
-    ]
+      },
+    ],
   },
   plugins: [
     new BundleAnalyzerPlugin({
@@ -38,10 +39,6 @@ const config = {
       openAnalyzer: false,
       reportFilename: '../bundle_analyzer/bundle_sizes.html'
     }),
-    new IgnorePlugin({
-      checkContext: context => context.includes('bip39/src/wordlists'),
-      checkResource: resource => resource !== './english.json'
-    })
-  ]
+    new IgnorePlugin(/^\.\/wordlists\/(?!english)/, /bip39\/src$/),
+  ],
 }
-module.exports = config

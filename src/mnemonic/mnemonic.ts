@@ -1,54 +1,47 @@
-import * as bip39 from 'bip39'
+import { entropyToMnemonic } from 'bip39';
+import { randomBytes as nodeRandomBytes } from 'crypto';
 
-export function generateMnemonic() {
-  return getSeed();
+const ENTROPY_LENGTH = 32;
+
+function getWebCryptoRandomBytesBuffer(): Buffer {
+  const chunkSize: number = ENTROPY_LENGTH / 4;
+  const randomValuesContainer = new Uint32Array(chunkSize);
+  window.crypto.getRandomValues(randomValuesContainer);
+
+  let hexString = '';
+  randomValuesContainer.forEach((value) => {
+    hexString += value.toString(16).padStart(chunkSize, '0');
+  });
+
+  return Buffer.from(hexString, 'hex');
 }
 
-/* tslint:disable-next-line:strict-type-predicates */
-const windowObject: Window | null = typeof window === 'undefined' ? null : window
+function getNodeCryptoRandomBytesBuffer(): Buffer {
+  return nodeRandomBytes(ENTROPY_LENGTH);
+}
 
-// returns a byte buffer of the size specified
-export function randomBytes(size: number, window = windowObject): Buffer {
-  // in browsers
-  if (window && window.crypto) {
-    return windowRandomBytes(size, window)
+function getRandomBytesBuffer(): Buffer {
+  try {
+    return getWebCryptoRandomBytesBuffer();
+  } catch {
+    // skip error
   }
 
   try {
-    // native node crypto
-    const crypto = require('crypto')
-    return crypto.randomBytes(size)
-  } catch (err) {
-    // no native node crypto available
+    return getNodeCryptoRandomBytesBuffer();
+  } catch {
+    // skip error
   }
 
   throw new Error(
     'There is no native support for random bytes on this system. Key generation is not safe here.'
-  )
+  );
 }
 
-function windowRandomBytes(size: number, window: Window) {
-  const chunkSize = size / 4
-  let hexString = ''
-  let keyContainer = new Uint32Array(chunkSize)
-  keyContainer = window.crypto.getRandomValues(keyContainer)
-
-  for (let keySegment = 0; keySegment < keyContainer.length; keySegment++) {
-    let chunk = keyContainer[keySegment].toString(16) // Convert int to hex
-    while (chunk.length < chunkSize) {
-      // fill up so we get equal sized chunks
-      chunk = '0' + chunk
-    }
-    hexString += chunk // join
+export function generateMnemonic(entropy: Buffer = getRandomBytesBuffer()): string {
+  if (entropy.length < ENTROPY_LENGTH) {
+    throw new Error('Entropy has incorrect length');
   }
-  return Buffer.from(hexString, 'hex')
-}
 
-
-export function getSeed(randomBytesFunc: (size: number) => Buffer = randomBytes): string {
-  const entropy = randomBytesFunc(32)
-  if (entropy.length !== 32) throw Error(`Entropy has incorrect length`)
-  const mnemonic = bip39.entropyToMnemonic(entropy.toString('hex'))
-
-  return mnemonic
+  return entropyToMnemonic(entropy.toString('hex'));
 }
