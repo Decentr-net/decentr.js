@@ -61,9 +61,11 @@ export async function getAccount(
 ): Promise<Account | undefined> {
   const response = await blockchainFetch<AccountResponse>(
     `${apiUrl}/auth/accounts/${walletAddress}`,
-  )
+  );
 
-  return response?.value;
+  const account = response.value;
+
+  return account.address ? account : undefined;
 }
 
 export function getPublicProfile(

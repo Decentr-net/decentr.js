@@ -137,6 +137,7 @@ const decentr = new Decentr(REST_URL, CHAIN_ID);
 ### Methods
 
 **Get account**
+>Note: returns `undefined` instead of empty fields if account doesn't exist 
 ```ts
 const walletAddress = 'decentr1p4s4djk5dqstfswg6k8sljhkzku4a6ve9dmng5';
 
