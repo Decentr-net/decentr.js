@@ -186,8 +186,11 @@ const walletAddress = 'decentr1p4s4djk5dqstfswg6k8sljhkzku4a6ve9dmng5';
 const privateKey = 'fbf265ca5872907c4dbd33bf87c683d84b96987eb42d4a6c50f335eac57ece3e';
 
 const publicProfile: PublicProfile = {
+  avatar: 'https://domain.com/user-image.png',
   birthday: '1991-02-03',
+  firstName: 'John',
   gender: 'male',
+  lastName: 'Doe',
 }
 
 await decentr.setPrivateProfile<YourPrivateProfile>(
@@ -210,8 +213,11 @@ decentr.getPublicProfile(wallet.address).then(console.log);
 CONSOLE OUTPUT:
 
 {
+  avatar: 'https://domain.com/user-image.png',
   birthday: '1991-02-03',
+  firstName: 'John',
   gender: 'male',
+  lastName: 'Doe',
 }
 */
 ```
