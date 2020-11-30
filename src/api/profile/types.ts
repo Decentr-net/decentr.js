@@ -31,8 +31,11 @@ export enum Gender {
 }
 
 export interface PublicProfile {
+  readonly avatar: string;
   readonly birthday: string;
+  readonly firstName: string;
   readonly gender: Gender;
+  readonly lastName: string;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
