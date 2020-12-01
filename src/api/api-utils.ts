@@ -38,7 +38,7 @@ export function getSignature<T>(
   return signedObject.signature;
 }
 
-export function getBaseRequest(
+export function createBaseRequest(
   { chainId: chain_id, walletAddress: from }: { chainId: string; walletAddress: Wallet['address'] },
 ): {
   base_req: {

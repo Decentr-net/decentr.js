@@ -5,7 +5,7 @@ import {
 } from './types'
 import { Wallet } from '../../wallet';
 import { fetchJson } from '../../utils';
-import { getBaseRequest } from '../api-utils'
+import { createBaseRequest } from '../api-utils'
 import { broadcast, BroadcastResponse } from '../messages'
 import { Account, getAccount } from '../profile'
 
@@ -18,7 +18,7 @@ function queryCreatePost(
   const url = `${apiUrl}/community/posts`;
 
   const body = {
-    ...getBaseRequest({ chainId, walletAddress }),
+    ...createBaseRequest({ chainId, walletAddress }),
     ...post,
     category: post.category.toString(),
   };

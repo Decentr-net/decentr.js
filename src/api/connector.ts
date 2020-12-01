@@ -28,6 +28,12 @@ import {
   sendPDV,
 } from './pdv';
 import { StdTxResponseValue } from './types';
+import {
+  createPost,
+  CreatePostBroadcastOptions,
+  PostCreate,
+  QueryCreatePostResponse
+} from './posts'
 
 export class Decentr {
   constructor(
@@ -140,6 +146,31 @@ export class Decentr {
       pdv,
       wallet,
       broadcastOptions as PDVBroadcastOptions,
+    );
+  }
+
+  public createPost(
+    walletAddress: Wallet['address'],
+    post: PostCreate,
+  ): Promise<QueryCreatePostResponse>;
+
+  public createPost(
+    walletAddress: Wallet['address'],
+    post: PostCreate,
+    broadcastOptions: CreatePostBroadcastOptions,
+  ): Promise<BroadcastResponse>;
+
+  public createPost(
+    walletAddress: Wallet['address'],
+    post: PostCreate,
+    broadcastOptions?: CreatePostBroadcastOptions,
+  ): Promise<QueryCreatePostResponse | BroadcastResponse> {
+    return createPost(
+      this.apiUrl,
+      this.chainId,
+      walletAddress,
+      post,
+      broadcastOptions as CreatePostBroadcastOptions,
     );
   }
 
