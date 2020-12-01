@@ -31,12 +31,15 @@ import { StdTxResponseValue } from './types';
 import {
   createPost,
   deletePost,
-  getLatestPosts, getPopularPosts,
-  getUserPosts, PopularPostsPeriod,
+  getLatestPosts,
+  getPopularPosts,
+  getUserPosts,
+  PopularPostsPeriod,
   Post,
   PostBroadcastOptions,
   PostCategory,
-  PostCreate, PostFilterOptions,
+  PostCreate,
+  PostFilterOptions,
   PostPaginationOptions,
   QueryCreatePostResponse
 } from './posts'
