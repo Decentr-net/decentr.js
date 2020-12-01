@@ -141,8 +141,10 @@ export async function deletePost(
 
 export function getLatestPosts(
   apiUrl: string,
-  chainId: string,
   filterOptions: PostFilterOptions = {},
 ): Promise<Post[]> {
-  return blockchainFetch(`${apiUrl}/community/posts`, filterOptions as Record<string, string | number>)
+  return blockchainFetch(
+    `${apiUrl}/community/posts`,
+    filterOptions as Record<string, string | number>,
+  )
 }

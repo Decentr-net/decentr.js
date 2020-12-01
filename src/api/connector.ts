@@ -209,7 +209,6 @@ export class Decentr {
   ): Promise<Post[]> {
     return getLatestPosts(
       this.apiUrl,
-      this.chainId,
       filterOptions,
     );
   }
