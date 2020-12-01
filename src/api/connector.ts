@@ -29,8 +29,8 @@ import {
 } from './pdv';
 import { StdTxResponseValue } from './types';
 import {
-  createPost,
-  CreatePostBroadcastOptions,
+  createPost, deletePost, getLatestPosts, Post,
+  PostBroadcastOptions, PostCategory,
   PostCreate,
   QueryCreatePostResponse
 } from './posts'
@@ -157,20 +157,60 @@ export class Decentr {
   public createPost(
     walletAddress: Wallet['address'],
     post: PostCreate,
-    broadcastOptions: CreatePostBroadcastOptions,
+    broadcastOptions: PostBroadcastOptions,
   ): Promise<BroadcastResponse>;
 
   public createPost(
     walletAddress: Wallet['address'],
     post: PostCreate,
-    broadcastOptions?: CreatePostBroadcastOptions,
+    broadcastOptions?: PostBroadcastOptions,
   ): Promise<QueryCreatePostResponse | BroadcastResponse> {
     return createPost(
       this.apiUrl,
       this.chainId,
       walletAddress,
       post,
-      broadcastOptions as CreatePostBroadcastOptions,
+      broadcastOptions as PostBroadcastOptions,
+    );
+  }
+
+  public deletePost(
+    walletAddress: Wallet['address'],
+    postId: Post['uuid'],
+  ): Promise<QueryCreatePostResponse>;
+
+  public deletePost(
+    walletAddress: Wallet['address'],
+    postId: Post['uuid'],
+    broadcastOptions: PostBroadcastOptions,
+  ): Promise<BroadcastResponse>;
+
+  public deletePost(
+    walletAddress: Wallet['address'],
+    postId: Post['uuid'],
+    broadcastOptions?: PostBroadcastOptions,
+  ): Promise<QueryCreatePostResponse | BroadcastResponse> {
+    return deletePost(
+      this.apiUrl,
+      this.chainId,
+      walletAddress,
+      postId,
+      broadcastOptions as PostBroadcastOptions,
+    );
+  }
+
+  public getLatestPosts(
+    filterOptions?: {
+      author?: Wallet['address'],
+      category?: PostCategory,
+      fromPostId?: Post['uuid'],
+      limit?: number,
+    }
+  ): Promise<Post[]> {
+    return getLatestPosts(
+      this.apiUrl,
+      this.chainId,
+      filterOptions,
     );
   }
 

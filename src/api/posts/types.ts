@@ -6,10 +6,17 @@ export type QueryCreatePostResponse = StdTxResponse<'community/CreatePost', Pick
 
 export type PostCreate = Pick<Post, 'category' | 'previewImage' | 'text' | 'title'>;
 
-export interface CreatePostBroadcastOptions {
+export interface PostBroadcastOptions {
   broadcast: true,
   privateKey: Wallet['privateKey'];
   mode?: BroadcastMode,
+}
+
+export interface PostFilterOptions {
+  category?: PostCategory;
+  fromOwner?: Wallet['address'];
+  fromUUID?: Post['uuid'];
+  limit?: number;
 }
 
 export enum PostCategory {

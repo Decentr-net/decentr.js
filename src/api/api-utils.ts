@@ -10,8 +10,8 @@ import {
 } from '../utils';
 import { Wallet } from '../wallet';
 
-export async function blockchainFetch<T>(url: string): Promise<T> {
-  const response = await fetchJson<{ height: string; result: T } | T>(url);
+export async function blockchainFetch<T>(url: string, queryParameters?: Partial<Record<string, string | number>>): Promise<T> {
+  const response = await fetchJson<{ height: string; result: T } | T>(url, { queryParameters });
 
   if (hasOwnProperty(response, 'height') &&
     hasOwnProperty(response, 'result')

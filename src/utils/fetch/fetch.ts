@@ -2,13 +2,13 @@ import { removeEmptyValuesFromPrimitiveObject } from '../object'
 
 export function fetchJson<T>(url: string): Promise<T>;
 
-export function fetchJson<T, D>(
+export function fetchJson<T, D = Record<string, unknown>>(
   url: string,
   options: {
     method?: 'GET' | 'POST' | 'PUT' | 'DELETE',
     body?: D,
     headers?: Record<string, string>,
-    queryParams?: Partial<Record<string, string | number>>
+    queryParameters?: Partial<Record<string, string | number>>
   },
 ): Promise<T>;
 
@@ -18,11 +18,11 @@ export function fetchJson<T, D>(
     method?: 'GET' | 'POST' | 'PUT' | 'DELETE',
     body?: D,
     headers?: Record<string, string>,
-    queryParams?: Partial<Record<string, string | number>>
+    queryParameters?: Partial<Record<string, string | number>>
   },
 ): Promise<T> {
-  const fullUrl = options && options.queryParams
-    ? url + '?' + new URLSearchParams(removeEmptyValuesFromPrimitiveObject(options.queryParams) as Record<string, string>)
+  const fullUrl = options && options.queryParameters
+    ? url + '?' + new URLSearchParams(removeEmptyValuesFromPrimitiveObject(options.queryParameters) as Record<string, string>)
     : url;
 
   return fetch(fullUrl, {
