@@ -6,17 +6,22 @@ export type QueryCreatePostResponse = StdTxResponse<'community/CreatePost', Pick
 
 export type PostCreate = Pick<Post, 'category' | 'previewImage' | 'text' | 'title'>;
 
+export type PopularPostsPeriod = 'day' | 'week' | 'month';
+
 export interface PostBroadcastOptions {
   broadcast: true,
   privateKey: Wallet['privateKey'];
   mode?: BroadcastMode,
 }
 
-export interface PostFilterOptions {
-  category?: PostCategory;
-  fromOwner?: Wallet['address'];
+export interface PostPaginationOptions {
   fromUUID?: Post['uuid'];
   limit?: number;
+}
+
+export interface PostFilterOptions extends PostPaginationOptions {
+  category?: PostCategory;
+  fromOwner?: Wallet['address'];
 }
 
 export enum PostCategory {

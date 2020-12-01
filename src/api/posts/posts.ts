@@ -1,16 +1,18 @@
+import { Wallet } from '../../wallet';
+import { fetchJson } from '../../utils';
+import { blockchainFetch, createBaseRequest } from '../api-utils';
+import { broadcast, BroadcastResponse } from '../messages';
+import { Account, getAccount } from '../profile';
+import { StdTxResponse } from '../types';
 import {
   PostBroadcastOptions,
   Post,
   PostCreate,
   QueryCreatePostResponse,
   PostFilterOptions,
+  PostPaginationOptions,
+  PopularPostsPeriod,
 } from './types'
-import { Wallet } from '../../wallet';
-import { fetchJson } from '../../utils';
-import { blockchainFetch, createBaseRequest } from '../api-utils'
-import { broadcast, BroadcastResponse } from '../messages'
-import { Account, getAccount } from '../profile'
-import { StdTxResponse } from '../types'
 
 function queryCreatePost(
   apiUrl: string,
@@ -145,6 +147,30 @@ export function getLatestPosts(
 ): Promise<Post[]> {
   return blockchainFetch(
     `${apiUrl}/community/posts`,
+    filterOptions as Record<string, string | number>,
+  )
+}
+
+export function getUserPosts(
+  apiUrl: string,
+  walletAddress: Wallet['address'],
+  paginationOptions: PostPaginationOptions,
+): Promise<Post[]> {
+  return blockchainFetch(`${apiUrl}/community/posts/${walletAddress}`, {
+    ...paginationOptions,
+    from: paginationOptions.fromUUID,
+  })
+}
+
+export function getPopularPosts(
+  apiUrl: string,
+  period: PopularPostsPeriod,
+  filterOptions: PostFilterOptions = {},
+): Promise<Post[]> {
+  const restPoint = `by` + period.charAt(0).toUpperCase() + period.slice(1);
+
+  return blockchainFetch(
+    `${apiUrl}/community/posts/popular/${restPoint}`,
     filterOptions as Record<string, string | number>,
   )
 }

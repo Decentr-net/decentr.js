@@ -29,9 +29,15 @@ import {
 } from './pdv';
 import { StdTxResponseValue } from './types';
 import {
-  createPost, deletePost, getLatestPosts, Post,
-  PostBroadcastOptions, PostCategory,
-  PostCreate,
+  createPost,
+  deletePost,
+  getLatestPosts, getPopularPosts,
+  getUserPosts, PopularPostsPeriod,
+  Post,
+  PostBroadcastOptions,
+  PostCategory,
+  PostCreate, PostFilterOptions,
+  PostPaginationOptions,
   QueryCreatePostResponse
 } from './posts'
 
@@ -209,6 +215,28 @@ export class Decentr {
   ): Promise<Post[]> {
     return getLatestPosts(
       this.apiUrl,
+      filterOptions,
+    );
+  }
+
+  public getUserPosts(
+    walletAddress: Wallet['address'],
+    paginationOptions: PostPaginationOptions
+  ): Promise<Post[]> {
+    return getUserPosts(
+      this.apiUrl,
+      walletAddress,
+      paginationOptions,
+    );
+  }
+
+  public getPopularPosts(
+    period: PopularPostsPeriod,
+    filterOptions?: PostFilterOptions,
+  ): Promise<Post[]> {
+    return getPopularPosts(
+      this.apiUrl,
+      period,
       filterOptions,
     );
   }
