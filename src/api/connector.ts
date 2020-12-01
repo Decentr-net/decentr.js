@@ -221,7 +221,7 @@ export class Decentr {
 
   public getUserPosts(
     walletAddress: Wallet['address'],
-    paginationOptions: PostPaginationOptions
+    paginationOptions?: PostPaginationOptions
   ): Promise<Post[]> {
     return getUserPosts(
       this.apiUrl,

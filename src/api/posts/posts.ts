@@ -154,7 +154,7 @@ export function getLatestPosts(
 export function getUserPosts(
   apiUrl: string,
   walletAddress: Wallet['address'],
-  paginationOptions: PostPaginationOptions,
+  paginationOptions: PostPaginationOptions = {},
 ): Promise<Post[]> {
   return blockchainFetch(`${apiUrl}/community/posts/${walletAddress}`, {
     ...paginationOptions,
