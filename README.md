@@ -21,7 +21,7 @@ npm install decentr-js
 
 ## 🎬 Getting started
 
-# Mnemonic
+## Mnemonic
 **Generate mnemonic phrase (24 words)**
 
 ```ts
@@ -32,7 +32,7 @@ const mnemonic = generateMnemonic();
 */
 ```
 
-# Wallet
+## Wallet
 **Create wallet with address and keys**
 ```ts
 import { createWalletFromMnemonic } from "decentr-js"
@@ -52,7 +52,7 @@ const wallet = createWalletFromMnemonic(seed);
 # Using Decentr api
 
 ##! Notice
-**All methods desribed in Decentr class below are available as standalone functions, but require extra parameters:**
+**All methods described in Decentr class below are available as standalone functions, but require extra parameters:**
 
 ```ts
 const restUrl = 'http://rest.testnet.decentr.xyz';
@@ -83,8 +83,11 @@ const chainId = 'testnet';
 const walletAddress = 'decentr1p4s4djk5dqstfswg6k8sljhkzku4a6ve9dmng5';
 const privateKey = 'fbf265ca5872907c4dbd33bf87c683d84b96987eb42d4a6c50f335eac57ece3e';
 const publicData = {
+  avatar: 'image source',
   birthday: '1991-02-03',
   gender: 'male',
+  firstName: 'first name',
+  lastName: 'last name',
 };
 
   AND
@@ -134,8 +137,7 @@ const CHAIN_ID = 'testnet';
 const decentr = new Decentr(REST_URL, CHAIN_ID);
 ```
 
-### Methods
-
+## 📜 Profile
 **Get account**
 >Note: returns `undefined` instead of empty fields if account doesn't exist 
 ```ts
@@ -216,7 +218,7 @@ CONSOLE OUTPUT:
 */
 ```
 
-**Set private profile**
+####Set private profile
 ```ts
 import { PrivateProfile } from 'decentr-js';
 
@@ -391,6 +393,179 @@ CONSOLE OUTPUT:
 }
 */
 ```
+
+## 📜 Posts
+
+**Create post**
+
+```ts
+const walletAddress = 'decentr1j6e6j53vh95jcq9k9lnsrsvj3h8dkdgmm20zhu';
+const privateKey = '8c313682470073d56d2d8f5b7fde53c072024a9fd9135501125035d53c8a1f60';
+
+const post = {
+  category: PostCategory.WorldNews,
+  previewImage: 'image source',
+  title: 'Post title',
+  text: 'Post text',
+}
+
+decentr.createPost(walletAddress, post,   {
+  broadcast: true,
+  privateKey,
+});
+```
+
+**Delete post**
+```ts
+const walletAddress = 'decentr1j6e6j53vh95jcq9k9lnsrsvj3h8dkdgmm20zhu';
+const privateKey = '8c313682470073d56d2d8f5b7fde53c072024a9fd9135501125035d53c8a1f60';
+
+const authorWalletAddress = 'decentr1urlzs0q6g8lqedjgfa5nxvnldp7nxlunnky8ux';
+const postId = 'cf4699e5-3411-11eb-8f45-0242ac11000b'
+
+decentr.deletePost(walletAddress, {
+  author: authorWalletAddress,
+  postId,
+}, {
+  broadcast: true,
+  privateKey,
+});
+```
+
+**Get latest posts**
+
+```ts
+// These params are optional
+const category = PostCategory.WorldNews;
+const limit = 20;
+
+// These params must be used in pair or not used at all
+const fromAuthorWalletAddress = 'decentr1urlzs0q6g8lqedjgfa5nxvnldp7nxlunnky8ux';
+const fromPostId = 'cf4699e5-3411-11eb-8f45-0242ac11000b';
+
+decentr.getLatestPosts({
+  fromOwner: fromAuthorWalletAddress,
+  fromUUID: fromPostId,
+  category,
+  limit,
+}).then(console.log);
+
+/* 
+CONSOLE OUTPUT:
+
+[
+  {
+    category: 1 (PostCategory.WorldNews),
+    createdAt: 1606853668 (UNIX timestamp),
+    dislikesCount: 0,
+    owner: "decentr1urlzs0q6g8lqedjgfa5nxvnldp7nxlunnky8ux"
+    pdv: 0,
+    previewImage: 'http...',
+    text: "Post text",
+    title: "Post title",
+    uuid: "cf4699e5-3411-11eb-8f45-0242ac11000b"
+  }
+]
+*/
+```
+
+**Get user posts**
+
+```ts
+const authorWalletAddress = 'decentr1urlzs0q6g8lqedjgfa5nxvnldp7nxlunnky8ux';
+
+// These params are optional
+const fromPostId = 'cf4699e5-3411-11eb-8f45-0242ac11000b';
+const limit = 20;
+
+decentr.getUserPosts(authorWalletAddress, {
+  from: fromPostId,
+  limit,
+}).then(console.log);
+
+/* 
+CONSOLE OUTPUT:
+
+[
+  {
+    category: 1 (PostCategory.WorldNews),
+    createdAt: 1606853668 (UNIX timestamp),
+    dislikesCount: 0,
+    owner: "decentr1urlzs0q6g8lqedjgfa5nxvnldp7nxlunnky8ux"
+    pdv: 0,
+    previewImage: 'http...',
+    text: "Post text",
+    title: "Post title",
+    uuid: "cf4699e5-3411-11eb-8f45-0242ac11000b"
+  }
+]
+*/
+```
+
+**Get popular posts**
+
+```ts
+const period = 'week'; ('day' | 'week' | 'month')
+
+// These params are optional
+const category = PostCategory.WorldNews;
+const limit = 20;
+
+// These params must be used in pair or not used at all
+const fromAuthorWalletAddress = 'decentr1urlzs0q6g8lqedjgfa5nxvnldp7nxlunnky8ux';
+const fromPostId = 'cf4699e5-3411-11eb-8f45-0242ac11000b';
+
+decentr.getPopularPosts(period, {
+  fromOwner: fromAuthorWalletAddress,
+  fromUUID: fromPostId,
+  category,
+  limit,
+}).then(console.log);
+
+/* 
+CONSOLE OUTPUT:
+
+[
+  {
+    category: 1 (PostCategory.WorldNews),
+    createdAt: 1606853668 (UNIX timestamp),
+    dislikesCount: 0,
+    owner: "decentr1urlzs0q6g8lqedjgfa5nxvnldp7nxlunnky8ux"
+    pdv: 0,
+    previewImage: 'http...',
+    text: "Post text",
+    title: "Post title",
+    uuid: "cf4699e5-3411-11eb-8f45-0242ac11000b"
+  }
+]
+*/
+```
+
+**Like post**
+
+```ts
+const walletAddress = 'decentr1j6e6j53vh95jcq9k9lnsrsvj3h8dkdgmm20zhu';
+const privateKey = '8c313682470073d56d2d8f5b7fde53c072024a9fd9135501125035d53c8a1f60';
+
+const authorWalletAddress = 'decentr1urlzs0q6g8lqedjgfa5nxvnldp7nxlunnky8ux';
+const postId = 'cf4699e5-3411-11eb-8f45-0242ac11000b';
+
+const likeWeight = LikeWeight.Down  (LikeWeight.Up, LikeWeight.Zero, LikeWeight.Down)
+
+decentr.likePost(
+  walletAddress,
+  {
+    author: authorWalletAddress,
+    postId,
+  },
+  likeWeight,
+  {
+    broadcast: true,
+    privateKey,
+  },
+);
+```
+
 
 ## 🥂 License
 

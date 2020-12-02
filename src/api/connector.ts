@@ -27,7 +27,24 @@ import {
   QueryPDVResponse,
   sendPDV,
 } from './pdv';
-import { StdTxResponseValue } from './types';
+import { StdTxResponse, StdTxResponseValue } from './types'
+import {
+  createPost,
+  deletePost,
+  getLatestPosts,
+  getPopularPosts,
+  getUserPosts,
+  likePost,
+  LikeWeight,
+  PopularPostsPeriod,
+  Post,
+  PostBroadcastOptions,
+  PostCreate,
+  PostIdentificationParameters,
+  PostsFilterOptions,
+  QueryCreatePostResponse,
+  UserPostsFilterOptions,
+} from './posts'
 
 export class Decentr {
   constructor(
@@ -140,6 +157,114 @@ export class Decentr {
       pdv,
       wallet,
       broadcastOptions as PDVBroadcastOptions,
+    );
+  }
+
+  public createPost(
+    walletAddress: Wallet['address'],
+    post: PostCreate,
+  ): Promise<QueryCreatePostResponse>;
+
+  public createPost(
+    walletAddress: Wallet['address'],
+    post: PostCreate,
+    broadcastOptions: PostBroadcastOptions,
+  ): Promise<BroadcastResponse>;
+
+  public createPost(
+    walletAddress: Wallet['address'],
+    post: PostCreate,
+    broadcastOptions?: PostBroadcastOptions,
+  ): Promise<QueryCreatePostResponse | BroadcastResponse> {
+    return createPost(
+      this.apiUrl,
+      this.chainId,
+      walletAddress,
+      post,
+      broadcastOptions as PostBroadcastOptions,
+    );
+  }
+
+  public deletePost(
+    walletAddress: Wallet['address'],
+    postIdentificationParameters: PostIdentificationParameters,
+  ): Promise<StdTxResponse>;
+
+  public deletePost(
+    walletAddress: Wallet['address'],
+    postIdentificationParameters: PostIdentificationParameters,
+    broadcastOptions: PostBroadcastOptions,
+  ): Promise<BroadcastResponse>;
+
+  public deletePost(
+    walletAddress: Wallet['address'],
+    postIdentificationParameters: PostIdentificationParameters,
+    broadcastOptions?: PostBroadcastOptions,
+  ): Promise<StdTxResponse | BroadcastResponse> {
+    return deletePost(
+      this.apiUrl,
+      this.chainId,
+      walletAddress,
+      postIdentificationParameters,
+      broadcastOptions as PostBroadcastOptions,
+    );
+  }
+
+  public getLatestPosts(filterOptions?: PostsFilterOptions): Promise<Post[]> {
+    return getLatestPosts(
+      this.apiUrl,
+      filterOptions,
+    );
+  }
+
+  public getUserPosts(
+    walletAddress: Wallet['address'],
+    filterOptions?: UserPostsFilterOptions,
+  ): Promise<Post[]> {
+    return getUserPosts(
+      this.apiUrl,
+      walletAddress,
+      filterOptions,
+    );
+  }
+
+  public likePost(
+    walletAddress: Wallet['address'],
+    postIdentificationParameters: PostIdentificationParameters,
+    likeWeight: LikeWeight,
+  ): Promise<StdTxResponse>;
+
+  public likePost(
+    walletAddress: Wallet['address'],
+    postIdentificationParameters: PostIdentificationParameters,
+    likeWeight: LikeWeight,
+    broadcastOptions: PostBroadcastOptions,
+  ): Promise<BroadcastResponse>;
+
+  public likePost(
+    walletAddress: Wallet['address'],
+    postIdentificationParameters: PostIdentificationParameters,
+    likeWeight: LikeWeight,
+    broadcastOptions?: PostBroadcastOptions,
+  ): Promise<StdTxResponse | BroadcastResponse> {
+    return likePost(
+      this.apiUrl,
+      this.chainId,
+      walletAddress,
+      postIdentificationParameters,
+      likeWeight,
+      broadcastOptions as PostBroadcastOptions,
+    );
+  }
+
+  public getPopularPosts(
+    period: PopularPostsPeriod,
+    filterOptions?: PostsFilterOptions,
+  ): Promise<Post[]> {
+    return getPopularPosts(
+      this.apiUrl,
+      period,
+      filterOptions,
     );
   }
 

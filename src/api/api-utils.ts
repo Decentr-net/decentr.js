@@ -10,8 +10,8 @@ import {
 } from '../utils';
 import { Wallet } from '../wallet';
 
-export async function blockchainFetch<T>(url: string): Promise<T> {
-  const response = await fetchJson<{ height: string; result: T } | T>(url);
+export async function blockchainFetch<T>(url: string, queryParameters?: Partial<Record<string, string | number>>): Promise<T> {
+  const response = await fetchJson<{ height: string; result: T } | T>(url, { queryParameters });
 
   if (hasOwnProperty(response, 'height') &&
     hasOwnProperty(response, 'result')
@@ -36,4 +36,20 @@ export function getSignature<T>(
 
   const signedObject = secp256k1EcdsaSign(hashBytes, privateKeyBytes);
   return signedObject.signature;
+}
+
+export function createBaseRequest(
+  { chainId: chain_id, walletAddress: from }: { chainId: string; walletAddress: Wallet['address'] },
+): {
+  base_req: {
+    chain_id: string,
+    from: Wallet['address'],
+  },
+} {
+  return {
+    base_req: {
+      chain_id,
+      from,
+    },
+  };
 }

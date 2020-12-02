@@ -29,4 +29,22 @@ describe('utils/object', () => {
       .toBeTrue();
   });
 
+  it('should correctly remove undefined properties from primitive object', () => {
+    const object: Partial<Record<string, string | number>> = {
+      a: 3,
+      b: undefined,
+      c: 'abc',
+    };
+
+    const expectedObject = {
+      a: 3,
+      c: 'abc',
+    };
+
+    const filteredObject = sortObjectKeys(object);
+
+    expect(JSON.stringify(expectedObject) === JSON.stringify(filteredObject))
+      .toBeTrue();
+  })
+
 });
