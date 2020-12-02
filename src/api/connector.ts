@@ -27,7 +27,7 @@ import {
   QueryPDVResponse,
   sendPDV,
 } from './pdv';
-import { StdTxResponseValue } from './types';
+import { StdTxResponse, StdTxResponseValue } from './types'
 import {
   createPost,
   deletePost,
@@ -188,7 +188,7 @@ export class Decentr {
   public deletePost(
     walletAddress: Wallet['address'],
     postIdentificationParameters: PostIdentificationParameters,
-  ): Promise<QueryCreatePostResponse>;
+  ): Promise<StdTxResponse>;
 
   public deletePost(
     walletAddress: Wallet['address'],
@@ -200,7 +200,7 @@ export class Decentr {
     walletAddress: Wallet['address'],
     postIdentificationParameters: PostIdentificationParameters,
     broadcastOptions?: PostBroadcastOptions,
-  ): Promise<QueryCreatePostResponse | BroadcastResponse> {
+  ): Promise<StdTxResponse | BroadcastResponse> {
     return deletePost(
       this.apiUrl,
       this.chainId,
@@ -232,7 +232,7 @@ export class Decentr {
     walletAddress: Wallet['address'],
     postIdentificationParameters: PostIdentificationParameters,
     likeWeight: LikeWeight,
-  ): Promise<QueryCreatePostResponse>;
+  ): Promise<StdTxResponse>;
 
   public likePost(
     walletAddress: Wallet['address'],
@@ -246,7 +246,7 @@ export class Decentr {
     postIdentificationParameters: PostIdentificationParameters,
     likeWeight: LikeWeight,
     broadcastOptions?: PostBroadcastOptions,
-  ): Promise<QueryCreatePostResponse | BroadcastResponse> {
+  ): Promise<StdTxResponse | BroadcastResponse> {
     return likePost(
       this.apiUrl,
       this.chainId,
