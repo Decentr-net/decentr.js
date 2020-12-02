@@ -14,15 +14,21 @@ export interface PostBroadcastOptions {
   mode?: BroadcastMode,
 }
 
-export interface PostPaginationOptions {
-  fromUUID?: Post['uuid'];
+export interface UserPostsFilterOptions {
   limit?: number;
+  from?: Post['uuid'];
 }
 
-export interface PostFilterOptions extends PostPaginationOptions {
+export type PostsFilterOptions = {
   category?: PostCategory;
-  fromOwner?: Wallet['address'];
-}
+  limit?: number;
+} & ({
+  fromOwner: Wallet['address'];
+  fromUUID: Post['uuid'];
+} | {
+  fromOwner?: undefined;
+  fromUUID?: undefined;
+});
 
 export enum PostCategory {
   WorldNews = 1,

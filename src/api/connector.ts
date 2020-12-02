@@ -37,11 +37,9 @@ import {
   PopularPostsPeriod,
   Post,
   PostBroadcastOptions,
-  PostCategory,
   PostCreate,
-  PostFilterOptions,
-  PostPaginationOptions,
-  QueryCreatePostResponse
+  PostsFilterOptions,
+  QueryCreatePostResponse, UserPostsFilterOptions
 } from './posts'
 
 export class Decentr {
@@ -208,14 +206,7 @@ export class Decentr {
     );
   }
 
-  public getLatestPosts(
-    filterOptions?: {
-      author?: Wallet['address'],
-      category?: PostCategory,
-      fromPostId?: Post['uuid'],
-      limit?: number,
-    }
-  ): Promise<Post[]> {
+  public getLatestPosts(filterOptions?: PostsFilterOptions): Promise<Post[]> {
     return getLatestPosts(
       this.apiUrl,
       filterOptions,
@@ -224,18 +215,18 @@ export class Decentr {
 
   public getUserPosts(
     walletAddress: Wallet['address'],
-    paginationOptions?: PostPaginationOptions
+    filterOptions?: UserPostsFilterOptions,
   ): Promise<Post[]> {
     return getUserPosts(
       this.apiUrl,
       walletAddress,
-      paginationOptions,
+      filterOptions,
     );
   }
 
   public getPopularPosts(
     period: PopularPostsPeriod,
-    filterOptions?: PostFilterOptions,
+    filterOptions?: PostsFilterOptions,
   ): Promise<Post[]> {
     return getPopularPosts(
       this.apiUrl,

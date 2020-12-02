@@ -9,9 +9,9 @@ import {
   Post,
   PostCreate,
   QueryCreatePostResponse,
-  PostFilterOptions,
-  PostPaginationOptions,
+  PostsFilterOptions,
   PopularPostsPeriod,
+  UserPostsFilterOptions
 } from './types'
 
 function queryCreatePost(
@@ -143,34 +143,40 @@ export async function deletePost(
 
 export function getLatestPosts(
   apiUrl: string,
-  filterOptions: PostFilterOptions = {},
+  filterOptions: PostsFilterOptions = {},
 ): Promise<Post[]> {
   return blockchainFetch(
     `${apiUrl}/community/posts`,
-    filterOptions as Record<string, string | number>,
-  )
+    {
+      ...filterOptions,
+    },
+  );
 }
 
 export function getUserPosts(
   apiUrl: string,
   walletAddress: Wallet['address'],
-  paginationOptions: PostPaginationOptions = {},
+  filterOptions: UserPostsFilterOptions = {},
 ): Promise<Post[]> {
-  return blockchainFetch(`${apiUrl}/community/posts/${walletAddress}`, {
-    ...paginationOptions,
-    from: paginationOptions.fromUUID,
-  })
+  return blockchainFetch(
+    `${apiUrl}/community/posts/${walletAddress}`,
+    {
+      ...filterOptions,
+    },
+  );
 }
 
 export function getPopularPosts(
   apiUrl: string,
   period: PopularPostsPeriod,
-  filterOptions: PostFilterOptions = {},
+  filterOptions: PostsFilterOptions = {},
 ): Promise<Post[]> {
   const restPoint = `by` + period.charAt(0).toUpperCase() + period.slice(1);
 
   return blockchainFetch(
     `${apiUrl}/community/posts/popular/${restPoint}`,
-    filterOptions as Record<string, string | number>,
-  )
+    {
+      ...filterOptions,
+    },
+  );
 }
