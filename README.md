@@ -218,7 +218,7 @@ CONSOLE OUTPUT:
 */
 ```
 
-**Set private profile**
+####Set private profile
 ```ts
 import { PrivateProfile } from 'decentr-js';
 
@@ -400,7 +400,7 @@ CONSOLE OUTPUT:
 
 ```ts
 const walletAddress = 'decentr1j6e6j53vh95jcq9k9lnsrsvj3h8dkdgmm20zhu';
-const privateKey: '8c313682470073d56d2d8f5b7fde53c072024a9fd9135501125035d53c8a1f60';
+const privateKey = '8c313682470073d56d2d8f5b7fde53c072024a9fd9135501125035d53c8a1f60';
 
 const post = {
   category: PostCategory.WorldNews,
@@ -418,11 +418,15 @@ decentr.createPost(walletAddress, post,   {
 **Delete post**
 ```ts
 const walletAddress = 'decentr1j6e6j53vh95jcq9k9lnsrsvj3h8dkdgmm20zhu';
-const privateKey: '8c313682470073d56d2d8f5b7fde53c072024a9fd9135501125035d53c8a1f60';
+const privateKey = '8c313682470073d56d2d8f5b7fde53c072024a9fd9135501125035d53c8a1f60';
 
+const authorWalletAddress = 'decentr1urlzs0q6g8lqedjgfa5nxvnldp7nxlunnky8ux';
 const postId = 'cf4699e5-3411-11eb-8f45-0242ac11000b'
 
-decentr.deletePost(walletAddress, postId, {
+decentr.deletePost(walletAddress, {
+  author: authorWalletAddress,
+  postId,
+}, {
   broadcast: true,
   privateKey,
 });
@@ -432,15 +436,17 @@ decentr.deletePost(walletAddress, postId, {
 
 ```ts
 // These params are optional
-const authorWalletAddress = 'decentr1urlzs0q6g8lqedjgfa5nxvnldp7nxlunnky8ux';
 const category = PostCategory.WorldNews;
-const fromPostId = 'cf4699e5-3411-11eb-8f45-0242ac11000b';
 const limit = 20;
 
+// These params must be used in pair or not used at all
+const fromAuthorWalletAddress = 'decentr1urlzs0q6g8lqedjgfa5nxvnldp7nxlunnky8ux';
+const fromPostId = 'cf4699e5-3411-11eb-8f45-0242ac11000b';
+
 decentr.getLatestPosts({
-  author: authorWalletAddress,
+  fromOwner: fromAuthorWalletAddress,
+  fromUUID: fromPostId,
   category,
-  fromPostId,
   limit,
 }).then(console.log);
 
@@ -466,14 +472,14 @@ CONSOLE OUTPUT:
 **Get user posts**
 
 ```ts
-// These params are optional
 const authorWalletAddress = 'decentr1urlzs0q6g8lqedjgfa5nxvnldp7nxlunnky8ux';
-const category = PostCategory.WorldNews;
+
+// These params are optional
 const fromPostId = 'cf4699e5-3411-11eb-8f45-0242ac11000b';
 const limit = 20;
 
 decentr.getUserPosts(authorWalletAddress, {
-  fromPostId,
+  from: fromPostId,
   limit,
 }).then(console.log);
 
@@ -502,15 +508,17 @@ CONSOLE OUTPUT:
 const period = 'week'; ('day' | 'week' | 'month')
 
 // These params are optional
-const authorWalletAddress = 'decentr1urlzs0q6g8lqedjgfa5nxvnldp7nxlunnky8ux';
 const category = PostCategory.WorldNews;
-const fromPostId = 'cf4699e5-3411-11eb-8f45-0242ac11000b';
 const limit = 20;
 
+// These params must be used in pair or not used at all
+const fromAuthorWalletAddress = 'decentr1urlzs0q6g8lqedjgfa5nxvnldp7nxlunnky8ux';
+const fromPostId = 'cf4699e5-3411-11eb-8f45-0242ac11000b';
+
 decentr.getPopularPosts(period, {
-  author: authorWalletAddress,
+  fromOwner: fromAuthorWalletAddress,
+  fromUUID: fromPostId,
   category,
-  fromPostId,
   limit,
 }).then(console.log);
 
@@ -531,6 +539,31 @@ CONSOLE OUTPUT:
   }
 ]
 */
+```
+
+**Like post**
+
+```ts
+const walletAddress = 'decentr1j6e6j53vh95jcq9k9lnsrsvj3h8dkdgmm20zhu';
+const privateKey = '8c313682470073d56d2d8f5b7fde53c072024a9fd9135501125035d53c8a1f60';
+
+const authorWalletAddress = 'decentr1urlzs0q6g8lqedjgfa5nxvnldp7nxlunnky8ux';
+const postId = 'cf4699e5-3411-11eb-8f45-0242ac11000b';
+
+const likeWeight = LikeWeight.Down  (LikeWeight.Up, LikeWeight.Zero, LikeWeight.Down)
+
+decentr.likePost(
+  walletAddress,
+  {
+    author: authorWalletAddress,
+    postId,
+  },
+  likeWeight,
+  {
+    broadcast: true,
+    privateKey,
+  },
+);
 ```
 
 

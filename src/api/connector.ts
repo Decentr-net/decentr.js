@@ -33,13 +33,17 @@ import {
   deletePost,
   getLatestPosts,
   getPopularPosts,
-  getUserPosts, likePost, LikeWeight,
+  getUserPosts,
+  likePost,
+  LikeWeight,
   PopularPostsPeriod,
   Post,
   PostBroadcastOptions,
-  PostCreate, PostIdentificationParameters,
+  PostCreate,
+  PostIdentificationParameters,
   PostsFilterOptions,
-  QueryCreatePostResponse, UserPostsFilterOptions
+  QueryCreatePostResponse,
+  UserPostsFilterOptions,
 } from './posts'
 
 export class Decentr {
@@ -226,14 +230,12 @@ export class Decentr {
 
   public likePost(
     walletAddress: Wallet['address'],
-    post: PostCreate,
     postIdentificationParameters: PostIdentificationParameters,
     likeWeight: LikeWeight,
   ): Promise<QueryCreatePostResponse>;
 
   public likePost(
     walletAddress: Wallet['address'],
-    post: PostCreate,
     postIdentificationParameters: PostIdentificationParameters,
     likeWeight: LikeWeight,
     broadcastOptions: PostBroadcastOptions,
@@ -241,7 +243,6 @@ export class Decentr {
 
   public likePost(
     walletAddress: Wallet['address'],
-    post: PostCreate,
     postIdentificationParameters: PostIdentificationParameters,
     likeWeight: LikeWeight,
     broadcastOptions?: PostBroadcastOptions,
