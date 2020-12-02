@@ -5,13 +5,15 @@ import { broadcast, BroadcastResponse } from '../messages';
 import { Account, getAccount } from '../profile';
 import { StdTxResponse } from '../types';
 import {
+  LikeWeight,
   PostBroadcastOptions,
   Post,
   PostCreate,
   QueryCreatePostResponse,
   PostsFilterOptions,
   PopularPostsPeriod,
-  UserPostsFilterOptions
+  UserPostsFilterOptions,
+  PostIdentificationParameters
 } from './types'
 
 function queryCreatePost(
@@ -83,9 +85,9 @@ function queryDeletePost(
   apiUrl: string,
   chainId: string,
   walletAddress: Wallet['address'],
-  postId: Post['uuid'],
+  { author, postId }: PostIdentificationParameters,
 ): Promise<StdTxResponse> {
-  const url = `${apiUrl}/community/posts/${walletAddress}/${postId}/delete`;
+  const url = `${apiUrl}/community/posts/${author}/${postId}/delete`;
 
   const body = createBaseRequest({ chainId, walletAddress });
 
@@ -96,29 +98,29 @@ export async function deletePost(
   apiUrl: string,
   chainId: string,
   walletAddress: Wallet['address'],
-  postId: Post['uuid'],
+  postIdentificationParameters: PostIdentificationParameters,
 ): Promise<StdTxResponse>;
 
 export async function deletePost(
   apiUrl: string,
   chainId: string,
   walletAddress: Wallet['address'],
-  postId: Post['uuid'],
-  broadcastOptions?: PostBroadcastOptions,
+  postIdentificationParameters: PostIdentificationParameters,
+  broadcastOptions: PostBroadcastOptions,
 ): Promise<BroadcastResponse>;
 
 export async function deletePost(
   apiUrl: string,
   chainId: string,
   walletAddress: Wallet['address'],
-  postId: Post['uuid'],
+  postIdentificationParameters: PostIdentificationParameters,
   broadcastOptions?: PostBroadcastOptions,
 ): Promise<StdTxResponse | BroadcastResponse> {
   const stdTxResponse = await queryDeletePost(
     apiUrl,
     chainId,
     walletAddress,
-    postId,
+    postIdentificationParameters,
   );
 
   if (!broadcastOptions) {
@@ -179,4 +181,73 @@ export function getPopularPosts(
       ...filterOptions,
     },
   );
+}
+
+function queryLikePost(
+  apiUrl: string,
+  chainId: string,
+  walletAddress: Wallet['address'],
+  { author, postId }: PostIdentificationParameters,
+  likeWeight: LikeWeight,
+): Promise<StdTxResponse> {
+  const url = `${apiUrl}/community/posts/${author}/${postId}/like`;
+
+  const body = {
+    ...createBaseRequest({ chainId, walletAddress }),
+    weight: likeWeight,
+  };
+
+  return fetchJson(url, { method: 'POST', body });
+}
+
+export async function likePost(
+  apiUrl: string,
+  chainId: string,
+  walletAddress: Wallet['address'],
+  postIdentificationParameters: PostIdentificationParameters,
+  likeWeight: LikeWeight,
+): Promise<StdTxResponse>;
+
+export async function likePost(
+  apiUrl: string,
+  chainId: string,
+  walletAddress: Wallet['address'],
+  postIdentificationParameters: PostIdentificationParameters,
+  likeWeight: LikeWeight,
+  broadcastOptions: PostBroadcastOptions,
+): Promise<BroadcastResponse>;
+
+export async function likePost(
+  apiUrl: string,
+  chainId: string,
+  walletAddress: Wallet['address'],
+  postIdentificationParameters: PostIdentificationParameters,
+  likeWeight: LikeWeight,
+  broadcastOptions?: PostBroadcastOptions,
+): Promise<StdTxResponse | BroadcastResponse> {
+  const stdTxResponse = await queryLikePost(
+    apiUrl,
+    chainId,
+    walletAddress,
+    postIdentificationParameters,
+    likeWeight,
+  );
+
+  if (!broadcastOptions) {
+    return stdTxResponse;
+  }
+
+  const account = await getAccount(apiUrl, walletAddress) as Account;
+
+  return broadcast(
+    apiUrl,
+    chainId,
+    stdTxResponse.value,
+    {
+      ...account,
+      privateKey: broadcastOptions.privateKey,
+    },
+    {
+      mode: broadcastOptions.mode,
+    });
 }

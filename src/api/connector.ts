@@ -33,11 +33,11 @@ import {
   deletePost,
   getLatestPosts,
   getPopularPosts,
-  getUserPosts,
+  getUserPosts, likePost, LikeWeight,
   PopularPostsPeriod,
   Post,
   PostBroadcastOptions,
-  PostCreate,
+  PostCreate, PostIdentificationParameters,
   PostsFilterOptions,
   QueryCreatePostResponse, UserPostsFilterOptions
 } from './posts'
@@ -183,25 +183,25 @@ export class Decentr {
 
   public deletePost(
     walletAddress: Wallet['address'],
-    postId: Post['uuid'],
+    postIdentificationParameters: PostIdentificationParameters,
   ): Promise<QueryCreatePostResponse>;
 
   public deletePost(
     walletAddress: Wallet['address'],
-    postId: Post['uuid'],
+    postIdentificationParameters: PostIdentificationParameters,
     broadcastOptions: PostBroadcastOptions,
   ): Promise<BroadcastResponse>;
 
   public deletePost(
     walletAddress: Wallet['address'],
-    postId: Post['uuid'],
+    postIdentificationParameters: PostIdentificationParameters,
     broadcastOptions?: PostBroadcastOptions,
   ): Promise<QueryCreatePostResponse | BroadcastResponse> {
     return deletePost(
       this.apiUrl,
       this.chainId,
       walletAddress,
-      postId,
+      postIdentificationParameters,
       broadcastOptions as PostBroadcastOptions,
     );
   }
@@ -221,6 +221,38 @@ export class Decentr {
       this.apiUrl,
       walletAddress,
       filterOptions,
+    );
+  }
+
+  public likePost(
+    walletAddress: Wallet['address'],
+    post: PostCreate,
+    postIdentificationParameters: PostIdentificationParameters,
+    likeWeight: LikeWeight,
+  ): Promise<QueryCreatePostResponse>;
+
+  public likePost(
+    walletAddress: Wallet['address'],
+    post: PostCreate,
+    postIdentificationParameters: PostIdentificationParameters,
+    likeWeight: LikeWeight,
+    broadcastOptions: PostBroadcastOptions,
+  ): Promise<BroadcastResponse>;
+
+  public likePost(
+    walletAddress: Wallet['address'],
+    post: PostCreate,
+    postIdentificationParameters: PostIdentificationParameters,
+    likeWeight: LikeWeight,
+    broadcastOptions?: PostBroadcastOptions,
+  ): Promise<QueryCreatePostResponse | BroadcastResponse> {
+    return likePost(
+      this.apiUrl,
+      this.chainId,
+      walletAddress,
+      postIdentificationParameters,
+      likeWeight,
+      broadcastOptions as PostBroadcastOptions,
     );
   }
 

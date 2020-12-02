@@ -6,6 +6,11 @@ export type QueryCreatePostResponse = StdTxResponse<'community/CreatePost', Pick
 
 export type PostCreate = Pick<Post, 'category' | 'previewImage' | 'text' | 'title'>;
 
+export interface PostIdentificationParameters {
+  author: Post['owner'];
+  postId: Post['uuid'];
+}
+
 export type PopularPostsPeriod = 'day' | 'week' | 'month';
 
 export interface PostBroadcastOptions {
@@ -37,6 +42,12 @@ export enum PostCategory {
   StrangeWorld,
   HealthAndCulture,
   FitnessAndExercise
+}
+
+export enum LikeWeight {
+  Up = 1,
+  Zero = 0,
+  Down = -1,
 }
 
 export interface Post {
