@@ -69,7 +69,7 @@ export function getPDVStats(
   apiUrl: string,
   walletAddress: Wallet['address'],
 ): Promise<PDVStatItem[]> {
-  return blockchainFetch(`${apiUrl}/pdv/${walletAddress}/stats`);
+  return blockchainFetch(`${apiUrl}/token/stats/${walletAddress}`);
 }
 
 export async function getPDVDetails(
