@@ -6,7 +6,6 @@ const nodeExternals = require('webpack-node-externals');
 const webConfig = merge(baseConfig, {
   target: 'web',
   output: {
-    libraryTarget: 'umd',
     filename: 'web.js',
   },
   plugins: [
@@ -21,7 +20,6 @@ const webConfig = merge(baseConfig, {
 const nodeConfig = merge(baseConfig, {
   target: 'node',
   output: {
-    libraryTarget: 'commonjs',
     filename: 'node.js',
   },
   externals: [

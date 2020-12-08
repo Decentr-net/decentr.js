@@ -5,8 +5,7 @@ module.exports = {
   entry: ['./src/index.ts'],
   output: {
     path: __dirname + '/lib',
-    filename: 'index.js',
-    library: 'decentr',
+    library: 'decentr-js',
     libraryTarget: 'umd',
     umdNamedDefine: true,
     globalObject: 'typeof self !== \'undefined\' ? self : this',
