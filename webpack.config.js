@@ -1,37 +1,13 @@
+const baseConfig = require('./webpack.config.base');
+const { merge } = require('webpack-merge');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
-const { IgnorePlugin } = require('webpack')
+const nodeExternals = require('webpack-node-externals');
 
-module.exports = {
-  entry: ['./src/index.ts'],
+const webConfig = merge(baseConfig, {
+  target: 'web',
   output: {
-    path: __dirname + '/lib',
-    filename: 'index.js',
-    library: 'decentr',
     libraryTarget: 'umd',
-    umdNamedDefine: true,
-    globalObject: 'typeof self !== \'undefined\' ? self : this',
-  },
-  resolve: {
-    extensions: ['.tsx', '.ts', '.js'],
-  },
-  module: {
-    rules: [
-      {
-        test: /\.js$/,
-        exclude: /node_modules/,
-        use: {
-          loader: 'babel-loader',
-          options: {
-            presets: ['@babel/preset-env'],
-          },
-        },
-      },
-      {
-        test: /\.tsx?$/,
-        use: 'ts-loader',
-        exclude: /node_modules/
-      },
-    ],
+    filename: 'web.js',
   },
   plugins: [
     new BundleAnalyzerPlugin({
@@ -39,6 +15,18 @@ module.exports = {
       openAnalyzer: false,
       reportFilename: '../bundle_analyzer/bundle_sizes.html'
     }),
-    new IgnorePlugin(/^\.\/wordlists\/(?!english)/, /bip39\/src$/),
   ],
-}
+});
+
+const nodeConfig = merge(baseConfig, {
+  target: 'node',
+  output: {
+    libraryTarget: 'commonjs',
+    filename: 'node.js',
+  },
+  externals: [
+    nodeExternals(),
+  ],
+});
+
+module.exports = [webConfig, nodeConfig];
