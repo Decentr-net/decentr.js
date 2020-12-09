@@ -1,4 +1,5 @@
-import { removeEmptyValuesFromPrimitiveObject } from '../object'
+import axios from 'axios';
+import { removeEmptyValuesFromPrimitiveObject } from '../object';
 
 export function fetchJson<T>(url: string): Promise<T>;
 
@@ -25,12 +26,13 @@ export function fetchJson<T, D>(
     ? url + '?' + new URLSearchParams(removeEmptyValuesFromPrimitiveObject(options.queryParameters) as Record<string, string>)
     : url;
 
-  return fetch(fullUrl, {
+  return axios({
     method: options?.method || 'GET',
+    url: fullUrl,
     headers: options?.headers,
-    body: options?.method === 'POST' && options?.body
+    data: options?.method === 'POST' && options?.body
       ? JSON.stringify(options.body)
       : undefined
   })
-    .then((response) => response.json());
+    .then((response) => response.data);
 }

@@ -30,6 +30,7 @@
   },
   "dependencies": {
     "@tendermint/belt": "^0.3.0",
+    "axios": "^0.21.0",
     "bech32": "^1.1.4",
     "bip32": "^2.0.6",
     "bip39": "^3.0.2",
