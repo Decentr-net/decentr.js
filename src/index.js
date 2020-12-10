@@ -5,4 +5,4 @@ try {
 catch (e) {
 }
 
-module.exports = node ? require('./node') : require('./web');
+module.exports = node ? eval('require')('./node') : require('./web');
