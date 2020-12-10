@@ -25,6 +25,29 @@ export function hasOwnProperty<T, K extends keyof T>(target: Partial<T>, propert
   return Object.prototype.hasOwnProperty.call(target, property);
 }
 
+export function deepMapObjectStrings<T>(target: T, mapFn: (value: string) => any): T {
+  if (typeof target === 'string') {
+    return mapFn(target) as unknown as T;
+  }
+
+  if (Array.isArray(target)) {
+    return target.map((element) => deepMapObjectStrings(element, mapFn)) as unknown as T;
+  }
+
+  if (typeof target === 'object' && target !== null) {
+
+    const result: Partial<T> = {};
+
+    (Object.keys(target) as (keyof T)[]).forEach((key) => {
+      result[key] = deepMapObjectStrings(target[key], mapFn);
+    });
+
+    return result as T;
+  }
+
+  return target;
+}
+
 export function removeEmptyValuesFromPrimitiveObject(
   target: Partial<Record<string, string | number>>
 ): Record<string, string | number> {

@@ -2,12 +2,13 @@ import { Bytes } from '@tendermint/types';
 import { ecdsaSign as secp256k1EcdsaSign } from 'secp256k1';
 
 import {
+  encodeObjectCharactersToUnicode,
   fetchJson,
   hashStringToBytes,
   hasOwnProperty,
   hexToBytes,
-  sortObjectKeys,
-} from '../utils';
+  sortObjectKeys
+} from '../utils'
 import { Wallet } from '../wallet';
 
 export async function blockchainFetch<T>(url: string, queryParameters?: Partial<Record<string, string | number>>): Promise<T> {
@@ -28,9 +29,11 @@ export function getSignature<T>(
 ): Bytes {
   const stringToHash = typeof target === 'string'
     ? target
-    : JSON.stringify(sortObjectKeys(target))
+    : JSON.stringify(sortObjectKeys(target));
 
-  const hashBytes = hashStringToBytes(stringToHash);
+  const encodedToUnicode = encodeObjectCharactersToUnicode(stringToHash, ['>', '<', '&']);
+
+  const hashBytes = hashStringToBytes(encodedToUnicode);
 
   const privateKeyBytes = hexToBytes(privateKey);
 

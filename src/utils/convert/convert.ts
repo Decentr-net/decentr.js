@@ -24,3 +24,10 @@ export function bytesToBase64(bytes: Bytes): string {
 export function hexToBytes(hex: string): Bytes {
   return new Uint8Array(Buffer.from(hex, 'hex'))
 }
+
+export function getUnicode(target: string): string {
+  return target.split('').map(character => {
+    const hex = character.codePointAt(0)!.toString(16);
+    return '\\u' + '0000'.substring(0, 4 - hex.length) + hex;
+  }).join();
+}

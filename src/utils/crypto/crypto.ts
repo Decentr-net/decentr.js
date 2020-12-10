@@ -1,6 +1,8 @@
 import { publicKeyCreate } from 'secp256k1';
 import CryptoJS from 'crypto-js';
-import { bytesToBase64, hexToBytes } from '../convert';
+
+import { bytesToBase64, getUnicode, hexToBytes } from '../convert'
+import { deepMapObjectStrings } from '../object'
 
 export function encrypt<T>(data: T, encryptKey: string): string {
   const encryptTarget: string = typeof data === 'string'
@@ -25,4 +27,27 @@ export function getPublicKeyBase64(privateKeyHex: string): string {
   const publicKeyBytes = publicKeyCreate(privateKeyBytes);
 
   return bytesToBase64(publicKeyBytes);
+}
+
+export function encodeObjectCharactersToUnicode<T>(
+  target: T,
+  characters: string[],
+): T {
+  const mapFn = (value: string) => {
+    return value.split('').map((character) => {
+      return characters.includes(character)
+        ? getUnicode(character)
+        : character;
+    }).join('');
+  };
+
+  return deepMapObjectStrings(target, mapFn);
+}
+
+export function decodeObjectUnicode<T>(target: T): T {
+  const mapFn = (value: string) => {
+    return JSON.parse('"' + value.replace('"', '\\"') + '"')
+  };
+
+  return deepMapObjectStrings(target, mapFn);
 }
