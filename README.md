@@ -107,7 +107,7 @@ decentr.setPublicProfile(
   OR
 
 import { Decentr, broadcast } from 'decentr-js';
-const decentr = new DecentrConnect(restUrl, chainId);
+const decentr = new Decentr(restUrl, chainId);
 
 const stdTxResponse = await decentr.setPublicProfile(walletAddress, publicData);
 
@@ -190,11 +190,14 @@ const privateKey = 'fbf265ca5872907c4dbd33bf87c683d84b96987eb42d4a6c50f335eac57e
 const publicProfile: PublicProfile = {
   birthday: '1991-02-03',
   gender: 'male',
+  avatar: 'http://hosting.com/avatar.png',
+  lastName: 'lastName',
+  firstName: 'firstName',
 }
 
-await decentr.setPrivateProfile<YourPrivateProfile>(
+await decentr.setPublicProfile<YourPrivateProfile>(
   walletAddress,
-  privateProfile,
+  publicProfile,
   {
     broadcast: true,
     privateKey,
@@ -214,6 +217,9 @@ CONSOLE OUTPUT:
 {
   birthday: '1991-02-03',
   gender: 'male',
+  avatar: 'http://hosting.com/avatar.png',
+  lastName: 'lastName',
+  firstName: 'firstName',
 }
 */
 ```
