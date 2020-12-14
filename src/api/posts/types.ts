@@ -40,7 +40,8 @@ export enum PostCategory {
   ScienceAndTechnology,
   StrangeWorld,
   HealthAndCulture,
-  FitnessAndExercise
+  FitnessAndExercise,
+  Crypto,
 }
 
 export enum LikeWeight {
