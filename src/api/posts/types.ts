@@ -1,5 +1,5 @@
 import { Wallet } from '../../wallet'
-import { BroadcastMode } from '../messages'
+import { BroadcastOptions } from '../messages'
 import { StdTxResponse } from '../types'
 
 export type QueryCreatePostResponse = StdTxResponse<'community/CreatePost', Pick<Post, 'uuid' | 'category' | 'previewImage' | 'owner' | 'text' | 'title'>>;
@@ -13,10 +13,9 @@ export interface PostIdentificationParameters {
 
 export type PopularPostsPeriod = 'day' | 'week' | 'month';
 
-export interface PostBroadcastOptions {
+export interface PostBroadcastOptions extends BroadcastOptions {
   broadcast: true,
   privateKey: Wallet['privateKey'];
-  mode?: BroadcastMode,
 }
 
 export interface UserPostsFilterOptions {

@@ -1,5 +1,5 @@
 import { StdTxResponse } from '../types';
-import { BroadcastMode } from '../messages';
+import { BroadcastOptions } from '../messages'
 import { Wallet } from '../../wallet';
 
 export type QueryPrivateProfileResponse = StdTxResponse<'profile/SetPrivate', { private: string }>;
@@ -10,16 +10,15 @@ export interface AccountResponse {
   value: Account;
 }
 
-interface BaseBroadcastOptions {
+interface BaseProfileBroadcastOptions extends BroadcastOptions {
   broadcast: true,
-  mode?: BroadcastMode,
 }
 
-export interface PublicProfileBroadcastOptions extends BaseBroadcastOptions {
+export interface PublicProfileBroadcastOptions extends BaseProfileBroadcastOptions {
   privateKey: Wallet['privateKey'],
 }
 
-export type PrivateProfileBroadcastOptions = BaseBroadcastOptions;
+export type PrivateProfileBroadcastOptions = BaseProfileBroadcastOptions;
 
 export interface TokenBalanceResponse {
   readonly balance: number;

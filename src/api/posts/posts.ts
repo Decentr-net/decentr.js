@@ -62,7 +62,7 @@ export async function createPost(
     post,
   );
 
-  if (!broadcastOptions) {
+  if (!broadcastOptions?.broadcast) {
     return stdTxResponse;
   }
 
@@ -76,9 +76,8 @@ export async function createPost(
       ...account,
       privateKey: broadcastOptions.privateKey,
     },
-    {
-      mode: broadcastOptions.mode,
-    });
+    broadcastOptions,
+  );
 }
 
 function queryDeletePost(
@@ -137,9 +136,8 @@ export async function deletePost(
       ...account,
       privateKey: broadcastOptions.privateKey,
     },
-    {
-      mode: broadcastOptions.mode,
-    });
+    broadcastOptions,
+  );
 }
 
 
@@ -247,7 +245,6 @@ export async function likePost(
       ...account,
       privateKey: broadcastOptions.privateKey,
     },
-    {
-      mode: broadcastOptions.mode,
-    });
+    broadcastOptions,
+  );
 }

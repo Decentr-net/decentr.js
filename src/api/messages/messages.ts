@@ -4,12 +4,13 @@ import { StdTxResponseValue } from '../types';
 import { getSignature } from '../api-utils';
 import { Account } from '../profile';
 import {
-  BroadcastBody,
-  BroadcastMode,
+  BroadcastBody, BroadcastClientError,
+  BroadcastErrorResponse,
+  BroadcastMode, BroadcastOptions,
   BroadcastResponse,
   SignedMessage,
-  StdMessage,
-} from './types';
+  StdMessage
+} from './types'
 
 function createStdMessage(
   txResponseValue: StdTxResponseValue,
@@ -81,6 +82,10 @@ function broadcastSignedMessage(
   });
 }
 
+function isBroadcastErrorResponse(response: BroadcastResponse): response is BroadcastErrorResponse {
+  return !!(response as BroadcastErrorResponse).code;
+}
+
 export async function broadcast(
   apiUrl: string,
   chainId: string,
@@ -88,11 +93,17 @@ export async function broadcast(
   account: Pick<Account, 'account_number' | 'sequence'> & {
     privateKey: Wallet['privateKey'],
   },
-  options: {
-    mode?: BroadcastMode;
-  },
+  options?: BroadcastOptions,
 ): Promise<BroadcastResponse> {
   const stdTxMessage = createStdMessage(stdTxValue, account, chainId);
   const signedMessage = signMessage(stdTxMessage, account.privateKey);
-  return broadcastSignedMessage(apiUrl, signedMessage, options.mode);
+
+  return broadcastSignedMessage(apiUrl, signedMessage, options?.mode)
+    .then((response) => {
+      if (isBroadcastErrorResponse(response) && !options?.skipErrors) {
+        throw new BroadcastClientError(response.code);
+      }
+
+      return response;
+    });
 }

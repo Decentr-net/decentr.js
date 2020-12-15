@@ -1,5 +1,5 @@
 import { KeyPair, Wallet } from '../wallet';
-import { broadcast, BroadcastMode, BroadcastResponse } from './messages';
+import { broadcast, BroadcastOptions, BroadcastResponse } from './messages'
 import {
   Account,
   getAccount,
@@ -273,9 +273,7 @@ export class Decentr {
     account: Pick<Account, 'account_number' | 'sequence'> & {
       privateKey: Wallet['privateKey'],
     },
-    options: {
-      mode?: BroadcastMode;
-    },
+    options: BroadcastOptions,
   ): Promise<BroadcastResponse> {
     return broadcast(this.apiUrl, this.chainId, stdTxValue, account, options);
   }

@@ -111,7 +111,7 @@ export async function sendPDV(
   const pdvAddress = await queryPDVAddress(apiUrl, pdv, wallet);
   const stdTxResponse = await queryPDV(apiUrl, chainId, pdvAddress, wallet.address);
 
-  if (!broadcastOptions) {
+  if (!broadcastOptions?.broadcast) {
     return stdTxResponse;
   }
 
@@ -125,9 +125,8 @@ export async function sendPDV(
       ...account,
       privateKey: wallet.privateKey,
     },
-    {
-      mode: broadcastOptions.mode,
-    });
+    broadcastOptions,
+  );
 }
 
 function getPDVHeaders<T>(data: T, keys: KeyPair): PDVHeaders {

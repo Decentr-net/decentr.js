@@ -139,9 +139,8 @@ export async function setPublicProfile(
       ...account,
       privateKey: broadcastOptions.privateKey,
     },
-    {
-      mode: broadcastOptions.mode,
-    });
+    broadcastOptions,
+  );
 }
 
 export async function setPrivateProfile<T extends PrivateProfile>(
@@ -191,7 +190,6 @@ export async function setPrivateProfile<T extends PrivateProfile>(
       ...account,
       privateKey,
     },
-    {
-      mode: broadcastOptions.mode,
-    });
+    broadcastOptions,
+  );
 }
