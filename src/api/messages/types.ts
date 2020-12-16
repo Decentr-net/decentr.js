@@ -90,6 +90,6 @@ export interface BroadcastErrorResponse extends BroadcastBaseResponse {
 export type BroadcastResponse = BroadcastSuccessResponse | BroadcastErrorResponse;
 
 export class BroadcastClientError {
-  constructor(private broadcastErrorCode: BroadcastErrorCode) {
+  constructor(public broadcastErrorCode: BroadcastErrorCode) {
   }
 }
