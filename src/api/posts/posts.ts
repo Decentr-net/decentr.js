@@ -248,3 +248,13 @@ export async function likePost(
     broadcastOptions,
   );
 }
+
+
+export function getLikedPosts(
+  apiUrl: string,
+  walletAddress: Wallet['address'],
+): Promise<Record<Post['uuid'], LikeWeight.Down | LikeWeight.Up>> {
+  const url = `${apiUrl}/community/likedPosts/${walletAddress}`;
+
+  return blockchainFetch(url);
+}

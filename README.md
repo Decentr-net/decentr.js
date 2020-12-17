@@ -572,6 +572,24 @@ decentr.likePost(
 );
 ```
 
+**Get liked posts**
+
+```ts
+const walletAddress = 'decentr1j6e6j53vh95jcq9k9lnsrsvj3h8dkdgmm20zhu';
+
+decentr.getLikedPosts(walletAddress)
+  .then(console.log);
+
+/* 
+CONSOLE OUTPUT:
+
+{
+  "decentr1ndzepz4myut7ydlq906g6hxe8k79qrdv4wfygs/36f86ac8-40b3-11eb-87c8-0242ac11000a": -1, (disliked)
+  "decentr16pnd8v6jcpnfjazlfyte7adfn2ue4q48a9m3wc/d7992efc-3fb2-11eb-85e2-0242ac110007": 1   (liked)
+}
+*/
+```
+
 
 ## 🥂 License
 
