@@ -57,15 +57,7 @@ export function createBaseRequest({
     gas_adjustment?: string;
     simulate?: boolean;
     walletAddress: Wallet['address'];
-  }): {
-   base_req: {
-     chain_id: string,
-     from: Wallet['address'],
-     gas?: string,
-     gas_adjustment?: string,
-     simulate?: boolean,
-  },
-} {
+  }): BaseRequest {
   return {
     base_req: {
       chain_id,
@@ -110,7 +102,7 @@ async function querySimulateGas<T>(
     ...gasEstimateRequest,
   };
 
-  return fetchJson<QuerySimulateGasResponse>(url, {
+  return fetchJson<QuerySimulateGasResponse, BaseRequest & T>(url, {
     method: 'POST',
     body
   })
