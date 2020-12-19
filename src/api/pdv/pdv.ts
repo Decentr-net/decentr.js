@@ -1,6 +1,6 @@
 import { bytesToHex, fetchJson } from '../../utils';
 import { KeyPair, Wallet } from '../../wallet';
-import { blockchainFetch, getSignature } from '../api-utils';
+import { addGas, blockchainFetch, getSignature } from '../api-utils';
 import { broadcast, BroadcastResponse } from '../messages';
 import { Account, getAccount } from '../profile';
 import {
@@ -15,7 +15,7 @@ import {
   QueryPDVResponse,
 } from './types';
 
-function queryPDV(
+async function queryPDV(
   apiUrl: string,
   chainId: string,
   pdvAddress: string,
@@ -23,13 +23,11 @@ function queryPDV(
 ): Promise<QueryPDVResponse> {
   const url = `${apiUrl}/pdv`;
 
-  const body = {
-    base_req: {
-      chain_id: chainId,
-      from: walletAddress,
-    },
+  const queryParam = {
     address: pdvAddress,
   };
+
+  const body = await addGas(queryParam, chainId, url, walletAddress);
 
   return fetchJson(url, { method: 'POST', body });
 }

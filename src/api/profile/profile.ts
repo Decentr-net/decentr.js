@@ -1,6 +1,6 @@
 import { decrypt, encrypt, fetchJson } from '../../utils';
 import { Wallet } from '../../wallet';
-import { blockchainFetch } from '../api-utils';
+import { addGas, blockchainFetch } from '../api-utils';
 import { broadcast, BroadcastResponse } from '../messages';
 import {
   Account,
@@ -14,43 +14,39 @@ import {
   TokenBalanceResponse,
 } from './types';
 
-function queryPublicProfile(
+async function queryPublicProfile(
   apiUrl: string,
   chainId: string,
   walletAddress: Wallet['address'],
   publicProfile: PublicProfile,
 ): Promise<QueryPublicProfileResponse> {
-  const endpoint = `${apiUrl}/profile/public/${walletAddress}`;
+  const url = `${apiUrl}/profile/public/${walletAddress}`;
 
-  const body = {
-    base_req: {
-      chain_id: chainId,
-      from: walletAddress,
-    },
+  const queryParam = {
     public: publicProfile,
   };
 
-  return fetchJson(endpoint, { method: 'POST', body });
+  const body = await addGas(queryParam, chainId, url, walletAddress);
+
+  return fetchJson(url, { method: 'POST', body });
 }
 
-function queryPrivateProfile<T extends PrivateProfile>(
+async function queryPrivateProfile<T extends PrivateProfile>(
   apiUrl: string,
   chainId: string,
   walletAddress: Wallet['address'],
   privateProfile: T,
   privateKey: Wallet['privateKey'],
 ): Promise<QueryPrivateProfileResponse> {
+  const url = `${apiUrl}/profile/private/${walletAddress}`;
+
   const encrypted = encrypt(privateProfile, privateKey);
 
-  const body = {
-    base_req: {
-      chain_id: chainId,
-      from: walletAddress
-    },
+  const queryParam = {
     private: encrypted,
   };
 
-  const url = `${apiUrl}/profile/private/${walletAddress}`;
+  const body = await addGas(queryParam, chainId, url, walletAddress);
 
   return fetchJson(url, { method: 'POST', body });
 }
