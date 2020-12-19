@@ -12,8 +12,8 @@ import {
 import { Wallet } from '../wallet';
 import { BaseRequest, QuerySimulateGasResponse } from './types';
 
-const GAS_ADJUSTMENT: string = "1.35";
-const GAS_LIMIT: string = "1000000";
+const GAS_ADJUSTMENT = "1.35";
+const GAS_LIMIT = "1000000";
 
 export async function blockchainFetch<T>(url: string, queryParameters?: Partial<Record<string, string | number>>): Promise<T> {
   const response = await fetchJson<{ height: string; result: T } | T>(url, { queryParameters });
