@@ -1,6 +1,6 @@
 import { Wallet } from '../../wallet';
 import { fetchJson } from '../../utils';
-import { blockchainFetch, createBaseRequest } from '../api-utils';
+import { addGas, blockchainFetch } from '../api-utils';
 import { broadcast, BroadcastResponse } from '../messages';
 import { Account, getAccount } from '../profile';
 import { StdTxResponse } from '../types';
@@ -16,7 +16,7 @@ import {
   PostIdentificationParameters
 } from './types'
 
-function queryCreatePost(
+async function queryCreatePost(
   apiUrl: string,
   chainId: string,
   walletAddress: Wallet['address'],
@@ -24,11 +24,12 @@ function queryCreatePost(
 ): Promise<QueryCreatePostResponse> {
   const url = `${apiUrl}/community/posts`;
 
-  const body = {
-    ...createBaseRequest({ chainId, walletAddress }),
+  const queryParam = {
     ...post,
     category: post.category.toString(),
   };
+
+  const body = await addGas(queryParam, chainId, url, walletAddress);
 
   return fetchJson(url, { method: 'POST', body });
 }
@@ -80,7 +81,7 @@ export async function createPost(
   );
 }
 
-function queryDeletePost(
+async function queryDeletePost(
   apiUrl: string,
   chainId: string,
   walletAddress: Wallet['address'],
@@ -88,7 +89,7 @@ function queryDeletePost(
 ): Promise<StdTxResponse> {
   const url = `${apiUrl}/community/posts/${author}/${postId}/delete`;
 
-  const body = createBaseRequest({ chainId, walletAddress });
+  const body = await addGas(null, chainId, url, walletAddress);
 
   return fetchJson(url, { method: 'POST', body });
 }
@@ -181,7 +182,7 @@ export function getPopularPosts(
   );
 }
 
-function queryLikePost(
+async function queryLikePost(
   apiUrl: string,
   chainId: string,
   walletAddress: Wallet['address'],
@@ -190,10 +191,11 @@ function queryLikePost(
 ): Promise<StdTxResponse> {
   const url = `${apiUrl}/community/posts/${author}/${postId}/like`;
 
-  const body = {
-    ...createBaseRequest({ chainId, walletAddress }),
+  const queryParam = {
     weight: likeWeight,
   };
+
+  const body = await addGas(queryParam, chainId, url, walletAddress);
 
   return fetchJson(url, { method: 'POST', body });
 }

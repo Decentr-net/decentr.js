@@ -28,3 +28,13 @@ export interface StdTxResponse<T extends string = string, V = unknown> {
   readonly type: 'cosmos-sdk/StdTx';
   readonly value: StdTxResponseValue<T, V>
 }
+
+export interface BaseRequest {
+  readonly base_req: {
+    readonly chain_id: string,
+    readonly from: Wallet['address'],
+    readonly gas?: string,
+    readonly gas_adjustment?: string,
+    readonly simulate?: boolean,
+  },
+}
