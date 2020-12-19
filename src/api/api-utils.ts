@@ -48,13 +48,13 @@ export function getSignature<T>(
 export function createBaseRequest({
     chainId: chain_id,
     gas,
-    gas_adjustment: gasAdjustment,
+    gasAdjustment: gas_adjustment,
     simulate,
     walletAddress: from,
   }: {
     chainId: string;
     gas?: string;
-    gas_adjustment?: string;
+    gasAdjustment?: string;
     simulate?: boolean;
     walletAddress: Wallet['address'];
   }): BaseRequest {
@@ -63,8 +63,8 @@ export function createBaseRequest({
       chain_id,
       from,
       gas,
-      gas_adjustment: gasAdjustment,
-      simulate: simulate,
+      gas_adjustment,
+      simulate,
     },
   };
 }
@@ -92,7 +92,7 @@ async function querySimulateGas<T>(
 ): Promise<QuerySimulateGasResponse['gas_estimate']> {
   const gasEstimateRequest = createBaseRequest({
     chainId,
-    gas_adjustment: GAS_ADJUSTMENT,
+    gasAdjustment: GAS_ADJUSTMENT,
     simulate: true,
     walletAddress
   });
