@@ -38,3 +38,7 @@ export interface BaseRequest {
     readonly simulate?: boolean,
   },
 }
+
+export interface QuerySimulateGasResponse {
+  readonly gas_estimate: string;
+}

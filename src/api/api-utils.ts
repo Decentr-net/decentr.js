@@ -10,10 +10,10 @@ import {
   sortObjectKeys
 } from '../utils'
 import { Wallet } from '../wallet';
-import { BaseRequest } from './types';
+import { BaseRequest, QuerySimulateGasResponse } from './types';
 
 const GAS_ADJUSTMENT: string = "1.35";
-const GAS_LIMIT: string = "400000";
+const GAS_LIMIT: string = "1000000";
 
 export async function blockchainFetch<T>(url: string, queryParameters?: Partial<Record<string, string | number>>): Promise<T> {
   const response = await fetchJson<{ height: string; result: T } | T>(url, { queryParameters });
@@ -83,8 +83,8 @@ export async function addGas<T>(body: T, chainId: string, url: string, walletAdd
     ...body
   };
 
-  const gasEstimated = await getGasEstimated(bodyToEstimate, chainId, walletAddress, url);
-  const gas = String((Number(gasEstimated) > Number(GAS_LIMIT)) ? GAS_LIMIT : gasEstimated);
+  const estimatedGas = await querySimulateGas(bodyToEstimate, chainId, walletAddress, url);
+  const gas = String((Number(estimatedGas) > Number(GAS_LIMIT)) ? GAS_LIMIT : estimatedGas);
 
   return {
     ...createBaseRequest({ chainId, walletAddress, gas }),
@@ -92,7 +92,12 @@ export async function addGas<T>(body: T, chainId: string, url: string, walletAdd
   }
 }
 
-async function getGasEstimated<T>(bodyToEstimate: T, chainId: string, walletAddress: Wallet['address'], url: string) {
+async function querySimulateGas<T>(
+    bodyToEstimate: T,
+    chainId: string,
+    walletAddress: Wallet['address'],
+    url: string
+): Promise<QuerySimulateGasResponse['gas_estimate']> {
   const gasEstimateRequest = createBaseRequest({
     chainId,
     gas_adjustment: GAS_ADJUSTMENT,
@@ -105,5 +110,9 @@ async function getGasEstimated<T>(bodyToEstimate: T, chainId: string, walletAddr
     ...gasEstimateRequest,
   };
 
-  return fetchJson<{ gas_estimate: string }>(url, { method: 'POST', body }).then(res => res.gas_estimate);
+  return fetchJson<QuerySimulateGasResponse>(url, {
+    method: 'POST',
+    body
+  })
+      .then(({ gas_estimate }) => gas_estimate);
 }
