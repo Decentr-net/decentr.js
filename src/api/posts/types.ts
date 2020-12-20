@@ -39,9 +39,10 @@ export enum PostCategory {
   TravelAndTourism,
   ScienceAndTechnology,
   StrangeWorld,
-  HealthAndCulture,
-  FitnessAndExercise,
-  Crypto,
+  ArtsAndEntertainment,
+  WritersAndWriting,
+  HealthAndFitness,
+  CryptoAndBlockchain,
 }
 
 export enum LikeWeight {
