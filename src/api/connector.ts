@@ -33,7 +33,7 @@ import {
   deletePost,
   getLatestPosts,
   getLikedPosts,
-  getPopularPosts,
+  getPopularPosts, getPost,
   getUserPosts,
   likePost,
   LikeWeight,
@@ -44,7 +44,7 @@ import {
   PostIdentificationParameters,
   PostsFilterOptions,
   QueryCreatePostResponse,
-  UserPostsFilterOptions,
+  UserPostsFilterOptions
 } from './posts'
 
 export class Decentr {
@@ -208,6 +208,15 @@ export class Decentr {
       walletAddress,
       postIdentificationParameters,
       broadcastOptions as PostBroadcastOptions,
+    );
+  }
+
+  public getPost(
+    postIdentificationParameters: PostIdentificationParameters,
+  ): Promise<Post> {
+    return getPost(
+      this.apiUrl,
+      postIdentificationParameters,
     );
   }
 
