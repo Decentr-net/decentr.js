@@ -438,6 +438,35 @@ decentr.deletePost(walletAddress, {
 });
 ```
 
+**Get one post**
+
+```ts
+// These params must be used in pair or not used at all
+const author = 'decentr1urlzs0q6g8lqedjgfa5nxvnldp7nxlunnky8ux';
+const postId = 'cf4699e5-3411-11eb-8f45-0242ac11000b';
+
+decentr.getPost({
+  author,
+  postId,
+}).then(console.log);
+
+/* 
+CONSOLE OUTPUT:
+
+{
+  category: 1 (PostCategory),
+  createdAt: 1606853668 (UNIX timestamp),
+  dislikesCount: 0,
+  owner: "decentr1urlzs0q6g8lqedjgfa5nxvnldp7nxlunnky8ux"
+  pdv: 0,
+  previewImage: 'http...',
+  text: "Post text",
+  title: "Post title",
+  uuid: "cf4699e5-3411-11eb-8f45-0242ac11000b"
+}
+*/
+```
+
 **Get latest posts**
 
 ```ts
@@ -461,7 +490,7 @@ CONSOLE OUTPUT:
 
 [
   {
-    category: 1 (PostCategory.WorldNews),
+    category: 1 (PostCategory),
     createdAt: 1606853668 (UNIX timestamp),
     dislikesCount: 0,
     owner: "decentr1urlzs0q6g8lqedjgfa5nxvnldp7nxlunnky8ux"

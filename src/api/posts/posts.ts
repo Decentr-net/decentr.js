@@ -141,6 +141,14 @@ export async function deletePost(
   );
 }
 
+export function getPost(
+  apiUrl: string,
+  post: PostIdentificationParameters,
+): Promise<Post> {
+  return blockchainFetch(
+    `${apiUrl}/community/post/${post.author}/${post.postId}`
+  );
+}
 
 export function getLatestPosts(
   apiUrl: string,
