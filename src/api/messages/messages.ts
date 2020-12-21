@@ -20,24 +20,11 @@ function createStdMessage(
   return {
     account_number: account.account_number,
     chain_id: chainId,
-    fee: {
-      // TODO
-      amount: [
-        {
-          amount: '5000',
-          denom: 'udec',
-        },
-      ],
-      // amount: txResponseValue.fee.amount.map((amount => ({
-      //   amount: amount.amount || '5000',
-      //   denom: amount.denom || 'udec',
-      // }))),
-      gas: txResponseValue.fee.gas,
-    },
+    fee: txResponseValue.fee,
     memo: txResponseValue.memo,
     msgs: txResponseValue.msg,
     sequence: account.sequence,
-  }
+  };
 }
 
 function signMessage(
