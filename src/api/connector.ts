@@ -32,7 +32,7 @@ import {
   createPost,
   deletePost,
   getLatestPosts,
-  getLikedPosts,
+  getLikedPosts, getModeratorAddress,
   getPopularPosts, getPost,
   getUserPosts,
   likePost,
@@ -282,6 +282,12 @@ export class Decentr {
     walletAddress: Wallet['address']
   ): Promise<Record<Post['uuid'], LikeWeight.Down | LikeWeight.Up>> {
     return getLikedPosts(this.apiUrl, walletAddress);
+  }
+
+  public getModeratorAddress(): Promise<string> {
+    return getModeratorAddress(
+        this.apiUrl,
+    );
   }
 
   public broadcast(
