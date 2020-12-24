@@ -1,3 +1,5 @@
+import atob from 'atob';
+
 import { decrypt, encrypt, fetchJson } from '../../utils';
 import { Wallet } from '../../wallet';
 import { addGas, blockchainFetch } from '../api-utils';
