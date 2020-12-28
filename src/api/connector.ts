@@ -23,7 +23,7 @@ import {
   PDVBroadcastOptions,
   PDVDetails,
   PDVListItem,
-  PDVStatItem,
+  PDVStatItem, PDVType,
   QueryPDVResponse,
   sendPDV,
 } from './pdv';
@@ -139,16 +139,18 @@ export class Decentr {
     return getPDVDetails(this.apiUrl, pdvAddress, keys);
   }
 
-  public sendPDV(pdv: PDV, wallet: Wallet): Promise<QueryPDVResponse>;
+  public sendPDV(pdv: PDV, pdvType: PDVType, wallet: Wallet): Promise<QueryPDVResponse>;
 
   public sendPDV(
     pdv: PDV,
+    pdvType: PDVType,
     wallet: Wallet,
     broadcastOptions: PDVBroadcastOptions,
   ): Promise<BroadcastResponse>;
 
   public sendPDV(
     pdv: PDV,
+    pdvType: PDVType,
     wallet: Wallet,
     broadcastOptions?: PDVBroadcastOptions,
   ): Promise<QueryPDVResponse | BroadcastResponse> {
@@ -156,6 +158,7 @@ export class Decentr {
       this.apiUrl,
       this.chainId,
       pdv,
+      pdvType,
       wallet,
       broadcastOptions as PDVBroadcastOptions,
     );

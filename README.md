@@ -277,9 +277,10 @@ CONSOLE OUTPUT:
 ```
 
 ## 📜 PDV (Personal Data Value)
-
 **Send PDV data**
 ```ts
+const pdvType: PDVType; // 'Cookie' = 1, ...
+
 const pdv = {
   version: 'v1',
   pdv: {
@@ -308,7 +309,7 @@ const wallet: Wallet = {
   publicKey:  '03dae8cf229d1db63c8d854bd1c73e280147ebd3bb40df12381d16b0eb071a72b6'
 }
 
-await decentr.sendPDV(pdv, wallet, { broadcast: true });
+await decentr.sendPDV(pdv, pdvType, wallet, { broadcast: true });
 ```
 
 **Get PDV list**

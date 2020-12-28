@@ -10,7 +10,7 @@ import {
   PDVDetails,
   PDVHeaders,
   PDVListItem,
-  PDVStatItem,
+  PDVStatItem, PDVType,
   QueryPDVAddressResponse,
   QueryPDVResponse,
 } from './types';
@@ -19,12 +19,14 @@ async function queryPDV(
   apiUrl: string,
   chainId: string,
   pdvAddress: string,
+  pdvType: PDVType,
   walletAddress: string,
 ): Promise<QueryPDVResponse> {
   const url = `${apiUrl}/pdv`;
 
   const queryParam = {
     address: pdvAddress,
+    type: pdvType,
   };
 
   const body = await addGas(queryParam, chainId, url, walletAddress);
@@ -88,6 +90,7 @@ export async function sendPDV(
   apiUrl: string,
   chainId: string,
   pdv: PDV,
+  pdvType: PDVType,
   wallet: Wallet,
 ): Promise<QueryPDVResponse>;
 
@@ -95,6 +98,7 @@ export async function sendPDV(
   apiUrl: string,
   chainId: string,
   pdv: PDV,
+  pdvType: PDVType,
   wallet: Wallet,
   broadcastOptions: PDVBroadcastOptions,
 ): Promise<BroadcastResponse>;
@@ -103,11 +107,12 @@ export async function sendPDV(
   apiUrl: string,
   chainId: string,
   pdv: PDV,
+  pdvType: PDVType,
   wallet: Wallet,
   broadcastOptions?: PDVBroadcastOptions,
 ): Promise<QueryPDVResponse | BroadcastResponse> {
   const pdvAddress = await queryPDVAddress(apiUrl, pdv, wallet);
-  const stdTxResponse = await queryPDV(apiUrl, chainId, pdvAddress, wallet.address);
+  const stdTxResponse = await queryPDV(apiUrl, chainId, pdvAddress, pdvType, wallet.address);
 
   if (!broadcastOptions?.broadcast) {
     return stdTxResponse;
