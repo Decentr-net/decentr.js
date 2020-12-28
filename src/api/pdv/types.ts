@@ -38,6 +38,11 @@ export interface PDV {
   };
 }
 
+export enum PDVType {
+  'Cookie' = 1,
+  'LoginCookie',
+}
+
 export interface PDVListItem {
   readonly timestamp: number;
   readonly address: string;
