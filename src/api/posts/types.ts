@@ -43,6 +43,7 @@ export enum PostCategory {
   WritersAndWriting,
   HealthAndFitness,
   CryptoAndBlockchain,
+  Sports,
 }
 
 export enum LikeWeight {
