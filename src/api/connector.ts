@@ -23,17 +23,21 @@ import {
   PDVBroadcastOptions,
   PDVDetails,
   PDVListItem,
-  PDVStatItem, PDVType,
+  PDVListPaginationOptions,
+  PDVStatItem,
+  PDVType,
   QueryPDVResponse,
-  sendPDV,
-} from './pdv';
+  sendPDV
+} from './pdv'
 import { StdTxResponse, StdTxResponseValue } from './types'
 import {
   createPost,
   deletePost,
   getLatestPosts,
-  getLikedPosts, getModeratorAddress,
-  getPopularPosts, getPost,
+  getLikedPosts,
+  getModeratorAddress,
+  getPopularPosts,
+  getPost,
   getUserPosts,
   likePost,
   LikeWeight,
@@ -127,8 +131,11 @@ export class Decentr {
     );
   }
 
-  public getPDVList(walletAddress: Wallet['address']): Promise<PDVListItem[]> {
-    return getPDVList(this.apiUrl, walletAddress);
+  public getPDVList(
+    walletAddress: Wallet['address'],
+    paginationOptions?: PDVListPaginationOptions,
+  ): Promise<PDVListItem[]> {
+    return getPDVList(this.apiUrl, walletAddress, paginationOptions);
   }
 
   public getPDVStats(walletAddress: Wallet['address']): Promise<PDVStatItem[]> {

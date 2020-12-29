@@ -9,11 +9,11 @@ import {
   PDVBroadcastOptions,
   PDVDetails,
   PDVHeaders,
-  PDVListItem,
+  PDVListItem, PDVListPaginationOptions,
   PDVStatItem, PDVType,
   QueryPDVAddressResponse,
-  QueryPDVResponse,
-} from './types';
+  QueryPDVResponse
+} from './types'
 
 async function queryPDV(
   apiUrl: string,
@@ -61,8 +61,11 @@ function getCerberusAddress(apiUrl: string): Promise<string> {
 export function getPDVList(
   apiUrl: string,
   walletAddress: Wallet['address'],
+  paginationOptions?: PDVListPaginationOptions,
 ): Promise<PDVListItem[]> {
-  return blockchainFetch(`${apiUrl}/pdv/${walletAddress}/list`);
+  return blockchainFetch(`${apiUrl}/pdv/${walletAddress}/list`, {
+    ...paginationOptions,
+  });
 }
 
 export function getPDVStats(

@@ -316,7 +316,12 @@ await decentr.sendPDV(pdv, pdvType, wallet, { broadcast: true });
 ```ts
 const walletAddress = 'decentr1p4s4djk5dqstfswg6k8sljhkzku4a6ve9dmng5';
 
-decentr.getPDVlist(walletAddress)
+const paginationParams = { // Optional
+  from: 1609255398, // Unix timestamp of previous pdv item, optional
+  limit: 20,
+}
+
+decentr.getPDVlist(walletAddress, paginationParams)
   .then(console.log);
 
 /*

@@ -43,6 +43,11 @@ export enum PDVType {
   'LoginCookie',
 }
 
+export interface PDVListPaginationOptions {
+  limit: number;
+  from: number; // timestamp of PDVListItem
+}
+
 export interface PDVListItem {
   readonly timestamp: number;
   readonly address: string;
