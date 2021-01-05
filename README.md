@@ -625,6 +625,59 @@ CONSOLE OUTPUT:
 */
 ```
 
+## Bank
+
+### Get balances
+```ts
+const walletAddress = 'decentr1p4s4djk5dqstfswg6k8sljhkzku4a6ve9dmng5';
+
+decentr.getBankBalances(walletAddress).then(console.log);
+
+/* 
+CONSOLE OUTPUT:
+[{
+  "denom": "udec",
+  "amount": "999955"
+}]
+*/
+```
+
+### Send coin
+
+```ts
+const wallet: Wallet = {
+  address:    'decentr1p4s4djk5dqstfswg6k8sljhkzku4a6ve9dmng5',
+  privateKey: 'fbf265ca5872907c4dbd33bf87c683d84b96987eb42d4a6c50f335eac57ece3e',
+  publicKey:  '03dae8cf229d1db63c8d854bd1c73e280147ebd3bb40df12381d16b0eb071a72b6'
+}
+
+const walletAddressTo = "decentr1j6e6j53vh95jcq9k9lnsrsvj3h8dkdgmm20zhu"
+const amount = "15"
+
+await decentr.sendCoin(
+  wallet,
+  walletAddressTo,
+  amount,
+  {
+    broadcast: true,
+  },
+);
+
+/*
+CONSOLE OUTPUT:
+
+{
+  "from_address": "decentr1p4s4djk5dqstfswg6k8sljhkzku4a6ve9dmng5",
+  "to_address": "decentr1j6e6j53vh95jcq9k9lnsrsvj3h8dkdgmm20zhu",
+  "amount": [
+    {
+      "denom": "udec",
+      "amount": "15"
+    }
+  ]
+}
+*/
+```
 
 ## 🥂 License
 
