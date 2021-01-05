@@ -50,6 +50,7 @@ import {
   QueryCreatePostResponse,
   UserPostsFilterOptions
 } from './posts'
+import { BankBroadcastOptions, BankCoin, getBankBalances, QueryTransferResponse, sendCoin } from './bank';
 
 export class Decentr {
   constructor(
@@ -296,7 +297,45 @@ export class Decentr {
 
   public getModeratorAddress(): Promise<string> {
     return getModeratorAddress(
-        this.apiUrl,
+      this.apiUrl,
+    );
+  }
+
+  public getBankBalances(
+    walletAddress: Wallet['address'],
+  ): Promise<BankCoin[]> {
+    return getBankBalances(
+      this.apiUrl,
+      walletAddress,
+    );
+  }
+
+  public sendCoin(
+    wallet: Wallet,
+    walletAddressTo: Wallet['address'],
+    amount: string,
+  ): Promise<QueryTransferResponse>;
+
+  public sendCoin(
+    wallet: Wallet,
+    walletAddressTo: Wallet['address'],
+    amount: string,
+    broadcastOptions: BankBroadcastOptions,
+  ): Promise<BroadcastResponse>;
+
+  public sendCoin(
+    wallet: Wallet,
+    walletAddressTo: Wallet['address'],
+    amount: string,
+    broadcastOptions?: BankBroadcastOptions,
+  ): Promise<QueryTransferResponse | BroadcastResponse> {
+    return sendCoin(
+      this.apiUrl,
+      this.chainId,
+      wallet,
+      walletAddressTo,
+      amount,
+      broadcastOptions as BankBroadcastOptions,
     );
   }
 

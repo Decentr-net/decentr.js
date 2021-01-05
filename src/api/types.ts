@@ -13,7 +13,7 @@ export interface StdTxFee {
 export interface StdTxMessage<T extends string = string, V = unknown> {
   readonly type: T;
   readonly value: {
-    readonly owner: Wallet['address'],
+    readonly owner?: Wallet['address'],
   } & V;
 }
 
