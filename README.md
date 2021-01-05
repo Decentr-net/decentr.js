@@ -22,6 +22,7 @@ npm install decentr-js
 ## 🎬 Getting started
 
 ## Mnemonic
+
 **Generate mnemonic phrase (24 words)**
 
 ```ts
@@ -33,7 +34,9 @@ const mnemonic = generateMnemonic();
 ```
 
 ## Wallet
+
 **Create wallet with address and keys**
+
 ```ts
 import { createWalletFromMnemonic } from "decentr-js"
 
@@ -52,6 +55,7 @@ const wallet = createWalletFromMnemonic(seed);
 # Using Decentr api
 
 ##! Notice
+
 **All methods described in Decentr class below are available as standalone functions, but require extra parameters:**
 
 ```ts
@@ -138,8 +142,10 @@ const decentr = new Decentr(REST_URL, CHAIN_ID);
 ```
 
 ## 📜 Profile
+
 **Get account**
 >Note: returns `undefined` instead of empty fields if account doesn't exist 
+
 ```ts
 const walletAddress = 'decentr1p4s4djk5dqstfswg6k8sljhkzku4a6ve9dmng5';
 
@@ -167,6 +173,7 @@ CONSOLE OUTPUT:
 ```
 
 **Get token balance**
+
 ```ts
 const walletAddress = 'decentr1p4s4djk5dqstfswg6k8sljhkzku4a6ve9dmng5';
 
@@ -181,6 +188,7 @@ CONSOLE OUTPUT:
 ```
 
 **Set public profile**
+
 ```ts
 import { PublicProfile } from 'decentr-js';
 
@@ -206,6 +214,7 @@ await decentr.setPublicProfile<YourPrivateProfile>(
 ```
 
 **Get public profile**
+
 ```ts
 const walletAddress = 'decentr1p4s4djk5dqstfswg6k8sljhkzku4a6ve9dmng5';
 
@@ -220,11 +229,13 @@ CONSOLE OUTPUT:
   avatar: 'http://hosting.com/avatar.png',
   lastName: 'lastName',
   firstName: 'firstName',
+  registeredAt: '',
 }
 */
 ```
 
-####Set private profile
+**Set private profile**
+
 ```ts
 import { PrivateProfile } from 'decentr-js';
 
@@ -254,6 +265,7 @@ await decentr.setPrivateProfile<YourPrivateProfile>(
 **Get private profile data**
 
 *Type of returned data depends on type set in `setProfileProfile`*
+
 ```ts
 interface YourPrivateProfile extends PrivateProfile {
   emails: string[];
@@ -277,7 +289,9 @@ CONSOLE OUTPUT:
 ```
 
 ## 📜 PDV (Personal Data Value)
+
 **Send PDV data**
+
 ```ts
 const pdvType: PDVType; // 'Cookie' = 1, ...
 
@@ -313,6 +327,7 @@ await decentr.sendPDV(pdv, pdvType, wallet, { broadcast: true });
 ```
 
 **Get PDV list**
+
 ```ts
 const walletAddress = 'decentr1p4s4djk5dqstfswg6k8sljhkzku4a6ve9dmng5';
 
@@ -339,6 +354,7 @@ CONSOLE OUTPUT:
 ```
 
 **Get PDV statistics**
+
 ```ts
 const walletAddress = 'decentr1p4s4djk5dqstfswg6k8sljhkzku4a6ve9dmng5';
 
@@ -361,7 +377,8 @@ CONSOLE OUTPUT:
 */
 ```
 
-**get PDV details**
+**Get PDV details**
+
 ```ts
 const pDVaddress = '9664d0817131a2ce56f18d37f3836d6b6ec7cf29-1877c66aaa918bd2ad0c3f6d02ce7ef55fb9c28c44abed94117f4782e1d0a952';
 const wallet: Wallet = {
@@ -428,6 +445,7 @@ decentr.createPost(walletAddress, post,   {
 ```
 
 **Delete post**
+
 ```ts
 const walletAddress = 'decentr1j6e6j53vh95jcq9k9lnsrsvj3h8dkdgmm20zhu';
 const privateKey = '8c313682470073d56d2d8f5b7fde53c072024a9fd9135501125035d53c8a1f60';
@@ -625,9 +643,10 @@ CONSOLE OUTPUT:
 */
 ```
 
-## Bank
+## 🏦 Bank
 
-### Get balances
+**Get balances**
+
 ```ts
 const walletAddress = 'decentr1p4s4djk5dqstfswg6k8sljhkzku4a6ve9dmng5';
 
@@ -642,7 +661,7 @@ CONSOLE OUTPUT:
 */
 ```
 
-### Send coin
+**Send coin**
 
 ```ts
 const wallet: Wallet = {
