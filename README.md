@@ -675,11 +675,14 @@ const walletAddressTo = "decentr1j6e6j53vh95jcq9k9lnsrsvj3h8dkdgmm20zhu";
 const amount = "15";
 
 await decentr.sendCoin(
-  wallet,
-  walletAddressTo,
-  amount,
+  {
+    from_address: wallet.address,
+    to_address: walletAddressTo,
+    amount,
+  },
   {
     broadcast: true,
+    privateKey: wallet.privateKey,
   },
 );
 

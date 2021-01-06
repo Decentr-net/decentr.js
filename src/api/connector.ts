@@ -50,7 +50,7 @@ import {
   QueryCreatePostResponse,
   UserPostsFilterOptions
 } from './posts'
-import { BankBroadcastOptions, BankCoin, getBankBalances, QueryTransferResponse, sendCoin } from './bank';
+import { BankBroadcastOptions, BankCoin, getBankBalances, QueryTransferResponse, sendCoin, TransferData } from './bank';
 
 export class Decentr {
   constructor(
@@ -311,30 +311,22 @@ export class Decentr {
   }
 
   public sendCoin(
-    wallet: Wallet,
-    walletAddressTo: Wallet['address'],
-    amount: string,
+    transferData: TransferData,
   ): Promise<QueryTransferResponse>;
 
   public sendCoin(
-    wallet: Wallet,
-    walletAddressTo: Wallet['address'],
-    amount: string,
+    transferData: TransferData,
     broadcastOptions: BankBroadcastOptions,
   ): Promise<BroadcastResponse>;
 
   public sendCoin(
-    wallet: Wallet,
-    walletAddressTo: Wallet['address'],
-    amount: string,
+    transferData: TransferData,
     broadcastOptions?: BankBroadcastOptions,
   ): Promise<QueryTransferResponse | BroadcastResponse> {
     return sendCoin(
       this.apiUrl,
       this.chainId,
-      wallet,
-      walletAddressTo,
-      amount,
+      transferData,
       broadcastOptions as BankBroadcastOptions,
     );
   }

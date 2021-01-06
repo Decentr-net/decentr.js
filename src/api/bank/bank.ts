@@ -1,6 +1,6 @@
 import { Account, getAccount } from '../profile';
 import { addGas, blockchainFetch } from '../api-utils';
-import { BankBroadcastOptions, BankCoin, QueryTransferResponse } from './types';
+import { BankBroadcastOptions, BankCoin, QueryTransferResponse, TransferData } from './types';
 import { broadcast, BroadcastResponse } from '../messages';
 import { fetchJson } from '../../utils';
 import { Wallet } from '../../wallet';
@@ -15,20 +15,18 @@ export function getBankBalances(
 async function queryTransfer(
   apiUrl: string,
   chainId: string,
-  walletAddressFrom: Wallet['address'],
-  walletAddressTo: Wallet['address'],
-  amount: string,
+  transferData: TransferData,
 ): Promise<QueryTransferResponse> {
-  const url = `${apiUrl}/bank/accounts/${walletAddressTo}/transfers`;
+  const url = `${apiUrl}/bank/accounts/${transferData.to_address}/transfers`;
 
   const queryParam = {
     amount: [{
-      amount,
+      amount: transferData.amount,
       denom: 'udec',
     }],
   };
 
-  const body = await addGas(queryParam, chainId, url, walletAddressFrom);
+  const body = await addGas(queryParam, chainId, url, transferData.from_address);
 
   return fetchJson(url, { method: 'POST', body });
 }
@@ -36,41 +34,33 @@ async function queryTransfer(
 export async function sendCoin(
   apiUrl: string,
   chainId: string,
-  wallet: Wallet,
-  walletAddressTo: Wallet['address'],
-  amount: string,
+  transferData: TransferData,
 ): Promise<QueryTransferResponse>;
 
 export async function sendCoin(
   apiUrl: string,
   chainId: string,
-  wallet: Wallet,
-  walletAddressTo: Wallet['address'],
-  amount: string,
+  transferData: TransferData,
   broadcastOptions: BankBroadcastOptions,
 ): Promise<BroadcastResponse>;
 
 export async function sendCoin(
   apiUrl: string,
   chainId: string,
-  wallet: Wallet,
-  walletAddressTo: Wallet['address'],
-  amount: string,
+  transferData: TransferData,
   broadcastOptions?: BankBroadcastOptions,
 ): Promise<QueryTransferResponse | BroadcastResponse> {
   const stdTxResponse = await queryTransfer(
     apiUrl,
     chainId,
-    wallet.address,
-    walletAddressTo,
-    amount,
+    transferData
   );
 
   if (!broadcastOptions?.broadcast) {
     return stdTxResponse;
   }
 
-  const account = await getAccount(apiUrl, wallet.address) as Account;
+  const account = await getAccount(apiUrl, transferData.from_address) as Account;
 
   return broadcast(
     apiUrl,
@@ -78,7 +68,7 @@ export async function sendCoin(
     stdTxResponse.value,
     {
       ...account,
-      privateKey: wallet.privateKey,
+      privateKey: broadcastOptions.privateKey,
     },
     broadcastOptions,
   );
