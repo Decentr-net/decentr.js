@@ -1,4 +1,5 @@
 export * from './api-utils';
+export * from './bank';
 export * from './messages';
 export * from './pdv';
 export * from './profile';
