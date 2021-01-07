@@ -1,5 +1,5 @@
 import { KeyPair, Wallet } from '../wallet';
-import { broadcast, BroadcastOptions, BroadcastResponse } from './messages'
+import { broadcast, BroadcastOptions, BroadcastResponse } from './messages';
 import {
   Account,
   getAccount,
@@ -27,9 +27,9 @@ import {
   PDVStatItem,
   PDVType,
   QueryPDVResponse,
-  sendPDV
-} from './pdv'
-import { StdTxResponse, StdTxResponseValue } from './types'
+  sendPDV,
+} from './pdv';
+import { StdTxResponse, StdTxResponseValue } from './types';
 import {
   createPost,
   deletePost,
@@ -48,9 +48,20 @@ import {
   PostIdentificationParameters,
   PostsFilterOptions,
   QueryCreatePostResponse,
-  UserPostsFilterOptions
-} from './posts'
-import { BankBroadcastOptions, BankCoin, getBankBalances, QueryTransferResponse, sendCoin, TransferData } from './bank';
+  UserPostsFilterOptions,
+} from './posts';
+import {
+  BankBroadcastOptions,
+  BankCoin,
+  getBankBalances,
+  getTransferHistory,
+  QueryTransferResponse,
+  sendCoin,
+  TransferData,
+  TransferHistory,
+  TransferHistoryPaginationOptions,
+  TransferRole,
+} from './bank'
 
 export class Decentr {
   constructor(
@@ -328,6 +339,19 @@ export class Decentr {
       this.chainId,
       transferData,
       broadcastOptions as BankBroadcastOptions,
+    );
+  }
+
+  public getTransferHistory(
+    walletAddress: Wallet['address'],
+    role: TransferRole,
+    paginationOptions?: TransferHistoryPaginationOptions,
+  ): Promise<TransferHistory> {
+    return getTransferHistory(
+      this.apiUrl,
+      walletAddress,
+      role,
+      paginationOptions,
     );
   }
 
