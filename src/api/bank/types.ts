@@ -45,6 +45,8 @@ export interface TransferHistoryPaginationOptions {
   page?: number;
 }
 
+export type TransferRole = 'sender' | 'recipient';
+
 export interface TransferHistoryTransaction {
   amount: string;
   recipient: Wallet['address'];

@@ -8,6 +8,7 @@ import {
   TransferHistory,
   TransferHistoryPaginationOptions,
   TransferHistoryResponse,
+  TransferRole,
 } from './types'
 import { broadcast, BroadcastResponse } from '../messages';
 import { fetchJson } from '../../utils';
@@ -85,7 +86,7 @@ export async function sendCoin(
 export async function getTransferHistory(
   apiUrl: string,
   walletAddress: Wallet['address'],
-  role: 'sender' | 'recipient',
+  role: TransferRole,
   paginationOptions?: TransferHistoryPaginationOptions,
 ): Promise<TransferHistory> {
   const response = await fetchJson<TransferHistoryResponse>(

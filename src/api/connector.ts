@@ -27,7 +27,7 @@ import {
   PDVStatItem,
   PDVType,
   QueryPDVResponse,
-  sendPDV
+  sendPDV,
 } from './pdv';
 import { StdTxResponse, StdTxResponseValue } from './types';
 import {
@@ -48,7 +48,7 @@ import {
   PostIdentificationParameters,
   PostsFilterOptions,
   QueryCreatePostResponse,
-  UserPostsFilterOptions
+  UserPostsFilterOptions,
 } from './posts';
 import {
   BankBroadcastOptions,
@@ -59,8 +59,9 @@ import {
   sendCoin,
   TransferData,
   TransferHistory,
-  TransferHistoryPaginationOptions
-} from './bank';
+  TransferHistoryPaginationOptions,
+  TransferRole,
+} from './bank'
 
 export class Decentr {
   constructor(
@@ -343,7 +344,7 @@ export class Decentr {
 
   public getTransferHistory(
     walletAddress: Wallet['address'],
-    role: 'sender' | 'recipient',
+    role: TransferRole,
     paginationOptions?: TransferHistoryPaginationOptions,
   ): Promise<TransferHistory> {
     return getTransferHistory(
