@@ -702,6 +702,40 @@ CONSOLE OUTPUT:
 */
 ```
 
+**Transfer history**
+
+```ts
+const walletAddress = 'decentr1p4s4djk5dqstfswg6k8sljhkzku4a6ve9dmng5';
+const role: 'recipient' | 'sender' = 'sender';
+const page = 1;
+const limit = 100;
+
+decentr.getTransferHistory(
+  walletAddress,
+  role,
+  {
+    page,
+    limit,
+  },
+).then(console.log);;
+
+/*
+CONSOLE OUTPUT:
+
+{
+  count: 1,
+  page: 1,
+  limit: 100,
+  transactions: [{
+    amount: '10',
+    recipient: 'decentr1ltx6yymrs8eq4nmnhzfzxj6tspjuymh8mgd6gz',
+    sender: 'decentr1p4s4djk5dqstfswg6k8sljhkzku4a6ve9dmng5',
+    timestamp: '2021-01-06T22:56:20Z'
+  }],
+}
+*/
+```
+
 ## 🥂 License
 
 [MIT](./LICENSE.md) as always

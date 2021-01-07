@@ -1,6 +1,14 @@
 import { Account, getAccount } from '../profile';
 import { addGas, blockchainFetch } from '../api-utils';
-import { BankBroadcastOptions, BankCoin, QueryTransferResponse, TransferData } from './types';
+import {
+  BankBroadcastOptions,
+  BankCoin,
+  QueryTransferResponse,
+  TransferData,
+  TransferHistory,
+  TransferHistoryPaginationOptions,
+  TransferHistoryResponse
+} from './types'
 import { broadcast, BroadcastResponse } from '../messages';
 import { fetchJson } from '../../utils';
 import { Wallet } from '../../wallet';
@@ -72,4 +80,39 @@ export async function sendCoin(
     },
     broadcastOptions,
   );
+}
+
+export async function getTransferHistory(
+  apiUrl: string,
+  walletAddress: Wallet['address'],
+  role: 'sender' | 'recipient',
+  paginationOptions?: TransferHistoryPaginationOptions,
+): Promise<TransferHistory> {
+  const response = await fetchJson<TransferHistoryResponse>(
+    `${apiUrl}/txs`,
+    {
+      queryParameters: {
+        ...paginationOptions,
+        [`transfer.${role}`]: walletAddress,
+      },
+    },
+  );
+
+  const transactions = response.txs.map((elem) => {
+    const txValue = elem.tx.value.msg[0].value;
+
+    return {
+      amount: txValue.amount[0].amount,
+      recipient: txValue.to_address,
+      sender: txValue.from_address,
+      timestamp: elem.timestamp,
+    };
+  });
+
+  return {
+    count: response.count,
+    limit: response.limit,
+    page: response.page_number,
+    transactions,
+  };
 }

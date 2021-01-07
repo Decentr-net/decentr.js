@@ -76,10 +76,26 @@ export interface BroadcastBaseResponse {
   readonly txhash: string;
 }
 
+interface BroadcastSuccessResponseLogEventAttribute {
+  readonly key: string;
+  readonly value: string;
+}
+
+export interface BroadcastSuccessResponseLogEvent {
+  readonly type: string;
+  readonly attributes: BroadcastSuccessResponseLogEventAttribute[];
+}
+
+export interface BroadcastSuccessResponseLog {
+  readonly events: BroadcastSuccessResponseLogEvent[];
+  readonly msg_index: number;
+  readonly log: string;
+}
+
 export interface BroadcastSuccessResponse extends BroadcastBaseResponse {
   readonly gas_used: string;
   readonly gas_wanted: string;
-  readonly logs: [];
+  readonly logs: BroadcastSuccessResponseLog[];
 }
 
 export interface BroadcastErrorResponse extends BroadcastBaseResponse {

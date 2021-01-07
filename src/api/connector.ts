@@ -50,7 +50,15 @@ import {
   QueryCreatePostResponse,
   UserPostsFilterOptions
 } from './posts'
-import { BankBroadcastOptions, BankCoin, getBankBalances, QueryTransferResponse, sendCoin, TransferData } from './bank';
+import {
+  BankBroadcastOptions,
+  BankCoin,
+  getBankBalances, getTransferHistory,
+  QueryTransferResponse,
+  sendCoin,
+  TransferData,
+  TransferHistory, TransferHistoryPaginationOptions
+} from './bank'
 
 export class Decentr {
   constructor(
@@ -328,6 +336,19 @@ export class Decentr {
       this.chainId,
       transferData,
       broadcastOptions as BankBroadcastOptions,
+    );
+  }
+
+  public getTransferHistory(
+    walletAddress: Wallet['address'],
+    role: 'sender' | 'recipient',
+    paginationOptions?: TransferHistoryPaginationOptions,
+  ): Promise<TransferHistory> {
+    return getTransferHistory(
+      this.apiUrl,
+      walletAddress,
+      role,
+      paginationOptions,
     );
   }
 
