@@ -56,5 +56,6 @@ export interface TransferHistory {
   page: number;
   count: number;
   limit: number;
+  totalCount: number;
   transactions: TransferHistoryTransaction[];
 }

@@ -7,7 +7,7 @@ import {
   TransferData,
   TransferHistory,
   TransferHistoryPaginationOptions,
-  TransferHistoryResponse
+  TransferHistoryResponse,
 } from './types'
 import { broadcast, BroadcastResponse } from '../messages';
 import { fetchJson } from '../../utils';
@@ -113,6 +113,7 @@ export async function getTransferHistory(
     count: response.count,
     limit: response.limit,
     page: response.page_number,
+    totalCount: response.total_count,
     transactions,
   };
 }

@@ -1,5 +1,5 @@
 import { KeyPair, Wallet } from '../wallet';
-import { broadcast, BroadcastOptions, BroadcastResponse } from './messages'
+import { broadcast, BroadcastOptions, BroadcastResponse } from './messages';
 import {
   Account,
   getAccount,
@@ -28,8 +28,8 @@ import {
   PDVType,
   QueryPDVResponse,
   sendPDV
-} from './pdv'
-import { StdTxResponse, StdTxResponseValue } from './types'
+} from './pdv';
+import { StdTxResponse, StdTxResponseValue } from './types';
 import {
   createPost,
   deletePost,
@@ -49,16 +49,18 @@ import {
   PostsFilterOptions,
   QueryCreatePostResponse,
   UserPostsFilterOptions
-} from './posts'
+} from './posts';
 import {
   BankBroadcastOptions,
   BankCoin,
-  getBankBalances, getTransferHistory,
+  getBankBalances,
+  getTransferHistory,
   QueryTransferResponse,
   sendCoin,
   TransferData,
-  TransferHistory, TransferHistoryPaginationOptions
-} from './bank'
+  TransferHistory,
+  TransferHistoryPaginationOptions
+} from './bank';
 
 export class Decentr {
   constructor(
