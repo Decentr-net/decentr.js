@@ -48,7 +48,7 @@ export interface TransferHistoryPaginationOptions {
 export type TransferRole = 'sender' | 'recipient';
 
 export interface TransferHistoryTransaction {
-  amount: string;
+  amount: BankCoin;
   recipient: Wallet['address'];
   sender: Wallet['address'];
   timestamp: string;

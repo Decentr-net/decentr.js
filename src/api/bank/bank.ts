@@ -103,7 +103,7 @@ export async function getTransferHistory(
     const txValue = elem.tx.value.msg[0].value;
 
     return {
-      amount: txValue.amount[0].amount,
+      amount: txValue.amount[0],
       recipient: txValue.to_address,
       sender: txValue.from_address,
       timestamp: elem.timestamp,
