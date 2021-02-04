@@ -307,7 +307,7 @@ export class Decentr {
     return getLikedPosts(this.apiUrl, walletAddress);
   }
 
-  public getModeratorAddress(): Promise<ModeratorAddressesResponse> {
+  public getModeratorAddresses(): Promise<ModeratorAddressesResponse> {
     return getModeratorAddresses(
       this.apiUrl,
     );
