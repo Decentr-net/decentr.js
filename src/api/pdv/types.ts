@@ -31,12 +31,7 @@ export interface PDVListPaginationOptions {
   from: number; // timestamp of PDVListItem
 }
 
-export interface PDVListItem {
-  readonly timestamp: number;
-  readonly address: string;
-  readonly owner: string;
-  readonly type: string;
-}
+export type PDVListItem = number;
 
 export interface PDVDetails {
   readonly calculated_data: {

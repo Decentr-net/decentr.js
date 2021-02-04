@@ -18,13 +18,17 @@ function getCerberusAddress(apiUrl: string): Promise<string> {
     .then(({ address }) => address);
 }
 
-export function getPDVList(
+export async function getPDVList(
   apiUrl: string,
   walletAddress: Wallet['address'],
   paginationOptions?: PDVListPaginationOptions,
 ): Promise<PDVListItem[]> {
-  return blockchainFetch(`${apiUrl}/pdv/${walletAddress}/list`, {
-    ...paginationOptions,
+  const cerberusAddress = await getCerberusAddress(apiUrl);
+
+  return fetchJson(`${cerberusAddress}/v1/pdv/${walletAddress}`, {
+    queryParameters: {
+      ...paginationOptions,
+    },
   });
 }
 
@@ -37,14 +41,14 @@ export function getPDVStats(
 
 export async function getPDVDetails(
   apiUrl: string,
-  pdvAddress: string,
-  keys: KeyPair,
+  pdvAddress: number,
+  wallet: Wallet,
 ): Promise<PDVDetails> {
   const cerberusAddress = await getCerberusAddress(apiUrl);
 
-  const url = `${cerberusAddress}/v1/pdv/${pdvAddress}`;
+  const url = `${cerberusAddress}/v1/pdv/${wallet.address}/${pdvAddress}`;
 
-  const headers = getPDVHeaders(`/v1/pdv/${pdvAddress}`, keys);
+  const headers = getPDVHeaders(`/v1/pdv/${wallet.address}/${pdvAddress}`, wallet);
 
   return fetchJson(url, { headers });
 }

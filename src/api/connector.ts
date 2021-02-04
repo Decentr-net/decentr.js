@@ -152,8 +152,8 @@ export class Decentr {
     return getPDVStats(this.apiUrl, walletAddress);
   }
 
-  public getPDVDetails(pdvAddress: string, keys: KeyPair): Promise<PDVDetails> {
-    return getPDVDetails(this.apiUrl, pdvAddress, keys);
+  public getPDVDetails(pdvAddress: number, wallet: Wallet): Promise<PDVDetails> {
+    return getPDVDetails(this.apiUrl, pdvAddress, wallet);
   }
 
   public sendPDV(pdv: PDV[], keys: KeyPair): Promise<string> {
