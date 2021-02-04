@@ -64,7 +64,3 @@ export interface Post {
   text: string;
   title: string;
 }
-
-export interface ModeratorAddressResponse {
-  readonly address: string;
-}
