@@ -18,7 +18,6 @@ export interface PDV {
   domain: string;
   path: string;
   data: PDVData[];
-  user_agent: string;
 }
 
 export enum PDVDataType {
