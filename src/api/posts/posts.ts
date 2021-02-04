@@ -5,16 +5,15 @@ import { broadcast, BroadcastResponse } from '../messages';
 import { Account, getAccount } from '../profile';
 import { StdTxResponse } from '../types';
 import {
-  LikeWeight,
-  ModeratorAddressResponse,
-  PostBroadcastOptions,
-  Post,
-  PostCreate,
-  QueryCreatePostResponse,
-  PostsFilterOptions,
+  LikeWeight, ModeratorAddressesResponse,
   PopularPostsPeriod,
-  UserPostsFilterOptions,
-  PostIdentificationParameters
+  Post,
+  PostBroadcastOptions,
+  PostCreate,
+  PostIdentificationParameters,
+  PostsFilterOptions,
+  QueryCreatePostResponse,
+  UserPostsFilterOptions
 } from './types'
 
 async function queryCreatePost(
@@ -142,13 +141,12 @@ export async function deletePost(
   );
 }
 
-export function getModeratorAddress(
-    apiUrl: string,
-): Promise<string> {
-  return blockchainFetch<ModeratorAddressResponse>(
-    `${apiUrl}/community/moderator-addr`
-  )
-    .then(({ address }) => address);
+export function getModeratorAddresses(
+  apiUrl: string,
+): Promise<ModeratorAddressesResponse> {
+  return blockchainFetch<ModeratorAddressesResponse>(
+    `${apiUrl}/community/moderators`
+  );
 }
 
 export function getPost(

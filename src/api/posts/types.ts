@@ -65,6 +65,4 @@ export interface Post {
   title: string;
 }
 
-export interface ModeratorAddressResponse {
-  readonly address: string;
-}
+export type ModeratorAddressesResponse = string[];

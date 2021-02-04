@@ -32,12 +32,13 @@ import {
   deletePost,
   getLatestPosts,
   getLikedPosts,
-  getModeratorAddress,
+  getModeratorAddresses,
   getPopularPosts,
   getPost,
   getUserPosts,
   likePost,
   LikeWeight,
+  ModeratorAddressesResponse,
   PopularPostsPeriod,
   Post,
   PostBroadcastOptions,
@@ -282,8 +283,8 @@ export class Decentr {
     return getLikedPosts(this.apiUrl, walletAddress);
   }
 
-  public getModeratorAddress(): Promise<string> {
-    return getModeratorAddress(
+  public getModeratorAddresses(): Promise<ModeratorAddressesResponse> {
+    return getModeratorAddresses(
       this.apiUrl,
     );
   }

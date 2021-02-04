@@ -288,6 +288,20 @@ CONSOLE OUTPUT:
 */
 ```
 
+**Get moderator accounts addresses**
+
+```ts
+decentr.getModeratorAddresses().then(console.log);
+
+/*
+CONSOLE OUTPUT:
+
+[
+  "decentr1p4s4djk5dqstfswg6k8sljhkzku4a6ve9dmng5",
+]
+*/
+```
+
 ## 📜 PDV (Personal Data Value)
 
 **Send PDV data**
