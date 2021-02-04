@@ -357,12 +357,8 @@ decentr.getPDVlist(walletAddress, paginationParams)
 CONSOLE OUTPUT:
 
 [
-  {
-    address: "9664d0817131a2ce56f18d37f3836d6b6ec7cf29-1877c66aaa918bd2ad0c3f6d02ce7ef55fb9c28c44abed94117f4782e1d0a952",
-    owner: "decentr1p4s4djk5dqstfswg6k8sljhkzku4a6ve9dmng5",
-    timestamp: "2020-11-05T18:49:39Z",
-    type: "1",
-  },
+  1609255398,    // id = timestamp
+  1609212345,
 [
 */
 ```
@@ -408,31 +404,24 @@ decentr.getPDVDetails(PDVaddress, wallet)
 CONSOLE OUTPUT:
 
 {
-  calculated_data: {
-    ip: "255.255.255.255",
-    user_agent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.183 Safari/537.36",
-  },
-  user_data: {
-    version: "v1"
-    pdv: {
-      domain: "decentr.net",
-      path: "/",
-      data: [
-        {
-          version: 'v1',
-          type: 'cookie',
-          name: 'my test cookie',
-          value: 'some test value',
-          domain: '*',
-          host_only: true,
-          path: '*',
-          secure: true,
-          same_site: 'None',
-          expiration_date: 1861920000
-        },
-      ],
-    }
-  },
+  version: "v1"
+  pdv: {
+    domain: "decentr.net",
+    path: "/",
+    data: [
+      {
+        type: 'cookie',
+        name: 'my test cookie',
+        value: 'some test value',
+        domain: '*',
+        host_only: true,
+        path: '*',
+        secure: true,
+        same_site: 'None',
+        expiration_date: 1861920000
+      },
+    ],
+  }
 }
 */
 ```

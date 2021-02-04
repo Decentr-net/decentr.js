@@ -34,14 +34,8 @@ export interface PDVListPaginationOptions {
 export type PDVListItem = number;
 
 export interface PDVDetails {
-  readonly calculated_data: {
-    readonly ip: string;
-    readonly user_agent: string;
-  };
-  readonly user_data: {
-    version: string;
-    pdv: PDV[];
-  };
+  version: string;
+  pdv: PDV[];
 }
 
 export interface PDVStatItem {
