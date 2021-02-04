@@ -1,23 +1,9 @@
-import { StdTxResponse } from '../types';
-import { BroadcastOptions } from '../messages'
-
-export type QueryPDVResponse = StdTxResponse<'pdv/CreatePDV', PDVListItem>;
-
-export interface PDVBroadcastOptions extends BroadcastOptions {
-  broadcast: true;
-}
-
 export interface CerberusAddressResponse {
   readonly address: string;
 }
 
-export interface QueryPDVAddressResponse {
-  readonly address: string
-}
-
 export interface PDVData {
-  readonly version: string;
-  readonly type: 'cookie';
+  readonly type: PDVDataType;
   readonly name: string;
   readonly value: string;
   readonly domain: string;
@@ -29,18 +15,15 @@ export interface PDVData {
 }
 
 export interface PDV {
-  readonly version: string;
-  readonly pdv: {
-    readonly domain: string;
-    readonly path: string;
-    readonly data: PDVData[];
-    readonly user_agent: string;
-  };
+  domain: string;
+  path: string;
+  data: PDVData[];
+  user_agent: string;
 }
 
-export enum PDVType {
-  'Cookie' = 1,
-  'LoginCookie',
+export enum PDVDataType {
+  Cookie = 'cookie',
+  LoginCookie = 'login_cookie',
 }
 
 export interface PDVListPaginationOptions {
@@ -60,7 +43,10 @@ export interface PDVDetails {
     readonly ip: string;
     readonly user_agent: string;
   };
-  readonly user_data: PDV;
+  readonly user_data: {
+    version: string;
+    pdv: PDV[];
+  };
 }
 
 export interface PDVStatItem {
