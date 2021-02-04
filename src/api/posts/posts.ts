@@ -146,8 +146,7 @@ export function getModeratorAddresses(
 ): Promise<ModeratorAddressesResponse> {
   return blockchainFetch<ModeratorAddressesResponse>(
     `${apiUrl}/community/moderators`
-  )
-    .then((addresses) => addresses);
+  );
 }
 
 export function getPost(
