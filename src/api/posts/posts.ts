@@ -5,7 +5,7 @@ import { broadcast, BroadcastResponse } from '../messages';
 import { Account, getAccount } from '../profile';
 import { StdTxResponse } from '../types';
 import {
-  LikeWeight,
+  LikeWeight, ModeratorAddressesResponse,
   PopularPostsPeriod,
   Post,
   PostBroadcastOptions,
@@ -141,10 +141,10 @@ export async function deletePost(
   );
 }
 
-export function getModeratorAddress(
+export function getModeratorAddresses(
   apiUrl: string,
-): Promise<string[]> {
-  return blockchainFetch<string[]>(
+): Promise<ModeratorAddressesResponse> {
+  return blockchainFetch<ModeratorAddressesResponse>(
     `${apiUrl}/community/moderators`
   )
     .then((addresses) => addresses);

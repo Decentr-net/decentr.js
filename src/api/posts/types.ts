@@ -64,3 +64,5 @@ export interface Post {
   text: string;
   title: string;
 }
+
+export type ModeratorAddressesResponse = string[];
