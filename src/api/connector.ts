@@ -1,4 +1,4 @@
-import { KeyPair, Wallet } from '../wallet';
+import { Wallet } from '../wallet';
 import { broadcast, BroadcastOptions, BroadcastResponse } from './messages';
 import {
   Account,
@@ -20,10 +20,12 @@ import {
   getPDVList,
   getPDVStats,
   PDV,
+  PDVBroadcastOptions,
   PDVDetails,
   PDVListItem,
   PDVListPaginationOptions,
   PDVStatItem,
+  QueryPDVResponse,
   sendPDV,
 } from './pdv';
 import { StdTxResponse, StdTxResponseValue } from './types';
@@ -156,8 +158,26 @@ export class Decentr {
     return getPDVDetails(this.apiUrl, pdvAddress, wallet);
   }
 
-  public sendPDV(pdv: PDV[], keys: KeyPair): Promise<string> {
-    return sendPDV(this.apiUrl, this.chainId, pdv, keys);
+  public sendPDV(pdv: PDV[], wallet: Wallet): Promise<QueryPDVResponse>;
+
+  public sendPDV(
+    pdv: PDV[],
+    wallet: Wallet,
+    broadcastOptions: PDVBroadcastOptions,
+  ): Promise<BroadcastResponse>;
+
+  public sendPDV(
+    pdv: PDV[],
+    wallet: Wallet,
+    broadcastOptions?: PDVBroadcastOptions,
+  ): Promise<QueryPDVResponse | BroadcastResponse> {
+    return sendPDV(
+      this.apiUrl,
+      this.chainId,
+      pdv,
+      wallet,
+      broadcastOptions as PDVBroadcastOptions,
+    );
   }
 
   public createPost(

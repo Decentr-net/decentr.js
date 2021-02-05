@@ -325,12 +325,15 @@ const pdv = [{
   ],
 }];
 
-const keys: KeyPair = {
+const wallet: Wallet = {
+  address: 'decentr1p4s4djk5dqstfswg6k8sljhkzku4a6ve9dmng5',
   privateKey: '8c313682470073d56d2d8f5b7fde53c072024a9fd9135501125035d53c8a1f60',
   publicKey:  '03dae8cf229d1db63c8d854bd1c73e280147ebd3bb40df12381d16b0eb071a72b6'
 }
 
-await decentr.sendPDV(pdv, keys);
+await decentr.sendPDV(pdv, wallet, {
+  broadcast: true,
+});
 ```
 
 **Get PDV list**
