@@ -102,7 +102,7 @@ export async function sendPDV(
     pdv,
   };
 
-  const headers = getPDVHeaders(`${JSON.stringify(body)}/v1/pdv`, wallet);
+  const headers = getPDVHeaders(`${JSON.stringify(body)}/v1/pdv`, wallet, { disableEncode: true });
 
   const pdvAddress = await fetchJson<{ id: number }, { version: string; pdv: PDV[] }>(url, {
     method: 'POST',
@@ -130,8 +130,8 @@ export async function sendPDV(
   );
 }
 
-function getPDVHeaders<T>(data: T, keys: KeyPair): PDVHeaders {
-  const signature = getSignature(data, keys.privateKey);
+function getPDVHeaders<T>(data: T, keys: KeyPair, options?: { disableEncode?: boolean }): PDVHeaders {
+  const signature = getSignature(data, keys.privateKey, options);
   const signatureHex = bytesToHex(signature);
 
   return {

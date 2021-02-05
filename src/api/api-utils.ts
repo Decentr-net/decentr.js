@@ -30,14 +30,19 @@ export async function blockchainFetch<T>(url: string, queryParameters?: Partial<
 export function getSignature<T>(
   target: T,
   privateKey: Wallet['privateKey'],
+  options?: {
+    disableEncode?: boolean,
+  },
 ): Bytes {
-  const stringToHash = typeof target === 'string'
+  let stringToHash = typeof target === 'string'
     ? target
     : JSON.stringify(sortObjectKeys(target));
 
-  const encodedToUnicode = encodeObjectCharactersToUnicode(stringToHash, ['>', '<', '&']);
+  if (!options?.disableEncode) {
+    stringToHash = encodeObjectCharactersToUnicode(stringToHash, ['>', '<', '&']);
+  }
 
-  const hashBytes = hashStringToBytes(encodedToUnicode);
+  const hashBytes = hashStringToBytes(stringToHash);
 
   const privateKeyBytes = hexToBytes(privateKey);
 
