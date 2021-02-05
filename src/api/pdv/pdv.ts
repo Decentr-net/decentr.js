@@ -1,55 +1,15 @@
 import { bytesToHex, fetchJson } from '../../utils';
 import { KeyPair, Wallet } from '../../wallet';
-import { addGas, blockchainFetch, getSignature } from '../api-utils';
-import { broadcast, BroadcastResponse } from '../messages';
-import { Account, getAccount } from '../profile';
+import { blockchainFetch, getSignature } from '../api-utils'
 import {
   CerberusAddressResponse,
   PDV,
-  PDVBroadcastOptions,
   PDVDetails,
   PDVHeaders,
-  PDVListItem, PDVListPaginationOptions,
-  PDVStatItem, PDVType,
-  QueryPDVAddressResponse,
-  QueryPDVResponse
-} from './types'
-
-async function queryPDV(
-  apiUrl: string,
-  chainId: string,
-  pdvAddress: string,
-  pdvType: PDVType,
-  walletAddress: string,
-): Promise<QueryPDVResponse> {
-  const url = `${apiUrl}/pdv`;
-
-  const queryParam = {
-    address: pdvAddress,
-    type: pdvType,
-  };
-
-  const body = await addGas(queryParam, chainId, url, walletAddress);
-
-  return fetchJson(url, { method: 'POST', body });
-}
-
-async function queryPDVAddress(
-  apiUrl: string,
-  pdv: PDV,
-  keys: KeyPair,
-): Promise<string> {
-  const url = await getCerberusAddress(apiUrl) + '/v1/pdv';
-
-  const headers = getPDVHeaders(`${JSON.stringify(pdv)}/v1/pdv`, keys);
-
-  return fetchJson<QueryPDVAddressResponse, PDV>(url, {
-    method: 'POST',
-    body: pdv,
-    headers,
-  })
-    .then(({ address }) => address);
-}
+  PDVListItem,
+  PDVListPaginationOptions,
+  PDVStatItem,
+} from './types';
 
 function getCerberusAddress(apiUrl: string): Promise<string> {
   return blockchainFetch<CerberusAddressResponse>(
@@ -58,13 +18,17 @@ function getCerberusAddress(apiUrl: string): Promise<string> {
     .then(({ address }) => address);
 }
 
-export function getPDVList(
+export async function getPDVList(
   apiUrl: string,
   walletAddress: Wallet['address'],
   paginationOptions?: PDVListPaginationOptions,
 ): Promise<PDVListItem[]> {
-  return blockchainFetch(`${apiUrl}/pdv/${walletAddress}/list`, {
-    ...paginationOptions,
+  const cerberusAddress = await getCerberusAddress(apiUrl);
+
+  return fetchJson(`${cerberusAddress}/v1/pdv/${walletAddress}`, {
+    queryParameters: {
+      ...paginationOptions,
+    },
   });
 }
 
@@ -77,14 +41,14 @@ export function getPDVStats(
 
 export async function getPDVDetails(
   apiUrl: string,
-  pdvAddress: string,
-  keys: KeyPair,
+  pdvAddress: number,
+  wallet: Wallet,
 ): Promise<PDVDetails> {
   const cerberusAddress = await getCerberusAddress(apiUrl);
 
-  const url = `${cerberusAddress}/v1/pdv/${pdvAddress}`;
+  const url = `${cerberusAddress}/v1/pdv/${wallet.address}/${pdvAddress}`;
 
-  const headers = getPDVHeaders(`/v1/pdv/${pdvAddress}`, keys);
+  const headers = getPDVHeaders(`/v1/pdv/${wallet.address}/${pdvAddress}`, wallet);
 
   return fetchJson(url, { headers });
 }
@@ -92,47 +56,23 @@ export async function getPDVDetails(
 export async function sendPDV(
   apiUrl: string,
   chainId: string,
-  pdv: PDV,
-  pdvType: PDVType,
-  wallet: Wallet,
-): Promise<QueryPDVResponse>;
+  pdv: PDV[],
+  keys: KeyPair,
+): Promise<string> {
+  const url = await getCerberusAddress(apiUrl) + '/v1/pdv';
 
-export async function sendPDV(
-  apiUrl: string,
-  chainId: string,
-  pdv: PDV,
-  pdvType: PDVType,
-  wallet: Wallet,
-  broadcastOptions: PDVBroadcastOptions,
-): Promise<BroadcastResponse>;
+  const body = {
+    version: 'v1',
+    pdv,
+  };
 
-export async function sendPDV(
-  apiUrl: string,
-  chainId: string,
-  pdv: PDV,
-  pdvType: PDVType,
-  wallet: Wallet,
-  broadcastOptions?: PDVBroadcastOptions,
-): Promise<QueryPDVResponse | BroadcastResponse> {
-  const pdvAddress = await queryPDVAddress(apiUrl, pdv, wallet);
-  const stdTxResponse = await queryPDV(apiUrl, chainId, pdvAddress, pdvType, wallet.address);
+  const headers = getPDVHeaders(`${JSON.stringify(body)}/v1/pdv`, keys);
 
-  if (!broadcastOptions?.broadcast) {
-    return stdTxResponse;
-  }
-
-  const account = await getAccount(apiUrl, wallet.address) as Account;
-
-  return broadcast(
-    apiUrl,
-    chainId,
-    stdTxResponse.value,
-    {
-      ...account,
-      privateKey: wallet.privateKey,
-    },
-    broadcastOptions,
-  );
+  return fetchJson<string, { version: string; pdv: PDV[] }>(url, {
+    method: 'POST',
+    body,
+    headers,
+  });
 }
 
 function getPDVHeaders<T>(data: T, keys: KeyPair): PDVHeaders {

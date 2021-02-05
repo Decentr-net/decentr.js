@@ -20,13 +20,10 @@ import {
   getPDVList,
   getPDVStats,
   PDV,
-  PDVBroadcastOptions,
   PDVDetails,
   PDVListItem,
   PDVListPaginationOptions,
   PDVStatItem,
-  PDVType,
-  QueryPDVResponse,
   sendPDV,
 } from './pdv';
 import { StdTxResponse, StdTxResponseValue } from './types';
@@ -35,12 +32,13 @@ import {
   deletePost,
   getLatestPosts,
   getLikedPosts,
-  getModeratorAddress,
+  getModeratorAddresses,
   getPopularPosts,
   getPost,
   getUserPosts,
   likePost,
   LikeWeight,
+  ModeratorAddressesResponse,
   PopularPostsPeriod,
   Post,
   PostBroadcastOptions,
@@ -154,33 +152,12 @@ export class Decentr {
     return getPDVStats(this.apiUrl, walletAddress);
   }
 
-  public getPDVDetails(pdvAddress: string, keys: KeyPair): Promise<PDVDetails> {
-    return getPDVDetails(this.apiUrl, pdvAddress, keys);
+  public getPDVDetails(pdvAddress: number, wallet: Wallet): Promise<PDVDetails> {
+    return getPDVDetails(this.apiUrl, pdvAddress, wallet);
   }
 
-  public sendPDV(pdv: PDV, pdvType: PDVType, wallet: Wallet): Promise<QueryPDVResponse>;
-
-  public sendPDV(
-    pdv: PDV,
-    pdvType: PDVType,
-    wallet: Wallet,
-    broadcastOptions: PDVBroadcastOptions,
-  ): Promise<BroadcastResponse>;
-
-  public sendPDV(
-    pdv: PDV,
-    pdvType: PDVType,
-    wallet: Wallet,
-    broadcastOptions?: PDVBroadcastOptions,
-  ): Promise<QueryPDVResponse | BroadcastResponse> {
-    return sendPDV(
-      this.apiUrl,
-      this.chainId,
-      pdv,
-      pdvType,
-      wallet,
-      broadcastOptions as PDVBroadcastOptions,
-    );
+  public sendPDV(pdv: PDV[], keys: KeyPair): Promise<string> {
+    return sendPDV(this.apiUrl, this.chainId, pdv, keys);
   }
 
   public createPost(
@@ -306,8 +283,8 @@ export class Decentr {
     return getLikedPosts(this.apiUrl, walletAddress);
   }
 
-  public getModeratorAddress(): Promise<string> {
-    return getModeratorAddress(
+  public getModeratorAddresses(): Promise<ModeratorAddressesResponse> {
+    return getModeratorAddresses(
       this.apiUrl,
     );
   }
