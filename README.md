@@ -307,37 +307,30 @@ CONSOLE OUTPUT:
 **Send PDV data**
 
 ```ts
-const pdvType: PDVType; // 'Cookie' = 1, ...
+const pdv = [{
+  domain: 'decentr.net',
+  path: '/',
+  data: [
+    {
+      type: 'cookie',
+      name: 'my test cookie',
+      value: 'some test value',
+      domain: '*',
+      host_only: true,
+      path: '*',
+      secure: true,
+      same_site: 'None',
+      expiration_date: 1861920000
+    },
+  ],
+}];
 
-const pdv = {
-  version: 'v1',
-  pdv: {
-    domain: 'decentr.net',
-    path: '/',
-    data: [
-      {
-        version: 'v1',
-        type: 'cookie',
-        name: 'my test cookie',
-        value: 'some test value',
-        domain: '*',
-        host_only: true,
-        path: '*',
-        secure: true,
-        same_site: 'None',
-        expiration_date: 1861920000
-      },
-    ],
-  },
-};
-
-const wallet: Wallet = {
-  address:    'decentr1j6e6j53vh95jcq9k9lnsrsvj3h8dkdgmm20zhu',
+const keys: KeyPair = {
   privateKey: '8c313682470073d56d2d8f5b7fde53c072024a9fd9135501125035d53c8a1f60',
   publicKey:  '03dae8cf229d1db63c8d854bd1c73e280147ebd3bb40df12381d16b0eb071a72b6'
 }
 
-await decentr.sendPDV(pdv, pdvType, wallet, { broadcast: true });
+await decentr.sendPDV(pdv, keys);
 ```
 
 **Get PDV list**
