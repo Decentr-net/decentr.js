@@ -1,15 +1,4 @@
-import { StdTxResponse } from '../types';
-import { BroadcastOptions } from '../messages'
-
-export type QueryPDVResponse = StdTxResponse<'pdv/CreatePDV', PDVListItem>;
-
-export interface PDVBroadcastOptions extends BroadcastOptions {
-  broadcast: true;
-}
-
-export interface CerberusAddressResponse {
-  readonly address: string;
-}
+export type PDVResponse = number;
 
 export interface PDVData {
   readonly type: PDVDataType;
