@@ -147,7 +147,7 @@ export class Decentr {
     walletAddress: Wallet['address'],
     paginationOptions?: PDVListPaginationOptions,
   ): Promise<PDVListItem[]> {
-    return getPDVList(this.apiUrl, cerberusUrl, walletAddress, paginationOptions);
+    return getPDVList(cerberusUrl, walletAddress, paginationOptions);
   }
 
   public getPDVStats(walletAddress: Wallet['address']): Promise<PDVStatItem[]> {
@@ -155,7 +155,7 @@ export class Decentr {
   }
 
   public getPDVDetails(cerberusUrl: string, pdvAddress: number, wallet: Wallet): Promise<PDVDetails> {
-    return getPDVDetails(this.apiUrl, cerberusUrl, pdvAddress, wallet);
+    return getPDVDetails(cerberusUrl, pdvAddress, wallet);
   }
 
   public sendPDV(
@@ -164,7 +164,6 @@ export class Decentr {
     wallet: Wallet,
   ): Promise<PDVResponse> {
     return sendPDV(
-      this.apiUrl,
       cerberusUrl,
       this.chainId,
       pdv,
