@@ -20,12 +20,11 @@ import {
   getPDVList,
   getPDVStats,
   PDV,
-  PDVBroadcastOptions,
   PDVDetails,
   PDVListItem,
   PDVListPaginationOptions,
+  PDVResponse,
   PDVStatItem,
-  QueryPDVResponse,
   sendPDV,
 } from './pdv';
 import { StdTxResponse, StdTxResponseValue } from './types';
@@ -144,39 +143,31 @@ export class Decentr {
   }
 
   public getPDVList(
+    cerberusUrl: string,
     walletAddress: Wallet['address'],
     paginationOptions?: PDVListPaginationOptions,
   ): Promise<PDVListItem[]> {
-    return getPDVList(this.apiUrl, walletAddress, paginationOptions);
+    return getPDVList(cerberusUrl, walletAddress, paginationOptions);
   }
 
   public getPDVStats(walletAddress: Wallet['address']): Promise<PDVStatItem[]> {
     return getPDVStats(this.apiUrl, walletAddress);
   }
 
-  public getPDVDetails(pdvAddress: number, wallet: Wallet): Promise<PDVDetails> {
-    return getPDVDetails(this.apiUrl, pdvAddress, wallet);
+  public getPDVDetails(cerberusUrl: string, pdvAddress: number, wallet: Wallet): Promise<PDVDetails> {
+    return getPDVDetails(cerberusUrl, pdvAddress, wallet);
   }
 
-  public sendPDV(pdv: PDV[], wallet: Wallet): Promise<QueryPDVResponse>;
-
   public sendPDV(
+    cerberusUrl: string,
     pdv: PDV[],
     wallet: Wallet,
-    broadcastOptions: PDVBroadcastOptions,
-  ): Promise<BroadcastResponse>;
-
-  public sendPDV(
-    pdv: PDV[],
-    wallet: Wallet,
-    broadcastOptions?: PDVBroadcastOptions,
-  ): Promise<QueryPDVResponse | BroadcastResponse> {
+  ): Promise<PDVResponse> {
     return sendPDV(
-      this.apiUrl,
+      cerberusUrl,
       this.chainId,
       pdv,
       wallet,
-      broadcastOptions as PDVBroadcastOptions,
     );
   }
 
