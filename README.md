@@ -307,6 +307,8 @@ CONSOLE OUTPUT:
 **Send PDV data**
 
 ```ts
+const cerberusUrl = 'https://cerberus.testnet.decentr.xyz';
+
 const pdv = [{
   domain: 'decentr.net',
   path: '/',
@@ -339,6 +341,8 @@ await decentr.sendPDV(pdv, wallet, {
 **Get PDV list**
 
 ```ts
+const cerberusUrl = 'https://cerberus.testnet.decentr.xyz';
+
 const walletAddress = 'decentr1p4s4djk5dqstfswg6k8sljhkzku4a6ve9dmng5';
 
 const paginationParams = { // Optional
@@ -346,7 +350,7 @@ const paginationParams = { // Optional
   limit: 20,
 }
 
-decentr.getPDVlist(walletAddress, paginationParams)
+decentr.getPDVlist(cerberusUrl, walletAddress, paginationParams)
   .then(console.log);
 
 /*
@@ -386,14 +390,17 @@ CONSOLE OUTPUT:
 **Get PDV details**
 
 ```ts
+const cerberusUrl = 'https://cerberus.testnet.decentr.xyz';
+
 const pDVaddress = '9664d0817131a2ce56f18d37f3836d6b6ec7cf29-1877c66aaa918bd2ad0c3f6d02ce7ef55fb9c28c44abed94117f4782e1d0a952';
+
 const wallet: Wallet = {
   address:    'decentr1j6e6j53vh95jcq9k9lnsrsvj3h8dkdgmm20zhu',
   privateKey: '8c313682470073d56d2d8f5b7fde53c072024a9fd9135501125035d53c8a1f60',
   publicKey:  '03dae8cf229d1db63c8d854bd1c73e280147ebd3bb40df12381d16b0eb071a72b6'
 }
 
-decentr.getPDVDetails(PDVaddress, wallet)
+decentr.getPDVDetails(cerberusUrl, PDVaddress, wallet)
   .then(console.log);
 
 /*
