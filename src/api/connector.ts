@@ -1,346 +1,53 @@
 import { Wallet } from '../wallet';
+import { DecentrBankSDK } from './bank';
+import { DecentrCommunitySDK } from './community';
+import { DecentrPDVSDK } from './pdv';
+import { Account, DecentrProfileSDK } from './profile';
 import { broadcast, BroadcastOptions, BroadcastResponse } from './messages';
-import {
-  Account,
-  getAccount,
-  getPrivateProfile,
-  getPublicProfile,
-  getTokenBalance,
-  PrivateProfile,
-  PrivateProfileBroadcastOptions,
-  PublicProfile,
-  PublicProfileBroadcastOptions,
-  QueryPrivateProfileResponse,
-  QueryPublicProfileResponse,
-  setPrivateProfile,
-  setPublicProfile,
-} from './profile';
-import {
-  getPDVDetails,
-  getPDVList,
-  getPDVStats,
-  PDV,
-  PDVDetails,
-  PDVListItem,
-  PDVListPaginationOptions,
-  PDVResponse,
-  PDVStatItem,
-  sendPDV,
-} from './pdv';
-import { StdTxResponse, StdTxResponseValue } from './types';
-import {
-  createPost,
-  deletePost,
-  getLatestPosts,
-  getLikedPosts,
-  getModeratorAddresses,
-  getPopularPosts,
-  getPost,
-  getUserPosts,
-  likePost,
-  LikeWeight,
-  ModeratorAddressesResponse,
-  PopularPostsPeriod,
-  Post,
-  PostBroadcastOptions,
-  PostCreate,
-  PostIdentificationParameters,
-  PostsFilterOptions,
-  QueryCreatePostResponse,
-  UserPostsFilterOptions,
-} from './posts';
-import {
-  BankBroadcastOptions,
-  BankCoin,
-  getBankBalances,
-  getTransferHistory,
-  QueryTransferResponse,
-  sendCoin,
-  TransferData,
-  TransferHistory,
-  TransferHistoryPaginationOptions,
-  TransferRole,
-} from './bank'
+import { StdTxResponseValue } from './types';
 
 export class Decentr {
+  private bankSDK: DecentrBankSDK | undefined;
+  private communitySDK: DecentrCommunitySDK | undefined;
+  private pdvSDK: DecentrPDVSDK | undefined;
+  private profileSDK: DecentrProfileSDK | undefined;
+
   constructor(
     private apiUrl: string,
     private chainId: string,
   ) {
   }
 
-  public getTokenBalance(walletAddress: Wallet['address']): Promise<number> {
-    return getTokenBalance(this.apiUrl, walletAddress);
+  public get bank(): DecentrBankSDK {
+    if (!this.bankSDK) {
+      this.bankSDK = new DecentrBankSDK(this.apiUrl, this.chainId);
+    }
+
+    return this.bankSDK;
   }
 
-  public getAccount(walletAddress: Wallet['address']): Promise<Account | undefined> {
-    return getAccount(this.apiUrl, walletAddress);
+  public get community(): DecentrCommunitySDK {
+    if (!this.communitySDK) {
+      this.communitySDK = new DecentrCommunitySDK(this.apiUrl, this.chainId);
+    }
+
+    return this.communitySDK;
   }
 
-  public getPublicProfile(walletAddress: Wallet['address']): Promise<PublicProfile> {
-    return getPublicProfile(this.apiUrl, walletAddress);
+  public get pdv(): DecentrPDVSDK {
+    if (!this.pdvSDK) {
+      this.pdvSDK = new DecentrPDVSDK(this.apiUrl, this.chainId);
+    }
+
+    return this.pdvSDK;
   }
 
-  public getPrivateProfile<T>(
-    walletAddress: Wallet['address'],
-    privateKey: Wallet['privateKey'],
-  ): Promise<T | undefined> {
-    return getPrivateProfile(this.apiUrl, walletAddress, privateKey);
-  }
+  public get profile(): DecentrProfileSDK {
+    if (!this.profileSDK) {
+      this.profileSDK = new DecentrProfileSDK(this.apiUrl, this.chainId);
+    }
 
-  public setPublicProfile(
-    walletAddress: string,
-    publicProfile: PublicProfile,
-  ): Promise<QueryPublicProfileResponse>;
-
-  public setPublicProfile(
-    walletAddress: string,
-    publicProfile: PublicProfile,
-    broadcastOptions: PublicProfileBroadcastOptions,
-  ): Promise<BroadcastResponse>;
-
-  public setPublicProfile(
-    walletAddress: string,
-    publicProfile: PublicProfile,
-    broadcastOptions?: PublicProfileBroadcastOptions,
-  ): Promise<QueryPublicProfileResponse | BroadcastResponse> {
-    return setPublicProfile(
-      this.apiUrl,
-      this.chainId,
-      walletAddress,
-      publicProfile,
-      broadcastOptions as PublicProfileBroadcastOptions
-    );
-  }
-
-  public setPrivateProfile<T extends PrivateProfile>(
-    walletAddress: Wallet['address'],
-    privateProfile: T,
-    privateKey: Wallet['privateKey'],
-  ): Promise<QueryPrivateProfileResponse>;
-
-  public setPrivateProfile<T extends PrivateProfile>(
-    walletAddress: Wallet['address'],
-    privateProfile: T,
-    privateKey: Wallet['privateKey'],
-    broadcastOptions: PrivateProfileBroadcastOptions
-  ): Promise<BroadcastResponse>;
-
-  public setPrivateProfile<T extends PrivateProfile>(
-    walletAddress: Wallet['address'],
-    privateProfile: T,
-    privateKey: Wallet['privateKey'],
-    broadcastOptions?: PrivateProfileBroadcastOptions
-  ): Promise<QueryPrivateProfileResponse | BroadcastResponse> {
-    return setPrivateProfile<T>(
-      this.apiUrl,
-      this.chainId,
-      walletAddress,
-      privateProfile,
-      privateKey,
-      broadcastOptions as PrivateProfileBroadcastOptions,
-    );
-  }
-
-  public getPDVList(
-    cerberusUrl: string,
-    walletAddress: Wallet['address'],
-    paginationOptions?: PDVListPaginationOptions,
-  ): Promise<PDVListItem[]> {
-    return getPDVList(cerberusUrl, walletAddress, paginationOptions);
-  }
-
-  public getPDVStats(walletAddress: Wallet['address']): Promise<PDVStatItem[]> {
-    return getPDVStats(this.apiUrl, walletAddress);
-  }
-
-  public getPDVDetails(cerberusUrl: string, pdvAddress: number, wallet: Wallet): Promise<PDVDetails> {
-    return getPDVDetails(cerberusUrl, pdvAddress, wallet);
-  }
-
-  public sendPDV(
-    cerberusUrl: string,
-    pdv: PDV[],
-    wallet: Wallet,
-  ): Promise<PDVResponse> {
-    return sendPDV(
-      cerberusUrl,
-      this.chainId,
-      pdv,
-      wallet,
-    );
-  }
-
-  public createPost(
-    walletAddress: Wallet['address'],
-    post: PostCreate,
-  ): Promise<QueryCreatePostResponse>;
-
-  public createPost(
-    walletAddress: Wallet['address'],
-    post: PostCreate,
-    broadcastOptions: PostBroadcastOptions,
-  ): Promise<BroadcastResponse>;
-
-  public createPost(
-    walletAddress: Wallet['address'],
-    post: PostCreate,
-    broadcastOptions?: PostBroadcastOptions,
-  ): Promise<QueryCreatePostResponse | BroadcastResponse> {
-    return createPost(
-      this.apiUrl,
-      this.chainId,
-      walletAddress,
-      post,
-      broadcastOptions as PostBroadcastOptions,
-    );
-  }
-
-  public deletePost(
-    walletAddress: Wallet['address'],
-    postIdentificationParameters: PostIdentificationParameters,
-  ): Promise<StdTxResponse>;
-
-  public deletePost(
-    walletAddress: Wallet['address'],
-    postIdentificationParameters: PostIdentificationParameters,
-    broadcastOptions: PostBroadcastOptions,
-  ): Promise<BroadcastResponse>;
-
-  public deletePost(
-    walletAddress: Wallet['address'],
-    postIdentificationParameters: PostIdentificationParameters,
-    broadcastOptions?: PostBroadcastOptions,
-  ): Promise<StdTxResponse | BroadcastResponse> {
-    return deletePost(
-      this.apiUrl,
-      this.chainId,
-      walletAddress,
-      postIdentificationParameters,
-      broadcastOptions as PostBroadcastOptions,
-    );
-  }
-
-  public getPost(
-    postIdentificationParameters: PostIdentificationParameters,
-  ): Promise<Post> {
-    return getPost(
-      this.apiUrl,
-      postIdentificationParameters,
-    );
-  }
-
-  public getLatestPosts(filterOptions?: PostsFilterOptions): Promise<Post[]> {
-    return getLatestPosts(
-      this.apiUrl,
-      filterOptions,
-    );
-  }
-
-  public getUserPosts(
-    walletAddress: Wallet['address'],
-    filterOptions?: UserPostsFilterOptions,
-  ): Promise<Post[]> {
-    return getUserPosts(
-      this.apiUrl,
-      walletAddress,
-      filterOptions,
-    );
-  }
-
-  public likePost(
-    walletAddress: Wallet['address'],
-    postIdentificationParameters: PostIdentificationParameters,
-    likeWeight: LikeWeight,
-  ): Promise<StdTxResponse>;
-
-  public likePost(
-    walletAddress: Wallet['address'],
-    postIdentificationParameters: PostIdentificationParameters,
-    likeWeight: LikeWeight,
-    broadcastOptions: PostBroadcastOptions,
-  ): Promise<BroadcastResponse>;
-
-  public likePost(
-    walletAddress: Wallet['address'],
-    postIdentificationParameters: PostIdentificationParameters,
-    likeWeight: LikeWeight,
-    broadcastOptions?: PostBroadcastOptions,
-  ): Promise<StdTxResponse | BroadcastResponse> {
-    return likePost(
-      this.apiUrl,
-      this.chainId,
-      walletAddress,
-      postIdentificationParameters,
-      likeWeight,
-      broadcastOptions as PostBroadcastOptions,
-    );
-  }
-
-  public getPopularPosts(
-    period: PopularPostsPeriod,
-    filterOptions?: PostsFilterOptions,
-  ): Promise<Post[]> {
-    return getPopularPosts(
-      this.apiUrl,
-      period,
-      filterOptions,
-    );
-  }
-
-  public getLikedPosts(
-    walletAddress: Wallet['address']
-  ): Promise<Record<Post['uuid'], LikeWeight.Down | LikeWeight.Up>> {
-    return getLikedPosts(this.apiUrl, walletAddress);
-  }
-
-  public getModeratorAddresses(): Promise<ModeratorAddressesResponse> {
-    return getModeratorAddresses(
-      this.apiUrl,
-    );
-  }
-
-  public getBankBalances(
-    walletAddress: Wallet['address'],
-  ): Promise<BankCoin[]> {
-    return getBankBalances(
-      this.apiUrl,
-      walletAddress,
-    );
-  }
-
-  public sendCoin(
-    transferData: TransferData,
-  ): Promise<QueryTransferResponse>;
-
-  public sendCoin(
-    transferData: TransferData,
-    broadcastOptions: BankBroadcastOptions,
-  ): Promise<BroadcastResponse>;
-
-  public sendCoin(
-    transferData: TransferData,
-    broadcastOptions?: BankBroadcastOptions,
-  ): Promise<QueryTransferResponse | BroadcastResponse> {
-    return sendCoin(
-      this.apiUrl,
-      this.chainId,
-      transferData,
-      broadcastOptions as BankBroadcastOptions,
-    );
-  }
-
-  public getTransferHistory(
-    walletAddress: Wallet['address'],
-    role: TransferRole,
-    paginationOptions?: TransferHistoryPaginationOptions,
-  ): Promise<TransferHistory> {
-    return getTransferHistory(
-      this.apiUrl,
-      walletAddress,
-      role,
-      paginationOptions,
-    );
+    return this.profileSDK;
   }
 
   public broadcast(

@@ -1,5 +1,5 @@
 import { Wallet } from '../../wallet';
-import { BroadcastOptions, BroadcastSuccessResponse } from '../messages'
+import { BroadcastOptions, BroadcastSuccessResponse } from '../messages';
 import { StdTxResponse } from '../types';
 
 export type QueryTransferResponse = StdTxResponse<'cosmos-sdk/MsgSend', TransferDataResponse>;

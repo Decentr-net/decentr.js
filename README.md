@@ -68,7 +68,7 @@ AND
 import { Decentr } from 'decentr-js';
 const decentr = new DecentrConnect(restUrl, chainId);
 
-decentr.getAccount(walletAddress)
+decentr.profile.getAccount(walletAddress)
   .then((account) => ...)
 
 OR
@@ -97,9 +97,9 @@ const publicData = {
   AND
 
 import { Decentr } from 'decentr-js';
-const decentr = new DecentrConnect(restUrl, chainId);
+const decentr = new Decentr(restUrl, chainId);
 
-decentr.setPublicProfile(
+decentr.profile.setPublicProfile(
   walletAddress,
   publicData, 
   {
@@ -113,9 +113,9 @@ decentr.setPublicProfile(
 import { Decentr, broadcast } from 'decentr-js';
 const decentr = new Decentr(restUrl, chainId);
 
-const stdTxResponse = await decentr.setPublicProfile(walletAddress, publicData);
+const stdTxResponse = await decentr.profile.setPublicProfile(walletAddress, publicData);
 
-const account = await decentr.getAccount(walletAddress);
+const account = await decentr.profile.getAccount(walletAddress);
 await broadcast(
   restUrl,
   chainId,
@@ -149,7 +149,7 @@ const decentr = new Decentr(REST_URL, CHAIN_ID);
 ```ts
 const walletAddress = 'decentr1p4s4djk5dqstfswg6k8sljhkzku4a6ve9dmng5';
 
-decentr.getAccount(walletAddress).then(console.log);
+decentr.profile.getAccount(walletAddress).then(console.log);
 
 /* 
 CONSOLE OUTPUT:
@@ -172,21 +172,6 @@ CONSOLE OUTPUT:
 */
 ```
 
-**Get token balance**
-
-```ts
-const walletAddress = 'decentr1p4s4djk5dqstfswg6k8sljhkzku4a6ve9dmng5';
-
-decentr.getTokenBalance(walletAddress)
-  .then(console.log);
-
-/*
-CONSOLE OUTPUT:
-
-2e-7
-*/
-```
-
 **Set public profile**
 
 ```ts
@@ -203,7 +188,7 @@ const publicProfile: PublicProfile = {
   firstName: 'firstName',
 }
 
-await decentr.setPublicProfile<YourPrivateProfile>(
+await decentr.profile.setPublicProfile<YourPrivateProfile>(
   walletAddress,
   publicProfile,
   {
@@ -218,7 +203,7 @@ await decentr.setPublicProfile<YourPrivateProfile>(
 ```ts
 const walletAddress = 'decentr1p4s4djk5dqstfswg6k8sljhkzku4a6ve9dmng5';
 
-decentr.getPublicProfile(wallet.address).then(console.log);
+decentr.profile.getPublicProfile(wallet.address).then(console.log);
 
 /*
 CONSOLE OUTPUT:
@@ -252,7 +237,7 @@ const privateProfile: YourPrivateProfile = {
   name: ['Ex'],
 }
 
-await decentr.setPrivateProfile<YourPrivateProfile>(
+await decentr.profile.setPrivateProfile<YourPrivateProfile>(
   walletAddress,
   privateProfile,
   privateKey,
@@ -275,7 +260,7 @@ interface YourPrivateProfile extends PrivateProfile {
 const walletAddress = 'decentr1p4s4djk5dqstfswg6k8sljhkzku4a6ve9dmng5';
 const privateKey = 'fbf265ca5872907c4dbd33bf87c683d84b96987eb42d4a6c50f335eac57ece3e';
 
-decentr.getPrivateProfile<YourPrivateProfile>(walletAddress, privateKey)
+decentr.profile.getPrivateProfile<YourPrivateProfile>(walletAddress, privateKey)
   .then(console.log);
 
 /*
@@ -288,21 +273,22 @@ CONSOLE OUTPUT:
 */
 ```
 
-**Get moderator accounts addresses**
+## 📜 PDV (Personal Data Value)
+
+**Get token balance**
 
 ```ts
-decentr.getModeratorAddresses().then(console.log);
+const walletAddress = 'decentr1p4s4djk5dqstfswg6k8sljhkzku4a6ve9dmng5';
+
+decentr.pdv.getTokenBalance(walletAddress)
+  .then(console.log);
 
 /*
 CONSOLE OUTPUT:
 
-[
-  "decentr1p4s4djk5dqstfswg6k8sljhkzku4a6ve9dmng5",
-]
+2e-7
 */
 ```
-
-## 📜 PDV (Personal Data Value)
 
 **Send PDV data**
 
@@ -333,7 +319,7 @@ const wallet: Wallet = {
   publicKey:  '03dae8cf229d1db63c8d854bd1c73e280147ebd3bb40df12381d16b0eb071a72b6'
 }
 
-await decentr.sendPDV(pdv, wallet, {
+await decentr.pdv.sendPDV(pdv, wallet, {
   broadcast: true,
 });
 ```
@@ -350,7 +336,7 @@ const paginationParams = { // Optional
   limit: 20,
 }
 
-decentr.getPDVlist(cerberusUrl, walletAddress, paginationParams)
+decentr.pdv.getPDVlist(cerberusUrl, walletAddress, paginationParams)
   .then(console.log);
 
 /*
@@ -368,7 +354,7 @@ CONSOLE OUTPUT:
 ```ts
 const walletAddress = 'decentr1p4s4djk5dqstfswg6k8sljhkzku4a6ve9dmng5';
 
-decentr.getPDVStats(walletAddress)
+decentr.pdv.getPDVStats(walletAddress)
   .then(console.log);
 
 /*
@@ -400,7 +386,7 @@ const wallet: Wallet = {
   publicKey:  '03dae8cf229d1db63c8d854bd1c73e280147ebd3bb40df12381d16b0eb071a72b6'
 }
 
-decentr.getPDVDetails(cerberusUrl, PDVaddress, wallet)
+decentr.pdv.getPDVDetails(cerberusUrl, PDVaddress, wallet)
   .then(console.log);
 
 /*
@@ -431,6 +417,20 @@ CONSOLE OUTPUT:
 
 ## 📜 Posts
 
+**Get moderator accounts addresses**
+
+```ts
+decentr.community.getModeratorAddresses().then(console.log);
+
+/*
+CONSOLE OUTPUT:
+
+[
+  "decentr1p4s4djk5dqstfswg6k8sljhkzku4a6ve9dmng5",
+]
+*/
+```
+
 **Create post**
 
 ```ts
@@ -444,7 +444,7 @@ const post = {
   text: 'Post text',
 }
 
-decentr.createPost(walletAddress, post,   {
+decentr.community.createPost(walletAddress, post,   {
   broadcast: true,
   privateKey,
 });
@@ -459,7 +459,7 @@ const privateKey = '8c313682470073d56d2d8f5b7fde53c072024a9fd9135501125035d53c8a
 const authorWalletAddress = 'decentr1urlzs0q6g8lqedjgfa5nxvnldp7nxlunnky8ux';
 const postId = 'cf4699e5-3411-11eb-8f45-0242ac11000b'
 
-decentr.deletePost(walletAddress, {
+decentr.community.deletePost(walletAddress, {
   author: authorWalletAddress,
   postId,
 }, {
@@ -475,7 +475,7 @@ decentr.deletePost(walletAddress, {
 const author = 'decentr1urlzs0q6g8lqedjgfa5nxvnldp7nxlunnky8ux';
 const postId = 'cf4699e5-3411-11eb-8f45-0242ac11000b';
 
-decentr.getPost({
+decentr.community.getPost({
   author,
   postId,
 }).then(console.log);
@@ -508,7 +508,7 @@ const limit = 20;
 const fromAuthorWalletAddress = 'decentr1urlzs0q6g8lqedjgfa5nxvnldp7nxlunnky8ux';
 const fromPostId = 'cf4699e5-3411-11eb-8f45-0242ac11000b';
 
-decentr.getLatestPosts({
+decentr.community.getLatestPosts({
   fromOwner: fromAuthorWalletAddress,
   fromUUID: fromPostId,
   category,
@@ -543,7 +543,7 @@ const authorWalletAddress = 'decentr1urlzs0q6g8lqedjgfa5nxvnldp7nxlunnky8ux';
 const fromPostId = 'cf4699e5-3411-11eb-8f45-0242ac11000b';
 const limit = 20;
 
-decentr.getUserPosts(authorWalletAddress, {
+decentr.community.getUserPosts(authorWalletAddress, {
   from: fromPostId,
   limit,
 }).then(console.log);
@@ -580,7 +580,7 @@ const limit = 20;
 const fromAuthorWalletAddress = 'decentr1urlzs0q6g8lqedjgfa5nxvnldp7nxlunnky8ux';
 const fromPostId = 'cf4699e5-3411-11eb-8f45-0242ac11000b';
 
-decentr.getPopularPosts(period, {
+decentr.community.getPopularPosts(period, {
   fromOwner: fromAuthorWalletAddress,
   fromUUID: fromPostId,
   category,
@@ -617,7 +617,7 @@ const postId = 'cf4699e5-3411-11eb-8f45-0242ac11000b';
 
 const likeWeight = LikeWeight.Down  (LikeWeight.Up, LikeWeight.Zero, LikeWeight.Down)
 
-decentr.likePost(
+decentr.community.likePost(
   walletAddress,
   {
     author: authorWalletAddress,
@@ -636,7 +636,7 @@ decentr.likePost(
 ```ts
 const walletAddress = 'decentr1j6e6j53vh95jcq9k9lnsrsvj3h8dkdgmm20zhu';
 
-decentr.getLikedPosts(walletAddress)
+decentr.community.getLikedPosts(walletAddress)
   .then(console.log);
 
 /* 
@@ -656,7 +656,7 @@ CONSOLE OUTPUT:
 ```ts
 const walletAddress = 'decentr1p4s4djk5dqstfswg6k8sljhkzku4a6ve9dmng5';
 
-decentr.getBankBalances(walletAddress).then(console.log);
+decentr.bank.getBankBalances(walletAddress).then(console.log);
 
 /* 
 CONSOLE OUTPUT:
@@ -680,7 +680,7 @@ const wallet: Wallet = {
 const walletAddressTo = "decentr1j6e6j53vh95jcq9k9lnsrsvj3h8dkdgmm20zhu";
 const amount = "15";
 
-await decentr.sendCoin(
+decentr.bank.sendCoin(
   {
     from_address: wallet.address,
     to_address: walletAddressTo,
@@ -690,7 +690,7 @@ await decentr.sendCoin(
     broadcast: true,
     privateKey: wallet.privateKey,
   },
-);
+).then(console.log);
 
 /*
 CONSOLE OUTPUT:
@@ -716,7 +716,7 @@ const role: 'recipient' | 'sender' = 'sender';
 const page = 1;
 const limit = 100;
 
-decentr.getTransferHistory(
+decentr.bank.getTransferHistory(
   walletAddress,
   role,
   {
