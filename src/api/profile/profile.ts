@@ -13,7 +13,6 @@ import {
   PublicProfileBroadcastOptions,
   QueryPrivateProfileResponse,
   QueryPublicProfileResponse,
-  TokenBalanceResponse,
 } from './types';
 
 async function queryPublicProfile(
@@ -82,16 +81,6 @@ export function getPrivateProfile<T extends PrivateProfile>(
     .then((encryptedPrivateProfile) => {
       return decrypt(atob(encryptedPrivateProfile), privateKey);
     });
-}
-
-export function getTokenBalance(
-  apiUrl: string,
-  walletAddress: Wallet['address'],
-): Promise<number> {
-  return blockchainFetch<TokenBalanceResponse>(
-    `${apiUrl}/token/balance/${walletAddress}`
-  )
-    .then(({ balance }) => balance);
 }
 
 export async function setPublicProfile(

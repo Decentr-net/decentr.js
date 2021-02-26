@@ -1,6 +1,6 @@
 import { bytesToHex, fetchJson } from '../../utils';
 import { KeyPair, Wallet } from '../../wallet';
-import { blockchainFetch, getSignature } from '../api-utils'
+import { blockchainFetch, getSignature } from '../api-utils';
 import {
   PDV,
   PDVDetails,
@@ -9,7 +9,18 @@ import {
   PDVListPaginationOptions,
   PDVResponse,
   PDVStatItem,
+  TokenBalanceResponse,
 } from './types';
+
+export function getTokenBalance(
+  apiUrl: string,
+  walletAddress: Wallet['address'],
+): Promise<TokenBalanceResponse['balance']> {
+  return blockchainFetch<TokenBalanceResponse>(
+    `${apiUrl}/token/balance/${walletAddress}`
+  )
+    .then(({ balance }) => balance);
+}
 
 export async function getPDVList(
   cerberusUrl: string,

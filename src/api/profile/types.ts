@@ -20,10 +20,6 @@ export interface PublicProfileBroadcastOptions extends BaseProfileBroadcastOptio
 
 export type PrivateProfileBroadcastOptions = BaseProfileBroadcastOptions;
 
-export interface TokenBalanceResponse {
-  readonly balance: number;
-}
-
 export enum Gender {
   Male = 'male',
   Female = 'female',

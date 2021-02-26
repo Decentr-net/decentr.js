@@ -1,6 +1,6 @@
-import { Wallet } from '../../wallet'
-import { BroadcastOptions } from '../messages'
-import { StdTxResponse } from '../types'
+import { Wallet } from '../../wallet';
+import { BroadcastOptions } from '../messages';
+import { StdTxResponse } from '../types';
 
 export type QueryCreatePostResponse = StdTxResponse<'community/CreatePost', Pick<Post, 'uuid' | 'category' | 'previewImage' | 'owner' | 'text' | 'title'>>;
 
