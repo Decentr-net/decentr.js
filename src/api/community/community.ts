@@ -5,6 +5,7 @@ import { broadcast, BroadcastResponse } from '../messages';
 import { Account, getAccount } from '../profile';
 import { StdTxResponse } from '../types';
 import {
+  FollowingBroadcastOptions,
   LikeWeight,
   ModeratorAddressesResponse,
   PostBroadcastOptions,
@@ -202,6 +203,126 @@ export async function likePost(
   }
 
   const account = await getAccount(apiUrl, walletAddress) as Account;
+
+  return broadcast(
+    apiUrl,
+    chainId,
+    stdTxResponse.value,
+    {
+      ...account,
+      privateKey: broadcastOptions.privateKey,
+    },
+    broadcastOptions,
+  );
+}
+
+async function queryFollow(
+  apiUrl: string,
+  chainId: string,
+  follower: Wallet['address'],
+  whom: Wallet['address'],
+): Promise<StdTxResponse> {
+  const url = `${apiUrl}/community/followers/follow/${whom}`;
+
+  const body = await addGas({}, chainId, url, follower);
+
+  return fetchJson(url, { method: 'POST', body });
+}
+
+export async function follow(
+  apiUrl: string,
+  chainId: string,
+  follower: Wallet['address'],
+  whom: Wallet['address'],
+): Promise<StdTxResponse>;
+
+export async function follow(
+  apiUrl: string,
+  chainId: string,
+  follower: Wallet['address'],
+  whom: Wallet['address'],
+  broadcastOptions: FollowingBroadcastOptions,
+): Promise<BroadcastResponse>;
+
+export async function follow(
+  apiUrl: string,
+  chainId: string,
+  follower: Wallet['address'],
+  whom: Wallet['address'],
+  broadcastOptions?: FollowingBroadcastOptions,
+): Promise<StdTxResponse | BroadcastResponse> {
+  const stdTxResponse = await queryFollow(
+    apiUrl,
+    chainId,
+    follower,
+    whom,
+  );
+
+  if (!broadcastOptions) {
+    return stdTxResponse;
+  }
+
+  const account = await getAccount(apiUrl, follower) as Account;
+
+  return broadcast(
+    apiUrl,
+    chainId,
+    stdTxResponse.value,
+    {
+      ...account,
+      privateKey: broadcastOptions.privateKey,
+    },
+    broadcastOptions,
+  );
+}
+
+async function queryUnfollow(
+  apiUrl: string,
+  chainId: string,
+  follower: Wallet['address'],
+  whom: Wallet['address'],
+): Promise<StdTxResponse> {
+  const url = `${apiUrl}/community/followers/unfollow/${whom}`;
+
+  const body = await addGas({}, chainId, url, follower);
+
+  return fetchJson(url, { method: 'POST', body });
+}
+
+export async function unfollow(
+  apiUrl: string,
+  chainId: string,
+  follower: Wallet['address'],
+  whom: Wallet['address'],
+): Promise<StdTxResponse>;
+
+export async function unfollow(
+  apiUrl: string,
+  chainId: string,
+  follower: Wallet['address'],
+  whom: Wallet['address'],
+  broadcastOptions: FollowingBroadcastOptions,
+): Promise<BroadcastResponse>;
+
+export async function unfollow(
+  apiUrl: string,
+  chainId: string,
+  follower: Wallet['address'],
+  whom: Wallet['address'],
+  broadcastOptions?: FollowingBroadcastOptions,
+): Promise<StdTxResponse | BroadcastResponse> {
+  const stdTxResponse = await queryUnfollow(
+    apiUrl,
+    chainId,
+    follower,
+    whom,
+  );
+
+  if (!broadcastOptions) {
+    return stdTxResponse;
+  }
+
+  const account = await getAccount(apiUrl, follower) as Account;
 
   return broadcast(
     apiUrl,

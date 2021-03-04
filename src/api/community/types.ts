@@ -16,6 +16,11 @@ export interface PostBroadcastOptions extends BroadcastOptions {
   privateKey: Wallet['privateKey'];
 }
 
+export interface FollowingBroadcastOptions extends BroadcastOptions {
+  broadcast: true,
+  privateKey: Wallet['privateKey'];
+}
+
 export enum PostCategory {
   WorldNews = 1,
   TravelAndTourism,
