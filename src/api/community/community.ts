@@ -5,16 +5,13 @@ import { broadcast, BroadcastResponse } from '../messages';
 import { Account, getAccount } from '../profile';
 import { StdTxResponse } from '../types';
 import {
-  LikeWeight, ModeratorAddressesResponse,
-  PopularPostsPeriod,
-  Post,
+  LikeWeight,
+  ModeratorAddressesResponse,
   PostBroadcastOptions,
   PostCreate,
   PostIdentificationParameters,
-  PostsFilterOptions,
   QueryCreatePostResponse,
-  UserPostsFilterOptions
-} from './types'
+} from './types';
 
 async function queryCreatePost(
   apiUrl: string,
@@ -149,55 +146,6 @@ export function getModeratorAddresses(
   );
 }
 
-export function getPost(
-  apiUrl: string,
-  post: PostIdentificationParameters,
-): Promise<Post> {
-  return blockchainFetch(
-    `${apiUrl}/community/post/${post.author}/${post.postId}`
-  );
-}
-
-export function getLatestPosts(
-  apiUrl: string,
-  filterOptions: PostsFilterOptions = {},
-): Promise<Post[]> {
-  return blockchainFetch(
-    `${apiUrl}/community/posts`,
-    {
-      ...filterOptions,
-    },
-  );
-}
-
-export function getUserPosts(
-  apiUrl: string,
-  walletAddress: Wallet['address'],
-  filterOptions: UserPostsFilterOptions = {},
-): Promise<Post[]> {
-  return blockchainFetch(
-    `${apiUrl}/community/posts/${walletAddress}`,
-    {
-      ...filterOptions,
-    },
-  );
-}
-
-export function getPopularPosts(
-  apiUrl: string,
-  period: PopularPostsPeriod,
-  filterOptions: PostsFilterOptions = {},
-): Promise<Post[]> {
-  const restPoint = `by` + period.charAt(0).toUpperCase() + period.slice(1);
-
-  return blockchainFetch(
-    `${apiUrl}/community/posts/popular/${restPoint}`,
-    {
-      ...filterOptions,
-    },
-  );
-}
-
 async function queryLikePost(
   apiUrl: string,
   chainId: string,
@@ -265,14 +213,4 @@ export async function likePost(
     },
     broadcastOptions,
   );
-}
-
-
-export function getLikedPosts(
-  apiUrl: string,
-  walletAddress: Wallet['address'],
-): Promise<Record<Post['uuid'], LikeWeight.Down | LikeWeight.Up>> {
-  const url = `${apiUrl}/community/likedPosts/${walletAddress}`;
-
-  return blockchainFetch(url);
 }

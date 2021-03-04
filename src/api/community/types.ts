@@ -11,28 +11,10 @@ export interface PostIdentificationParameters {
   postId: Post['uuid'];
 }
 
-export type PopularPostsPeriod = 'day' | 'week' | 'month';
-
 export interface PostBroadcastOptions extends BroadcastOptions {
   broadcast: true,
   privateKey: Wallet['privateKey'];
 }
-
-export interface UserPostsFilterOptions {
-  limit?: number;
-  from?: Post['uuid'];
-}
-
-export type PostsFilterOptions = {
-  category?: PostCategory;
-  limit?: number;
-} & ({
-  fromOwner: Wallet['address'];
-  fromUUID: Post['uuid'];
-} | {
-  fromOwner?: undefined;
-  fromUUID?: undefined;
-});
 
 export enum PostCategory {
   WorldNews = 1,

@@ -4,25 +4,16 @@ import { StdTxResponse } from '../types';
 import {
   createPost,
   deletePost,
-  getLatestPosts,
-  getLikedPosts,
   getModeratorAddresses,
-  getPopularPosts,
-  getPost,
-  getUserPosts,
   likePost,
 } from './community';
 import {
   LikeWeight,
   ModeratorAddressesResponse,
-  PopularPostsPeriod,
-  Post,
   PostBroadcastOptions,
   PostCreate,
   PostIdentificationParameters,
-  PostsFilterOptions,
   QueryCreatePostResponse,
-  UserPostsFilterOptions,
 } from './types';
 
 export class DecentrCommunitySDK {
@@ -82,33 +73,6 @@ export class DecentrCommunitySDK {
     );
   }
 
-  public getPost(
-    postIdentificationParameters: PostIdentificationParameters,
-  ): Promise<Post> {
-    return getPost(
-      this.apiUrl,
-      postIdentificationParameters,
-    );
-  }
-
-  public getLatestPosts(filterOptions?: PostsFilterOptions): Promise<Post[]> {
-    return getLatestPosts(
-      this.apiUrl,
-      filterOptions,
-    );
-  }
-
-  public getUserPosts(
-    walletAddress: Wallet['address'],
-    filterOptions?: UserPostsFilterOptions,
-  ): Promise<Post[]> {
-    return getUserPosts(
-      this.apiUrl,
-      walletAddress,
-      filterOptions,
-    );
-  }
-
   public likePost(
     walletAddress: Wallet['address'],
     postIdentificationParameters: PostIdentificationParameters,
@@ -136,23 +100,6 @@ export class DecentrCommunitySDK {
       likeWeight,
       broadcastOptions as PostBroadcastOptions,
     );
-  }
-
-  public getPopularPosts(
-    period: PopularPostsPeriod,
-    filterOptions?: PostsFilterOptions,
-  ): Promise<Post[]> {
-    return getPopularPosts(
-      this.apiUrl,
-      period,
-      filterOptions,
-    );
-  }
-
-  public getLikedPosts(
-    walletAddress: Wallet['address']
-  ): Promise<Record<Post['uuid'], LikeWeight.Down | LikeWeight.Up>> {
-    return getLikedPosts(this.apiUrl, walletAddress);
   }
 
   public getModeratorAddresses(): Promise<ModeratorAddressesResponse> {
