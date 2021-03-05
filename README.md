@@ -638,6 +638,94 @@ CONSOLE OUTPUT:
 */
 ```
 
+## 📜 Staking
+
+**Get validators**
+
+```ts
+
+const filterParams = {    // OPTIONAL
+  status: 'bonded',       // 'unbonding' | 'bonded' | 'unbonded'
+}
+
+decentr.staking.getValidators(filterParams)
+  .then(console.log);
+
+/*
+CONSOLE OUTPUT:
+
+[
+  {
+    operator_address: 'decentrvaloper1yw8degnl8e2h045rrewnqd2a37k5tkntg6wdcc',
+    consensus_pubkey: 'decentrvalconspub1zcjduepqx7sjquzlf0nwcv85f94sd98xmvhetv8mrk4uxngumg6vwyvfmq4q73gt36',
+    jailed: false,
+    status: 2,
+    tokens: '100000000000000',
+    delegator_shares: '100000000000000.000000000000000000',
+    description: {
+      moniker: 'poseidon',
+      identity: '',
+      website: '',
+      security_contact: '',
+      details: ''
+    },
+    unbonding_height: '0',
+    unbonding_time: '1970-01-01T00:00:00Z',
+    commission: {
+      commission_rates: {
+        rate: '0.100000000000000000',
+        max_rate: '0.200000000000000000',
+        max_change_rate: '0.010000000000000000'
+      },
+      update_time: '2020-12-23T19:04:43.316496Z'
+    },
+    min_self_delegation: '1'
+  }
+]
+*/
+```
+
+**Get validator**
+
+```ts
+
+const validatorAddress = 'decentrvaloper1yw8degnl8e2h045rrewnqd2a37k5tkntg6wdcc';
+
+decentr.staking.getValidator(validatorAddress)
+  .then(console.log);
+
+/*
+CONSOLE OUTPUT:
+
+{
+  operator_address: 'decentrvaloper1yw8degnl8e2h045rrewnqd2a37k5tkntg6wdcc',
+  consensus_pubkey: 'decentrvalconspub1zcjduepqx7sjquzlf0nwcv85f94sd98xmvhetv8mrk4uxngumg6vwyvfmq4q73gt36',
+  jailed: false,
+  status: 2,
+  tokens: '100000000000000',
+  delegator_shares: '100000000000000.000000000000000000',
+  description: {
+    moniker: 'poseidon',
+    identity: '',
+    website: '',
+    security_contact: '',
+    details: ''
+  },
+  unbonding_height: '0',
+  unbonding_time: '1970-01-01T00:00:00Z',
+  commission: {
+    commission_rates: {
+      rate: '0.100000000000000000',
+      max_rate: '0.200000000000000000',
+      max_change_rate: '0.010000000000000000'
+    },
+    update_time: '2020-12-23T19:04:43.316496Z'
+  },
+  min_self_delegation: '1'
+}
+*/
+```
+
 ## 🥂 License
 
 [MIT](./LICENSE.md) as always

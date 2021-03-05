@@ -3,6 +3,7 @@ import { DecentrBankSDK } from './bank';
 import { DecentrCommunitySDK } from './community';
 import { DecentrPDVSDK } from './pdv';
 import { Account, DecentrProfileSDK } from './profile';
+import { DecentrStakingSDK } from './staking';
 import { broadcast, BroadcastOptions, BroadcastResponse } from './messages';
 import { StdTxResponseValue } from './types';
 
@@ -11,6 +12,7 @@ export class Decentr {
   private communitySDK: DecentrCommunitySDK | undefined;
   private pdvSDK: DecentrPDVSDK | undefined;
   private profileSDK: DecentrProfileSDK | undefined;
+  private stakingSDK: DecentrStakingSDK | undefined;
 
   constructor(
     private apiUrl: string,
@@ -48,6 +50,14 @@ export class Decentr {
     }
 
     return this.profileSDK;
+  }
+
+  public get staking(): DecentrStakingSDK {
+    if (!this.stakingSDK) {
+      this.stakingSDK = new DecentrStakingSDK(this.apiUrl);
+    }
+
+    return this.stakingSDK;
   }
 
   public broadcast(
