@@ -493,6 +493,58 @@ decentr.community.likePost(
 );
 ```
 
+**Follow**
+
+```ts
+const yourWalletAddress = 'decentr1j6e6j53vh95jcq9k9lnsrsvj3h8dkdgmm20zhu';
+const yourPrivateKey = '8c313682470073d56d2d8f5b7fde53c072024a9fd9135501125035d53c8a1f60';
+
+const followTargetWalletAddress = '8c313682470073d56d2d8f5b7fde53c072024a9fd9135501125035d53c8a1f60';
+
+decentr.community.follow(
+  yourWalletAddress,
+  followTargetWalletAddress,
+  {
+    broadcast: true,
+    privateKey: yourPrivateKey,
+  },
+);
+```
+
+**Unfollow**
+
+```ts
+const yourWalletAddress = 'decentr1j6e6j53vh95jcq9k9lnsrsvj3h8dkdgmm20zhu';
+const yourPrivateKey = '8c313682470073d56d2d8f5b7fde53c072024a9fd9135501125035d53c8a1f60';
+
+const unfollowTargetWalletAddress = '8c313682470073d56d2d8f5b7fde53c072024a9fd9135501125035d53c8a1f60';
+
+decentr.community.unfollow(
+  yourWalletAddress,
+  unfollowTargetWalletAddress,
+  {
+    broadcast: true,
+    privateKey: yourPrivateKey,
+  },
+);
+```
+
+**Get followees**
+
+```ts
+const walletAddress = 'decentr1j6e6j53vh95jcq9k9lnsrsvj3h8dkdgmm20zhu';
+
+decentr.community.getFollowees(
+  walletAddress,
+).then(console.log);
+
+/*
+CONSOLE OUTPUT:
+
+['decentr1lxhvzgpetd5tmdmd2g9arkun80m0nkvhckqvhc']
+*/
+```
+
 ## 🏦 Bank
 
 **Get balances**

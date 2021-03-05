@@ -4,10 +4,14 @@ import { StdTxResponse } from '../types';
 import {
   createPost,
   deletePost,
+  follow,
+  getFollowees,
   getModeratorAddresses,
   likePost,
+  unfollow,
 } from './community';
 import {
+  FollowingBroadcastOptions,
   LikeWeight,
   ModeratorAddressesResponse,
   PostBroadcastOptions,
@@ -104,5 +108,59 @@ export class DecentrCommunitySDK {
 
   public getModeratorAddresses(): Promise<ModeratorAddressesResponse> {
     return getModeratorAddresses(this.apiUrl);
+  }
+
+  public follow(
+    follower: Wallet['address'],
+    whom: Wallet['address'],
+  ): Promise<StdTxResponse>;
+
+  public follow(
+    follower: Wallet['address'],
+    whom: Wallet['address'],
+    broadcastOptions: FollowingBroadcastOptions,
+  ): Promise<BroadcastResponse>;
+
+  public follow(
+    follower: Wallet['address'],
+    whom: Wallet['address'],
+    broadcastOptions?: FollowingBroadcastOptions,
+  ): Promise<StdTxResponse | BroadcastResponse> {
+    return follow(
+      this.apiUrl,
+      this.chainId,
+      follower,
+      whom,
+      broadcastOptions as FollowingBroadcastOptions,
+    );
+  }
+
+  public unfollow(
+    follower: Wallet['address'],
+    whom: Wallet['address'],
+  ): Promise<StdTxResponse>;
+
+  public unfollow(
+    follower: Wallet['address'],
+    whom: Wallet['address'],
+    broadcastOptions: FollowingBroadcastOptions,
+  ): Promise<BroadcastResponse>;
+
+  public unfollow(
+    follower: Wallet['address'],
+    whom: Wallet['address'],
+    broadcastOptions?: FollowingBroadcastOptions,
+  ): Promise<StdTxResponse | BroadcastResponse> {
+    return unfollow(
+      this.apiUrl,
+      this.chainId,
+      follower,
+      whom,
+      broadcastOptions as FollowingBroadcastOptions,
+    );
+  }
+
+  public getFollowees(follower: Wallet['address']): Promise<Wallet['address'][]> {
+    return getFollowees(this.apiUrl, this.chainId, follower);
   }
 }
