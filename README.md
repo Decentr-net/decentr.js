@@ -529,6 +529,22 @@ decentr.community.unfollow(
 );
 ```
 
+**Get followees**
+
+```ts
+const walletAddress = 'decentr1j6e6j53vh95jcq9k9lnsrsvj3h8dkdgmm20zhu';
+
+decentr.community.getFollowees(
+  walletAddress,
+).then(console.log);
+
+/*
+CONSOLE OUTPUT:
+
+['decentr1lxhvzgpetd5tmdmd2g9arkun80m0nkvhckqvhc']
+*/
+```
+
 ## 🏦 Bank
 
 **Get balances**
