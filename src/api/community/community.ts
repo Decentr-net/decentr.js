@@ -335,3 +335,13 @@ export async function unfollow(
     broadcastOptions,
   );
 }
+
+export function getFollowees(
+  apiUrl: string,
+  chainId: string,
+  follower: Wallet['address'],
+): Promise<Wallet['address'][]> {
+  return blockchainFetch<Wallet['address'][]>(
+    `${apiUrl}/community/followers/${follower}/followees`,
+  );
+}

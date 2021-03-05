@@ -5,6 +5,7 @@ import {
   createPost,
   deletePost,
   follow,
+  getFollowees,
   getModeratorAddresses,
   likePost,
   unfollow,
@@ -157,5 +158,9 @@ export class DecentrCommunitySDK {
       whom,
       broadcastOptions as FollowingBroadcastOptions,
     );
+  }
+
+  public getFollowees(follower: Wallet['address']): Promise<Wallet['address'][]> {
+    return getFollowees(this.apiUrl, this.chainId, follower);
   }
 }
