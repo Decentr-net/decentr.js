@@ -34,3 +34,8 @@ export interface Validator {
   unbonding_height: string;
   unbonding_time: string;
 }
+
+export interface Pool {
+  not_bonded_tokens: number;
+  bonded_tokens: number;
+}
