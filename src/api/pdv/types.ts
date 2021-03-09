@@ -35,6 +35,11 @@ export interface PDVDetails {
   pdv: PDV[];
 }
 
+export interface PDVMeta {
+  object_types: Record<PDVDataType, number>;
+  reward: number;
+}
+
 export interface PDVStatItem {
   date: string;
   value: number;

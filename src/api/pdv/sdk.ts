@@ -1,10 +1,11 @@
 import { Wallet } from '../../wallet';
-import { getPDVDetails, getPDVList, getPDVStats, getTokenBalance, sendPDV } from './pdv';
+import { getPDVDetails, getPDVList, getPDVMeta, getPDVStats, getTokenBalance, sendPDV } from './pdv';
 import {
   PDV,
   PDVDetails,
   PDVListItem,
   PDVListPaginationOptions,
+  PDVMeta,
   PDVResponse,
   PDVStatItem,
 } from './types';
@@ -26,6 +27,10 @@ export class DecentrPDVSDK {
     paginationOptions?: PDVListPaginationOptions,
   ): Promise<PDVListItem[]> {
     return getPDVList(cerberusUrl, walletAddress, paginationOptions);
+  }
+
+  public getPDVMeta(cerberusUrl: string, pdvAddress: number, walletAddress: Wallet['address']): Promise<PDVMeta> {
+    return getPDVMeta(cerberusUrl, pdvAddress, walletAddress);
   }
 
   public getPDVStats(walletAddress: Wallet['address']): Promise<PDVStatItem[]> {

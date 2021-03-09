@@ -7,6 +7,7 @@ import {
   PDVHeaders,
   PDVListItem,
   PDVListPaginationOptions,
+  PDVMeta,
   PDVResponse,
   PDVStatItem,
   TokenBalanceResponse,
@@ -32,6 +33,14 @@ export async function getPDVList(
       ...paginationOptions,
     },
   });
+}
+
+export async function getPDVMeta(
+  cerberusUrl: string,
+  pdvAddress: number,
+  walletAddress: Wallet['address'],
+): Promise<PDVMeta> {
+  return fetchJson(`${cerberusUrl}/v1/pdv/${walletAddress}/${pdvAddress}/meta`);
 }
 
 export function getPDVStats(
