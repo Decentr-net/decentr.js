@@ -6,10 +6,12 @@ import { Account, DecentrProfileSDK } from './profile';
 import { DecentrStakingSDK } from './staking';
 import { broadcast, BroadcastOptions, BroadcastResponse } from './messages';
 import { StdTxResponseValue } from './types';
+import { DecentrNodeSDK } from './node/sdk';
 
 export class Decentr {
   private bankSDK: DecentrBankSDK | undefined;
   private communitySDK: DecentrCommunitySDK | undefined;
+  private nodeSDK: DecentrNodeSDK | undefined;
   private pdvSDK: DecentrPDVSDK | undefined;
   private profileSDK: DecentrProfileSDK | undefined;
   private stakingSDK: DecentrStakingSDK | undefined;
@@ -34,6 +36,14 @@ export class Decentr {
     }
 
     return this.communitySDK;
+  }
+
+  public get node(): DecentrNodeSDK {
+    if (!this.nodeSDK) {
+      this.nodeSDK = new DecentrNodeSDK(this.apiUrl);
+    }
+
+    return this.nodeSDK;
   }
 
   public get pdv(): DecentrPDVSDK {
