@@ -141,6 +141,51 @@ const CHAIN_ID = 'testnet';
 const decentr = new Decentr(REST_URL, CHAIN_ID);
 ```
 
+## 📜 Node
+
+**Get node info**
+```ts
+
+decentr.node.getNodeInfo().then(console.log);
+
+/* 
+CONSOLE OUTPUT:
+
+{
+  application_version: {
+    build_deps: [
+      "gopkg.in/yaml.v2@v2.3.0",
+      ...
+    ],
+    build_tags: ""
+    client_name: "decentrcli"
+    commit: "0c2ff258f20269ab6538bf7c6771fbfac249308f"
+    go: "go version go1.14.8 linux/amd64"
+    name: "decentr"
+    server_name: "decentrd"
+    version: "1.1.0"
+  },
+  node_info: {
+    channels: "4020212223303800",
+    id: "8d044c9353d01fd6e1dff552b7804b6c8b3e961d",
+    listen_addr: "tcp://0.0.0.0:26656",
+    moniker: "TestNode",
+    network: "testnet",
+    other: {
+      rpc_address: "tcp://0.0.0.0:26657",
+      tx_index: "on"
+    },
+    protocol_version: {
+      app: "0",
+      block: "10",
+      p2p: "7"
+    },
+    version: "0.33.9"
+  }
+}
+*/
+```
+
 ## 📜 Profile
 
 **Get account**
