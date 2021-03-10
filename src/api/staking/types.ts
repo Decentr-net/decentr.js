@@ -1,3 +1,8 @@
+export interface Pool {
+  not_bonded_tokens: number;
+  bonded_tokens: number;
+}
+
 export type ValidatorStatusFilterParam = 'unbonding' | 'bonded' | 'unbonded';
 
 export interface ValidatorsFilterParams {
@@ -33,9 +38,4 @@ export interface Validator {
   tokens: string;
   unbonding_height: string;
   unbonding_time: string;
-}
-
-export interface Pool {
-  not_bonded_tokens: number;
-  bonded_tokens: number;
 }

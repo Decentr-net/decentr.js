@@ -5,15 +5,15 @@ export class DecentrStakingSDK {
   constructor(private apiUrl: string) {
   }
 
+  public getPool(): Promise<Pool> {
+    return getPool(this.apiUrl);
+  }
+
   public getValidators(status?: ValidatorsFilterParams): Promise<Validator[]> {
     return getValidators(this.apiUrl, status);
   }
 
   public getValidator(address: Validator['operator_address']): Promise<Validator> {
     return getValidator(this.apiUrl, address);
-  }
-
-  public getPool(): Promise<Pool> {
-    return getPool(this.apiUrl);
   }
 }

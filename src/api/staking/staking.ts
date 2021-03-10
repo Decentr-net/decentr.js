@@ -1,6 +1,12 @@
 import { Pool, Validator, ValidatorsFilterParams } from './types';
 import { blockchainFetch } from '../api-utils';
 
+export function getPool(
+  apiUrl: string,
+): Promise<Pool> {
+  return blockchainFetch(`${apiUrl}/staking/pool`);
+}
+
 export function getValidators(
   apiUrl: string,
   filter?: ValidatorsFilterParams,
@@ -13,10 +19,4 @@ export function getValidator(
   address: Validator['operator_address'],
 ): Promise<Validator> {
   return blockchainFetch(`${apiUrl}/staking/validators/${address}`);
-}
-
-export function getPool(
-  apiUrl: string,
-): Promise<Pool> {
-  return blockchainFetch(`${apiUrl}/staking/pool`);
 }
