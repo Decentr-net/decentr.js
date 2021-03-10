@@ -460,6 +460,29 @@ CONSOLE OUTPUT:
 */
 ```
 
+**Get PDV meta**
+
+```ts
+const cerberusUrl = 'https://cerberus.testnet.decentr.xyz';
+const pdvAddress: number = 1612457008;
+const walletAddress = 'decentr1p4s4djk5dqstfswg6k8sljhkzku4a6ve9dmng5';
+
+decentr.pdv.getPDVMeta(cerberusUrl, pdvAddress, walletAddress)
+  .then(console.log);
+
+/*
+CONSOLE OUTPUT:
+
+{
+  "object_types": {
+    "cookie": 3600,
+    "login_cookie": 100
+  },
+  "reward": 7600
+}
+*/
+```
+
 ## 📜 Posts
 
 **Get moderator accounts addresses**
