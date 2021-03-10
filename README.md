@@ -794,6 +794,23 @@ CONSOLE OUTPUT:
 */
 ```
 
+**Get pool**
+
+```ts
+
+decentr.staking.getPool()
+  .then(console.log);
+
+/*
+CONSOLE OUTPUT:
+
+{
+  "not_bonded_tokens": "97029900000000",
+  "bonded_tokens": "398010000000000"
+}
+*/
+```
+
 ## 🥂 License
 
 [MIT](./LICENSE.md) as always
