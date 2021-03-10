@@ -1,5 +1,11 @@
-import { Validator, ValidatorsFilterParams } from './types';
+import { Pool, Validator, ValidatorsFilterParams } from './types';
 import { blockchainFetch } from '../api-utils';
+
+export function getPool(
+  apiUrl: string,
+): Promise<Pool> {
+  return blockchainFetch(`${apiUrl}/staking/pool`);
+}
 
 export function getValidators(
   apiUrl: string,
