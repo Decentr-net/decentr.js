@@ -1,4 +1,9 @@
 export interface Block {
+  block: BlockBody;
+  block_id: BlockId;
+}
+
+export interface BlockBody {
   data: BlockData;
   evidence: BlockEvidence;
   header: BlockHeader;
@@ -57,9 +62,4 @@ export interface BlockLastCommitSignature {
 export interface BlockVersion {
   app: string;
   block: string;
-}
-
-export interface LatestBlock {
-  block: Block;
-  block_id: BlockId;
 }
