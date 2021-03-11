@@ -7,9 +7,11 @@ import { DecentrStakingSDK } from './staking';
 import { broadcast, BroadcastOptions, BroadcastResponse } from './messages';
 import { StdTxResponseValue } from './types';
 import { DecentrNodeSDK } from './node/sdk';
+import { DecentrBlocksSDK } from './blocks';
 
 export class Decentr {
   private bankSDK: DecentrBankSDK | undefined;
+  private blocksSDK: DecentrBlocksSDK | undefined;
   private communitySDK: DecentrCommunitySDK | undefined;
   private nodeSDK: DecentrNodeSDK | undefined;
   private pdvSDK: DecentrPDVSDK | undefined;
@@ -28,6 +30,14 @@ export class Decentr {
     }
 
     return this.bankSDK;
+  }
+
+  public get blocks(): DecentrBlocksSDK {
+    if (!this.blocksSDK) {
+      this.blocksSDK = new DecentrBlocksSDK(this.apiUrl);
+    }
+
+    return this.blocksSDK;
   }
 
   public get community(): DecentrCommunitySDK {
