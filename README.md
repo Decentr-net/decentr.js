@@ -910,6 +910,104 @@ CONSOLE OUTPUT:
 }
 */
 ```
+
+**Get block**
+
+```ts
+
+decentr.blocks.getBlock(blockHeight)
+  .then(console.log);
+
+/*
+CONSOLE OUTPUT:
+
+{
+  "block_id": {
+    "hash": "CCAAD54727918CF22A7E95FD9E8B459B62BBA771F5A67A77DEFB3C3FFCF992C3",
+    "parts": {
+      "total": "1",
+      "hash": "7C2A2979844A897869CE650E03C35E4C6A997A837474123C2D94CAE85AF21DCC"
+    }
+  },
+  "block": {
+    "header": {
+      "version": {
+        "block": "10",
+        "app": "0"
+      },
+      "chain_id": "testnet4",
+      "height": "11248",
+      "time": "2021-03-11T11:27:16.049483366Z",
+      "last_block_id": {
+        "hash": "3F73AAFFD13AD9541C3115E6E7FABB751EFFF8A66725F35E7517B0339F91F43A",
+        "parts": {
+          "total": "1",
+          "hash": "A984481B3227DAAF8126A825413A9F1B466A80D63BDF452133F92419D996DC8B"
+        }
+      },
+      "last_commit_hash": "929688CD048DEF64D99D4C739925DF6D779A8ACF590963FABE9D4FDDF58D2BBF",
+      "data_hash": "",
+      "validators_hash": "BE14F8B06ED7F8BA532BEEF4948CEB42C2B063096471233ADFFDE26D901C944B",
+      "next_validators_hash": "BE14F8B06ED7F8BA532BEEF4948CEB42C2B063096471233ADFFDE26D901C944B",
+      "consensus_hash": "048091BC7DDC283F77BFBF91D73C44DA58C3DF8A9CBC867405D8B7F3DAADA22F",
+      "app_hash": "71760D41E109575F6DA179565ACD085466BBDE12441BB3393331EB262B3AFA4F",
+      "last_results_hash": "",
+      "evidence_hash": "",
+      "proposer_address": "279620A2A6636072F5A4E26576EBEA7383F49F0D"
+    },
+    "data": {
+      "txs": null
+    },
+    "evidence": {
+      "evidence": null
+    },
+    "last_commit": {
+      "height": "11247",
+      "round": "0",
+      "block_id": {
+        "hash": "3F73AAFFD13AD9541C3115E6E7FABB751EFFF8A66725F35E7517B0339F91F43A",
+        "parts": {
+          "total": "1",
+          "hash": "A984481B3227DAAF8126A825413A9F1B466A80D63BDF452133F92419D996DC8B"
+        }
+      },
+      "signatures": [
+        {
+          "block_id_flag": 2,
+          "validator_address": "02693DD1D220E641EC96AD131943312DFF1B71A0",
+          "timestamp": "2021-03-11T11:27:16.053413018Z",
+          "signature": "nx1AuHMPMTo5QjXn4nFZrfcdFn7gMPYxdTl0EbiDfrQlsICEPAHq3RUH55uEyuL2ClX9OvCUKdhKu+akYUyACw=="
+        },
+        {
+          "block_id_flag": 2,
+          "validator_address": "279620A2A6636072F5A4E26576EBEA7383F49F0D",
+          "timestamp": "2021-03-11T11:27:16.047697288Z",
+          "signature": "eJsRULPhqhifsWn9RwQsFkgQAJsQdfJ8KJV3s2hy6+RzYBtXF+joQ/bDJMBBVbfTsdLsnJJX8VMWvaTTfGToBQ=="
+        },
+        {
+          "block_id_flag": 2,
+          "validator_address": "4A14E0888B5623FA42FDB33CD8A320B48F1899E2",
+          "timestamp": "2021-03-11T11:27:16.049483366Z",
+          "signature": "3+/nVuaD7H0MgW2FJTuJMDj4m2vuBoQ0MsIWgkXiClVJaVs7MG6fqbVC+TFyjfwV/NIEGeoNLwwaAN8+r5pBBw=="
+        },
+        {
+          "block_id_flag": 2,
+          "validator_address": "54B612929384D59CE870FAF0147E48D3E4F93F1B",
+          "timestamp": "2021-03-11T11:27:16.05413328Z",
+          "signature": "NpPnUPGQA0eQxS754yJ+glhsY/jjeCFW6jvi/i5m15KCoLVU1Hu3Rir1w14JBR4BTPP9X560OKN1bU1Aqh+BAw=="
+        },
+        {
+          "block_id_flag": 2,
+          "validator_address": "5E24F5BF6B4877D5478A75FB2E3EB2B4E9C9F46D",
+          "timestamp": "2021-03-11T11:27:16.049083252Z",
+          "signature": "bha3l+TT6kHp7qhWfta9jpiviL2h0HOblDIOZ0WZRXHPMHoW99ev9cKbN7lBAjOwPU8lIxq0rSqL3R5jexRrBg=="
+        }
+      ]
+    }
+  }
+}
+*/
+```
 ## 🥂 License
 
 [MIT](./LICENSE.md) as always

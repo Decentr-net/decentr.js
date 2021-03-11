@@ -11,11 +11,11 @@ export interface BlockBody {
 }
 
 export interface BlockData {
-  txs: string;
+  txs: string | null;
 }
 
 export interface BlockEvidence {
-  evidence: string;
+  evidence: string | null;
 }
 
 export interface BlockHeader {
