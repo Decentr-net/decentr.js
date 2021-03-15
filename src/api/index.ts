@@ -7,4 +7,5 @@ export * from './node';
 export * from './pdv';
 export * from './profile';
 export * from './staking';
+export * from './txs';
 export * from './types';
