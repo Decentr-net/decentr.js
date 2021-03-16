@@ -1,5 +1,6 @@
 export * from './api-utils';
 export * from './bank';
+export * from './blocks';
 export * from './community';
 export * from './connector';
 export * from './messages';
