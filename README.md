@@ -88,6 +88,7 @@ const walletAddress = 'decentr1p4s4djk5dqstfswg6k8sljhkzku4a6ve9dmng5';
 const privateKey = 'fbf265ca5872907c4dbd33bf87c683d84b96987eb42d4a6c50f335eac57ece3e';
 const publicData = {
   avatar: 'image source',
+  bio: 'Photographer',
   birthday: '1991-02-03',
   gender: 'male',
   firstName: 'first name',
@@ -254,6 +255,7 @@ decentr.profile.getPublicProfile(wallet.address).then(console.log);
 CONSOLE OUTPUT:
 
 {
+  bio: 'Photographer',
   birthday: '1991-02-03',
   gender: 'male',
   avatar: 'http://hosting.com/avatar.png',
