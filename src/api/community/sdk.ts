@@ -1,6 +1,5 @@
 import { Wallet } from '../../wallet'
 import { BroadcastResponse } from '../messages';
-import { StdTxResponse } from '../types';
 import {
   createPost,
   deletePost,
@@ -18,6 +17,10 @@ import {
   PostCreate,
   PostIdentificationParameters,
   QueryCreatePostResponse,
+  QueryDeletePostResponse,
+  QueryFollowResponse,
+  QuerySetLikeResponse,
+  QueryUnfollowResponse,
 } from './types';
 
 export class DecentrCommunitySDK {
@@ -55,7 +58,7 @@ export class DecentrCommunitySDK {
   public deletePost(
     walletAddress: Wallet['address'],
     postIdentificationParameters: PostIdentificationParameters,
-  ): Promise<StdTxResponse>;
+  ): Promise<QueryDeletePostResponse>;
 
   public deletePost(
     walletAddress: Wallet['address'],
@@ -67,7 +70,7 @@ export class DecentrCommunitySDK {
     walletAddress: Wallet['address'],
     postIdentificationParameters: PostIdentificationParameters,
     broadcastOptions?: PostBroadcastOptions,
-  ): Promise<StdTxResponse | BroadcastResponse> {
+  ): Promise<QueryDeletePostResponse | BroadcastResponse> {
     return deletePost(
       this.apiUrl,
       this.chainId,
@@ -81,7 +84,7 @@ export class DecentrCommunitySDK {
     walletAddress: Wallet['address'],
     postIdentificationParameters: PostIdentificationParameters,
     likeWeight: LikeWeight,
-  ): Promise<StdTxResponse>;
+  ): Promise<QuerySetLikeResponse>;
 
   public likePost(
     walletAddress: Wallet['address'],
@@ -95,7 +98,7 @@ export class DecentrCommunitySDK {
     postIdentificationParameters: PostIdentificationParameters,
     likeWeight: LikeWeight,
     broadcastOptions?: PostBroadcastOptions,
-  ): Promise<StdTxResponse | BroadcastResponse> {
+  ): Promise<QuerySetLikeResponse | BroadcastResponse> {
     return likePost(
       this.apiUrl,
       this.chainId,
@@ -113,7 +116,7 @@ export class DecentrCommunitySDK {
   public follow(
     follower: Wallet['address'],
     whom: Wallet['address'],
-  ): Promise<StdTxResponse>;
+  ): Promise<QueryFollowResponse>;
 
   public follow(
     follower: Wallet['address'],
@@ -125,7 +128,7 @@ export class DecentrCommunitySDK {
     follower: Wallet['address'],
     whom: Wallet['address'],
     broadcastOptions?: FollowingBroadcastOptions,
-  ): Promise<StdTxResponse | BroadcastResponse> {
+  ): Promise<QueryFollowResponse | BroadcastResponse> {
     return follow(
       this.apiUrl,
       this.chainId,
@@ -138,7 +141,7 @@ export class DecentrCommunitySDK {
   public unfollow(
     follower: Wallet['address'],
     whom: Wallet['address'],
-  ): Promise<StdTxResponse>;
+  ): Promise<QueryUnfollowResponse>;
 
   public unfollow(
     follower: Wallet['address'],
@@ -150,7 +153,7 @@ export class DecentrCommunitySDK {
     follower: Wallet['address'],
     whom: Wallet['address'],
     broadcastOptions?: FollowingBroadcastOptions,
-  ): Promise<StdTxResponse | BroadcastResponse> {
+  ): Promise<QueryUnfollowResponse | BroadcastResponse> {
     return unfollow(
       this.apiUrl,
       this.chainId,

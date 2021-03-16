@@ -1008,6 +1008,149 @@ CONSOLE OUTPUT:
 }
 */
 ```
+## 🏦 Txs
+
+** Search **
+
+```ts
+
+decentr.txs.search({ messageAction: 'set_like' }) // check TXsSearchParams interface for more params
+  .then(console.log);
+
+/*
+CONSOLE OUTPUT:
+
+{
+  "total_count": "1",
+  "count": "1",
+  "page_number": "1",
+  "page_total": "1",
+  "limit": "30",
+  "txs": [
+    {
+      "height": "72964",
+      "txhash": "33F6C9B80BF758BCB5AC133AC69FD2EC931DDE9AF38843036BF4E9DBA70D5FA9",
+      "raw_log": "[{\"msg_index\":0,\"log\":\"\",\"events\":[{\"type\":\"message\",\"attributes\":[{\"key\":\"action\",\"value\":\"set_like\"}]}]}]",
+      "logs": [
+        {
+          "msg_index": 0,
+          "log": "",
+          "events": [
+            {
+              "type": "message",
+              "attributes": [
+                {
+                  "key": "action",
+                  "value": "set_like"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "tx": {
+        "type": "cosmos-sdk/StdTx",
+        "value": {
+          "msg": [
+            {
+              "type": "community/SetLike",
+              "value": {
+                "postOwner": "decentr1exw8026vwdkhczydu0wy2hh8kzmqxthmcslj6e",
+                "postUuid": "f9c6f6ec-8556-11eb-aebe-0242ac11000a",
+                "owner": "decentr1t6zuwl57sn2tkqnrwt6ug8zy3v0xcajt9s7wqh",
+                "weight": 1
+              }
+            }
+          ],
+          "fee": {
+            "amount": [],
+            "gas": "0"
+          },
+          "signatures": [
+            {
+              "pub_key": {
+                "type": "tendermint/PubKeySecp256k1",
+                "value": "Ak+p0asDvre5dbOaPYLslXAIpnyVucSsz+pzz54rosCd"
+              },
+              "signature": "Cp1RQxKk49m0dEYwg80RodJ6+7XocGImN2gvtE/JhyZMsLeMAH4p3tLYOEAZxz7BYOGzsbTqLbaqzcjLQ/p/iw=="
+            }
+          ],
+          "memo": ""
+        }
+      },
+      "timestamp": "2021-03-15T10:26:08Z"
+    },
+  },
+}
+*/
+```
+
+**Get by hash**
+
+```ts
+
+decentr.txs.getByHash('33F6C9B80BF758BCB5AC133AC69FD2EC931DDE9AF38843036BF4E9DBA70D5FA9')
+  .then(console.log);
+
+/*
+CONSOLE OUTPUT:
+
+{
+  "height": "72964",
+  "txhash": "33F6C9B80BF758BCB5AC133AC69FD2EC931DDE9AF38843036BF4E9DBA70D5FA9",
+  "raw_log": "[{\"msg_index\":0,\"log\":\"\",\"events\":[{\"type\":\"message\",\"attributes\":[{\"key\":\"action\",\"value\":\"set_like\"}]}]}]",
+  "logs": [
+    {
+      "msg_index": 0,
+      "log": "",
+      "events": [
+        {
+          "type": "message",
+          "attributes": [
+            {
+              "key": "action",
+              "value": "set_like"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "tx": {
+    "type": "cosmos-sdk/StdTx",
+    "value": {
+      "msg": [
+        {
+          "type": "community/SetLike",
+          "value": {
+            "postOwner": "decentr1exw8026vwdkhczydu0wy2hh8kzmqxthmcslj6e",
+            "postUuid": "f9c6f6ec-8556-11eb-aebe-0242ac11000a",
+            "owner": "decentr1t6zuwl57sn2tkqnrwt6ug8zy3v0xcajt9s7wqh",
+            "weight": 1
+          }
+        }
+      ],
+      "fee": {
+        "amount": [],
+        "gas": "0"
+      },
+      "signatures": [
+        {
+          "pub_key": {
+            "type": "tendermint/PubKeySecp256k1",
+            "value": "Ak+p0asDvre5dbOaPYLslXAIpnyVucSsz+pzz54rosCd"
+          },
+          "signature": "Cp1RQxKk49m0dEYwg80RodJ6+7XocGImN2gvtE/JhyZMsLeMAH4p3tLYOEAZxz7BYOGzsbTqLbaqzcjLQ/p/iw=="
+        }
+      ],
+      "memo": ""
+    }
+  },
+  "timestamp": "2021-03-15T10:26:08Z"
+}
+*/
+```
+
 ## 🥂 License
 
 [MIT](./LICENSE.md) as always
