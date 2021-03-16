@@ -1,3 +1,4 @@
+import { Transaction } from '../txs'
 import { Fee, StdTxMessage } from '../types';
 
 export interface StdMessageFee {
@@ -70,35 +71,9 @@ export enum BroadcastErrorCode {
   Panic = 111222,
 }
 
-export interface BroadcastBaseResponse {
-  readonly height: string;
-  readonly raw_log: string;
-  readonly txhash: string;
-}
+export type BroadcastSuccessResponse = Omit<Transaction, 'timestamp' | 'tx'>;
 
-interface BroadcastSuccessResponseLogEventAttribute {
-  readonly key: string;
-  readonly value: string;
-}
-
-export interface BroadcastSuccessResponseLogEvent {
-  readonly type: string;
-  readonly attributes: BroadcastSuccessResponseLogEventAttribute[];
-}
-
-export interface BroadcastSuccessResponseLog {
-  readonly events: BroadcastSuccessResponseLogEvent[];
-  readonly msg_index: number;
-  readonly log: string;
-}
-
-export interface BroadcastSuccessResponse extends BroadcastBaseResponse {
-  readonly gas_used: string;
-  readonly gas_wanted: string;
-  readonly logs: BroadcastSuccessResponseLog[];
-}
-
-export interface BroadcastErrorResponse extends BroadcastBaseResponse {
+export interface BroadcastErrorResponse extends Pick<Transaction, 'height' | 'raw_log' | 'txhash'> {
   readonly code: BroadcastErrorCode;
   readonly codespace: string;
 }

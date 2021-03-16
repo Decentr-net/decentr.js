@@ -4,6 +4,29 @@ import { StdTxResponse } from '../types';
 
 export type QueryCreatePostResponse = StdTxResponse<'community/CreatePost', Pick<Post, 'uuid' | 'category' | 'previewImage' | 'owner' | 'text' | 'title'>>;
 
+export type QueryDeletePostResponse = StdTxResponse<'community/DeletePost', {
+  postOwner: Wallet['address'];
+  postUuid: Post['uuid'];
+  owner: Wallet['address'];
+}>;
+
+export type QuerySetLikeResponse = StdTxResponse<'community/SetLike', {
+  postOwner: Wallet['address'];
+  postUuid: Post['uuid'];
+  owner: Wallet['address'];
+  weight: LikeWeight;
+}>;
+
+export type QueryFollowResponse = StdTxResponse<'community/MsgFollow', {
+  owner: Wallet['address'];
+  whom: Wallet['address'];
+}>;
+
+export type QueryUnfollowResponse = StdTxResponse<'community/MsgUnfollow', {
+  owner: Wallet['address'];
+  whom: Wallet['address'];
+}>;
+
 export type PostCreate = Pick<Post, 'category' | 'previewImage' | 'text' | 'title'>;
 
 export interface PostIdentificationParameters {
