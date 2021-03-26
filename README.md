@@ -713,9 +713,10 @@ CONSOLE OUTPUT:
 **Get validators**
 
 ```ts
+import { ValidatorStatus } from './types'
 
-const filterParams = {    // OPTIONAL
-  status: 'bonded',       // 'unbonding' | 'bonded' | 'unbonded'
+const filterParams = {    // OPTIONAL, will return Bonded by default
+  status: ValidatorStatus.Unbonded,
 }
 
 decentr.staking.getValidators(filterParams)

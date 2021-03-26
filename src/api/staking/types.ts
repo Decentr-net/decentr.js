@@ -3,10 +3,14 @@ export interface Pool {
   bonded_tokens: number;
 }
 
-export type ValidatorStatusFilterParam = 'unbonding' | 'bonded' | 'unbonded';
+export enum ValidatorStatus {
+  Unbonded,
+  Unbonding,
+  Bonded,
+}
 
 export interface ValidatorsFilterParams {
-  status?: ValidatorStatusFilterParam;
+  status?: ValidatorStatus;
 }
 
 export interface ValidatorDescription {
@@ -34,7 +38,7 @@ export interface Validator {
   jailed: boolean;
   min_self_delegation: string;
   operator_address: string;
-  status: number;
+  status: ValidatorStatus;
   tokens: string;
   unbonding_height: string;
   unbonding_time: string;
