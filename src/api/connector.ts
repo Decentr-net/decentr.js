@@ -5,7 +5,7 @@ import { DecentrPDVSDK } from './pdv';
 import { Account, DecentrProfileSDK } from './profile';
 import { DecentrStakingSDK } from './staking';
 import { broadcast, BroadcastOptions, BroadcastResponse } from './messages';
-import { StdTxResponseValue } from './types';
+import { StdTxMessageValueMap, StdTxResponseValue } from './types';
 import { DecentrNodeSDK } from './node/sdk';
 import { DecentrBlocksSDK } from './blocks';
 import { DecentrTXsSDK } from './txs';
@@ -90,8 +90,8 @@ export class Decentr {
     return this.txsSDK;
   }
 
-  public broadcast(
-    stdTxValue: StdTxResponseValue,
+  public broadcast<K extends keyof StdTxMessageValueMap>(
+    stdTxValue: StdTxResponseValue<K>,
     account: Pick<Account, 'account_number' | 'sequence'> & {
       privateKey: Wallet['privateKey'],
     },

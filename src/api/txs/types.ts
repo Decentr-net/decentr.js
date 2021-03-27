@@ -1,5 +1,5 @@
 import { Wallet } from '../../wallet';
-import { StdTxResponse } from '../types';
+import { StdTxMessageValueMap, StdTxResponse } from '../types'
 
 export interface TXsSearchParams {
   limit?: number;
@@ -26,22 +26,22 @@ export interface TransactionLog {
   log: string;
 }
 
-export interface Transaction<TX extends StdTxResponse = StdTxResponse> {
+export interface Transaction<K extends keyof StdTxMessageValueMap = any> {
   gas_used?: string;
   gas_wanted?: string;
   height: string;
   logs: TransactionLog[];
   raw_log: string;
   timestamp: string;
-  tx: TX;
+  tx: StdTxResponse<K>;
   txhash: string;
 }
 
-export interface TXsSearchResponse {
+export interface TXsSearchResponse<K extends keyof StdTxMessageValueMap = any> {
   count: number;
   limit: number;
   page_number: number;
   page_total: number;
   total_count: number;
-  txs: Transaction[];
+  txs: Transaction<K>[];
 }
