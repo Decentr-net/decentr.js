@@ -1,8 +1,8 @@
 import { Wallet } from '../../wallet';
 import { BroadcastOptions, BroadcastSuccessResponse } from '../messages';
-import { StdTxResponse } from '../types';
+import { StdTxMessageType, StdTxResponse } from '../types';
 
-export type QueryTransferResponse = StdTxResponse<'cosmos-sdk/MsgSend', TransferDataResponse>;
+export type QueryTransferResponse = StdTxResponse<StdTxMessageType.CosmosSend>;
 
 export interface BankBroadcastOptions extends BroadcastOptions {
   readonly broadcast: true;
@@ -16,12 +16,6 @@ export interface BankCoin {
 
 export interface TransferData {
   readonly amount: string;
-  readonly from_address: Wallet['address'];
-  readonly to_address: Wallet['address'];
-}
-
-export interface TransferDataResponse {
-  readonly amount: BankCoin[];
   readonly from_address: Wallet['address'];
   readonly to_address: Wallet['address'];
 }
