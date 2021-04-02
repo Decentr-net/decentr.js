@@ -1,10 +1,10 @@
-import { StdTxResponse } from '../types';
-import { BroadcastOptions } from '../messages'
 import { Wallet } from '../../wallet';
+import { StdTxMessageType, StdTxResponse } from '../types';
+import { BroadcastOptions } from '../messages';
 
-export type QueryPrivateProfileResponse = StdTxResponse<'profile/SetPrivate', { private: string }>;
+export type QueryPrivateProfileResponse = StdTxResponse<StdTxMessageType.ProfileSetPrivate>;
 
-export type QueryPublicProfileResponse = StdTxResponse<'profile/SetPublic', { public: PublicProfile }>;
+export type QueryPublicProfileResponse = StdTxResponse<StdTxMessageType.ProfileSetPublic>;
 
 export interface AccountResponse {
   value: Account;

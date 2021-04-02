@@ -1,31 +1,16 @@
 import { Wallet } from '../../wallet';
 import { BroadcastOptions } from '../messages';
-import { StdTxResponse } from '../types';
+import { StdTxMessageType, StdTxResponse } from '../types';
 
-export type QueryCreatePostResponse = StdTxResponse<'community/CreatePost', Pick<Post, 'uuid' | 'category' | 'previewImage' | 'owner' | 'text' | 'title'>>;
+export type QueryCreatePostResponse = StdTxResponse<StdTxMessageType.CommunityCreatePost>;
 
-export type QueryDeletePostResponse = StdTxResponse<'community/DeletePost', {
-  postOwner: Wallet['address'];
-  postUuid: Post['uuid'];
-  owner: Wallet['address'];
-}>;
+export type QueryDeletePostResponse = StdTxResponse<StdTxMessageType.CommunityDeletePost>;
 
-export type QuerySetLikeResponse = StdTxResponse<'community/SetLike', {
-  postOwner: Wallet['address'];
-  postUuid: Post['uuid'];
-  owner: Wallet['address'];
-  weight: LikeWeight;
-}>;
+export type QuerySetLikeResponse = StdTxResponse<StdTxMessageType.CommunitySetLike>;
 
-export type QueryFollowResponse = StdTxResponse<'community/MsgFollow', {
-  owner: Wallet['address'];
-  whom: Wallet['address'];
-}>;
+export type QueryFollowResponse = StdTxResponse<StdTxMessageType.CommunityFollow>;
 
-export type QueryUnfollowResponse = StdTxResponse<'community/MsgUnfollow', {
-  owner: Wallet['address'];
-  whom: Wallet['address'];
-}>;
+export type QueryUnfollowResponse = StdTxResponse<StdTxMessageType.CommunityUnfollow>;
 
 export type PostCreate = Pick<Post, 'category' | 'previewImage' | 'text' | 'title'>;
 
