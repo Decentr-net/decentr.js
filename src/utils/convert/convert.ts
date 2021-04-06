@@ -26,8 +26,10 @@ export function hexToBytes(hex: string): Bytes {
 }
 
 export function getUnicode(target: string): string {
-  return target.split('').map(character => {
+  return target.split('').map((character) => {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const hex = character.codePointAt(0)!.toString(16);
-    return '\\u' + '0000'.substring(0, 4 - hex.length) + hex;
+    const zeroCharacter = '0000';
+    return '\\u' + zeroCharacter.slice(0, zeroCharacter.length - hex.length) + hex;
   }).join();
 }

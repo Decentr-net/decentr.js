@@ -9,7 +9,7 @@ export enum ValidatorStatus {
   Bonded,
 }
 
-export interface ValidatorsFilterParams {
+export interface ValidatorsFilterParameters {
   status?: ValidatorStatus;
 }
 

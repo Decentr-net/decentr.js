@@ -1,12 +1,12 @@
 import { getTransactionByHash, searchTransactions } from './txs';
-import { Transaction, TXsSearchParams, TXsSearchResponse } from './types';
+import { Transaction, TXsSearchParameters, TXsSearchResponse } from './types';
 
 export class DecentrTXsSDK {
   constructor(private nodeUrl: string) {
   }
 
-  public search(params: TXsSearchParams): Promise<TXsSearchResponse> {
-    return searchTransactions(this.nodeUrl, params);
+  public search(parameters: TXsSearchParameters): Promise<TXsSearchResponse> {
+    return searchTransactions(this.nodeUrl, parameters);
   }
 
   public getByHash(hash: Transaction['txhash']): Promise<Transaction> {

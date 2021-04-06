@@ -20,9 +20,9 @@ export interface SignedMessageSignaturePublicKey {
   readonly value: string;
 }
 
-export interface SignedMessageSignature {
-  readonly account_number: StdMessage<any>['account_number'];
-  readonly sequence: StdMessage<any>['sequence'];
+export interface SignedMessageSignature<K extends keyof StdTxMessageValueMap> {
+  readonly account_number: StdMessage<K>['account_number'];
+  readonly sequence: StdMessage<K>['sequence'];
   readonly signature: string;
   readonly pub_key: SignedMessageSignaturePublicKey;
 }
@@ -30,7 +30,7 @@ export interface SignedMessageSignature {
 export interface SignedMessage<K extends keyof StdTxMessageValueMap> {
   readonly msg: StdTxMessage<K>[];
   readonly fee: StdMessageFee;
-  readonly signatures: SignedMessageSignature[],
+  readonly signatures: SignedMessageSignature<K>[],
   readonly memo: StdMessage<K>['memo'];
 }
 

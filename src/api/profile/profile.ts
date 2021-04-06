@@ -23,11 +23,11 @@ async function queryPublicProfile(
 ): Promise<QueryPublicProfileResponse> {
   const url = `${apiUrl}/profile/public/${walletAddress}`;
 
-  const queryParam = {
+  const queryParameters = {
     public: publicProfile,
   };
 
-  const body = await addGas(queryParam, chainId, url, walletAddress);
+  const body = await addGas(queryParameters, chainId, url, walletAddress);
 
   return fetchJson(url, { method: 'POST', body });
 }
@@ -43,11 +43,11 @@ async function queryPrivateProfile<T extends PrivateProfile>(
 
   const encrypted = encrypt(privateProfile, privateKey);
 
-  const queryParam = {
+  const queryParameters = {
     private: encrypted,
   };
 
-  const body = await addGas(queryParam, chainId, url, walletAddress);
+  const body = await addGas(queryParameters, chainId, url, walletAddress);
 
   return fetchJson(url, { method: 'POST', body });
 }

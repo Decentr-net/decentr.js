@@ -33,7 +33,7 @@ export function encodeObjectCharactersToUnicode<T>(
   target: T,
   characters: string[],
 ): T {
-  const mapFn = (value: string) => {
+  const mapFunction = (value: string) => {
     return value.split('').map((character) => {
       return characters.includes(character)
         ? getUnicode(character)
@@ -41,13 +41,11 @@ export function encodeObjectCharactersToUnicode<T>(
     }).join('');
   };
 
-  return deepMapObjectStrings(target, mapFn);
+  return deepMapObjectStrings(target, mapFunction);
 }
 
 export function decodeObjectUnicode<T>(target: T): T {
-  const mapFn = (value: string) => {
-    return JSON.parse('"' + value.replace('"', '\\"') + '"')
-  };
-
-  return deepMapObjectStrings(target, mapFn);
+  return deepMapObjectStrings(target, (value: string) => {
+    return JSON.parse('"' + value.replace('"', '\\"') + '"');
+  });
 }
