@@ -73,17 +73,21 @@ export interface StdTxMessage<K extends keyof StdTxMessageValueMap> {
   readonly value: StdTxMessageValueMap[K];
 }
 
-export interface StdTxResponseValue<K extends keyof StdTxMessageValueMap> {
-  readonly fee: StdTxFee;
-  readonly memo: string;
-  readonly msg: StdTxMessage<K>[];
-  readonly signatures: null;
+export interface StdTxValue<K extends keyof StdTxMessageValueMap> {
+  fee: StdTxFee;
+  memo: string;
+  msg: StdTxMessage<K>[];
+  signatures: null;
 }
 
-export interface StdTxResponse<K extends keyof StdTxMessageValueMap> {
-  readonly type: 'cosmos-sdk/StdTx';
-  readonly value: StdTxResponseValue<K>;
+export interface StdTx<K extends keyof StdTxMessageValueMap> {
+  type: 'cosmos-sdk/StdTx';
+  value: StdTxValue<K>;
 }
+
+export type StdTxResponseValue<K extends keyof StdTxMessageValueMap> = StdTxValue<K>;
+
+export type StdTxResponse<K extends keyof StdTxMessageValueMap> = StdTx<K>;
 
 export interface BaseRequest {
   readonly base_req: {
