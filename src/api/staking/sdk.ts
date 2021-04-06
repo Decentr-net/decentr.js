@@ -1,5 +1,5 @@
 import { getPool, getValidator, getValidators } from './staking';
-import { Pool, Validator, ValidatorsFilterParams } from './types';
+import { Pool, Validator, ValidatorsFilterParameters } from './types';
 
 export class DecentrStakingSDK {
   constructor(private apiUrl: string) {
@@ -9,7 +9,7 @@ export class DecentrStakingSDK {
     return getPool(this.apiUrl);
   }
 
-  public getValidators(status?: ValidatorsFilterParams): Promise<Validator[]> {
+  public getValidators(status?: ValidatorsFilterParameters): Promise<Validator[]> {
     return getValidators(this.apiUrl, status);
   }
 

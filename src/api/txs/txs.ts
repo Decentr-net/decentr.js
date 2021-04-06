@@ -1,17 +1,20 @@
 import { fetchJson } from '../../utils';
-import { Transaction, TXsSearchParams, TXsSearchResponse } from './types';
+import { Transaction, TXsSearchParameters, TXsSearchResponse } from './types';
 
-export function searchTransactions(nodeUrl: string, params: TXsSearchParams): Promise<TXsSearchResponse> {
+export function searchTransactions(
+  nodeUrl: string,
+  parameters: TXsSearchParameters,
+): Promise<TXsSearchResponse> {
   return fetchJson<TXsSearchResponse>(
     `${nodeUrl}/txs`,
     {
       queryParameters: {
-        limit: params?.limit,
-        'message.action': params?.messageAction,
-        'message.sender': params?.messageSender,
-        page: params?.page,
-        'tx.maxheight': params?.txMaxHeight,
-        'tx.minheight': params?.txMinHeight,
+        limit: parameters?.limit,
+        'message.action': parameters?.messageAction,
+        'message.sender': parameters?.messageSender,
+        page: parameters?.page,
+        'tx.maxheight': parameters?.txMaxHeight,
+        'tx.minheight': parameters?.txMinHeight,
       },
     },
   );

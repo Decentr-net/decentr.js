@@ -28,14 +28,14 @@ async function queryTransfer(
 ): Promise<QueryTransferResponse> {
   const url = `${apiUrl}/bank/accounts/${transferData.to_address}/transfers`;
 
-  const queryParam = {
+  const queryParameters = {
     amount: [{
       amount: transferData.amount,
       denom: 'udec',
     }],
   };
 
-  const body = await addGas(queryParam, chainId, url, transferData.from_address);
+  const body = await addGas(queryParameters, chainId, url, transferData.from_address);
 
   return fetchJson(url, { method: 'POST', body });
 }
@@ -99,14 +99,14 @@ export async function getTransferHistory(
     },
   );
 
-  const transactions = response.txs.map((elem) => {
-    const txValue = elem.tx.value.msg[0].value;
+  const transactions = response.txs.map((element) => {
+    const txValue = element.tx.value.msg[0].value;
 
     return {
       amount: txValue.amount[0],
       recipient: txValue.to_address,
       sender: txValue.from_address,
-      timestamp: elem.timestamp,
+      timestamp: element.timestamp,
     };
   });
 

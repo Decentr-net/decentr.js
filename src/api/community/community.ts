@@ -25,12 +25,12 @@ async function queryCreatePost(
 ): Promise<QueryCreatePostResponse> {
   const url = `${apiUrl}/community/posts`;
 
-  const queryParam = {
+  const queryParameters = {
     ...post,
     category: post.category.toString(),
   };
 
-  const body = await addGas(queryParam, chainId, url, walletAddress);
+  const body = await addGas(queryParameters, chainId, url, walletAddress);
 
   return fetchJson(url, { method: 'POST', body });
 }
@@ -90,7 +90,7 @@ async function queryDeletePost(
 ): Promise<QueryDeletePostResponse> {
   const url = `${apiUrl}/community/posts/${author}/${postId}/delete`;
 
-  const body = await addGas(null, chainId, url, walletAddress);
+  const body = await addGas(undefined, chainId, url, walletAddress);
 
   return fetchJson(url, { method: 'POST', body });
 }
@@ -159,11 +159,11 @@ async function queryLikePost(
 ): Promise<QuerySetLikeResponse> {
   const url = `${apiUrl}/community/posts/${author}/${postId}/like`;
 
-  const queryParam = {
+  const queryParameters = {
     weight: likeWeight,
   };
 
-  const body = await addGas(queryParam, chainId, url, walletAddress);
+  const body = await addGas(queryParameters, chainId, url, walletAddress);
 
   return fetchJson(url, { method: 'POST', body });
 }
