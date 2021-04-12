@@ -1,6 +1,7 @@
 import { Wallet } from '../wallet';
 import { LikeWeight, Post } from './community';
 import { PublicProfile } from './profile';
+import { Validator, ValidatorCommission } from './staking';
 
 export interface Fee {
   readonly amount: string;
@@ -18,6 +19,7 @@ export enum StdTxMessageType {
   CommunityFollow = 'community/MsgFollow',
   CommunitySetLike = 'community/SetLike',
   CommunityUnfollow = 'community/MsgUnfollow',
+  CosmosCreateValidator = 'cosmos-sdk/MsgCreateValidator',
   CosmosSend = 'cosmos-sdk/MsgSend',
   PdvDistributeRewards = 'pdv/DistributeRewards',
   ProfileSetPrivate = 'profile/SetPrivate',
@@ -45,6 +47,16 @@ export interface StdTxMessageValueMap {
     owner: Wallet['address'];
     whom: Wallet['address'];
   };
+  [StdTxMessageType.CosmosCreateValidator]: Pick<Validator, 'description' | 'min_self_delegation'> & {
+    commission: ValidatorCommission['commission_rates'];
+    delegator_address: string;
+    pubkey: string;
+    validator_address: string;
+    value: {
+      amount: string;
+      denom: string;
+    };
+  },
   [StdTxMessageType.CosmosSend]: {
     amount: Fee[]
     from_address: Wallet['address'];
