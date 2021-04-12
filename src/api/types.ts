@@ -80,9 +80,11 @@ export interface StdTxMessageValueMap {
   };
 }
 
+export type StdTxMessageValue<K extends keyof StdTxMessageValueMap> = StdTxMessageValueMap[K];
+
 export interface StdTxMessage<K extends keyof StdTxMessageValueMap> {
   readonly type: K;
-  readonly value: StdTxMessageValueMap[K];
+  readonly value: StdTxMessageValue<K>;
 }
 
 export interface StdTxValue<K extends keyof StdTxMessageValueMap> {
