@@ -1,6 +1,7 @@
 import { Wallet } from '../../wallet';
-import { BroadcastOptions, BroadcastSuccessResponse } from '../messages';
+import { BroadcastOptions } from '../messages';
 import { StdTxMessageType, StdTxResponse } from '../types';
+import { TXsSearchResponse } from '../txs';
 
 export type QueryTransferResponse = StdTxResponse<StdTxMessageType.CosmosSend>;
 
@@ -20,19 +21,7 @@ export interface TransferData {
   readonly to_address: Wallet['address'];
 }
 
-export interface TransferHistoryTxs extends BroadcastSuccessResponse {
-  readonly timestamp: string;
-  readonly tx: QueryTransferResponse;
-}
-
-export interface TransferHistoryResponse {
-  readonly total_count: number;
-  readonly count: number;
-  readonly page_number: number;
-  readonly page_total: number;
-  readonly limit: number;
-  readonly txs: TransferHistoryTxs[];
-}
+export type TransferHistoryResponse = TXsSearchResponse<StdTxMessageType.CosmosSend>;
 
 export interface TransferHistoryPaginationOptions {
   limit?: number;

@@ -13,6 +13,7 @@ import {
 import { broadcast, BroadcastResponse } from '../messages';
 import { fetchJson } from '../../utils';
 import { Wallet } from '../../wallet';
+import { StdTxMessageType } from '../types'
 
 export function getBankBalances(
   apiUrl: string,
@@ -51,14 +52,14 @@ export async function sendCoin(
   chainId: string,
   transferData: TransferData,
   broadcastOptions: BankBroadcastOptions,
-): Promise<BroadcastResponse>;
+): Promise<BroadcastResponse<StdTxMessageType.CosmosSend>>;
 
 export async function sendCoin(
   apiUrl: string,
   chainId: string,
   transferData: TransferData,
   broadcastOptions?: BankBroadcastOptions,
-): Promise<QueryTransferResponse | BroadcastResponse> {
+): Promise<QueryTransferResponse | BroadcastResponse<StdTxMessageType.CosmosSend>> {
   const stdTxResponse = await queryTransfer(
     apiUrl,
     chainId,
