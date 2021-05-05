@@ -1,5 +1,5 @@
 import { Transaction } from '../txs';
-import { Fee, StdTxMessage, StdTxMessageValueMap } from '../types';
+import { Fee, StdTxMessage, StdTxMessageValueMap, StdTxValue } from '../types'
 
 export interface StdMessageFee {
   readonly amount: Fee[];
@@ -71,14 +71,19 @@ export enum BroadcastErrorCode {
   Panic = 111222,
 }
 
-export type BroadcastSuccessResponse = Omit<Transaction, 'timestamp' | 'tx'>;
+export type BroadcastSuccessResponse<K extends keyof StdTxMessageValueMap>
+  = Omit<Transaction, 'timestamp' | 'tx'> &
+  {
+    stdTxValue: StdTxValue<K>;
+  };
 
 export interface BroadcastErrorResponse extends Pick<Transaction, 'height' | 'raw_log' | 'txhash'> {
   readonly code: BroadcastErrorCode;
   readonly codespace: string;
 }
 
-export type BroadcastResponse = BroadcastSuccessResponse | BroadcastErrorResponse;
+export type BroadcastResponse<K extends keyof StdTxMessageValueMap>
+  = BroadcastSuccessResponse<K> | BroadcastErrorResponse;
 
 export class BroadcastClientError {
   constructor(public broadcastErrorCode: BroadcastErrorCode) {

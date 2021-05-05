@@ -1,6 +1,7 @@
 import { Wallet } from '../../wallet';
 import { BroadcastResponse } from '../messages';
 import { getBankBalances, getTransferHistory, sendCoin } from './bank';
+import { StdTxMessageType } from '../types';
 import {
   BankBroadcastOptions,
   BankCoin,
@@ -34,12 +35,12 @@ export class DecentrBankSDK {
   public sendCoin(
     transferData: TransferData,
     broadcastOptions: BankBroadcastOptions,
-  ): Promise<BroadcastResponse>;
+  ): Promise<BroadcastResponse<StdTxMessageType.CosmosSend>>;
 
   public sendCoin(
     transferData: TransferData,
     broadcastOptions?: BankBroadcastOptions,
-  ): Promise<QueryTransferResponse | BroadcastResponse> {
+  ): Promise<QueryTransferResponse | BroadcastResponse<StdTxMessageType.CosmosSend>> {
     return sendCoin(
       this.apiUrl,
       this.chainId,

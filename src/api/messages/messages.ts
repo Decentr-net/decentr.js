@@ -1,6 +1,6 @@
 import { bytesToBase64, fetchJson, getPublicKeyBase64 } from '../../utils';
 import { Wallet } from '../../wallet';
-import { StdTxMessageValueMap, StdTxResponseValue } from '../types';
+import { StdTxMessageType, StdTxMessageValueMap, StdTxResponseValue } from '../types'
 import { getSignature } from '../api-utils';
 import { Account } from '../profile';
 import {
@@ -59,19 +59,21 @@ function broadcastSignedMessage<K extends keyof StdTxMessageValueMap>(
   apiUrl: string,
   message: SignedMessage<K>,
   mode?: BroadcastMode,
-): Promise<BroadcastResponse> {
+): Promise<BroadcastResponse<K>> {
   const body: BroadcastBody<K> = {
     mode: mode || 'block',
     tx: message,
   };
 
-  return fetchJson<BroadcastResponse, BroadcastBody<K>>(`${apiUrl}/txs`, {
+  return fetchJson<BroadcastResponse<K>, BroadcastBody<K>>(`${apiUrl}/txs`, {
     method: 'POST',
     body,
   });
 }
 
-function isBroadcastErrorResponse(response: BroadcastResponse): response is BroadcastErrorResponse {
+function isBroadcastErrorResponse<K extends StdTxMessageType>(
+  response: BroadcastResponse<K>
+): response is BroadcastErrorResponse {
   return !!(response as BroadcastErrorResponse).code;
 }
 
@@ -83,7 +85,7 @@ export async function broadcast<K extends keyof StdTxMessageValueMap>(
     privateKey: Wallet['privateKey'],
   },
   options?: BroadcastOptions,
-): Promise<BroadcastResponse> {
+): Promise<BroadcastResponse<K>> {
   const stdTxMessage = createStdMessage(stdTxValue, account, chainId);
   const signedMessage = signMessage(stdTxMessage, account.privateKey);
 
@@ -93,6 +95,9 @@ export async function broadcast<K extends keyof StdTxMessageValueMap>(
         throw new BroadcastClientError(response.code);
       }
 
-      return response;
+      return {
+        ...response,
+        stdTxValue,
+      };
     });
 }

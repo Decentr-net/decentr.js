@@ -3,6 +3,7 @@ import { fetchJson } from '../../utils';
 import { addGas, blockchainFetch } from '../api-utils';
 import { broadcast, BroadcastResponse } from '../messages';
 import { Account, getAccount } from '../profile';
+import { StdTxMessageType } from '../types';
 import {
   FollowingBroadcastOptions,
   LikeWeight,
@@ -48,7 +49,7 @@ export async function createPost(
   walletAddress: Wallet['address'],
   post: PostCreate,
   broadcastOptions: PostBroadcastOptions,
-): Promise<BroadcastResponse>;
+): Promise<BroadcastResponse<StdTxMessageType.CommunityCreatePost>>;
 
 export async function createPost(
   apiUrl: string,
@@ -56,7 +57,7 @@ export async function createPost(
   walletAddress: Wallet['address'],
   post: PostCreate,
   broadcastOptions?: PostBroadcastOptions,
-): Promise<QueryCreatePostResponse | BroadcastResponse> {
+): Promise<QueryCreatePostResponse | BroadcastResponse<StdTxMessageType.CommunityCreatePost>> {
   const stdTxResponse = await queryCreatePost(
     apiUrl,
     chainId,
@@ -108,7 +109,7 @@ export async function deletePost(
   walletAddress: Wallet['address'],
   postIdentificationParameters: PostIdentificationParameters,
   broadcastOptions: PostBroadcastOptions,
-): Promise<BroadcastResponse>;
+): Promise<BroadcastResponse<StdTxMessageType.CommunityDeletePost>>;
 
 export async function deletePost(
   apiUrl: string,
@@ -116,7 +117,7 @@ export async function deletePost(
   walletAddress: Wallet['address'],
   postIdentificationParameters: PostIdentificationParameters,
   broadcastOptions?: PostBroadcastOptions,
-): Promise<QueryDeletePostResponse | BroadcastResponse> {
+): Promise<QueryDeletePostResponse | BroadcastResponse<StdTxMessageType.CommunityDeletePost>> {
   const stdTxResponse = await queryDeletePost(
     apiUrl,
     chainId,
@@ -183,7 +184,7 @@ export async function likePost(
   postIdentificationParameters: PostIdentificationParameters,
   likeWeight: LikeWeight,
   broadcastOptions: PostBroadcastOptions,
-): Promise<BroadcastResponse>;
+): Promise<BroadcastResponse<StdTxMessageType.CommunitySetLike>>;
 
 export async function likePost(
   apiUrl: string,
@@ -192,7 +193,7 @@ export async function likePost(
   postIdentificationParameters: PostIdentificationParameters,
   likeWeight: LikeWeight,
   broadcastOptions?: PostBroadcastOptions,
-): Promise<QuerySetLikeResponse | BroadcastResponse> {
+): Promise<QuerySetLikeResponse | BroadcastResponse<StdTxMessageType.CommunitySetLike>> {
   const stdTxResponse = await queryLikePost(
     apiUrl,
     chainId,
@@ -245,7 +246,7 @@ export async function follow(
   follower: Wallet['address'],
   whom: Wallet['address'],
   broadcastOptions: FollowingBroadcastOptions,
-): Promise<BroadcastResponse>;
+): Promise<BroadcastResponse<StdTxMessageType.CommunityFollow>>;
 
 export async function follow(
   apiUrl: string,
@@ -253,7 +254,7 @@ export async function follow(
   follower: Wallet['address'],
   whom: Wallet['address'],
   broadcastOptions?: FollowingBroadcastOptions,
-): Promise<QueryFollowResponse | BroadcastResponse> {
+): Promise<QueryFollowResponse | BroadcastResponse<StdTxMessageType.CommunityFollow>> {
   const stdTxResponse = await queryFollow(
     apiUrl,
     chainId,
@@ -305,7 +306,7 @@ export async function unfollow(
   follower: Wallet['address'],
   whom: Wallet['address'],
   broadcastOptions: FollowingBroadcastOptions,
-): Promise<BroadcastResponse>;
+): Promise<BroadcastResponse<StdTxMessageType.CommunityUnfollow>>;
 
 export async function unfollow(
   apiUrl: string,
@@ -313,7 +314,7 @@ export async function unfollow(
   follower: Wallet['address'],
   whom: Wallet['address'],
   broadcastOptions?: FollowingBroadcastOptions,
-): Promise<QueryUnfollowResponse | BroadcastResponse> {
+): Promise<QueryUnfollowResponse | BroadcastResponse<StdTxMessageType.CommunityUnfollow>> {
   const stdTxResponse = await queryUnfollow(
     apiUrl,
     chainId,

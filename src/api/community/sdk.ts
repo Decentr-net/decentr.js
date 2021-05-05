@@ -1,5 +1,6 @@
 import { Wallet } from '../../wallet'
 import { BroadcastResponse } from '../messages';
+import { StdTxMessageType } from '../types';
 import {
   createPost,
   deletePost,
@@ -39,13 +40,13 @@ export class DecentrCommunitySDK {
     walletAddress: Wallet['address'],
     post: PostCreate,
     broadcastOptions: PostBroadcastOptions,
-  ): Promise<BroadcastResponse>;
+  ): Promise<BroadcastResponse<StdTxMessageType.CommunityCreatePost>>;
 
   public createPost(
     walletAddress: Wallet['address'],
     post: PostCreate,
     broadcastOptions?: PostBroadcastOptions,
-  ): Promise<QueryCreatePostResponse | BroadcastResponse> {
+  ): Promise<QueryCreatePostResponse | BroadcastResponse<StdTxMessageType.CommunityCreatePost>> {
     return createPost(
       this.apiUrl,
       this.chainId,
@@ -64,13 +65,13 @@ export class DecentrCommunitySDK {
     walletAddress: Wallet['address'],
     postIdentificationParameters: PostIdentificationParameters,
     broadcastOptions: PostBroadcastOptions,
-  ): Promise<BroadcastResponse>;
+  ): Promise<BroadcastResponse<StdTxMessageType.CommunityDeletePost>>;
 
   public deletePost(
     walletAddress: Wallet['address'],
     postIdentificationParameters: PostIdentificationParameters,
     broadcastOptions?: PostBroadcastOptions,
-  ): Promise<QueryDeletePostResponse | BroadcastResponse> {
+  ): Promise<QueryDeletePostResponse | BroadcastResponse<StdTxMessageType.CommunityDeletePost>> {
     return deletePost(
       this.apiUrl,
       this.chainId,
@@ -91,14 +92,14 @@ export class DecentrCommunitySDK {
     postIdentificationParameters: PostIdentificationParameters,
     likeWeight: LikeWeight,
     broadcastOptions: PostBroadcastOptions,
-  ): Promise<BroadcastResponse>;
+  ): Promise<BroadcastResponse<StdTxMessageType.CommunitySetLike>>;
 
   public likePost(
     walletAddress: Wallet['address'],
     postIdentificationParameters: PostIdentificationParameters,
     likeWeight: LikeWeight,
     broadcastOptions?: PostBroadcastOptions,
-  ): Promise<QuerySetLikeResponse | BroadcastResponse> {
+  ): Promise<QuerySetLikeResponse | BroadcastResponse<StdTxMessageType.CommunitySetLike>> {
     return likePost(
       this.apiUrl,
       this.chainId,
@@ -122,13 +123,13 @@ export class DecentrCommunitySDK {
     follower: Wallet['address'],
     whom: Wallet['address'],
     broadcastOptions: FollowingBroadcastOptions,
-  ): Promise<BroadcastResponse>;
+  ): Promise<BroadcastResponse<StdTxMessageType.CommunityFollow>>;
 
   public follow(
     follower: Wallet['address'],
     whom: Wallet['address'],
     broadcastOptions?: FollowingBroadcastOptions,
-  ): Promise<QueryFollowResponse | BroadcastResponse> {
+  ): Promise<QueryFollowResponse | BroadcastResponse<StdTxMessageType.CommunityFollow>> {
     return follow(
       this.apiUrl,
       this.chainId,
@@ -147,13 +148,13 @@ export class DecentrCommunitySDK {
     follower: Wallet['address'],
     whom: Wallet['address'],
     broadcastOptions: FollowingBroadcastOptions,
-  ): Promise<BroadcastResponse>;
+  ): Promise<BroadcastResponse<StdTxMessageType.CommunityUnfollow>>;
 
   public unfollow(
     follower: Wallet['address'],
     whom: Wallet['address'],
     broadcastOptions?: FollowingBroadcastOptions,
-  ): Promise<QueryUnfollowResponse | BroadcastResponse> {
+  ): Promise<QueryUnfollowResponse | BroadcastResponse<StdTxMessageType.CommunityUnfollow>> {
     return unfollow(
       this.apiUrl,
       this.chainId,

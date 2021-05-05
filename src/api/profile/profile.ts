@@ -4,6 +4,7 @@ import { decrypt, encrypt, fetchJson } from '../../utils';
 import { Wallet } from '../../wallet';
 import { addGas, blockchainFetch } from '../api-utils';
 import { broadcast, BroadcastResponse } from '../messages';
+import { StdTxMessageType } from '../types';
 import {
   Account,
   AccountResponse,
@@ -96,7 +97,7 @@ export async function setPublicProfile(
   walletAddress: Wallet['address'],
   publicProfile: PublicProfile,
   broadcastOptions: PublicProfileBroadcastOptions,
-): Promise<BroadcastResponse>;
+): Promise<BroadcastResponse<StdTxMessageType.ProfileSetPublic>>;
 
 export async function setPublicProfile(
   apiUrl: string,
@@ -104,7 +105,7 @@ export async function setPublicProfile(
   walletAddress: Wallet['address'],
   publicProfile: PublicProfile,
   broadcastOptions?: PublicProfileBroadcastOptions,
-): Promise<QueryPublicProfileResponse | BroadcastResponse> {
+): Promise<QueryPublicProfileResponse | BroadcastResponse<StdTxMessageType.ProfileSetPublic>> {
   const stdTxResponse = await queryPublicProfile(
     apiUrl,
     chainId,
@@ -145,7 +146,7 @@ export async function setPrivateProfile<T extends PrivateProfile>(
   privateProfile: T,
   privateKey: Wallet['privateKey'],
   broadcastOptions: PrivateProfileBroadcastOptions,
-): Promise<BroadcastResponse>;
+): Promise<BroadcastResponse<StdTxMessageType.ProfileSetPrivate>>;
 
 export async function setPrivateProfile<T extends PrivateProfile>(
   apiUrl: string,
@@ -154,7 +155,7 @@ export async function setPrivateProfile<T extends PrivateProfile>(
   privateProfile: T,
   privateKey: Wallet['privateKey'],
   broadcastOptions?: PrivateProfileBroadcastOptions
-): Promise<QueryPrivateProfileResponse | BroadcastResponse> {
+): Promise<QueryPrivateProfileResponse | BroadcastResponse<StdTxMessageType.ProfileSetPrivate>> {
   const stdTxResponse = await queryPrivateProfile(
     apiUrl,
     chainId,
