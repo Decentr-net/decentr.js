@@ -9,6 +9,7 @@ import {
   QueryPublicProfileResponse,
 } from './types';
 import { BroadcastResponse } from '../messages';
+import { StdTxMessageType } from '../types';
 import {
   getAccount,
   getPrivateProfile,
@@ -48,13 +49,13 @@ export class DecentrProfileSDK {
     walletAddress: string,
     publicProfile: PublicProfile,
     broadcastOptions: PublicProfileBroadcastOptions,
-  ): Promise<BroadcastResponse>;
+  ): Promise<BroadcastResponse<StdTxMessageType.ProfileSetPublic>>;
 
   public setPublicProfile(
     walletAddress: string,
     publicProfile: PublicProfile,
     broadcastOptions?: PublicProfileBroadcastOptions,
-  ): Promise<QueryPublicProfileResponse | BroadcastResponse> {
+  ): Promise<QueryPublicProfileResponse | BroadcastResponse<StdTxMessageType.ProfileSetPublic>> {
     return setPublicProfile(
       this.apiUrl,
       this.chainId,
@@ -75,14 +76,14 @@ export class DecentrProfileSDK {
     privateProfile: T,
     privateKey: Wallet['privateKey'],
     broadcastOptions: PrivateProfileBroadcastOptions
-  ): Promise<BroadcastResponse>;
+  ): Promise<BroadcastResponse<StdTxMessageType.ProfileSetPrivate>>;
 
   public setPrivateProfile<T extends PrivateProfile>(
     walletAddress: Wallet['address'],
     privateProfile: T,
     privateKey: Wallet['privateKey'],
     broadcastOptions?: PrivateProfileBroadcastOptions
-  ): Promise<QueryPrivateProfileResponse | BroadcastResponse> {
+  ): Promise<QueryPrivateProfileResponse | BroadcastResponse<StdTxMessageType.ProfileSetPrivate>> {
     return setPrivateProfile<T>(
       this.apiUrl,
       this.chainId,

@@ -96,7 +96,7 @@ export class Decentr {
       privateKey: Wallet['privateKey'],
     },
     options: BroadcastOptions,
-  ): Promise<BroadcastResponse> {
+  ): Promise<BroadcastResponse<K>> {
     return broadcast(this.apiUrl, this.chainId, stdTxValue, account, options);
   }
 }
