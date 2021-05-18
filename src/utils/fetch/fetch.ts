@@ -1,15 +1,30 @@
 import axios from 'axios';
 import { removeEmptyValuesFromPrimitiveObject } from '../object';
+import { coerceArray } from '../array'
+
+type QueryParametersObject = Partial<Record<string, Array<string | number> | string | number>>;
+
+const createQuery = (queryParametersObject: QueryParametersObject): string => {
+  const urlSearchParameters = new URLSearchParams();
+
+  Object.entries(removeEmptyValuesFromPrimitiveObject(queryParametersObject))
+    .forEach(([key, value]) => {
+      const valueArray = coerceArray(value);
+      urlSearchParameters.append(key, valueArray.join(','));
+    });
+
+  return urlSearchParameters.toString();
+};
 
 export function fetchJson<T>(url: string): Promise<T>;
 
-export function fetchJson<T, D = Record<string, unknown>>(
+export function fetchJson<T, D = Partial<Record<string, unknown>>>(
   url: string,
   options: {
     method?: 'GET' | 'POST' | 'PUT' | 'DELETE',
     body?: D,
     headers?: Record<string, string>,
-    queryParameters?: Partial<Record<string, string | number>>
+    queryParameters?: QueryParametersObject,
   },
 ): Promise<T>;
 
@@ -19,11 +34,11 @@ export function fetchJson<T, D>(
     method?: 'GET' | 'POST' | 'PUT' | 'DELETE',
     body?: D,
     headers?: Record<string, string>,
-    queryParameters?: Partial<Record<string, string | number>>
+    queryParameters?: QueryParametersObject,
   },
 ): Promise<T> {
   const fullUrl = options && options.queryParameters
-    ? url + '?' + new URLSearchParams(removeEmptyValuesFromPrimitiveObject(options.queryParameters) as Record<string, string>)
+    ? url + '?' + createQuery(options.queryParameters)
     : url;
 
   return axios({

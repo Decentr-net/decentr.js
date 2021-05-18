@@ -1,7 +1,7 @@
-import { Wallet } from '../../wallet';
-import { fetchJson } from '../../utils';
-import { blockchainFetch } from '../api-utils';
-import { PDVAddress, PDVDataType, ProfilePDV, sendPDV } from '../pdv';
+import { bytesToHex, fetchJson } from '../../utils';
+import { KeyPair, Wallet } from '../../wallet';
+import { blockchainFetch, getSignature } from '../api-utils';
+import { PDVAddress, PDVType, ProfileUpdate, sendPDV } from '../pdv';
 import { Account, AccountResponse, Profile } from './types';
 
 export async function getAccount(
@@ -17,9 +17,9 @@ export async function getAccount(
   return account.address ? account : undefined;
 }
 
-export async function saveProfile(
+export function setProfile(
   cerberusUrl: string,
-  profile: Omit<ProfilePDV, 'type'>,
+  profile: ProfileUpdate,
   wallet: Wallet,
 ): Promise<PDVAddress> {
   return sendPDV(
@@ -27,20 +27,52 @@ export async function saveProfile(
     [
       {
         ...profile,
-        type: PDVDataType.Profile,
+        type: PDVType.Profile,
       },
     ],
     wallet,
   );
 }
 
-export async function getProfile(
+export function getProfile(
   cerberusUrl: string,
   walletAddress: Wallet['address'],
+  keys?: KeyPair,
 ): Promise<Profile> {
-  return fetchJson<Profile[]>(`${cerberusUrl}/profiles`, {
+  return getProfiles(cerberusUrl, [walletAddress], keys)
+    .then((profiles) => profiles[walletAddress]);
+}
+
+export function getProfiles(
+  cerberusUrl: string,
+  walletAddresses: Wallet['address'][],
+  keys?: KeyPair,
+): Promise<Record<Profile['address'], Profile>> {
+
+  let headers = {};
+
+  if (keys) {
+    const signature = getSignature(`/v1/profiles`, keys.privateKey);
+    const signatureHex = bytesToHex(signature);
+
+    headers = {
+      'Public-Key': keys.publicKey,
+      Signature: signatureHex,
+    };
+  }
+
+  return fetchJson<Profile[]>(`${cerberusUrl}/v1/profiles`, {
+    headers,
     queryParameters: {
-      address: walletAddress,
+      address: walletAddresses,
     },
-  }).then((profilesResponse) => profilesResponse[0]);
+  }).then((profilesResponse) => {
+    const profiles: Record<Wallet['address'], Profile> = {};
+
+    profilesResponse.forEach((profile) => {
+      profiles[profile.address] = profile;
+    });
+
+    return profiles;
+  });
 }

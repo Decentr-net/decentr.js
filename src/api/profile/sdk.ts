@@ -1,7 +1,7 @@
-import { Wallet } from '../../wallet';
+import { KeyPair, Wallet } from '../../wallet';
 import { PDVAddress, ProfilePDV } from '../pdv';
-import { getAccount, saveProfile } from './profile';
-import { Account } from './types';
+import { getAccount, getProfile, getProfiles, setProfile } from './profile';
+import { Account, Profile, } from './types';
 
 export class DecentrProfileSDK {
   constructor(
@@ -13,11 +13,27 @@ export class DecentrProfileSDK {
     return getAccount(this.apiUrl, walletAddress);
   }
 
-  public saveProfile(
+  public setProfile(
     cerberusUrl: string,
     profile: Omit<ProfilePDV, 'type'>,
     wallet: Wallet,
   ): Promise<PDVAddress> {
-    return saveProfile(cerberusUrl, profile, wallet);
+    return setProfile(cerberusUrl, profile, wallet);
+  }
+
+  public getProfile(
+    cerberusUrl: string,
+    walletAddress: Wallet['address'],
+    keys?: KeyPair,
+  ): Promise<Profile> {
+    return getProfile(cerberusUrl, walletAddress, keys);
+  }
+
+  public getProfiles(
+    cerberusUrl: string,
+    walletAddresses: Wallet['address'][],
+    keys?: KeyPair,
+  ): Promise<Record<Profile['address'], Profile>> {
+    return getProfiles(cerberusUrl, walletAddresses, keys);
   }
 }

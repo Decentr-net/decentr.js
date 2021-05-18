@@ -46,8 +46,7 @@ export interface LocationPDV {
   timestamp: string;
 }
 
-export interface ProfilePDV {
-  type: PDVType.Profile;
+export interface ProfileUpdate {
   avatar: string;
   bio: string;
   birthday: string;
@@ -55,6 +54,10 @@ export interface ProfilePDV {
   firstName: string;        // maxlength: 64
   gender: Gender;
   lastName: string;         // maxlength: 64
+}
+
+export interface ProfilePDV extends ProfileUpdate {
+  type: PDVType.Profile;
 }
 
 export interface SearchHistoryPDV {
@@ -85,11 +88,6 @@ export interface PDVDetails {
 export interface PDVMeta {
   object_types: Record<PDVType, number>;
   reward: number;
-}
-
-export interface PDVStatItem {
-  date: string;
-  value: number;
 }
 
 export interface PDVHeaders extends Record<string, string>{

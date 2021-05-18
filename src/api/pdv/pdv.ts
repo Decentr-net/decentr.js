@@ -9,7 +9,6 @@ import {
   PDVListPaginationOptions,
   PDVMeta,
   PDVAddress,
-  PDVStatItem,
   TokenBalanceResponse,
   PDVType,
 } from './types';
@@ -48,13 +47,6 @@ export async function getPDVMeta(
   walletAddress: Wallet['address'],
 ): Promise<PDVMeta> {
   return fetchJson(`${cerberusUrl}/v1/pdv/${walletAddress}/${pdvAddress}/meta`);
-}
-
-export function getPDVStats(
-  apiUrl: string,
-  walletAddress: Wallet['address'],
-): Promise<PDVStatItem[]> {
-  return blockchainFetch(`${apiUrl}/token/stats/${walletAddress}`);
 }
 
 export async function getPDVDetails(

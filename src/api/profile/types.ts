@@ -1,13 +1,8 @@
 import { Wallet } from '../../wallet';
-import { ProfilePDV } from '../pdv';
+import { ProfileUpdate } from '../pdv';
 
 export interface AccountResponse {
   value: Account;
-}
-
-export type Profile = Omit<ProfilePDV, 'type'> & {
-  address: Wallet['address'];
-  createdAt: string;
 }
 
 export interface AccountCoin {
@@ -26,4 +21,9 @@ export interface Account {
   readonly coins: AccountCoin[];
   readonly public_key?: AccountPublicKey;
   readonly sequence: string;
+}
+
+export type Profile = ProfileUpdate & {
+  address: Wallet['address'];
+  createdAt: string;
 }

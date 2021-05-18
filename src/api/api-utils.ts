@@ -15,7 +15,7 @@ import { BaseRequest, QuerySimulateGasResponse } from './types';
 const GAS_ADJUSTMENT = "1.35";
 const GAS_LIMIT = "1000000";
 
-export async function blockchainFetch<T>(url: string, queryParameters?: Partial<Record<string, string | number>>): Promise<T> {
+export async function blockchainFetch<T>(url: string, queryParameters?: Record<string, string | number>): Promise<T> {
   const response = await fetchJson<{ height: string; result: T } | T>(url, { queryParameters });
 
   if (hasOwnProperty(response, 'height') &&
