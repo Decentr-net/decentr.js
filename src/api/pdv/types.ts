@@ -1,6 +1,6 @@
 export type PDVAddress = number;
 
-export enum PDVDataType {
+export enum PDVType {
   AdvertiserId = 'advertiserId',
   Cookie = 'cookie',
   Location = 'location',
@@ -13,40 +13,40 @@ export enum Gender {
   Female = 'female',
 }
 
-export interface PDVDataSource {
+export interface PDVSource {
   host: string;
   path: string;
 }
 
 export interface AdvertiserPDV {
-  type: PDVDataType.AdvertiserId,
+  type: PDVType.AdvertiserId,
   advertiser: string;
   id: string;
 }
 
 export interface CookiePDV {
-  type: PDVDataType.Cookie;
+  type: PDVType.Cookie;
   domain: string;
   expirationDate: number;
   hostOnly: boolean;
   name: string;
   path: string;
   sameSite: string;
-  source: PDVDataSource;
+  source: PDVSource;
   timestamp: string;
   value: string;
 }
 
 export interface LocationPDV {
-  type: PDVDataType.Location;
+  type: PDVType.Location;
   latitude: number;
   longitude: number;
-  requestedBy: PDVDataSource;
+  requestedBy: PDVSource;
   timestamp: string;
 }
 
 export interface ProfilePDV {
-  type: PDVDataType.Profile;
+  type: PDVType.Profile;
   avatar: string;
   bio: string;
   birthday: string;
@@ -57,7 +57,7 @@ export interface ProfilePDV {
 }
 
 export interface SearchHistoryPDV {
-  type: PDVDataType.SearchHistory;
+  type: PDVType.SearchHistory;
   engine: string;
   query: string;
   timestamp: string;
@@ -82,7 +82,7 @@ export interface PDVDetails {
 }
 
 export interface PDVMeta {
-  object_types: Record<PDVDataType, number>;
+  object_types: Record<PDVType, number>;
   reward: number;
 }
 

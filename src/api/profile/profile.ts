@@ -1,7 +1,7 @@
 import { Wallet } from '../../wallet';
 import { fetchJson } from '../../utils';
 import { blockchainFetch } from '../api-utils';
-import { PDVAddress, PDVDataType, ProfilePDV, sendPDV } from '../pdv';
+import { PDVAddress, PDVType, ProfilePDV, sendPDV } from '../pdv';
 import { Account, AccountResponse, Profile } from './types';
 
 export async function getAccount(
@@ -17,7 +17,7 @@ export async function getAccount(
   return account.address ? account : undefined;
 }
 
-export async function saveProfile(
+export function saveProfile(
   cerberusUrl: string,
   profile: Omit<ProfilePDV, 'type'>,
   wallet: Wallet,
@@ -27,14 +27,14 @@ export async function saveProfile(
     [
       {
         ...profile,
-        type: PDVDataType.Profile,
+        type: PDVType.Profile,
       },
     ],
     wallet,
   );
 }
 
-export async function getProfile(
+export function getProfile(
   cerberusUrl: string,
   walletAddress: Wallet['address'],
 ): Promise<Profile> {

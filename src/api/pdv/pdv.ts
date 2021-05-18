@@ -11,6 +11,7 @@ import {
   PDVAddress,
   PDVStatItem,
   TokenBalanceResponse,
+  PDVType,
 } from './types';
 
 export function getTokenBalance(
@@ -21,6 +22,12 @@ export function getTokenBalance(
     `${apiUrl}/token/balance/${walletAddress}`
   )
     .then(({ balance }) => balance);
+}
+
+export function getRewards(
+  cerberusUrl: string,
+): Promise<Record<PDVType, number>> {
+  return fetchJson(`${cerberusUrl}/configs/rewards`);
 }
 
 export async function getPDVList(
