@@ -26,6 +26,7 @@ export interface AdvertiserPDV {
 
 export interface CookiePDV {
   type: PDVType.Cookie;
+  secure: boolean;
   domain: string;
   expirationDate: number;
   hostOnly: boolean;
