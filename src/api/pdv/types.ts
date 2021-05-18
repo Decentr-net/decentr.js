@@ -28,7 +28,7 @@ export interface CookiePDV {
   type: PDVType.Cookie;
   secure: boolean;
   domain: string;
-  expirationDate: number;
+  expirationDate?: number;
   hostOnly: boolean;
   name: string;
   path: string;
