@@ -10,13 +10,11 @@ import {
   AccountResponse,
   PrivateProfile,
   PrivateProfileBroadcastOptions,
-  Profile,
   PublicProfile,
   PublicProfileBroadcastOptions,
   QueryPrivateProfileResponse,
-  QueryPublicProfileResponse
+  QueryPublicProfileResponse,
 } from './types';
-import { PDVAddress, PDVType, ProfilePDV, sendPDV } from '../pdv';
 
 async function queryPublicProfile(
   apiUrl: string,
@@ -182,32 +180,4 @@ export async function setPrivateProfile<T extends PrivateProfile>(
     },
     broadcastOptions,
   );
-}
-
-export function saveProfile(
-  cerberusUrl: string,
-  profile: Omit<ProfilePDV, 'type'>,
-  wallet: Wallet,
-): Promise<PDVAddress> {
-  return sendPDV(
-    cerberusUrl,
-    [
-      {
-        ...profile,
-        type: PDVType.Profile,
-      },
-    ],
-    wallet,
-  );
-}
-
-export function getProfile(
-  cerberusUrl: string,
-  walletAddress: Wallet['address'],
-): Promise<Profile> {
-  return fetchJson<Profile[]>(`${cerberusUrl}/profiles`, {
-    queryParameters: {
-      address: walletAddress,
-    },
-  }).then((profilesResponse) => profilesResponse[0]);
 }

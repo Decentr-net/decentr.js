@@ -1,7 +1,7 @@
 import { Wallet } from '../../wallet';
 import { StdTxMessageType, StdTxResponse } from '../types';
 import { BroadcastOptions } from '../messages';
-import { Gender, ProfilePDV } from '../pdv';
+import { Gender } from '../pdv';
 
 export type QueryPrivateProfileResponse = StdTxResponse<StdTxMessageType.ProfileSetPrivate>;
 
@@ -50,9 +50,4 @@ export interface Account {
   readonly coins: AccountCoin[];
   readonly public_key?: AccountPublicKey;
   readonly sequence: string;
-}
-
-export type Profile = Omit<ProfilePDV, 'type'> & {
-  address: Wallet['address'];
-  createdAt: string;
 }

@@ -3,7 +3,6 @@ import {
   Account,
   PrivateProfile,
   PrivateProfileBroadcastOptions,
-  Profile,
   PublicProfile,
   PublicProfileBroadcastOptions,
   QueryPrivateProfileResponse,
@@ -11,15 +10,12 @@ import {
 } from './types';
 import { BroadcastResponse } from '../messages';
 import { StdTxMessageType } from '../types';
-import { PDVAddress, ProfilePDV } from '../pdv';
 import {
   getAccount,
   getPrivateProfile,
-  getProfile,
   getPublicProfile,
-  saveProfile,
   setPrivateProfile,
-  setPublicProfile
+  setPublicProfile,
 } from './profile';
 
 export class DecentrProfileSDK {
@@ -96,20 +92,5 @@ export class DecentrProfileSDK {
       privateKey,
       broadcastOptions as PrivateProfileBroadcastOptions,
     );
-  }
-
-  public saveProfile(
-    cerberusUrl: string,
-    profile: Omit<ProfilePDV, 'type'>,
-    wallet: Wallet,
-  ): Promise<PDVAddress> {
-    return saveProfile(cerberusUrl, profile, wallet);
-  }
-
-  public getProfile(
-    cerberusUrl: string,
-    walletAddress: Wallet['address'],
-  ): Promise<Profile> {
-    return getProfile(cerberusUrl, walletAddress);
   }
 }
