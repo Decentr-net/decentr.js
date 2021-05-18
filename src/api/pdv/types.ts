@@ -1,27 +1,73 @@
-export type PDVResponse = number;
-
-export interface PDVData {
-  readonly type: PDVDataType;
-  readonly name: string;
-  readonly value: string;
-  readonly domain: string;
-  readonly host_only: boolean;
-  readonly path: string;
-  readonly secure: boolean
-  readonly same_site: string;
-  readonly expiration_date: number;
-}
-
-export interface PDV {
-  domain: string;
-  path: string;
-  data: PDVData[];
-}
+export type PDVAddress = number;
 
 export enum PDVDataType {
+  AdvertiserId = 'advertiserId',
   Cookie = 'cookie',
-  LoginCookie = 'login_cookie',
+  Location = 'location',
+  Profile = 'profile',
+  SearchHistory = 'searchHistory',
 }
+
+export enum Gender {
+  Male = 'male',
+  Female = 'female',
+}
+
+export interface PDVDataSource {
+  host: string;
+  path: string;
+}
+
+export interface AdvertiserPDV {
+  type: PDVDataType.AdvertiserId,
+  advertiser: string;
+  id: string;
+}
+
+export interface CookiePDV {
+  type: PDVDataType.Cookie;
+  domain: string;
+  expirationDate: number;
+  hostOnly: boolean;
+  name: string;
+  path: string;
+  sameSite: string;
+  source: PDVDataSource;
+  timestamp: string;
+  value: string;
+}
+
+export interface LocationPDV {
+  type: PDVDataType.Location;
+  latitude: number;
+  longitude: number;
+  requestedBy: PDVDataSource;
+  timestamp: string;
+}
+
+export interface ProfilePDV {
+  type: PDVDataType.Profile;
+  avatar: string;
+  bio: string;
+  birthday: string;
+  emails: string[];
+  firstName: string;
+  gender: Gender;
+  lastName: string;
+}
+
+export interface SearchHistoryPDV {
+  type: PDVDataType.SearchHistory;
+  engine: string;
+  query: string;
+  timestamp: string;
+}
+
+export type PDV = AdvertiserPDV
+  | CookiePDV
+  | LocationPDV
+  | ProfilePDV
+  | SearchHistoryPDV;
 
 export interface PDVListPaginationOptions {
   limit: number;

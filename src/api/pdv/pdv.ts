@@ -8,7 +8,7 @@ import {
   PDVListItem,
   PDVListPaginationOptions,
   PDVMeta,
-  PDVResponse,
+  PDVAddress,
   PDVStatItem,
   TokenBalanceResponse,
 } from './types';
@@ -64,10 +64,9 @@ export async function getPDVDetails(
 
 export async function sendPDV(
   cerberusUrl: string,
-  chainId: string,
   pdv: PDV[],
   wallet: Wallet,
-): Promise<PDVResponse> {
+): Promise<PDVAddress> {
   const cerberusAddress = `${cerberusUrl}/v1/pdv`;
 
   const body = {

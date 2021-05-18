@@ -6,7 +6,7 @@ import { Account, DecentrProfileSDK } from './profile';
 import { DecentrStakingSDK } from './staking';
 import { broadcast, BroadcastOptions, BroadcastResponse } from './messages';
 import { StdTxMessageValueMap, StdTxResponseValue } from './types';
-import { DecentrNodeSDK } from './node/sdk';
+import { DecentrNodeSDK } from './node';
 import { DecentrBlocksSDK } from './blocks';
 import { DecentrTXsSDK } from './txs';
 import { DecentrOperationsSDK } from './operations';
@@ -70,7 +70,7 @@ export class Decentr {
 
   public get pdv(): DecentrPDVSDK {
     if (!this.pdvSDK) {
-      this.pdvSDK = new DecentrPDVSDK(this.apiUrl, this.chainId);
+      this.pdvSDK = new DecentrPDVSDK(this.apiUrl);
     }
 
     return this.pdvSDK;
@@ -78,7 +78,7 @@ export class Decentr {
 
   public get profile(): DecentrProfileSDK {
     if (!this.profileSDK) {
-      this.profileSDK = new DecentrProfileSDK(this.apiUrl, this.chainId);
+      this.profileSDK = new DecentrProfileSDK(this.apiUrl);
     }
 
     return this.profileSDK;

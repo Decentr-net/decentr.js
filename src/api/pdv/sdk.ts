@@ -6,14 +6,13 @@ import {
   PDVListItem,
   PDVListPaginationOptions,
   PDVMeta,
-  PDVResponse,
+  PDVAddress,
   PDVStatItem,
 } from './types';
 
 export class DecentrPDVSDK {
   constructor(
     private apiUrl: string,
-    private chainId: string,
   ) {
   }
 
@@ -45,10 +44,9 @@ export class DecentrPDVSDK {
     cerberusUrl: string,
     pdv: PDV[],
     wallet: Wallet,
-  ): Promise<PDVResponse> {
+  ): Promise<PDVAddress> {
     return sendPDV(
       cerberusUrl,
-      this.chainId,
       pdv,
       wallet,
     );
