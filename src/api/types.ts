@@ -1,6 +1,5 @@
 import { Wallet } from '../wallet';
 import { LikeWeight, Post } from './community';
-import { PublicProfile } from './profile';
 import { Validator, ValidatorCommission } from './staking';
 
 export interface Fee {
@@ -22,8 +21,6 @@ export enum StdTxMessageType {
   CosmosCreateValidator = 'cosmos-sdk/MsgCreateValidator',
   CosmosSend = 'cosmos-sdk/MsgSend',
   PdvDistributeRewards = 'pdv/DistributeRewards',
-  ProfileSetPrivate = 'profile/SetPrivate',
-  ProfileSetPublic = 'profile/SetPublic',
 }
 
 export interface StdTxMessageValueMap {
@@ -69,14 +66,6 @@ export interface StdTxMessageValueMap {
       receiver: Wallet['address'];
       reward: string;
     }[];
-  };
-  [StdTxMessageType.ProfileSetPrivate]: {
-    owner: Wallet['address'];
-    private: string;
-  };
-  [StdTxMessageType.ProfileSetPublic]: {
-    owner: Wallet['address'];
-    public: PublicProfile;
   };
 }
 
