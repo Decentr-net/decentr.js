@@ -78,7 +78,7 @@ export class Decentr {
 
   public get profile(): DecentrProfileSDK {
     if (!this.profileSDK) {
-      this.profileSDK = new DecentrProfileSDK(this.apiUrl, this.chainId);
+      this.profileSDK = new DecentrProfileSDK(this.apiUrl);
     }
 
     return this.profileSDK;
