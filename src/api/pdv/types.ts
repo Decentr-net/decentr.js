@@ -19,9 +19,9 @@ export interface PDVSource {
 }
 
 export interface AdvertiserPDV {
-  type: PDVType.AdvertiserId,
-  advertiser: string;
-  id: string;
+  type: PDVType.AdvertiserId;
+  advertiser: string;         // maxlength: 20
+  id: string;                 // maxlength: 100
 }
 
 export interface CookiePDV {
@@ -42,7 +42,7 @@ export interface LocationPDV {
   type: PDVType.Location;
   latitude: number;
   longitude: number;
-  requestedBy: PDVSource;
+  requestedBy?: PDVSource;
   timestamp: string;
 }
 
@@ -52,15 +52,15 @@ export interface ProfilePDV {
   bio: string;
   birthday: string;
   emails: string[];
-  firstName: string;
+  firstName: string;        // maxlength: 64
   gender: Gender;
-  lastName: string;
+  lastName: string;         // maxlength: 64
 }
 
 export interface SearchHistoryPDV {
   type: PDVType.SearchHistory;
-  engine: string;
-  query: string;
+  engine: string;           // maxlength: 20
+  query: string;            // maxlength: 2000
   timestamp: string;
 }
 
