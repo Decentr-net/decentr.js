@@ -27,7 +27,7 @@ export function getTokenBalance(
 export function getRewards(
   cerberusUrl: string,
 ): Promise<Record<PDVType, number>> {
-  return fetchJson(`${cerberusUrl}/configs/rewards`);
+  return fetchJson(`${cerberusUrl}/v1/configs/rewards`);
 }
 
 export async function getPDVList(
