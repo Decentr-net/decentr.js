@@ -1,6 +1,6 @@
 import { bufferToBytes } from '@tendermint/belt';
 import { Bech32String, Bytes } from '@tendermint/types';
-import { encode as bech32encode, toWords as bech32toWords } from 'bech32';
+import { bech32 } from 'bech32';
 import { BIP32Interface, fromSeed as bip32fromSeed } from 'bip32';
 import { mnemonicToSeedSync as bip39mnemonicToSeedSync } from 'bip39';
 import { publicKeyCreate as secp256k1PublicKeyCreate } from 'secp256k1';
@@ -62,9 +62,9 @@ export function createKeyPairFromMasterKey(
 export function createAddress(publicKey: Bytes, prefix: string = DECENTR_DEFAULT_PREFIX): Bech32String {
   const hash1 = hashBytes(publicKey, 'sha256');
   const hash2 = hashBytes(hash1, 'ripemd160');
-  const words = bech32toWords(hash2);
+  const words = bech32.toWords(hash2);
 
-  return bech32encode(prefix, words);
+  return bech32.encode(prefix, words);
 }
 
 /**
