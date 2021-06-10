@@ -1,5 +1,4 @@
 const { IgnorePlugin } = require('webpack');
-const CopyPlugin = require("copy-webpack-plugin");
 
 module.exports = {
   entry: ['./src/index.ts'],
@@ -34,13 +33,5 @@ module.exports = {
   },
   plugins: [
     new IgnorePlugin(/^\.\/wordlists\/(?!english)/, /bip39\/src$/),
-
-    new CopyPlugin({
-      patterns: [
-        {
-          from: './src/index.js',
-        },
-      ],
-    }),
   ],
 }

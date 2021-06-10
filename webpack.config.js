@@ -1,12 +1,10 @@
 const baseConfig = require('./webpack.config.base');
 const { merge } = require('webpack-merge');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
-const nodeExternals = require('webpack-node-externals');
 
-const webConfig = merge(baseConfig, {
-  target: 'web',
+module.exports = merge(baseConfig, {
   output: {
-    filename: 'web.js',
+    filename: 'index.js',
   },
   plugins: [
     new BundleAnalyzerPlugin({
@@ -16,15 +14,3 @@ const webConfig = merge(baseConfig, {
     }),
   ],
 });
-
-const nodeConfig = merge(baseConfig, {
-  target: 'node',
-  output: {
-    filename: 'node.js',
-  },
-  externals: [
-    nodeExternals(),
-  ],
-});
-
-module.exports = [webConfig, nodeConfig];
