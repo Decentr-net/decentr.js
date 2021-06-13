@@ -9,12 +9,14 @@ import { StdTxMessageValueMap, StdTxResponseValue } from './types';
 import { DecentrNodeSDK } from './node/sdk';
 import { DecentrBlocksSDK } from './blocks';
 import { DecentrTXsSDK } from './txs';
+import { DecentrOperationsSDK } from './operations';
 
 export class Decentr {
   private bankSDK: DecentrBankSDK | undefined;
   private blocksSDK: DecentrBlocksSDK | undefined;
   private communitySDK: DecentrCommunitySDK | undefined;
   private nodeSDK: DecentrNodeSDK | undefined;
+  private operationsSDK: DecentrOperationsSDK | undefined;
   private pdvSDK: DecentrPDVSDK | undefined;
   private profileSDK: DecentrProfileSDK | undefined;
   private stakingSDK: DecentrStakingSDK | undefined;
@@ -56,6 +58,14 @@ export class Decentr {
     }
 
     return this.nodeSDK;
+  }
+
+  public get operations(): DecentrOperationsSDK {
+    if (!this.operationsSDK) {
+      this.operationsSDK = new DecentrOperationsSDK(this.apiUrl);
+    }
+
+    return this.operationsSDK;
   }
 
   public get pdv(): DecentrPDVSDK {
