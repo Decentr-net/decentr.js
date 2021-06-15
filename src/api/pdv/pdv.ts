@@ -8,9 +8,10 @@ import {
   PDVListItem,
   PDVListPaginationOptions,
   PDVMeta,
-  PDVResponse,
+  PDVAddress,
   PDVStatItem,
   TokenBalanceResponse,
+  PDVType,
 } from './types';
 
 export function getTokenBalance(
@@ -21,6 +22,12 @@ export function getTokenBalance(
     `${apiUrl}/token/balance/${walletAddress}`
   )
     .then(({ balance }) => balance);
+}
+
+export function getRewards(
+  cerberusUrl: string,
+): Promise<Record<PDVType, number>> {
+  return fetchJson(`${cerberusUrl}/v1/configs/rewards`);
 }
 
 export async function getPDVList(
@@ -64,10 +71,9 @@ export async function getPDVDetails(
 
 export async function sendPDV(
   cerberusUrl: string,
-  chainId: string,
   pdv: PDV[],
   wallet: Wallet,
-): Promise<PDVResponse> {
+): Promise<PDVAddress> {
   const cerberusAddress = `${cerberusUrl}/v1/pdv`;
 
   const body = {

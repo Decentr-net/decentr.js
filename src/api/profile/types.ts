@@ -1,6 +1,7 @@
 import { Wallet } from '../../wallet';
 import { StdTxMessageType, StdTxResponse } from '../types';
 import { BroadcastOptions } from '../messages';
+import { Gender } from '../pdv';
 
 export type QueryPrivateProfileResponse = StdTxResponse<StdTxMessageType.ProfileSetPrivate>;
 
@@ -19,11 +20,6 @@ export interface PublicProfileBroadcastOptions extends BaseProfileBroadcastOptio
 }
 
 export type PrivateProfileBroadcastOptions = BaseProfileBroadcastOptions;
-
-export enum Gender {
-  Male = 'male',
-  Female = 'female',
-}
 
 export interface PublicProfile {
   avatar: string;

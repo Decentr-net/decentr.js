@@ -1,19 +1,27 @@
 import { Wallet } from '../../wallet';
-import { getPDVDetails, getPDVList, getPDVMeta, getPDVStats, getTokenBalance, sendPDV } from './pdv';
+import {
+  getPDVDetails,
+  getPDVList,
+  getPDVMeta,
+  getPDVStats,
+  getRewards,
+  getTokenBalance,
+  sendPDV,
+} from './pdv';
 import {
   PDV,
   PDVDetails,
   PDVListItem,
   PDVListPaginationOptions,
   PDVMeta,
-  PDVResponse,
+  PDVAddress,
   PDVStatItem,
+  PDVType,
 } from './types';
 
 export class DecentrPDVSDK {
   constructor(
     private apiUrl: string,
-    private chainId: string,
   ) {
   }
 
@@ -41,14 +49,17 @@ export class DecentrPDVSDK {
     return getPDVDetails(cerberusUrl, pdvAddress, wallet);
   }
 
+  public getRewards(cerberusUrl: string): Promise<Record<PDVType, number>> {
+    return getRewards(cerberusUrl);
+  }
+
   public sendPDV(
     cerberusUrl: string,
     pdv: PDV[],
     wallet: Wallet,
-  ): Promise<PDVResponse> {
+  ): Promise<PDVAddress> {
     return sendPDV(
       cerberusUrl,
-      this.chainId,
       pdv,
       wallet,
     );

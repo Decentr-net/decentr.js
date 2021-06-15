@@ -425,7 +425,7 @@ CONSOLE OUTPUT:
 ```ts
 const cerberusUrl = 'https://cerberus.testnet.decentr.xyz';
 
-const pDVaddress = '9664d0817131a2ce56f18d37f3836d6b6ec7cf29-1877c66aaa918bd2ad0c3f6d02ce7ef55fb9c28c44abed94117f4782e1d0a952';
+const pDVaddress = '1622203271';
 
 const wallet: Wallet = {
   address:    'decentr1j6e6j53vh95jcq9k9lnsrsvj3h8dkdgmm20zhu',
@@ -440,24 +440,20 @@ decentr.pdv.getPDVDetails(cerberusUrl, PDVaddress, wallet)
 CONSOLE OUTPUT:
 
 {
-  version: "v1"
-  pdv: {
-    domain: "decentr.net",
-    path: "/",
-    data: [
-      {
-        type: 'cookie',
-        name: 'my test cookie',
-        value: 'some test value',
-        domain: '*',
-        host_only: true,
-        path: '*',
-        secure: true,
-        same_site: 'None',
-        expiration_date: 1861920000
-      },
-    ],
-  }
+  version: 'v1',
+  pdv: [
+    {
+      type: 'cookie',
+      name: 'my test cookie',
+      value: 'some test value',
+      domain: '*',
+      hostOnly: true,
+      path: '*',
+      secure: true,
+      sameSite: 'None',
+      expirationDate: 1861920000
+    },
+  ]
 }
 */
 ```
@@ -477,10 +473,30 @@ CONSOLE OUTPUT:
 
 {
   "object_types": {
-    "cookie": 3600,
-    "login_cookie": 100
+    "cookie": 3600,   // [PDVType]:[reward]
   },
   "reward": 7600
+}
+*/
+```
+
+**Get rewards per PDV**
+
+```ts
+const cerberusUrl = 'https://cerberus.testnet.decentr.xyz';
+
+decentr.pdv.getRewards(cerberusUrl)
+  .then(console.log);
+
+/*
+CONSOLE OUTPUT:
+
+{
+  "advertiserId":1,
+  "cookie":1,
+  "location":1,
+  "profile":1,
+  "searchHistory":1,
 }
 */
 ```
