@@ -1,27 +1,10 @@
 import {
   decodeObjectUnicode,
-  decrypt,
   encodeObjectCharactersToUnicode,
-  encrypt,
-  getPublicKeyBase64
-} from './crypto'
+  getPublicKeyBase64,
+} from './crypto';
 
 describe('utils/crypto', () => {
-
-  it('should correctly encrypt/decrypt object', function() {
-    const object = {
-      emails: ['catrias@yandex.ru'],
-      usernames: ['catrias'],
-    };
-
-    const key = 'fbf265ca5872907c4dbd33bf87c683d84b96987eb42d4a6c50f335eac57ece3e';
-
-    const encrypted = encrypt(object, key);
-
-    const decrypted = decrypt(encrypted, key);
-
-    expect(JSON.stringify(object) === JSON.stringify(decrypted)).toBeTrue();
-  });
 
   it('should generate correct publicKey base64', function() {
     const privateKeyHex = 'fbf265ca5872907c4dbd33bf87c683d84b96987eb42d4a6c50f335eac57ece3e';

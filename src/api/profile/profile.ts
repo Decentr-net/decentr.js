@@ -1,57 +1,8 @@
-import atob from 'atob';
-
-import { decrypt, encrypt, fetchJson } from '../../utils';
-import { Wallet } from '../../wallet';
-import { addGas, blockchainFetch } from '../api-utils';
-import { broadcast, BroadcastResponse } from '../messages';
-import { StdTxMessageType } from '../types';
-import {
-  Account,
-  AccountResponse,
-  PrivateProfile,
-  PrivateProfileBroadcastOptions,
-  PublicProfile,
-  PublicProfileBroadcastOptions,
-  QueryPrivateProfileResponse,
-  QueryPublicProfileResponse,
-} from './types';
-
-async function queryPublicProfile(
-  apiUrl: string,
-  chainId: string,
-  walletAddress: Wallet['address'],
-  publicProfile: PublicProfile,
-): Promise<QueryPublicProfileResponse> {
-  const url = `${apiUrl}/profile/public/${walletAddress}`;
-
-  const queryParameters = {
-    public: publicProfile,
-  };
-
-  const body = await addGas(queryParameters, chainId, url, walletAddress);
-
-  return fetchJson(url, { method: 'POST', body });
-}
-
-async function queryPrivateProfile<T extends PrivateProfile>(
-  apiUrl: string,
-  chainId: string,
-  walletAddress: Wallet['address'],
-  privateProfile: T,
-  privateKey: Wallet['privateKey'],
-): Promise<QueryPrivateProfileResponse> {
-  const url = `${apiUrl}/profile/private/${walletAddress}`;
-
-  const encrypted = encrypt(privateProfile, privateKey);
-
-  const queryParameters = {
-    private: encrypted,
-  };
-
-  const body = await addGas(queryParameters, chainId, url, walletAddress);
-
-  return fetchJson(url, { method: 'POST', body });
-}
+import { bytesToHex, fetchJson } from '../../utils';
+import { KeyPair, Wallet } from '../../wallet';
+import { blockchainFetch, getSignature } from '../api-utils';
+import { PDVAddress, PDVType, ProfileUpdate, sendPDV } from '../pdv';
+import { Account, AccountResponse, Profile } from './types';
 
 export async function getAccount(
   apiUrl: string,
@@ -66,118 +17,62 @@ export async function getAccount(
   return account.address ? account : undefined;
 }
 
-export function getPublicProfile(
-  apiUrl: string,
-  walletAddress: Wallet['address'],
-): Promise<PublicProfile> {
-  return blockchainFetch(`${apiUrl}/profile/public/${walletAddress}`);
+export function setProfile(
+  cerberusUrl: string,
+  profile: ProfileUpdate,
+  keyPair: KeyPair,
+): Promise<PDVAddress> {
+  return sendPDV(
+    cerberusUrl,
+    [
+      {
+        ...profile,
+        type: PDVType.Profile,
+      },
+    ],
+    keyPair,
+  );
 }
 
-export function getPrivateProfile<T extends PrivateProfile>(
-  apiUrl: string,
+export function getProfile(
+  cerberusUrl: string,
   walletAddress: Wallet['address'],
-  privateKey: Wallet['privateKey'],
-): Promise<T | undefined> {
-  return blockchainFetch<string>(`${apiUrl}/profile/private/${walletAddress}`)
-    .then((encryptedPrivateProfile) => {
-      return decrypt(atob(encryptedPrivateProfile), privateKey);
+  keys?: KeyPair,
+): Promise<Profile> {
+  return getProfiles(cerberusUrl, [walletAddress], keys)
+    .then((profiles) => profiles[walletAddress]);
+}
+
+export function getProfiles(
+  cerberusUrl: string,
+  walletAddresses: Wallet['address'][],
+  keys?: KeyPair,
+): Promise<Record<Profile['address'], Profile>> {
+
+  let headers = {};
+
+  if (keys) {
+    const signature = getSignature(`/v1/profiles`, keys.privateKey);
+    const signatureHex = bytesToHex(signature);
+
+    headers = {
+      'Public-Key': keys.publicKey,
+      Signature: signatureHex,
+    };
+  }
+
+  return fetchJson<Profile[]>(`${cerberusUrl}/v1/profiles`, {
+    headers,
+    queryParameters: {
+      address: walletAddresses,
+    },
+  }).then((profilesResponse) => {
+    const profiles: Record<Wallet['address'], Profile> = {};
+
+    profilesResponse.forEach((profile) => {
+      profiles[profile.address] = profile;
     });
-}
 
-export async function setPublicProfile(
-  apiUrl: string,
-  chainId: string,
-  walletAddress: Wallet['address'],
-  publicProfile: PublicProfile,
-): Promise<QueryPublicProfileResponse>;
-
-export async function setPublicProfile(
-  apiUrl: string,
-  chainId: string,
-  walletAddress: Wallet['address'],
-  publicProfile: PublicProfile,
-  broadcastOptions: PublicProfileBroadcastOptions,
-): Promise<BroadcastResponse<StdTxMessageType.ProfileSetPublic>>;
-
-export async function setPublicProfile(
-  apiUrl: string,
-  chainId: string,
-  walletAddress: Wallet['address'],
-  publicProfile: PublicProfile,
-  broadcastOptions?: PublicProfileBroadcastOptions,
-): Promise<QueryPublicProfileResponse | BroadcastResponse<StdTxMessageType.ProfileSetPublic>> {
-  const stdTxResponse = await queryPublicProfile(
-    apiUrl,
-    chainId,
-    walletAddress,
-    publicProfile,
-  );
-
-  if (!broadcastOptions) {
-    return stdTxResponse;
-  }
-
-  const account = await getAccount(apiUrl, walletAddress) as Account;
-
-  return broadcast(
-    apiUrl,
-    chainId,
-    stdTxResponse.value,
-    {
-      ...account,
-      privateKey: broadcastOptions.privateKey,
-    },
-    broadcastOptions,
-  );
-}
-
-export async function setPrivateProfile<T extends PrivateProfile>(
-  apiUrl: string,
-  chainId: string,
-  walletAddress: Wallet['address'],
-  privateProfile: T,
-  privateKey: Wallet['privateKey'],
-): Promise<QueryPrivateProfileResponse>;
-
-export async function setPrivateProfile<T extends PrivateProfile>(
-  apiUrl: string,
-  chainId: string,
-  walletAddress: Wallet['address'],
-  privateProfile: T,
-  privateKey: Wallet['privateKey'],
-  broadcastOptions: PrivateProfileBroadcastOptions,
-): Promise<BroadcastResponse<StdTxMessageType.ProfileSetPrivate>>;
-
-export async function setPrivateProfile<T extends PrivateProfile>(
-  apiUrl: string,
-  chainId: string,
-  walletAddress: Wallet['address'],
-  privateProfile: T,
-  privateKey: Wallet['privateKey'],
-  broadcastOptions?: PrivateProfileBroadcastOptions
-): Promise<QueryPrivateProfileResponse | BroadcastResponse<StdTxMessageType.ProfileSetPrivate>> {
-  const stdTxResponse = await queryPrivateProfile(
-    apiUrl,
-    chainId,
-    walletAddress,
-    privateProfile,
-    privateKey,
-  );
-
-  if (!broadcastOptions) {
-    return stdTxResponse;
-  }
-
-  const account = await getAccount(apiUrl, walletAddress) as Account;
-
-  return broadcast(
-    apiUrl,
-    chainId,
-    stdTxResponse.value,
-    {
-      ...account,
-      privateKey,
-    },
-    broadcastOptions,
-  );
+    return profiles;
+  });
 }

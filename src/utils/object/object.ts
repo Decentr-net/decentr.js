@@ -49,18 +49,18 @@ export function deepMapObjectStrings<T, U>(target: T, mapFunction: (value: strin
 }
 
 export function removeEmptyValuesFromPrimitiveObject(
-  target: Partial<Record<string, string | number>>
-): Record<string, string | number> {
+  target: Partial<Record<string, Array<string | number> | string | number>>,
+): Partial<Record<string, Array<string | number> | string | number>> {
   if (typeof target !== 'object') {
     return target;
   }
 
-  const result: Record<string, string | number> = {};
+  const result: Record<string, Array<string | number> | string | number> = {};
 
   Object.keys(target)
     .filter((key) => !valueIsEmpty(target[key]))
     .forEach((key) => {
-      result[key] = target[key] as string | number;
+      result[key] = target[key] as Array<string | number> | string | number;
     });
 
   return result;

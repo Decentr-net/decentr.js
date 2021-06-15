@@ -1,37 +1,8 @@
 import { Wallet } from '../../wallet';
-import { StdTxMessageType, StdTxResponse } from '../types';
-import { BroadcastOptions } from '../messages';
-import { Gender } from '../pdv';
-
-export type QueryPrivateProfileResponse = StdTxResponse<StdTxMessageType.ProfileSetPrivate>;
-
-export type QueryPublicProfileResponse = StdTxResponse<StdTxMessageType.ProfileSetPublic>;
+import { ProfileUpdate } from '../pdv';
 
 export interface AccountResponse {
   value: Account;
-}
-
-interface BaseProfileBroadcastOptions extends BroadcastOptions {
-  broadcast: true,
-}
-
-export interface PublicProfileBroadcastOptions extends BaseProfileBroadcastOptions {
-  privateKey: Wallet['privateKey'],
-}
-
-export type PrivateProfileBroadcastOptions = BaseProfileBroadcastOptions;
-
-export interface PublicProfile {
-  avatar: string;
-  bio: string;
-  birthday: string;
-  firstName: string;
-  gender: Gender;
-  lastName: string;
-}
-
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface PrivateProfile {
 }
 
 export interface AccountCoin {
@@ -50,4 +21,9 @@ export interface Account {
   readonly coins: AccountCoin[];
   readonly public_key?: AccountPublicKey;
   readonly sequence: string;
+}
+
+export type Profile = ProfileUpdate & {
+  address: Wallet['address'];
+  createdAt: string;
 }

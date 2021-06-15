@@ -3,7 +3,6 @@ import {
   getPDVDetails,
   getPDVList,
   getPDVMeta,
-  getPDVStats,
   getRewards,
   getTokenBalance,
   sendPDV,
@@ -13,10 +12,9 @@ import {
   PDVDetails,
   PDVListItem,
   PDVListPaginationOptions,
-  PDVMeta,
   PDVAddress,
-  PDVStatItem,
   PDVType,
+  PDVMeta,
 } from './types';
 
 export class DecentrPDVSDK {
@@ -39,10 +37,6 @@ export class DecentrPDVSDK {
 
   public getPDVMeta(cerberusUrl: string, pdvAddress: number, walletAddress: Wallet['address']): Promise<PDVMeta> {
     return getPDVMeta(cerberusUrl, pdvAddress, walletAddress);
-  }
-
-  public getPDVStats(walletAddress: Wallet['address']): Promise<PDVStatItem[]> {
-    return getPDVStats(this.apiUrl, walletAddress);
   }
 
   public getPDVDetails(cerberusUrl: string, pdvAddress: number, wallet: Wallet): Promise<PDVDetails> {

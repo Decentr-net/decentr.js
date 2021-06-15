@@ -30,13 +30,11 @@
   },
   "dependencies": {
     "@tendermint/belt": "^0.3.0",
-    "atob": "^2.1.2",
     "axios": "^0.21.1",
     "bech32": "^2.0.0",
     "bip32": "^2.0.6",
     "bip39": "^3.0.2",
     "create-hash": "^1.2.0",
-    "crypto-js": "^4.0.0",
     "secp256k1": "^4.0.2"
   },
   "devDependencies": {

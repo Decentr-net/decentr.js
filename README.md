@@ -86,35 +86,35 @@ const restUrl = 'http://rest.testnet.decentr.xyz';
 const chainId = 'testnet';
 const walletAddress = 'decentr1p4s4djk5dqstfswg6k8sljhkzku4a6ve9dmng5';
 const privateKey = 'fbf265ca5872907c4dbd33bf87c683d84b96987eb42d4a6c50f335eac57ece3e';
-const publicData = {
-  avatar: 'image source',
-  bio: 'Photographer',
-  birthday: '1991-02-03',
-  gender: 'male',
-  firstName: 'first name',
-  lastName: 'last name',
+const post = {
+  category: PostCategory.Sports,
+  text: 'Some text',
+  title: 'Title',
+  previewImage: '',
 };
 
-  AND
+AND
 
 import { Decentr } from 'decentr-js';
+
 const decentr = new Decentr(restUrl, chainId);
 
-decentr.profile.setPublicProfile(
+decentr.community.createPost(
   walletAddress,
-  publicData, 
+  post,
   {
     broadcast: true,
     privateKey,
   },
-).then(...)
+).then(...);
 
-  OR
+OR
 
 import { Decentr, broadcast } from 'decentr-js';
+
 const decentr = new Decentr(restUrl, chainId);
 
-const stdTxResponse = await decentr.profile.setPublicProfile(walletAddress, publicData);
+const stdTxResponse = await decentr.community.createPost(walletAddress, post);
 
 const account = await decentr.profile.getAccount(walletAddress);
 await broadcast(
@@ -218,104 +218,85 @@ CONSOLE OUTPUT:
 */
 ```
 
-**Set public profile**
+**Set profile**
 
 ```ts
-import { PublicProfile } from 'decentr-js';
-
-const walletAddress = 'decentr1p4s4djk5dqstfswg6k8sljhkzku4a6ve9dmng5';
+const cerberusUrl = 'https://cerberus.testnet.decentr.xyz'
 const privateKey = 'fbf265ca5872907c4dbd33bf87c683d84b96987eb42d4a6c50f335eac57ece3e';
+const publicKey = '03dae8cf229d1db63c8d854bd1c73e280147ebd3bb40df12381d16b0eb071a72b6';
 
-const publicProfile: PublicProfile = {
-  birthday: '1991-02-03',
-  gender: 'male',
-  avatar: 'http://hosting.com/avatar.png',
-  lastName: 'lastName',
-  firstName: 'firstName',
-}
+const profile = {
+  avatar: 'http://avatar.png',
+  bio: 'My bio',
+  birthday: '1991-01-01',
+  emails: ['email@email.com'],
+  firstName: 'Firstname',
+  gender: Gender.Male,
+  lastName: 'Lastname',
+};
 
-await decentr.profile.setPublicProfile<YourPrivateProfile>(
-  walletAddress,
-  publicProfile,
+await decentr.profile.setProfile(
+  cerberusUrl,
+  profile,
   {
-    broadcast: true,
     privateKey,
+    publicKey,
   },
 );
 ```
 
-**Get public profile**
+**Get profiles**
 
 ```ts
-const walletAddress = 'decentr1p4s4djk5dqstfswg6k8sljhkzku4a6ve9dmng5';
+const cerberusUrl = 'https://cerberus.testnet.decentr.xyz'
 
-decentr.profile.getPublicProfile(wallet.address).then(console.log);
-
-/*
-CONSOLE OUTPUT:
-
-{
-  bio: 'Photographer',
-  birthday: '1991-02-03',
-  gender: 'male',
-  avatar: 'http://hosting.com/avatar.png',
-  lastName: 'lastName',
-  firstName: 'firstName',
-  registeredAt: '',
-}
-*/
-```
-
-**Set private profile**
-
-```ts
-import { PrivateProfile } from 'decentr-js';
-
-interface YourPrivateProfile extends PrivateProfile {
-  emails: string[];
-  usernames: string[];
-}
-
-const walletAddress = 'decentr1p4s4djk5dqstfswg6k8sljhkzku4a6ve9dmng5';
+const walletAddresses = ['decentr1p4s4djk5dqstfswg6k8sljhkzku4a6ve9dmng5'];
 const privateKey = 'fbf265ca5872907c4dbd33bf87c683d84b96987eb42d4a6c50f335eac57ece3e';
+const publicKey = '03dae8cf229d1db63c8d854bd1c73e280147ebd3bb40df12381d16b0eb071a72b6';
 
-const privateProfile: YourPrivateProfile = {
-  emails: ['ex@mex.com'],
-  name: ['Ex'],
-}
-
-await decentr.profile.setPrivateProfile<YourPrivateProfile>(
-  walletAddress,
-  privateProfile,
-  privateKey,
-  {
-    broadcast: true,
-  },
-);
-```
-
-**Get private profile data**
-
-*Type of returned data depends on type set in `setProfileProfile`*
-
-```ts
-interface YourPrivateProfile extends PrivateProfile {
-  emails: string[];
-  usernames: string[];
-}
-
-const walletAddress = 'decentr1p4s4djk5dqstfswg6k8sljhkzku4a6ve9dmng5';
-const privateKey = 'fbf265ca5872907c4dbd33bf87c683d84b96987eb42d4a6c50f335eac57ece3e';
-
-decentr.profile.getPrivateProfile<YourPrivateProfile>(walletAddress, privateKey)
+decentr.profile.getProfiles(cerberusUrl, walletAddresses, { privateKey, publicKey })
   .then(console.log);
 
 /*
 CONSOLE OUTPUT:
+[
+  decentr1p4s4djk5dqstfswg6k8sljhkzku4a6ve9dmng5: {
+    avatar: 'http://avatar.png',
+    bio: 'My bio',
+    birthday: '1991-01-01',
+    // you will get 'emails' property if keyPair u provide belongs to this walletAddress
+    emails: ['email@email.com'],
+    firstName: 'Firstname',
+    gender: Gender.Male,
+    lastName: 'Lastname',
+  }
+]
+*/
+```
 
+**Get profiles**
+
+```ts
+const cerberusUrl = 'https://cerberus.testnet.decentr.xyz'
+
+const walletAddress = 'decentr1p4s4djk5dqstfswg6k8sljhkzku4a6ve9dmng5';
+const privateKey = 'fbf265ca5872907c4dbd33bf87c683d84b96987eb42d4a6c50f335eac57ece3e';
+const publicKey = '03dae8cf229d1db63c8d854bd1c73e280147ebd3bb40df12381d16b0eb071a72b6';
+
+decentr.profile.getProfile(cerberusUrl, walletAddress, { privateKey, publicKey })
+  .then(console.log);
+
+/*
+CONSOLE OUTPUT:
 {
-  emails: ['ex@mex.com'],
-  name: ['Ex'],
+  avatar: 'http://avatar.png',
+  bio: 'My bio',
+  birthday: '1991-01-01',
+  // you will get 'emails' property if keyPair u provide belongs to this walletAddress
+  emails: ['email@email.com'],
+  firstName: 'Firstname',
+  gender: Gender.Male,
+  lastName: 'Lastname',
 }
 */
 ```
@@ -392,30 +373,6 @@ CONSOLE OUTPUT:
 [
   1609255398,    // id = timestamp
   1609212345,
-[
-*/
-```
-
-**Get PDV statistics**
-
-```ts
-const walletAddress = 'decentr1p4s4djk5dqstfswg6k8sljhkzku4a6ve9dmng5';
-
-decentr.pdv.getPDVStats(walletAddress)
-  .then(console.log);
-
-/*
-CONSOLE OUTPUT:
-
-[
-  {
-    date: "2020-11-04"
-    value: 2e-7,
-  },
-  {
-    date: "2020-11-05"
-    value: 0.0000011,
-  },
 [
 */
 ```
