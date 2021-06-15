@@ -20,7 +20,7 @@ export async function getAccount(
 export function setProfile(
   cerberusUrl: string,
   profile: ProfileUpdate,
-  wallet: Wallet,
+  keyPair: KeyPair,
 ): Promise<PDVAddress> {
   return sendPDV(
     cerberusUrl,
@@ -30,7 +30,7 @@ export function setProfile(
         type: PDVType.Profile,
       },
     ],
-    wallet,
+    keyPair,
   );
 }
 

@@ -64,7 +64,7 @@ export async function getPDVDetails(
 export async function sendPDV(
   cerberusUrl: string,
   pdv: PDV[],
-  wallet: Wallet,
+  keyPair: KeyPair,
 ): Promise<PDVAddress> {
   const cerberusAddress = `${cerberusUrl}/v1/pdv`;
 
@@ -73,7 +73,7 @@ export async function sendPDV(
     pdv,
   };
 
-  const headers = getPDVHeaders(`${JSON.stringify(body)}/v1/pdv`, wallet, { disableEncode: true });
+  const headers = getPDVHeaders(`${JSON.stringify(body)}/v1/pdv`, keyPair, { disableEncode: true });
 
   return await fetchJson<{ id: number }, { version: string; pdv: PDV[] }>(cerberusAddress, {
     method: 'POST',
