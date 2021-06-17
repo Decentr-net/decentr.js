@@ -20,6 +20,7 @@ export enum StdTxMessageType {
   CommunityUnfollow = 'community/MsgUnfollow',
   CosmosCreateValidator = 'cosmos-sdk/MsgCreateValidator',
   CosmosSend = 'cosmos-sdk/MsgSend',
+  OperationsResetAccount = 'operations/MsgResetAccount',
   PdvDistributeRewards = 'pdv/DistributeRewards',
 }
 
@@ -58,6 +59,10 @@ export interface StdTxMessageValueMap {
     amount: Fee[]
     from_address: Wallet['address'];
     to_address: Wallet['address'];
+  };
+  [StdTxMessageType.OperationsResetAccount]: {
+    accountOwner: Wallet['address'];
+    owner: Wallet['address'];
   };
   [StdTxMessageType.PdvDistributeRewards]: {
     owner: Wallet['address'];

@@ -62,7 +62,7 @@ export class Decentr {
 
   public get operations(): DecentrOperationsSDK {
     if (!this.operationsSDK) {
-      this.operationsSDK = new DecentrOperationsSDK(this.apiUrl);
+      this.operationsSDK = new DecentrOperationsSDK(this.apiUrl, this.chainId);
     }
 
     return this.operationsSDK;
