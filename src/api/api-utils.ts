@@ -7,13 +7,13 @@ import {
   hashStringToBytes,
   hasOwnProperty,
   hexToBytes,
-  sortObjectKeys
-} from '../utils'
+  sortObjectKeys,
+} from '../utils';
 import { Wallet } from '../wallet';
 import { BaseRequest, QuerySimulateGasResponse } from './types';
 
-const GAS_ADJUSTMENT = "1.35";
-const GAS_LIMIT = "1000000";
+const GAS_ADJUSTMENT = 1.35;
+const GAS_LIMIT = 1000000;
 
 export async function blockchainFetch<T>(url: string, queryParameters?: Record<string, string | number>): Promise<T> {
   const response = await fetchJson<{ height: string; result: T } | T>(url, { queryParameters });
@@ -53,13 +53,11 @@ export function getSignature<T>(
 export function createBaseRequest({
     chainId: chain_id,
     gas,
-    gasAdjustment: gas_adjustment,
     simulate,
     walletAddress: from,
   }: {
     chainId: string;
     gas?: string;
-    gasAdjustment?: string;
     simulate?: boolean;
     walletAddress: Wallet['address'];
   }): BaseRequest {
@@ -68,25 +66,31 @@ export function createBaseRequest({
       chain_id,
       from,
       gas,
-      gas_adjustment,
       simulate,
     },
   };
 }
 
-export async function addGas<T>(body: T, chainId: string, url: string, walletAddress: Wallet['address']): Promise<(BaseRequest & T)> {
+export async function addGas<T>(
+  body: T,
+  chainId: string,
+  url: string,
+  walletAddress: Wallet['address'],
+): Promise<(BaseRequest & T)> {
   const bodyToEstimate = {
     ...createBaseRequest({ chainId, walletAddress }),
     ...body
   };
 
   const estimatedGas = await querySimulateGas(bodyToEstimate, chainId, walletAddress, url);
-  const gas = String((Number(estimatedGas) > Number(GAS_LIMIT)) ? GAS_LIMIT : estimatedGas);
+
+  const gasWanted = Math.ceil(+estimatedGas * GAS_ADJUSTMENT);
+  const gas = Math.min(gasWanted, GAS_LIMIT).toString();
 
   return {
     ...createBaseRequest({ chainId, walletAddress, gas }),
     ...body,
-  }
+  };
 }
 
 async function querySimulateGas<T>(
@@ -97,7 +101,6 @@ async function querySimulateGas<T>(
 ): Promise<QuerySimulateGasResponse['gas_estimate']> {
   const gasEstimateRequest = createBaseRequest({
     chainId,
-    gasAdjustment: GAS_ADJUSTMENT,
     simulate: true,
     walletAddress
   });

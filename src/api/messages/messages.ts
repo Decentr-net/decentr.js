@@ -1,7 +1,8 @@
 import { bytesToBase64, fetchJson, getPublicKeyBase64 } from '../../utils';
 import { Wallet } from '../../wallet';
-import { StdTxMessageType, StdTxMessageValueMap, StdTxResponseValue } from '../types'
+import { StdTxFee, StdTxMessageType, StdTxMessageValueMap, StdTxResponseValue } from '../types';
 import { getSignature } from '../api-utils';
+import { getMinGasPrice } from '../operations';
 import { Account } from '../profile';
 import {
   BroadcastBody,
@@ -86,7 +87,23 @@ export async function broadcast<K extends keyof StdTxMessageValueMap>(
   },
   options?: BroadcastOptions,
 ): Promise<BroadcastResponse<K>> {
-  const stdTxMessage = createStdMessage(stdTxValue, account, chainId);
+  const minGasPrice = await getMinGasPrice(apiUrl).then((price) => price.amount);
+
+  const fee: StdTxFee = {
+    ...stdTxValue.fee,
+    amount: [{
+      amount: Math.ceil(+minGasPrice * +stdTxValue.fee.gas).toString(),
+      denom: 'udec',
+    }],
+  };
+
+  const newStdTxValue: StdTxResponseValue<K> = {
+    ...stdTxValue,
+    fee,
+  };
+
+  const stdTxMessage = createStdMessage(newStdTxValue, account, chainId);
+
   const signedMessage = signMessage(stdTxMessage, account.privateKey);
 
   return broadcastSignedMessage(apiUrl, signedMessage, options?.mode)
