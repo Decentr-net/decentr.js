@@ -5,6 +5,7 @@ export * from './community';
 export * from './connector';
 export * from './messages';
 export * from './node';
+export * from './operations';
 export * from './pdv';
 export * from './profile';
 export * from './staking';
