@@ -21,7 +21,8 @@ export interface PDVSource {
 export interface AdvertiserPDV {
   type: PDVType.AdvertiserId;
   advertiser: string;         // maxlength: 20
-  id: string;                 // maxlength: 100
+  name: string;               // maxlength: 100
+  value: string;              // maxlength: 2048
 }
 
 export interface CookiePDV {
