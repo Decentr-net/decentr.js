@@ -63,6 +63,7 @@ export interface ProfilePDV extends ProfileUpdate {
 
 export interface SearchHistoryPDV {
   type: PDVType.SearchHistory;
+  domain: string;
   engine: string;           // maxlength: 20
   query: string;            // maxlength: 2000
   timestamp: string;
