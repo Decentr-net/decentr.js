@@ -1,5 +1,6 @@
 import { Wallet } from '../wallet';
 import { LikeWeight, Post } from './community';
+import { Gender } from './pdv';
 import { Validator, ValidatorCommission } from './staking';
 
 export interface Fee {
@@ -21,7 +22,11 @@ export enum StdTxMessageType {
   CosmosCreateValidator = 'cosmos-sdk/MsgCreateValidator',
   CosmosSend = 'cosmos-sdk/MsgSend',
   OperationsResetAccount = 'operations/MsgResetAccount',
-  PdvDistributeRewards = 'pdv/DistributeRewards',
+  OperationsDistributeRewards = 'operations/DistributeRewards',
+
+  // DEPRECATED
+  ProfileSetPrivate = 'profile/SetPrivate',
+  ProfileSetPublic = 'profile/SetPublic',
 }
 
 export interface StdTxMessageValueMap {
@@ -64,13 +69,30 @@ export interface StdTxMessageValueMap {
     accountOwner: Wallet['address'];
     owner: Wallet['address'];
   };
-  [StdTxMessageType.PdvDistributeRewards]: {
+  [StdTxMessageType.OperationsDistributeRewards]: {
     owner: Wallet['address'];
     rewards: {
       id: string;
       receiver: Wallet['address'];
       reward: string;
     }[];
+  };
+
+  // DEPRECATED
+  [StdTxMessageType.ProfileSetPrivate]: {
+    owner: Wallet['address'];
+    private: string;
+  };
+  [StdTxMessageType.ProfileSetPublic]: {
+    owner: Wallet['address'];
+    public: {
+      avatar: string;
+      bio: string;
+      birthday: string;
+      firstName: string;
+      gender: Gender;
+      lastName: string;
+    };
   };
 }
 
