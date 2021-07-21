@@ -105,6 +105,7 @@ export async function getTransferHistory(
 
     return {
       amount: txValue.amount[0],
+      fee: element.tx.value.fee,
       recipient: txValue.to_address,
       sender: txValue.from_address,
       timestamp: element.timestamp,

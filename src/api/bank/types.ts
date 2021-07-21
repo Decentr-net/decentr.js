@@ -1,6 +1,6 @@
 import { Wallet } from '../../wallet';
 import { BroadcastOptions } from '../messages';
-import { StdTxMessageType, StdTxResponse } from '../types';
+import { StdTxFee, StdTxMessageType, StdTxResponse } from '../types';
 import { TXsSearchResponse } from '../txs';
 
 export type QueryTransferResponse = StdTxResponse<StdTxMessageType.CosmosSend>;
@@ -32,6 +32,7 @@ export type TransferRole = 'sender' | 'recipient';
 
 export interface TransferHistoryTransaction {
   amount: BankCoin;
+  fee: StdTxFee;
   recipient: Wallet['address'];
   sender: Wallet['address'];
   timestamp: string;
