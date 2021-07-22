@@ -1032,7 +1032,7 @@ CONSOLE OUTPUT:
               "type": "community/SetLike",
               "value": {
                 "postOwner": "decentr1exw8026vwdkhczydu0wy2hh8kzmqxthmcslj6e",
-                "postUuid": "f9c6f6ec-8556-11eb-aebe-0242ac11000a",
+                "postUUID": "f9c6f6ec-8556-11eb-aebe-0242ac11000a",
                 "owner": "decentr1t6zuwl57sn2tkqnrwt6ug8zy3v0xcajt9s7wqh",
                 "weight": 1
               }
@@ -1100,7 +1100,7 @@ CONSOLE OUTPUT:
           "type": "community/SetLike",
           "value": {
             "postOwner": "decentr1exw8026vwdkhczydu0wy2hh8kzmqxthmcslj6e",
-            "postUuid": "f9c6f6ec-8556-11eb-aebe-0242ac11000a",
+            "postUUID": "f9c6f6ec-8556-11eb-aebe-0242ac11000a",
             "owner": "decentr1t6zuwl57sn2tkqnrwt6ug8zy3v0xcajt9s7wqh",
             "weight": 1
           }
