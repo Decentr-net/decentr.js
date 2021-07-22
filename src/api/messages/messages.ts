@@ -1,8 +1,7 @@
 import { bytesToBase64, fetchJson, getPublicKeyBase64 } from '../../utils';
 import { Wallet } from '../../wallet';
 import { StdTxFee, StdTxMessageType, StdTxMessageValueMap, StdTxResponseValue } from '../types';
-import { getSignature } from '../api-utils';
-import { getMinGasPrice } from '../operations';
+import { calculateTransactionFeeAmount, getSignature } from '../api-utils';
 import { Account } from '../profile';
 import {
   BroadcastBody,
@@ -87,14 +86,11 @@ export async function broadcast<K extends keyof StdTxMessageValueMap>(
   },
   options?: BroadcastOptions,
 ): Promise<BroadcastResponse<K>> {
-  const minGasPrice = await getMinGasPrice(apiUrl).then((price) => price.amount);
+  const feeAmount = await calculateTransactionFeeAmount(apiUrl, stdTxValue.fee.gas);
 
   const fee: StdTxFee = {
     ...stdTxValue.fee,
-    amount: [{
-      amount: Math.ceil(+minGasPrice * +stdTxValue.fee.gas).toString(),
-      denom: 'udec',
-    }],
+    amount: feeAmount,
   };
 
   const newStdTxValue: StdTxResponseValue<K> = {

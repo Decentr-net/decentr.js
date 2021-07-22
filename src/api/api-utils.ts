@@ -10,7 +10,8 @@ import {
   sortObjectKeys,
 } from '../utils';
 import { Wallet } from '../wallet';
-import { BaseRequest, QuerySimulateGasResponse } from './types';
+import { BaseRequest, Fee, QuerySimulateGasResponse } from './types';
+import { getMinGasPrice } from './operations';
 
 const GAS_ADJUSTMENT = 1.35;
 const GAS_LIMIT = 1000000;
@@ -94,15 +95,15 @@ export async function addGas<T>(
 }
 
 async function querySimulateGas<T>(
-    bodyToEstimate: T,
-    chainId: string,
-    walletAddress: Wallet['address'],
-    url: string
+  bodyToEstimate: T,
+  chainId: string,
+  walletAddress: Wallet['address'],
+  url: string
 ): Promise<QuerySimulateGasResponse['gas_estimate']> {
   const gasEstimateRequest = createBaseRequest({
     chainId,
     simulate: true,
-    walletAddress
+    walletAddress,
   });
 
   const body = {
@@ -115,4 +116,18 @@ async function querySimulateGas<T>(
     body
   })
       .then(({ gas_estimate }) => gas_estimate);
+}
+
+export async function calculateTransactionFeeAmount(
+  apiUrl: string,
+  gas: string,
+): Promise<Fee[]> {
+  const minGasPrice = await getMinGasPrice(apiUrl).then((price) => price.amount);
+
+  const decAmount = Math.ceil(+minGasPrice * +gas).toString();
+
+  return [{
+    amount: decAmount,
+    denom: 'udec',
+  }];
 }
