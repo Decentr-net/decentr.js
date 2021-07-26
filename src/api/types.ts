@@ -19,12 +19,19 @@ export enum StdTxMessageType {
   CommunityFollow = 'community/MsgFollow',
   CommunitySetLike = 'community/SetLike',
   CommunityUnfollow = 'community/MsgUnfollow',
+  CosmosBeginRedelegate = 'cosmos-sdk/MsgBeginRedelegate',
+  CosmosBeginUnbonding = 'cosmos-sdk/MsgBeginUnbonding',
   CosmosCreateValidator = 'cosmos-sdk/MsgCreateValidator',
+  CosmosDelegate = 'cosmos-sdk/MsgDelegate',
+  CosmosEditValidator = 'cosmos-sdk/MsgEditValidator',
+  CosmosJail = 'cosmos-sdk/MsgJail',
   CosmosSend = 'cosmos-sdk/MsgSend',
+  CosmosUnjail = 'cosmos-sdk/MsgUnjail',
   OperationsResetAccount = 'operations/MsgResetAccount',
   OperationsDistributeRewards = 'operations/DistributeRewards',
 
   // DEPRECATED
+  PDVDistributeRewards = 'pdv/DistributeRewards',
   ProfileSetPrivate = 'profile/SetPrivate',
   ProfileSetPublic = 'profile/SetPublic',
 }
@@ -50,6 +57,10 @@ export interface StdTxMessageValueMap {
     owner: Wallet['address'];
     whom: Wallet['address'];
   };
+  [StdTxMessageType.CosmosBeginRedelegate]: {
+  };
+  [StdTxMessageType.CosmosBeginUnbonding]: {
+  };
   [StdTxMessageType.CosmosCreateValidator]: Pick<Validator, 'description' | 'min_self_delegation'> & {
     commission: ValidatorCommission['commission_rates'];
     delegator_address: string;
@@ -59,11 +70,19 @@ export interface StdTxMessageValueMap {
       amount: string;
       denom: string;
     };
-  },
+  };
+  [StdTxMessageType.CosmosDelegate]: {
+  };
+  [StdTxMessageType.CosmosEditValidator]: {
+  };
+  [StdTxMessageType.CosmosJail]: {
+  };
   [StdTxMessageType.CosmosSend]: {
     amount: Fee[]
     from_address: Wallet['address'];
     to_address: Wallet['address'];
+  };
+  [StdTxMessageType.CosmosUnjail]: {
   };
   [StdTxMessageType.OperationsResetAccount]: {
     accountOwner: Wallet['address'];
@@ -79,6 +98,14 @@ export interface StdTxMessageValueMap {
   };
 
   // DEPRECATED
+  [StdTxMessageType.PDVDistributeRewards]: {
+    owner: Wallet['address'];
+    rewards: {
+      id: string;
+      receiver: Wallet['address'];
+      reward: string;
+    }[];
+  };
   [StdTxMessageType.ProfileSetPrivate]: {
     owner: Wallet['address'];
     private: string;
