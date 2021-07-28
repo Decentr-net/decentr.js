@@ -9,5 +9,6 @@ export * from './operations';
 export * from './pdv';
 export * from './profile';
 export * from './staking';
+export * from './supply';
 export * from './txs';
 export * from './types';

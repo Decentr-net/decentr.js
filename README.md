@@ -984,6 +984,34 @@ CONSOLE OUTPUT:
 }
 */
 ```
+
+## Supply
+
+**Get total supply**
+```ts
+decentr.supply.getTotalSupply()
+
+/*
+CONSOLE OUTPUT:
+
+[{
+  "denom": "udec",
+  "amount": "1493691736827925"
+}]
+*/
+```
+
+**Get coin supply**
+```ts
+decentr.supply.getTotalSupply('udec')
+
+/*
+CONSOLE OUTPUT:
+
+"1493691736827925"
+*/
+```
+
 ## 🏦 Txs
 
 ** Search **
