@@ -7,6 +7,7 @@ import { DecentrStakingSDK } from './staking';
 import { broadcast, BroadcastOptions, BroadcastResponse } from './messages';
 import { StdTxMessageValueMap, StdTxResponseValue } from './types';
 import { DecentrNodeSDK } from './node';
+import { DecentrMintingSDK } from './minting';
 import { DecentrBlocksSDK } from './blocks';
 import { DecentrTXsSDK } from './txs';
 import { DecentrOperationsSDK } from './operations';
@@ -17,6 +18,7 @@ export class Decentr {
   private blocksSDK: DecentrBlocksSDK | undefined;
   private communitySDK: DecentrCommunitySDK | undefined;
   private nodeSDK: DecentrNodeSDK | undefined;
+  private mintingSDK: DecentrMintingSDK | undefined;
   private operationsSDK: DecentrOperationsSDK | undefined;
   private pdvSDK: DecentrPDVSDK | undefined;
   private profileSDK: DecentrProfileSDK | undefined;
@@ -52,6 +54,14 @@ export class Decentr {
     }
 
     return this.communitySDK;
+  }
+
+  public get minting(): DecentrMintingSDK {
+    if (!this.mintingSDK) {
+      this.mintingSDK = new DecentrMintingSDK(this.apiUrl);
+    }
+
+    return this.mintingSDK;
   }
 
   public get node(): DecentrNodeSDK {

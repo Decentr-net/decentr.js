@@ -985,6 +985,19 @@ CONSOLE OUTPUT:
 */
 ```
 
+## Minting
+
+**Get inflation**
+```ts
+decentr.minting.getInflation()
+
+/*
+CONSOLE OUTPUT:
+
+"0.050028961753403722"
+*/
+```
+
 ## Supply
 
 **Get total supply**
