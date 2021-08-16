@@ -12,6 +12,7 @@ import { DecentrBlocksSDK } from './blocks';
 import { DecentrTXsSDK } from './txs';
 import { DecentrOperationsSDK } from './operations';
 import { DecentrSupplySDK } from './supply';
+import { DecentrSwapSDK } from './swap';
 
 export class Decentr {
   private bankSDK: DecentrBankSDK | undefined;
@@ -24,6 +25,7 @@ export class Decentr {
   private profileSDK: DecentrProfileSDK | undefined;
   private stakingSDK: DecentrStakingSDK | undefined;
   private supplySDK: DecentrSupplySDK | undefined;
+  private swapSDK: DecentrSwapSDK | undefined;
   private txsSDK: DecentrTXsSDK | undefined;
 
   constructor(
@@ -110,6 +112,14 @@ export class Decentr {
     }
 
     return this.supplySDK;
+  }
+
+  public get swap(): DecentrSwapSDK {
+    if (!this.swapSDK) {
+      this.swapSDK = new DecentrSwapSDK(this.apiUrl);
+    }
+
+    return this.swapSDK;
   }
 
   public get txs(): DecentrTXsSDK {
