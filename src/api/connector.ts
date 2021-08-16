@@ -31,6 +31,9 @@ export class Decentr {
   constructor(
     private apiUrl: string,
     private chainId: string,
+    private servicesUrls?: {
+      swap?: string,
+    },
   ) {
   }
 
@@ -115,8 +118,12 @@ export class Decentr {
   }
 
   public get swap(): DecentrSwapSDK {
+    if (!this.servicesUrls?.swap) {
+      throw new Error(`You didn't provide Swap url`);
+    }
+
     if (!this.swapSDK) {
-      this.swapSDK = new DecentrSwapSDK(this.apiUrl);
+      this.swapSDK = new DecentrSwapSDK(this.servicesUrls.swap);
     }
 
     return this.swapSDK;

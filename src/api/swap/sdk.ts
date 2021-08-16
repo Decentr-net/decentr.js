@@ -4,7 +4,7 @@ import { SwapDestinationNetwork, SwapDetails, SwapListPaginationOptions } from '
 
 export class DecentrSwapSDK {
   constructor(
-    private apiUrl: string,
+    private swapUrl: string,
   ) {
   }
 
@@ -13,21 +13,21 @@ export class DecentrSwapSDK {
     network: SwapDestinationNetwork,
     amount: number,
   ): Promise<string> {
-    return getFee(this.apiUrl, address, network, amount);
+    return getFee(this.swapUrl, address, network, amount);
   }
 
   public getSwapById(
     wallet: Wallet,
     swapId: number,
   ): Promise<SwapDetails> {
-    return getSwapById(this.apiUrl, wallet, swapId);
+    return getSwapById(this.swapUrl, wallet, swapId);
   }
 
   public getSwapList(
     wallet: Wallet,
     swapListPaginationOptions?: SwapListPaginationOptions,
   ): Promise<SwapDetails[]> {
-    return getSwapList(this.apiUrl, wallet, swapListPaginationOptions);
+    return getSwapList(this.swapUrl, wallet, swapListPaginationOptions);
   }
 
   public createSwap(
@@ -35,6 +35,6 @@ export class DecentrSwapSDK {
     address: string,
     network: SwapDestinationNetwork,
   ): Promise<SwapDetails> {
-    return createSwap(this.apiUrl, wallet, address, network);
+    return createSwap(this.swapUrl, wallet, address, network);
   }
 }
