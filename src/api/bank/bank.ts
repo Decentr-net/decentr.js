@@ -119,10 +119,11 @@ export async function getTransferHistory(
   });
 
   return {
-    count: response.count,
-    limit: response.limit,
-    page: response.page_number,
-    totalCount: response.total_count,
+    count: +response.count,
+    limit: +response.limit,
+    page: +response.page_number,
+    pageTotal: +response.page_total,
+    totalCount: +response.total_count,
     transactions,
   };
 }

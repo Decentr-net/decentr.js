@@ -42,6 +42,7 @@ export interface TransferHistory {
   page: number;
   count: number;
   limit: number;
+  pageTotal: number;
   totalCount: number;
   transactions: TransferHistoryTransaction[];
 }
