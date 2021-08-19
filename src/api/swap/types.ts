@@ -18,13 +18,10 @@ export enum SwapClosureReason {
 export enum SwapState {
   Closed = 'closed',
   Collecting = 'collecting',
-  Confirming = 'confirming',
-  InsufficientAmount = 'insufficient-amount',
-  NotConfirmed = 'not-confirmed',
-  SelfClosed = 'self-closed',
   SelfDestructing = 'self-destructing',
   SendingAssets = 'sending-assets',
   Sent = 'sent',
+  WaitingConfirmation = 'waiting-confirmation',
 }
 
 export interface SwapHeaders extends Record<string, string> {
@@ -33,17 +30,17 @@ export interface SwapHeaders extends Record<string, string> {
 }
 
 export interface SwapDetails {
-  amount?: string,
-  closureReason?: SwapClosureReason,
-  createdAt: string,
-  depositAddress?: string,
-  destinationAddress: string,
-  destinationNetwork: SwapDestinationNetwork,
-  fee?: string,
-  id: number,
-  sourceAddress?: number,
-  state: SwapState,
-  stateBlock?: number,
-  tx?: string,
-  updatedAt?: string,
+  amount?: string;
+  closureReason?: SwapClosureReason;
+  createdAt: string;
+  depositAddress?: string;
+  destinationAddress: string;
+  destinationNetwork: SwapDestinationNetwork;
+  fee?: string;
+  id: number;
+  sourceAddress?: number;
+  state: SwapState;
+  stateBlock?: number;
+  tx?: string;
+  updatedAt?: string;
 }
