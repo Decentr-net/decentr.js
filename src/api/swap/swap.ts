@@ -27,7 +27,7 @@ export async function getSwapById(
 ): Promise<SwapDetails> {
   const url = `${apiUrl}/v1/swap/${swapId}`;
 
-  const headers = getSwapHeaders(`/v1/swap`, wallet);
+  const headers = getSwapHeaders(`/v1/swap/${swapId}`, wallet);
 
   return fetchJson(url, {
     headers,

@@ -1025,6 +1025,89 @@ CONSOLE OUTPUT:
 */
 ```
 
+## Swap 
+
+** Get Fee **
+```ts
+decentr.swap.getFee('decentr1tet7xxem50t6hxfh605ge3r30mau7gl9xch825', 'decentr', amount: 0.00001)
+  .then(console.log);
+
+/*
+CONSOLE OUTPUT:
+
+"0.002"
+*/
+```
+
+** Get Swap by id **
+```ts
+decentr.swap.getSwapById(1)
+  .then(console.log);
+
+/*
+CONSOLE OUTPUT:
+
+{
+  "closureReason": "collecting-timeout-exceeded"
+  "createdAt": "2021-08-16T18:37:54.060126Z"
+  "destinationAddress": "0x088fa3A57D9C44eBA719da2507a8F3E71ad1e430"
+  "destinationNetwork": "decentr"
+  "id": 18
+  "state": "closed"
+  "stateBlock": 9127040
+  "updatedAt": "2021-08-16T20:37:56.994756Z"
+}
+*/
+```
+
+** Get Swap list **
+```ts
+decentr.swap.getSwapList()
+  .then(console.log);
+
+/*
+CONSOLE OUTPUT:
+
+[{
+  "closureReason": "collecting-timeout-exceeded"
+  "createdAt": "2021-08-16T18:37:54.060126Z"
+  "destinationAddress": "0x088fa3A57D9C44eBA719da2507a8F3E71ad1e430"
+  "destinationNetwork": "decentr"
+  "id": 18
+  "state": "closed"
+  "stateBlock": 9127040
+  "updatedAt": "2021-08-16T20:37:56.994756Z"
+}]
+*/
+```
+
+** Create swap **
+```ts
+const wallet: Wallet = {
+  address:    'decentr1j6e6j53vh95jcq9k9lnsrsvj3h8dkdgmm20zhu',
+  privateKey: '8c313682470073d56d2d8f5b7fde53c072024a9fd9135501125035d53c8a1f60',
+  publicKey:  '03dae8cf229d1db63c8d854bd1c73e280147ebd3bb40df12381d16b0eb071a72b6'
+}
+
+decentr.swap.createSwap(wallet, 'decentr1tet7xxem50t6hxfh605ge3r30mau7gl9xch825', 'decentr')
+  .then(console.log);
+
+/*
+CONSOLE OUTPUT:
+
+{
+  "closureReason": "collecting-timeout-exceeded"
+  "createdAt": "2021-08-16T18:37:54.060126Z"
+  "destinationAddress": "0x088fa3A57D9C44eBA719da2507a8F3E71ad1e430"
+  "destinationNetwork": "decentr"
+  "id": 18
+  "state": "closed"
+  "stateBlock": 9127040
+  "updatedAt": "2021-08-16T20:37:56.994756Z"
+}
+*/
+```
+
 ## 🏦 Txs
 
 ** Search **
