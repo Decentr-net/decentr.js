@@ -1,6 +1,6 @@
 export interface SwapListPaginationOptions {
-  limit: number;
-  from: number; // timestamp of PDVListItem
+  after?: number;
+  limit?: number;
 }
 
 export enum SwapDestinationNetwork {
