@@ -1062,7 +1062,12 @@ CONSOLE OUTPUT:
 
 ** Get Swap list **
 ```ts
-decentr.swap.getSwapList()
+const swapListPaginationOptions: SwapListPaginationOptions = {
+  after: 50,
+  limit: 10,
+}
+
+decentr.swap.getSwapList(swapListPaginationOptions)
   .then(console.log);
 
 /*
@@ -1089,7 +1094,7 @@ const wallet: Wallet = {
   publicKey:  '03dae8cf229d1db63c8d854bd1c73e280147ebd3bb40df12381d16b0eb071a72b6'
 }
 
-decentr.swap.createSwap(wallet, 'decentr1tet7xxem50t6hxfh605ge3r30mau7gl9xch825', 'decentr')
+decentr.swap.createSwap(wallet, 'decentr1j6e6j53vh95jcq9k9lnsrsvj3h8dkdgmm20zhu', 'decentr')
   .then(console.log);
 
 /*

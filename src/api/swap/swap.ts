@@ -45,7 +45,9 @@ export async function getSwapList(
 
   return fetchJson(url, {
     headers,
-    ...swapListPaginationOptions,
+    queryParameters: {
+      ...swapListPaginationOptions,
+    },
   });
 }
 
