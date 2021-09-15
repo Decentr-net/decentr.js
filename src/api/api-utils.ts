@@ -2,6 +2,7 @@ import { Bytes } from '@tendermint/types';
 import { ecdsaSign as secp256k1EcdsaSign } from 'secp256k1';
 
 import {
+  bytesToHex,
   encodeObjectCharactersToUnicode,
   fetchJson,
   hashStringToBytes,
@@ -9,8 +10,8 @@ import {
   hexToBytes,
   sortObjectKeys,
 } from '../utils';
-import { Wallet } from '../wallet';
-import { BaseRequest, Fee, QuerySimulateGasResponse } from './types';
+import { KeyPair, Wallet } from '../wallet';
+import { AuthHeaders, BaseRequest, Fee, QuerySimulateGasResponse } from './types';
 import { getMinGasPrice } from './operations';
 
 const GAS_ADJUSTMENT = 1.35;
@@ -49,6 +50,20 @@ export function getSignature<T>(
 
   const signedObject = secp256k1EcdsaSign(hashBytes, privateKeyBytes);
   return signedObject.signature;
+}
+
+export function getAuthHeaders<T>(
+  data: T,
+  keys: KeyPair,
+  options?: { disableEncode?: boolean },
+): AuthHeaders {
+  const signature = getSignature(data, keys.privateKey, options);
+  const signatureHex = bytesToHex(signature);
+
+  return {
+    'Public-Key': keys.publicKey,
+    Signature: signatureHex,
+  };
 }
 
 export function createBaseRequest({

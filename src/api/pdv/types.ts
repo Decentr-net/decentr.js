@@ -92,11 +92,6 @@ export interface PDVMeta {
   reward: number;
 }
 
-export interface PDVHeaders extends Record<string, string>{
-  readonly 'Public-Key': string;
-  readonly Signature: string;
-}
-
 export interface TokenBalanceResponse {
   readonly balance: number;
 }

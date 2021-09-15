@@ -25,6 +25,7 @@ export function fetchJson<T, D = Partial<Record<string, unknown>>>(
     body?: D,
     headers?: Record<string, string>,
     queryParameters?: QueryParametersObject,
+    bodyAsIs?: boolean,
   },
 ): Promise<T>;
 
@@ -35,6 +36,7 @@ export function fetchJson<T, D>(
     body?: D,
     headers?: Record<string, string>,
     queryParameters?: QueryParametersObject,
+    bodyAsIs?: boolean,
   },
 ): Promise<T> {
   const fullUrl = options && options.queryParameters
@@ -46,7 +48,9 @@ export function fetchJson<T, D>(
     url: fullUrl,
     headers: options?.headers,
     data: options?.method === 'POST' && options?.body
-      ? JSON.stringify(options.body)
+      ? (options?.bodyAsIs
+        ? options.body
+        : JSON.stringify(options.body))
       : undefined
   })
     .then((response) => response.data);
