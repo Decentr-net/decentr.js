@@ -18,6 +18,5 @@ export async function saveImage(
     method: 'POST',
     body: base64,
     headers,
-    bodyAsIs: true,
   });
 }
