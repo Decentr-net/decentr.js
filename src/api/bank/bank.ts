@@ -81,7 +81,10 @@ export async function sendCoin(
   return broadcast(
     apiUrl,
     chainId,
-    stdTxResponse.value,
+    {
+      ...stdTxResponse.value,
+      memo: transferData.comment || stdTxResponse.value.memo,
+    },
     {
       ...account,
       privateKey: broadcastOptions.privateKey,
@@ -111,6 +114,7 @@ export async function getTransferHistory(
 
     return {
       amount: txValue.amount[0],
+      comment: element.tx.value.memo,
       fee: element.tx.value.fee,
       recipient: txValue.to_address,
       sender: txValue.from_address,

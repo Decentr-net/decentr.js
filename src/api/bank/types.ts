@@ -16,6 +16,7 @@ export interface BankCoin {
 }
 
 export interface TransferData {
+  readonly comment?: string;
   readonly amount: string;
   readonly from_address: Wallet['address'];
   readonly to_address: Wallet['address'];
@@ -31,6 +32,7 @@ export interface TransferHistoryPaginationOptions {
 export type TransferRole = 'sender' | 'recipient';
 
 export interface TransferHistoryTransaction {
+  comment: string;
   amount: BankCoin;
   fee: StdTxFee;
   recipient: Wallet['address'];
