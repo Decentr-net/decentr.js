@@ -46,7 +46,9 @@ export function fetchJson<T, D>(
     url: fullUrl,
     headers: options?.headers,
     data: options?.method === 'POST' && options?.body
-      ? JSON.stringify(options.body)
+      ? (typeof options.body === 'string'
+        ? options.body
+        : JSON.stringify(options.body))
       : undefined
   })
     .then((response) => response.data);

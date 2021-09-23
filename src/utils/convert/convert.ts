@@ -33,3 +33,11 @@ export function getUnicode(target: string): string {
     return '\\u' + zeroCharacter.slice(0, zeroCharacter.length - hex.length) + hex;
   }).join();
 }
+
+export function blobToBase64(blob: Blob): Promise<string> {
+  return new Promise((resolve) => {
+    const fileReader = new FileReader();
+    fileReader.onloadend = () => resolve(fileReader.result as string);
+    fileReader.readAsDataURL(blob);
+  }) as Promise<string>;
+}
