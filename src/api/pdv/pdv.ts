@@ -1,10 +1,9 @@
-import { bytesToHex, fetchJson } from '../../utils';
+import { fetchJson } from '../../utils';
 import { KeyPair, Wallet } from '../../wallet';
-import { blockchainFetch, getSignature } from '../api-utils';
+import { blockchainFetch, getAuthHeaders } from '../api-utils';
 import {
   PDV,
   PDVDetails,
-  PDVHeaders,
   PDVListItem,
   PDVListPaginationOptions,
   PDVMeta,
@@ -56,7 +55,7 @@ export async function getPDVDetails(
 ): Promise<PDVDetails> {
   const url = `${cerberusUrl}/v1/pdv/${wallet.address}/${pdvAddress}`;
 
-  const headers = getPDVHeaders(`/v1/pdv/${wallet.address}/${pdvAddress}`, wallet);
+  const headers = getAuthHeaders(`/v1/pdv/${wallet.address}/${pdvAddress}`, wallet);
 
   return fetchJson(url, { headers });
 }
@@ -73,21 +72,11 @@ export async function sendPDV(
     pdv,
   };
 
-  const headers = getPDVHeaders(`${JSON.stringify(body)}/v1/pdv`, keyPair, { disableEncode: true });
+  const headers = getAuthHeaders(`${JSON.stringify(body)}/v1/pdv`, keyPair, { disableEncode: true });
 
   return await fetchJson<{ id: number }, { version: string; pdv: PDV[] }>(cerberusAddress, {
     method: 'POST',
     body,
     headers,
   }).then(({ id }) => id);
-}
-
-function getPDVHeaders<T>(data: T, keys: KeyPair, options?: { disableEncode?: boolean }): PDVHeaders {
-  const signature = getSignature(data, keys.privateKey, options);
-  const signatureHex = bytesToHex(signature);
-
-  return {
-    'Public-Key': keys.publicKey,
-    Signature: signatureHex,
-  };
 }

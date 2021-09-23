@@ -146,6 +146,11 @@ export type StdTxResponseValue<K extends keyof StdTxMessageValueMap> = StdTxValu
 
 export type StdTxResponse<K extends keyof StdTxMessageValueMap> = StdTx<K>;
 
+export interface AuthHeaders extends Record<string, string>{
+  readonly 'Public-Key': string;
+  readonly Signature: string;
+}
+
 export interface BaseRequest {
   readonly base_req: {
     readonly chain_id: string,

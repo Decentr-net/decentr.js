@@ -1,23 +1,25 @@
 import { Wallet } from '../wallet';
 import { DecentrBankSDK } from './bank';
+import { DecentrBlocksSDK } from './blocks';
 import { DecentrCommunitySDK } from './community';
+import { DecentrImageSDK } from './image';
+import { broadcast, BroadcastOptions, BroadcastResponse } from './messages';
+import { DecentrMintingSDK } from './minting';
+import { DecentrNodeSDK } from './node';
+import { DecentrOperationsSDK } from './operations';
 import { DecentrPDVSDK } from './pdv';
 import { Account, DecentrProfileSDK } from './profile';
 import { DecentrStakingSDK } from './staking';
-import { broadcast, BroadcastOptions, BroadcastResponse } from './messages';
-import { StdTxMessageValueMap, StdTxResponseValue } from './types';
-import { DecentrNodeSDK } from './node';
-import { DecentrMintingSDK } from './minting';
-import { DecentrBlocksSDK } from './blocks';
-import { DecentrTXsSDK } from './txs';
-import { DecentrOperationsSDK } from './operations';
 import { DecentrSupplySDK } from './supply';
 import { DecentrSwapSDK } from './swap';
+import { DecentrTXsSDK } from './txs';
+import { StdTxMessageValueMap, StdTxResponseValue } from './types';
 
 export class Decentr {
   private bankSDK: DecentrBankSDK | undefined;
   private blocksSDK: DecentrBlocksSDK | undefined;
   private communitySDK: DecentrCommunitySDK | undefined;
+  private imageSDK: DecentrImageSDK | undefined;
   private nodeSDK: DecentrNodeSDK | undefined;
   private mintingSDK: DecentrMintingSDK | undefined;
   private operationsSDK: DecentrOperationsSDK | undefined;
@@ -32,6 +34,7 @@ export class Decentr {
     private apiUrl: string,
     private chainId: string,
     private servicesUrls?: {
+      cerberus?: string,
       swap?: string,
     },
   ) {
@@ -59,6 +62,18 @@ export class Decentr {
     }
 
     return this.communitySDK;
+  }
+
+  public get image(): DecentrImageSDK {
+    if (!this.servicesUrls?.cerberus) {
+      throw new Error(`You didn't provide Cerberus url`);
+    }
+
+    if (!this.imageSDK) {
+      this.imageSDK = new DecentrImageSDK(this.servicesUrls?.cerberus);
+    }
+
+    return this.imageSDK;
   }
 
   public get minting(): DecentrMintingSDK {
