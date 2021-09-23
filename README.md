@@ -618,12 +618,14 @@ const wallet: Wallet = {
 
 const walletAddressTo = "decentr1j6e6j53vh95jcq9k9lnsrsvj3h8dkdgmm20zhu";
 const amount = "15";
+const comment = 'my test transfer';
 
 decentr.bank.sendCoin(
   {
     from_address: wallet.address,
     to_address: walletAddressTo,
     amount,
+    comment,
   },
   {
     broadcast: true,
@@ -673,6 +675,7 @@ CONSOLE OUTPUT:
   limit: 100,
   transactions: [{
     amount: '10',
+    comment: 'my test transfer',
     recipient: 'decentr1ltx6yymrs8eq4nmnhzfzxj6tspjuymh8mgd6gz',
     sender: 'decentr1p4s4djk5dqstfswg6k8sljhkzku4a6ve9dmng5',
     timestamp: '2021-01-06T22:56:20Z'
