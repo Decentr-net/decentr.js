@@ -76,6 +76,7 @@ export interface StdTxMessageValueMap {
   [StdTxMessageType.CosmosEditValidator]: {
   };
   [StdTxMessageType.CosmosJail]: {
+    address: Wallet['address'];
   };
   [StdTxMessageType.CosmosSend]: {
     amount: Fee[]
@@ -83,6 +84,7 @@ export interface StdTxMessageValueMap {
     to_address: Wallet['address'];
   };
   [StdTxMessageType.CosmosUnjail]: {
+    address: Wallet['address'];
   };
   [StdTxMessageType.OperationsResetAccount]: {
     accountOwner: Wallet['address'];
