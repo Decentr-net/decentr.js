@@ -27,6 +27,8 @@ export enum StdTxMessageType {
   CosmosJail = 'cosmos-sdk/MsgJail',
   CosmosSend = 'cosmos-sdk/MsgSend',
   CosmosUnjail = 'cosmos-sdk/MsgUnjail',
+  OperationsBanAccount = 'operations/MsgBanAccount',
+  OperationsMint = 'operations/MsgMint',
   OperationsResetAccount = 'operations/MsgResetAccount',
   OperationsDistributeRewards = 'operations/DistributeRewards',
 
@@ -85,6 +87,18 @@ export interface StdTxMessageValueMap {
   };
   [StdTxMessageType.CosmosUnjail]: {
     address: Wallet['address'];
+  };
+  [StdTxMessageType.OperationsBanAccount]: {
+    address: Wallet['address'];
+    ban: boolean;
+    owner: Wallet['address'];
+  };
+  [StdTxMessageType.OperationsMint]: {
+    coin: {
+      amount: string;
+      denom: string;
+    };
+    owner: Wallet['address'];
   };
   [StdTxMessageType.OperationsResetAccount]: {
     accountOwner: Wallet['address'];
