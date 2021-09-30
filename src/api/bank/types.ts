@@ -35,6 +35,7 @@ export interface TransferHistoryTransaction {
   comment: string;
   amount: BankCoin;
   fee: StdTxFee;
+  hash: string;
   recipient: Wallet['address'];
   sender: Wallet['address'];
   timestamp: string;

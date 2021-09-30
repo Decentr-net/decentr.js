@@ -116,6 +116,7 @@ export async function getTransferHistory(
       amount: txValue.amount[0],
       comment: element.tx.value.memo,
       fee: element.tx.value.fee,
+      hash: element.txhash,
       recipient: txValue.to_address,
       sender: txValue.from_address,
       timestamp: element.timestamp,
