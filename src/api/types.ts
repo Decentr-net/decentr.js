@@ -23,6 +23,7 @@ export enum StdTxMessageType {
   CosmosBeginUnbonding = 'cosmos-sdk/MsgBeginUnbonding',
   CosmosCreateValidator = 'cosmos-sdk/MsgCreateValidator',
   CosmosDelegate = 'cosmos-sdk/MsgDelegate',
+  CosmosDeposit = 'cosmos-sdk/MsgDeposit',
   CosmosEditValidator = 'cosmos-sdk/MsgEditValidator',
   CosmosJail = 'cosmos-sdk/MsgJail',
   CosmosSend = 'cosmos-sdk/MsgSend',
@@ -74,6 +75,20 @@ export interface StdTxMessageValueMap {
     };
   };
   [StdTxMessageType.CosmosDelegate]: {
+    amount: {
+      amount: string;
+      denom: string;
+    };
+    delegator_address: Wallet['address'];
+    validator_address: Wallet['address'];
+  };
+  [StdTxMessageType.CosmosDeposit]: {
+    amount: {
+      amount: string;
+      denom: string;
+    }[];
+    depositor: Wallet['address'];
+    proposal_id: string;
   };
   [StdTxMessageType.CosmosEditValidator]: {
   };
