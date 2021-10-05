@@ -74,6 +74,12 @@ export interface StdTxMessageValueMap {
     };
   };
   [StdTxMessageType.CosmosDelegate]: {
+    amount: {
+      amount: string;
+      denom: string;
+    };
+    delegator_address: Wallet['address'];
+    validator_address: Wallet['address'];
   };
   [StdTxMessageType.CosmosEditValidator]: {
   };
