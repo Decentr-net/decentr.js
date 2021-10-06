@@ -27,6 +27,7 @@ export enum StdTxMessageType {
   CosmosEditValidator = 'cosmos-sdk/MsgEditValidator',
   CosmosJail = 'cosmos-sdk/MsgJail',
   CosmosSend = 'cosmos-sdk/MsgSend',
+  CosmosUndelegate = 'cosmos-sdk/MsgUndelegate',
   CosmosUnjail = 'cosmos-sdk/MsgUnjail',
   OperationsBanAccount = 'operations/MsgBanAccount',
   OperationsMint = 'operations/MsgMint',
@@ -61,6 +62,13 @@ export interface StdTxMessageValueMap {
     whom: Wallet['address'];
   };
   [StdTxMessageType.CosmosBeginRedelegate]: {
+    amount: {
+      denom: string;
+      amount: string;
+    };
+    delegator_address: Wallet['address'];
+    validator_dst_address: Validator['operator_address'];
+    validator_src_address: Validator['operator_address'];
   };
   [StdTxMessageType.CosmosBeginUnbonding]: {
   };
@@ -96,10 +104,18 @@ export interface StdTxMessageValueMap {
     address: Wallet['address'];
   };
   [StdTxMessageType.CosmosSend]: {
-    amount: Fee[]
+    amount: Fee[];
     from_address: Wallet['address'];
     to_address: Wallet['address'];
   };
+  [StdTxMessageType.CosmosUndelegate]: {
+    amount: {
+      amount: string;
+      denom: string;
+    };
+    delegator_address: Wallet['address'];
+    validator_address: Validator['operator_address'],
+  }
   [StdTxMessageType.CosmosUnjail]: {
     address: Wallet['address'];
   };
