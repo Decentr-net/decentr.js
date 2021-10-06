@@ -1,11 +1,15 @@
 import { Wallet } from '../../wallet';
 import { addGas, blockchainFetch } from '../api-utils';
 import {
-  CreateDelegationRequest, CreateRedelegationRequest, CreateUnbondingDelegationRequest,
+  CreateDelegationRequest,
+  CreateRedelegationRequest,
+  CreateUnbondingDelegationRequest,
   Delegation,
   DelegationBroadcastOptions,
   Pool,
-  QueryCreateDelegationResponse, QueryCreateUnbondingDelegationResponse,
+  QueryCreateDelegationResponse,
+  QueryCreateRedelegationResponse,
+  QueryCreateUnbondingDelegationResponse,
   Redelegation,
   StakingParameters,
   UnbondingDelegation,
@@ -157,14 +161,14 @@ export async function createUnbondingDelegation(
   chainId: string,
   unbondingDelegation: CreateUnbondingDelegationRequest,
   broadcastOptions: DelegationBroadcastOptions,
-): Promise<BroadcastResponse<StdTxMessageType.CosmosDelegate>>;
+): Promise<BroadcastResponse<StdTxMessageType.CosmosUndelegate>>;
 
 export async function createUnbondingDelegation(
   apiUrl: string,
   chainId: string,
   unbondingDelegation: CreateUnbondingDelegationRequest,
   broadcastOptions?: DelegationBroadcastOptions,
-): Promise<QueryCreateUnbondingDelegationResponse | BroadcastResponse<StdTxMessageType.CosmosDelegate>> {
+): Promise<QueryCreateUnbondingDelegationResponse | BroadcastResponse<StdTxMessageType.CosmosUndelegate>> {
   const stdTxResponse = await queryCreateUnbondingDelegation(
     apiUrl,
     chainId,
@@ -224,7 +228,7 @@ async function queryCreateRedelegation(
   apiUrl: string,
   chainId: string,
   delegation: CreateRedelegationRequest,
-): Promise<QueryCreateDelegationResponse> {
+): Promise<QueryCreateRedelegationResponse> {
   const url = `${apiUrl}/staking/delegators/${delegation.delegator_address}/redelegations`;
 
   const body = await addGas(delegation, chainId, url, delegation.delegator_address);
@@ -236,21 +240,21 @@ export async function createRedelegation(
   apiUrl: string,
   chainId: string,
   delegation: CreateRedelegationRequest,
-): Promise<QueryCreateDelegationResponse>;
+): Promise<QueryCreateRedelegationResponse>;
 
 export async function createRedelegation(
   apiUrl: string,
   chainId: string,
   redelegation: CreateRedelegationRequest,
   broadcastOptions: DelegationBroadcastOptions,
-): Promise<BroadcastResponse<StdTxMessageType.CosmosDelegate>>;
+): Promise<BroadcastResponse<StdTxMessageType.CosmosBeginRedelegate>>;
 
 export async function createRedelegation(
   apiUrl: string,
   chainId: string,
   redelegation: CreateRedelegationRequest,
   broadcastOptions?: DelegationBroadcastOptions,
-): Promise<QueryCreateDelegationResponse | BroadcastResponse<StdTxMessageType.CosmosDelegate>> {
+): Promise<QueryCreateRedelegationResponse | BroadcastResponse<StdTxMessageType.CosmosBeginRedelegate>> {
   const stdTxResponse = await queryCreateRedelegation(
     apiUrl,
     chainId,

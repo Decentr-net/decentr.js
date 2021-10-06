@@ -131,17 +131,17 @@ export class DecentrStakingSDK {
 
   public createUnbondingDelegation(
     unbondingDelegation: CreateUnbondingDelegationRequest,
-  ): Promise<QueryCreateDelegationResponse>;
+  ): Promise<QueryCreateUnbondingDelegationResponse>;
 
   public createUnbondingDelegation(
     unbondingDelegation: CreateUnbondingDelegationRequest,
     broadcastOptions: DelegationBroadcastOptions,
-  ): Promise<BroadcastResponse<StdTxMessageType.CosmosDelegate>>;
+  ): Promise<BroadcastResponse<StdTxMessageType.CosmosUndelegate>>;
 
   public createUnbondingDelegation(
     unbondingDelegation: CreateUnbondingDelegationRequest,
     broadcastOptions?: DelegationBroadcastOptions,
-  ): Promise<QueryCreateUnbondingDelegationResponse | BroadcastResponse<StdTxMessageType.CosmosDelegate>> {
+  ): Promise<QueryCreateUnbondingDelegationResponse | BroadcastResponse<StdTxMessageType.CosmosUndelegate>> {
     return createUnbondingDelegation(
       this.apiUrl,
       this.chainId,
@@ -152,17 +152,17 @@ export class DecentrStakingSDK {
 
   public createRedelegation(
     redelegation: CreateRedelegationRequest,
-  ): Promise<QueryCreateDelegationResponse>;
+  ): Promise<QueryCreateRedelegationResponse>;
 
   public createRedelegation(
     redelegation: CreateRedelegationRequest,
     broadcastOptions: DelegationBroadcastOptions,
-  ): Promise<BroadcastResponse<StdTxMessageType.CosmosDelegate>>;
+  ): Promise<BroadcastResponse<StdTxMessageType.CosmosBeginRedelegate>>;
 
   public createRedelegation(
     redelegation: CreateRedelegationRequest,
     broadcastOptions?: DelegationBroadcastOptions,
-  ): Promise<QueryCreateRedelegationResponse | BroadcastResponse<StdTxMessageType.CosmosDelegate>> {
+  ): Promise<QueryCreateRedelegationResponse | BroadcastResponse<StdTxMessageType.CosmosBeginRedelegate>> {
     return createRedelegation(
       this.apiUrl,
       this.chainId,

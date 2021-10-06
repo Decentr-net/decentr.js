@@ -60,8 +60,6 @@ export interface Delegation {
 
 export type QueryCreateDelegationResponse = StdTxResponse<StdTxMessageType.CosmosDelegate>;
 
-// export type QueryCreateDelegationResponse = StdTxResponse<StdTxMessageType.Rede>;
-
 export interface DelegationBroadcastOptions extends BroadcastOptions {
   broadcast: true,
   privateKey: Wallet['privateKey'];
@@ -82,7 +80,7 @@ export interface UnbondingDelegation {
   min_time: number;
 }
 
-export type QueryCreateUnbondingDelegationResponse = StdTxResponse<StdTxMessageType.CosmosDelegate>;
+export type QueryCreateUnbondingDelegationResponse = StdTxResponse<StdTxMessageType.CosmosUndelegate>;
 
 export interface CreateUnbondingDelegationRequest
   extends Pick<UnbondingDelegation, 'delegator_address' | 'validator_address'>
@@ -105,7 +103,7 @@ export interface Redelegation {
   entries: RedelegationEntry[];
 }
 
-export type QueryCreateRedelegationResponse = StdTxResponse<StdTxMessageType.CosmosDelegate>;
+export type QueryCreateRedelegationResponse = StdTxResponse<StdTxMessageType.CosmosBeginRedelegate>;
 
 export interface CreateRedelegationRequest
   extends Omit<Redelegation, 'entries'>
