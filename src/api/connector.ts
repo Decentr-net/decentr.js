@@ -118,7 +118,7 @@ export class Decentr {
 
   public get staking(): DecentrStakingSDK {
     if (!this.stakingSDK) {
-      this.stakingSDK = new DecentrStakingSDK(this.apiUrl);
+      this.stakingSDK = new DecentrStakingSDK(this.apiUrl, this.chainId);
     }
 
     return this.stakingSDK;

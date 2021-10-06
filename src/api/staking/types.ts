@@ -1,4 +1,6 @@
 import { Wallet } from '../../wallet';
+import { StdTxMessageType, StdTxResponse } from '../types';
+import { BroadcastOptions } from '../messages';
 
 export interface Pool {
   not_bonded_tokens: number;
@@ -56,6 +58,21 @@ export interface Delegation {
   };
 }
 
+export type QueryCreateDelegationResponse = StdTxResponse<StdTxMessageType.CosmosDelegate>;
+
+// export type QueryCreateDelegationResponse = StdTxResponse<StdTxMessageType.Rede>;
+
+export interface DelegationBroadcastOptions extends BroadcastOptions {
+  broadcast: true,
+  privateKey: Wallet['privateKey'];
+}
+
+export interface CreateDelegationRequest
+  extends Pick<Delegation, 'delegator_address' | 'validator_address'>
+{
+  amount: Delegation['balance'];
+}
+
 export interface UnbondingDelegation {
   delegator_address: string;
   validator_address: string;
@@ -65,29 +82,36 @@ export interface UnbondingDelegation {
   min_time: number;
 }
 
+export type QueryCreateUnbondingDelegationResponse = StdTxResponse<StdTxMessageType.CosmosDelegate>;
+
+export interface CreateUnbondingDelegationRequest
+  extends Pick<UnbondingDelegation, 'delegator_address' | 'validator_address'>
+{
+  amount: Delegation['balance'];
+}
+
+interface RedelegationEntry {
+  creation_height: number;
+  completion_time: string;
+  initial_balance: string;
+  shares_dst: string;
+  balance: string;
+}
+
 export interface Redelegation {
   delegator_address: Wallet['address'];
   validator_src_address: Validator['operator_address'];
   validator_dst_address: Validator['operator_address'];
-  entries: unknown[];
+  entries: RedelegationEntry[];
 }
 
-// interface SubmitDelegationTx {
-//   code: string;
-//   data: string;
-//   log: string;
-//   gas_used: number;
-//   gas_wanted: number;
-//   info: string;
-//   tags: string[];
-// }
-//
-// export interface SubmitDelegationResponse {
-//   check_tx: SubmitDelegationTx;
-//   deliver_tx: SubmitDelegationTx;
-//   hash: string;
-//   height: number;
-// }
+export type QueryCreateRedelegationResponse = StdTxResponse<StdTxMessageType.CosmosDelegate>;
+
+export interface CreateRedelegationRequest
+  extends Omit<Redelegation, 'entries'>
+{
+  amount: Delegation['balance'];
+}
 
 export interface StakingParameters {
   unbonding_time: string;
