@@ -1,7 +1,10 @@
 import { Wallet } from '../../wallet';
 import { BroadcastResponse } from '../messages';
-import { StdTxMessageType } from '../types';
+import { Fee, StdTxMessageType } from '../types';
 import {
+  calculateCreateDelegationFee,
+  calculateCreateRedelegationFee,
+  calculateCreateUnbondingDelegationFee,
   createDelegation,
   createRedelegation,
   createUnbondingDelegation,
@@ -108,6 +111,12 @@ export class DecentrStakingSDK {
     return getStakingParameters(this.apiUrl);
   }
 
+  public calculateCreateDelegationFee(
+    delegation: CreateDelegationRequest,
+  ): Promise<Fee[]> {
+    return calculateCreateDelegationFee(this.apiUrl, this.chainId, delegation);
+  }
+
   public createDelegation(
     delegation: CreateDelegationRequest,
   ): Promise<QueryCreateDelegationResponse>;
@@ -129,6 +138,12 @@ export class DecentrStakingSDK {
     );
   }
 
+  public calculateCreateUnbondingDelegationFee(
+    unbondingDelegation: CreateUnbondingDelegationRequest,
+  ): Promise<Fee[]> {
+    return calculateCreateUnbondingDelegationFee(this.apiUrl, this.chainId, unbondingDelegation);
+  }
+
   public createUnbondingDelegation(
     unbondingDelegation: CreateUnbondingDelegationRequest,
   ): Promise<QueryCreateUnbondingDelegationResponse>;
@@ -148,6 +163,12 @@ export class DecentrStakingSDK {
       unbondingDelegation,
       broadcastOptions as DelegationBroadcastOptions,
     );
+  }
+
+  public calculateCreateRedelegationFee(
+    redelegation: CreateRedelegationRequest,
+  ): Promise<Fee[]> {
+    return calculateCreateRedelegationFee(this.apiUrl, this.chainId, redelegation);
   }
 
   public createRedelegation(

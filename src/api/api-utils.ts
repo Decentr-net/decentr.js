@@ -133,6 +133,15 @@ async function querySimulateGas<T>(
       .then(({ gas_estimate }) => gas_estimate);
 }
 
+export function prepareQueryBody<T>(
+  url: string,
+  chainId: string,
+  request: T,
+  owner: Wallet['address'],
+): Promise<(BaseRequest & T)> {
+  return addGas(request, chainId, url, owner);
+}
+
 export async function calculateTransactionFeeAmount(
   apiUrl: string,
   gas: string,
