@@ -282,7 +282,7 @@ async function queryCreateRedelegation(
 ): Promise<QueryCreateRedelegationResponse> {
   const url = getCreateRedelegationUrl(apiUrl, redelegation.delegator_address);
 
-  const body = await prepareRedelegationBody(url, chainId, redelegation);
+  const body = await prepareQueryBody(url, chainId, redelegation, redelegation.delegator_address);
 
   return fetchJson(url, { method: 'POST', body });
 }
