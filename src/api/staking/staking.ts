@@ -85,7 +85,7 @@ async function queryCreateDelegation(
 export async function calculateCreateDelegationFee(
   apiUrl: string,
   chainId: string,
-  delegation: CreateUnbondingDelegationRequest,
+  delegation: CreateDelegationRequest,
 ): Promise<Fee[]> {
   const url = getCreateDelegationUrl(apiUrl, delegation.delegator_address);
 
