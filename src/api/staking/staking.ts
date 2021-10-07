@@ -1,5 +1,10 @@
 import { Wallet } from '../../wallet';
-import { addGas, blockchainFetch } from '../api-utils';
+import {
+  addGas,
+  blockchainFetch,
+  calculateTransactionFeeAmount,
+  prepareQueryBody,
+} from '../api-utils';
 import {
   CreateDelegationRequest,
   CreateRedelegationRequest,
@@ -19,7 +24,7 @@ import {
 } from './types';
 import { fetchJson } from '../../utils';
 import { broadcast, BroadcastResponse } from '../messages';
-import { StdTxMessageType } from '../types';
+import { Fee, StdTxMessageType } from '../types';
 import { Account, getAccount } from '../profile';
 
 type ValidatorStatusFilterParameter = 'unbonding' | 'bonded' | 'unbonded';
@@ -61,16 +66,37 @@ export function getDelegations(
   );
 }
 
+function getCreateDelegationUrl(apiUrl: string, delegatorAddress: Wallet['address']): string {
+  return `${apiUrl}/staking/delegators/${delegatorAddress}/delegations`;
+}
+
 async function queryCreateDelegation(
   apiUrl: string,
   chainId: string,
   delegation: CreateDelegationRequest,
 ): Promise<QueryCreateDelegationResponse> {
-  const url = `${apiUrl}/staking/delegators/${delegation.delegator_address}/delegations`;
+  const url = getCreateDelegationUrl(apiUrl, delegation.delegator_address);
 
   const body = await addGas(delegation, chainId, url, delegation.delegator_address);
 
   return fetchJson(url, { method: 'POST', body });
+}
+
+export async function calculateCreateDelegationFee(
+  apiUrl: string,
+  chainId: string,
+  delegation: CreateUnbondingDelegationRequest,
+): Promise<Fee[]> {
+  const url = getCreateDelegationUrl(apiUrl, delegation.delegator_address);
+
+  const queryBody = await prepareQueryBody(
+    url,
+    chainId,
+    delegation,
+    delegation.delegator_address,
+  );
+
+  return calculateTransactionFeeAmount(apiUrl, queryBody.base_req.gas as string);
 }
 
 export async function createDelegation(
@@ -138,16 +164,37 @@ export function getValidatorDelegations(
   );
 }
 
+function getCreateUnbondingDelegationUrl(apiUrl: string, delegatorAddress: Wallet['address']): string {
+  return `${apiUrl}/staking/delegators/${delegatorAddress}/unbonding_delegations`;
+}
+
 async function queryCreateUnbondingDelegation(
   apiUrl: string,
   chainId: string,
   unbondingDelegation: CreateUnbondingDelegationRequest,
 ): Promise<QueryCreateUnbondingDelegationResponse> {
-  const url = `${apiUrl}/staking/delegators/${unbondingDelegation.delegator_address}/unbonding_delegations`;
+  const url = getCreateUnbondingDelegationUrl(apiUrl, unbondingDelegation.delegator_address);
 
   const body = await addGas(unbondingDelegation, chainId, url, unbondingDelegation.delegator_address);
 
   return fetchJson(url, { method: 'POST', body });
+}
+
+export async function calculateCreateUnbondingDelegationFee(
+  apiUrl: string,
+  chainId: string,
+  unbondingDelegation: CreateUnbondingDelegationRequest,
+): Promise<Fee[]> {
+  const url = getCreateUnbondingDelegationUrl(apiUrl, unbondingDelegation.delegator_address);
+
+  const queryBody = await prepareQueryBody(
+    url,
+    chainId,
+    unbondingDelegation,
+    unbondingDelegation.delegator_address,
+  );
+
+  return calculateTransactionFeeAmount(apiUrl, queryBody.base_req.gas as string);
 }
 
 export async function createUnbondingDelegation(
@@ -224,22 +271,43 @@ export function getValidatorUnbondingDelegations(
   );
 }
 
+function getCreateRedelegationUrl(apiUrl: string, delegatorAddress: Wallet['address']): string {
+  return `${apiUrl}/staking/delegators/${delegatorAddress}/redelegations`;
+}
+
 async function queryCreateRedelegation(
   apiUrl: string,
   chainId: string,
-  delegation: CreateRedelegationRequest,
+  redelegation: CreateRedelegationRequest,
 ): Promise<QueryCreateRedelegationResponse> {
-  const url = `${apiUrl}/staking/delegators/${delegation.delegator_address}/redelegations`;
+  const url = getCreateRedelegationUrl(apiUrl, redelegation.delegator_address);
 
-  const body = await addGas(delegation, chainId, url, delegation.delegator_address);
+  const body = await prepareRedelegationBody(url, chainId, redelegation);
 
   return fetchJson(url, { method: 'POST', body });
+}
+
+export async function calculateCreateRedelegationFee(
+  apiUrl: string,
+  chainId: string,
+  redelegation: CreateRedelegationRequest,
+): Promise<Fee[]> {
+  const url = getCreateRedelegationUrl(apiUrl, redelegation.delegator_address);
+
+  const queryBody = await prepareQueryBody(
+    url,
+    chainId,
+    redelegation,
+    redelegation.delegator_address,
+  );
+
+  return calculateTransactionFeeAmount(apiUrl, queryBody.base_req.gas as string);
 }
 
 export async function createRedelegation(
   apiUrl: string,
   chainId: string,
-  delegation: CreateRedelegationRequest,
+  redelegation: CreateRedelegationRequest,
 ): Promise<QueryCreateRedelegationResponse>;
 
 export async function createRedelegation(
