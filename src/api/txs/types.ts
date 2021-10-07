@@ -1,5 +1,6 @@
 import { Wallet } from '../../wallet';
 import { StdTx, StdTxMessageValueMap } from '../types';
+import { BroadcastErrorCode } from '../messages';
 
 export interface TXsSearchParameters {
   limit?: number;
@@ -27,6 +28,7 @@ export interface TransactionLog {
 }
 
 export interface Transaction<K extends keyof StdTxMessageValueMap = keyof StdTxMessageValueMap> {
+  code: BroadcastErrorCode;
   gas_used?: string;
   gas_wanted?: string;
   height: string;
