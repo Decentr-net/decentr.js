@@ -105,6 +105,7 @@ export async function getTransferHistory(
       queryParameters: {
         ...paginationOptions,
         [`transfer.${role}`]: walletAddress,
+        'message.action': 'send',
       },
     },
   );
