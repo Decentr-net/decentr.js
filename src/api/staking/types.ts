@@ -111,6 +111,12 @@ export interface CreateRedelegationRequest
   amount: Delegation['balance'];
 }
 
+export interface RedelegationsFilterParameters {
+  delegator?: Wallet['address'];
+  validator_from?: Validator['operator_address'];
+  validator_to?: Validator['operator_address'];
+}
+
 export interface StakingParameters {
   unbonding_time: string;
   max_validators: number;
