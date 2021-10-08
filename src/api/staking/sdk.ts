@@ -30,6 +30,7 @@ import {
   QueryCreateRedelegationResponse,
   QueryCreateUnbondingDelegationResponse,
   Redelegation,
+  RedelegationsFilterParameters,
   StakingParameters,
   UnbondingDelegation,
   Validator,
@@ -97,8 +98,10 @@ export class DecentrStakingSDK {
     return getValidatorUnbondingDelegations(validatorAddress, delegatorAddress as string);
   }
 
-  public getRedelegations(): Promise<Redelegation[]> {
-    return getRedelegations(this.apiUrl);
+  public getRedelegations(
+    filter?: RedelegationsFilterParameters,
+  ): Promise<Redelegation[]> {
+    return getRedelegations(this.apiUrl, filter);
   }
 
   public getDelegatorValidators(

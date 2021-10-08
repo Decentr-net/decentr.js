@@ -16,6 +16,7 @@ import {
   QueryCreateRedelegationResponse,
   QueryCreateUnbondingDelegationResponse,
   Redelegation,
+  RedelegationsFilterParameters,
   StakingParameters,
   UnbondingDelegation,
   Validator,
@@ -85,7 +86,7 @@ async function queryCreateDelegation(
 export async function calculateCreateDelegationFee(
   apiUrl: string,
   chainId: string,
-  delegation: CreateUnbondingDelegationRequest,
+  delegation: CreateDelegationRequest,
 ): Promise<Fee[]> {
   const url = getCreateDelegationUrl(apiUrl, delegation.delegator_address);
 
@@ -349,8 +350,9 @@ export async function createRedelegation(
 
 export function getRedelegations(
   apiUrl: string,
+  filter?: RedelegationsFilterParameters,
 ): Promise<Redelegation[]> {
-  return blockchainFetch(`${apiUrl}/staking/redelegations`);
+  return blockchainFetch(`${apiUrl}/staking/redelegations`, filter as Record<string, string>);
 }
 
 export function getDelegatorValidators(
