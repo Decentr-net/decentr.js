@@ -3,6 +3,7 @@ export * from './bank';
 export * from './blocks';
 export * from './community';
 export * from './connector';
+export * from './distribution';
 export * from './image';
 export * from './messages';
 export * from './minting';

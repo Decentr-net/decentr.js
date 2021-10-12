@@ -2,6 +2,7 @@ import { Wallet } from '../wallet';
 import { DecentrBankSDK } from './bank';
 import { DecentrBlocksSDK } from './blocks';
 import { DecentrCommunitySDK } from './community';
+import { DecentrDistributionSDK } from './distribution';
 import { DecentrImageSDK } from './image';
 import { broadcast, BroadcastOptions, BroadcastResponse } from './messages';
 import { DecentrMintingSDK } from './minting';
@@ -19,6 +20,7 @@ export class Decentr {
   private bankSDK: DecentrBankSDK | undefined;
   private blocksSDK: DecentrBlocksSDK | undefined;
   private communitySDK: DecentrCommunitySDK | undefined;
+  private distributionSDK: DecentrDistributionSDK | undefined
   private imageSDK: DecentrImageSDK | undefined;
   private nodeSDK: DecentrNodeSDK | undefined;
   private mintingSDK: DecentrMintingSDK | undefined;
@@ -62,6 +64,14 @@ export class Decentr {
     }
 
     return this.communitySDK;
+  }
+
+  public get distribution(): DecentrDistributionSDK {
+    if (!this.distributionSDK) {
+      this.distributionSDK = new DecentrDistributionSDK(this.apiUrl, this.chainId);
+    }
+
+    return this.distributionSDK;
   }
 
   public get image(): DecentrImageSDK {
