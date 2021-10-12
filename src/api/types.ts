@@ -3,10 +3,12 @@ import { LikeWeight, Post } from './community';
 import { Gender } from './pdv';
 import { Validator, ValidatorCommission } from './staking';
 
-export interface Fee {
-  readonly amount: string;
-  readonly denom: string;
+export interface DenomAmount {
+  amount: string;
+  denom: string;
 }
+
+export type Fee = DenomAmount;
 
 export interface StdTxFee {
   readonly amount: Fee[];
@@ -62,10 +64,7 @@ export interface StdTxMessageValueMap {
     whom: Wallet['address'];
   };
   [StdTxMessageType.CosmosBeginRedelegate]: {
-    amount: {
-      denom: string;
-      amount: string;
-    };
+    amount: DenomAmount;
     delegator_address: Wallet['address'];
     validator_dst_address: Validator['operator_address'];
     validator_src_address: Validator['operator_address'];
@@ -77,24 +76,15 @@ export interface StdTxMessageValueMap {
     delegator_address: string;
     pubkey: string;
     validator_address: string;
-    value: {
-      amount: string;
-      denom: string;
-    };
+    value: DenomAmount;
   };
   [StdTxMessageType.CosmosDelegate]: {
-    amount: {
-      amount: string;
-      denom: string;
-    };
+    amount: DenomAmount;
     delegator_address: Wallet['address'];
     validator_address: Wallet['address'];
   };
   [StdTxMessageType.CosmosDeposit]: {
-    amount: {
-      amount: string;
-      denom: string;
-    }[];
+    amount: DenomAmount[];
     depositor: Wallet['address'];
     proposal_id: string;
   };
@@ -109,10 +99,7 @@ export interface StdTxMessageValueMap {
     to_address: Wallet['address'];
   };
   [StdTxMessageType.CosmosUndelegate]: {
-    amount: {
-      amount: string;
-      denom: string;
-    };
+    amount: DenomAmount;
     delegator_address: Wallet['address'];
     validator_address: Validator['operator_address'],
   }
@@ -125,10 +112,7 @@ export interface StdTxMessageValueMap {
     owner: Wallet['address'];
   };
   [StdTxMessageType.OperationsMint]: {
-    coin: {
-      amount: string;
-      denom: string;
-    };
+    coin: DenomAmount;
     owner: Wallet['address'];
   };
   [StdTxMessageType.OperationsResetAccount]: {

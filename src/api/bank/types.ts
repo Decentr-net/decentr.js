@@ -1,6 +1,6 @@
 import { Wallet } from '../../wallet';
 import { BroadcastOptions } from '../messages';
-import { StdTxFee, StdTxMessageType, StdTxResponse } from '../types';
+import { DenomAmount, StdTxFee, StdTxMessageType, StdTxResponse } from '../types';
 import { TXsSearchResponse } from '../txs';
 
 export type QueryTransferResponse = StdTxResponse<StdTxMessageType.CosmosSend>;
@@ -10,10 +10,7 @@ export interface BankBroadcastOptions extends BroadcastOptions {
   readonly privateKey: Wallet['privateKey'];
 }
 
-export interface BankCoin {
-  readonly amount: string;
-  readonly denom: string;
-}
+export type BankCoin = DenomAmount;
 
 export interface TransferData {
   readonly comment?: string;
