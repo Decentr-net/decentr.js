@@ -56,31 +56,42 @@ export class DecentrStakingSDK {
     return getValidator(this.apiUrl, address);
   }
 
-  public getDelegations(delegatorAddress: Wallet['address']): Promise<Delegation[]> {
-    return getDelegations(this.apiUrl, delegatorAddress);
+  public getDelegations(
+    delegatorAddress: Wallet['address'],
+  ): Promise<Delegation[]>;
+
+  public getDelegations(
+    delegatorAddress: Wallet['address'],
+    fromValidatorAddress: Validator['operator_address'],
+  ): Promise<Delegation>;
+
+  public getDelegations(
+    delegatorAddress: Wallet['address'],
+    fromValidatorAddress?: Validator['operator_address'],
+  ): Promise<Delegation[] | Delegation> {
+    return getDelegations(this.apiUrl, delegatorAddress, fromValidatorAddress as string);
   }
 
   public getValidatorDelegations(
     validatorAddress: Validator['operator_address'],
-  ): Promise<Delegation[]>;
-
-  public getValidatorDelegations(
-    validatorAddress: Validator['operator_address'],
-    delegatorAddress: Wallet['address'],
-  ): Promise<Delegation>;
-
-  public getValidatorDelegations(
-    validatorAddress: Validator['operator_address'],
-    delegatorAddress?: Wallet['address'],
   ): Promise<Delegation[] | Delegation> {
-    return getValidatorDelegations(validatorAddress, delegatorAddress as string);
+    return getValidatorDelegations(this.apiUrl, validatorAddress);
   }
 
   public getUnbondingDelegations(
     delegatorAddress: Wallet['address'],
+  ): Promise<UnbondingDelegation[]>
+
+  public getUnbondingDelegations(
+    delegatorAddress: Wallet['address'],
+    fromValidatorAddress: Validator['operator_address'],
+  ): Promise<UnbondingDelegation>
+
+  public getUnbondingDelegations(
+    delegatorAddress: Wallet['address'],
     fromValidatorAddress?: Validator['operator_address'],
-  ): Promise<UnbondingDelegation[]> {
-    return getUnbondingDelegations(this.apiUrl, delegatorAddress, fromValidatorAddress);
+  ): Promise<UnbondingDelegation[] | UnbondingDelegation> {
+    return getUnbondingDelegations(this.apiUrl, delegatorAddress, fromValidatorAddress as string);
   }
 
   public getValidatorUnbondingDelegations(
