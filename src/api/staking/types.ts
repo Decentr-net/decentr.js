@@ -68,13 +68,17 @@ export interface CreateDelegationRequest
   amount: Delegation['balance'];
 }
 
+interface UnbondingDelegationEntry {
+  creation_height: number;
+  completion_time: string;
+  initial_balance: string;
+  balance: string;
+}
+
 export interface UnbondingDelegation {
   delegator_address: string;
   validator_address: string;
-  initial_balance: string;
-  balance: string;
-  creation_height: number;
-  min_time: number;
+  entries: UnbondingDelegationEntry[];
 }
 
 export type QueryCreateUnbondingDelegationResponse = StdTxResponse<StdTxMessageType.CosmosUndelegate>;
