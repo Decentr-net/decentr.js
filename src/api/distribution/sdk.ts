@@ -1,8 +1,10 @@
 import { Wallet } from '../../wallet';
 import { BroadcastResponse } from '../messages';
 import { Validator } from '../staking';
-import { DenomAmount, StdTxMessageType, StdTxResponse } from '../types';
+import { DenomAmount, Fee, StdTxMessageType, StdTxResponse } from '../types';
 import {
+  calculateWithdrawDelegatorRewardsFee,
+  calculateWithdrawValidatorRewardsFee,
   getCommunityPool,
   getDelegatorRewards,
   getDistributionParameters,
@@ -71,6 +73,18 @@ export class DecentrDistributionSDK {
     );
   }
 
+  public calculateWithdrawDelegatorRewardsFee(
+    delegatorAddress: Wallet['address'],
+    fromValidatorAddress? : Validator['operator_address']
+  ): Promise<Fee[]> {
+    return calculateWithdrawDelegatorRewardsFee(
+      this.apiUrl,
+      this.chainId,
+      delegatorAddress,
+      fromValidatorAddress,
+    );
+  }
+
   public withdrawDelegatorRewards(
     delegatorAddress: Wallet['address'],
   ): Promise<StdTxResponse<StdTxMessageType.CosmosWithdrawDelegationReward>>;
@@ -108,6 +122,18 @@ export class DecentrDistributionSDK {
   ): Promise<ValidatorDistribution> {
     return getValidatorDistribution(
       this.apiUrl,
+      validatorAddress,
+    );
+  }
+
+  public calculateWithdrawValidatorRewardsFee(
+    walletAddress: Wallet['address'],
+    validatorAddress : Validator['operator_address']
+  ): Promise<Fee[]> {
+    return calculateWithdrawValidatorRewardsFee(
+      this.apiUrl,
+      this.chainId,
+      walletAddress,
       validatorAddress,
     );
   }

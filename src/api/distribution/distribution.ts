@@ -1,10 +1,10 @@
 import { Wallet } from '../../wallet';
 import { fetchJson } from '../../utils';
-import { blockchainFetch, prepareQueryBody } from '../api-utils';
+import { blockchainFetch, calculateTransactionFeeAmount, prepareQueryBody } from '../api-utils';
 import { broadcast, BroadcastResponse } from '../messages';
 import { Account, getAccount } from '../profile';
 import { Validator } from '../staking';
-import { DenomAmount, StdTxMessageType, StdTxResponse } from '../types';
+import { DenomAmount, Fee, StdTxMessageType, StdTxResponse } from '../types';
 import {
   DelegatorRewards,
   DistributionBroadcastOptions,
@@ -109,15 +109,27 @@ export async function replaceWithdrawAddress(
   );
 }
 
-async function queryWithdrawDelegatorsRewards(
+function createWithdrawDelegatorRewardsUrl(
+  apiUrl: string,
+  delegatorAddress: Wallet['address'],
+  fromValidatorAddress?: Validator['operator_address'],
+): string {
+  const baseUrl = `${apiUrl}/distribution/delegators/${delegatorAddress}/rewards`;
+
+  return fromValidatorAddress ? `${baseUrl}/${fromValidatorAddress}` : baseUrl;
+}
+
+async function queryWithdrawDelegatorRewards(
   apiUrl: string,
   chainId: string,
   delegatorAddress: Wallet['address'],
   fromValidatorAddress?: Validator['operator_address'],
 ): Promise<StdTxResponse<StdTxMessageType.CosmosWithdrawDelegationReward>> {
-  const baseUrl = `${apiUrl}/distribution/delegators/${delegatorAddress}/rewards`;
-
-  const url = fromValidatorAddress ? `${baseUrl}/${fromValidatorAddress}` : baseUrl;
+  const url = createWithdrawDelegatorRewardsUrl(
+    apiUrl,
+    delegatorAddress,
+    fromValidatorAddress,
+  );
 
   const body = await prepareQueryBody(
     url,
@@ -127,6 +139,28 @@ async function queryWithdrawDelegatorsRewards(
   );
 
   return fetchJson(url, { method: 'POST', body });
+}
+
+export async function calculateWithdrawDelegatorRewardsFee(
+  apiUrl: string,
+  chainId: string,
+  delegatorAddress: Wallet['address'],
+  fromValidatorAddress?: Validator['operator_address'],
+): Promise<Fee[]> {
+  const url = createWithdrawDelegatorRewardsUrl(
+    apiUrl,
+    delegatorAddress,
+    fromValidatorAddress,
+  );
+
+  const queryBody = await prepareQueryBody(
+    url,
+    chainId,
+    {},
+    delegatorAddress,
+  );
+
+  return calculateTransactionFeeAmount(apiUrl, queryBody.base_req.gas as string);
 }
 
 export function withdrawDelegatorRewards(
@@ -163,7 +197,7 @@ export async function withdrawDelegatorRewards(
   options?: DistributionBroadcastOptions & { fromValidatorAddress? : Validator['operator_address'] }
     | { fromValidatorAddress : Validator['operator_address'] },
 ): Promise<StdTxResponse<StdTxMessageType.CosmosWithdrawDelegationReward> | BroadcastResponse<StdTxMessageType.CosmosWithdrawDelegationReward>> {
-  const stdTxResponse = await queryWithdrawDelegatorsRewards(
+  const stdTxResponse = await queryWithdrawDelegatorRewards(
     apiUrl,
     chainId,
     delegatorAddress,
@@ -199,13 +233,20 @@ export function getValidatorDistribution(
   );
 }
 
+function createWithdrawValidatorRewardsUrl(
+  apiUrl: string,
+  validatorAddress: Validator['operator_address'],
+): string {
+  return `${apiUrl}/distribution/validators/${validatorAddress}/rewards`;
+}
+
 async function queryWithdrawValidatorRewards(
   apiUrl: string,
   chainId: string,
   walletAddress: Wallet['address'],
   validatorAddress: Validator['operator_address'],
 ): Promise<StdTxResponse<StdTxMessageType.Undefined>> {
-  const url = `${apiUrl}/distribution/validators/${validatorAddress}/rewards`;
+  const url = createWithdrawValidatorRewardsUrl(apiUrl, validatorAddress);
 
   const body = await prepareQueryBody(
     url,
@@ -215,6 +256,27 @@ async function queryWithdrawValidatorRewards(
   );
 
   return fetchJson(url, { method: 'POST', body });
+}
+
+export async function calculateWithdrawValidatorRewardsFee(
+  apiUrl: string,
+  chainId: string,
+  walletAddress: Wallet['address'],
+  validatorAddress: Validator['operator_address'],
+): Promise<Fee[]> {
+  const url = createWithdrawValidatorRewardsUrl(
+    apiUrl,
+    validatorAddress,
+  );
+
+  const queryBody = await prepareQueryBody(
+    url,
+    chainId,
+    {},
+    walletAddress,
+  );
+
+  return calculateTransactionFeeAmount(apiUrl, queryBody.base_req.gas as string);
 }
 
 export function withdrawValidatorRewards(
