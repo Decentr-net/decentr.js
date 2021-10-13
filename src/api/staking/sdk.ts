@@ -78,24 +78,15 @@ export class DecentrStakingSDK {
 
   public getUnbondingDelegations(
     delegatorAddress: Wallet['address'],
+    fromValidatorAddress?: Validator['operator_address'],
   ): Promise<UnbondingDelegation[]> {
-    return getUnbondingDelegations(this.apiUrl, delegatorAddress);
+    return getUnbondingDelegations(this.apiUrl, delegatorAddress, fromValidatorAddress);
   }
 
   public getValidatorUnbondingDelegations(
     validatorAddress: Validator['operator_address'],
-  ): Promise<UnbondingDelegation[]>;
-
-  public getValidatorUnbondingDelegations(
-    validatorAddress: Validator['operator_address'],
-    delegatorAddress: Wallet['address'],
-  ): Promise<UnbondingDelegation>;
-
-  public getValidatorUnbondingDelegations(
-    validatorAddress: Validator['operator_address'],
-    delegatorAddress?: Wallet['address'],
   ): Promise<UnbondingDelegation[] | UnbondingDelegation> {
-    return getValidatorUnbondingDelegations(validatorAddress, delegatorAddress as string);
+    return getValidatorUnbondingDelegations(this.apiUrl, validatorAddress);
   }
 
   public getRedelegations(
