@@ -1,14 +1,12 @@
 import { Wallet } from '../../wallet';
 import { ProfileUpdate } from '../pdv';
+import { DenomAmount } from '../types';
 
 export interface AccountResponse {
   value: Account;
 }
 
-export interface AccountCoin {
-  readonly amount: string;
-  readonly denom: string;
-}
+export type AccountCoin = DenomAmount;
 
 export interface AccountPublicKey {
   readonly type: string;

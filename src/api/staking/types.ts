@@ -1,5 +1,5 @@
 import { Wallet } from '../../wallet';
-import { StdTxMessageType, StdTxResponse } from '../types';
+import { DenomAmount, StdTxMessageType, StdTxResponse } from '../types';
 import { BroadcastOptions } from '../messages';
 
 export interface Pool {
@@ -52,10 +52,7 @@ export interface Delegation {
   delegator_address: Wallet['address'],
   validator_address: Validator['operator_address'];
   shares: string;
-  balance: {
-    denom: string;
-    amount: string;
-  };
+  balance: DenomAmount;
 }
 
 export type QueryCreateDelegationResponse = StdTxResponse<StdTxMessageType.CosmosDelegate>;

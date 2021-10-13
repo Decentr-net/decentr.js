@@ -244,31 +244,21 @@ export async function createUnbondingDelegation(
 export function getUnbondingDelegations(
   apiUrl: string,
   delegatorAddress: Wallet['address'],
+  fromValidatorAddress?: Validator['operator_address'],
 ): Promise<UnbondingDelegation[]> {
-  return blockchainFetch(
-    `${apiUrl}/staking/delegators/${delegatorAddress}/unbonding_delegations`,
-  );
+  const baseUrl = `${apiUrl}/staking/delegators/${delegatorAddress}/unbonding_delegations`;
+
+  const url = fromValidatorAddress ? `${baseUrl}/${fromValidatorAddress}` : baseUrl;
+
+  return blockchainFetch(url);
 }
 
 export function getValidatorUnbondingDelegations(
   apiUrl: string,
   validatorAddress: Validator['operator_address'],
-): Promise<UnbondingDelegation[]>;
-
-export function getValidatorUnbondingDelegations(
-  apiUrl: string,
-  validatorAddress: Validator['operator_address'],
-  delegatorAddress: Wallet['address'],
-): Promise<UnbondingDelegation>;
-
-export function getValidatorUnbondingDelegations(
-  apiUrl: string,
-  validatorAddress: Validator['operator_address'],
-  delegatorAddress?: Wallet['address'],
-): Promise<UnbondingDelegation[] | UnbondingDelegation> {
-  return blockchainFetch(delegatorAddress
-    ? `${apiUrl}/staking/delegators/${delegatorAddress}/unbonding_delegations/${validatorAddress}`
-    : `${apiUrl}/staking/validators/${validatorAddress}/unbonding_delegations`
+): Promise<UnbondingDelegation[]> {
+  return blockchainFetch(
+    `${apiUrl}/staking/validators/${validatorAddress}/unbonding_delegations`,
   );
 }
 

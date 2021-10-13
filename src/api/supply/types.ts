@@ -1,4 +1,3 @@
-export interface TotalSupply {
-  amount: string;
-  denom: string;
-}
+import { DenomAmount } from '../types';
+
+export type TotalSupply = DenomAmount;
