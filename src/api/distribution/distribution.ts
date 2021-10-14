@@ -233,6 +233,24 @@ export function getValidatorDistribution(
   );
 }
 
+export function getValidatorOutstandingRewards(
+  apiUrl: string,
+  validatorAddress: Validator['operator_address'],
+): Promise<DenomAmount[]> {
+  return blockchainFetch(
+    `${apiUrl}/distribution/validators/${validatorAddress}/outstanding_rewards`,
+  );
+}
+
+export function getValidatorRewards(
+  apiUrl: string,
+  validatorAddress: Validator['operator_address'],
+): Promise<DenomAmount[]> {
+  return blockchainFetch(
+    `${apiUrl}/distribution/validators/${validatorAddress}/rewards`,
+  );
+}
+
 function createWithdrawValidatorRewardsUrl(
   apiUrl: string,
   validatorAddress: Validator['operator_address'],

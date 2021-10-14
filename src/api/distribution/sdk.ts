@@ -9,6 +9,8 @@ import {
   getDelegatorRewards,
   getDistributionParameters,
   getValidatorDistribution,
+  getValidatorOutstandingRewards,
+  getValidatorRewards,
   getWithdrawAddress,
   replaceWithdrawAddress,
   withdrawDelegatorRewards,
@@ -121,6 +123,24 @@ export class DecentrDistributionSDK {
     validatorAddress: Validator['operator_address'],
   ): Promise<ValidatorDistribution> {
     return getValidatorDistribution(
+      this.apiUrl,
+      validatorAddress,
+    );
+  }
+
+  public getValidatorOutstandingRewards(
+    validatorAddress: Validator['operator_address'],
+  ): Promise<DenomAmount[]> {
+    return getValidatorOutstandingRewards(
+      this.apiUrl,
+      validatorAddress,
+    );
+  }
+
+  public getValidatorRewards(
+    validatorAddress: Validator['operator_address'],
+  ): Promise<DenomAmount[]> {
+    return getValidatorRewards(
       this.apiUrl,
       validatorAddress,
     );

@@ -13,7 +13,7 @@ export interface DelegatorRewards {
 
 export interface ValidatorDistribution {
   operator_address: Wallet['address'];
-  self_bond_rewards: DenomAmount;
+  self_bond_rewards: DenomAmount[];
   val_commission: DenomAmount[];
 }
 
