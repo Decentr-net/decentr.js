@@ -28,9 +28,11 @@ export enum StdTxMessageType {
   CosmosDeposit = 'cosmos-sdk/MsgDeposit',
   CosmosEditValidator = 'cosmos-sdk/MsgEditValidator',
   CosmosJail = 'cosmos-sdk/MsgJail',
+  CosmosModifyWithdrawAddress = 'cosmos-sdk/MsgModifyWithdrawAddress',
   CosmosSend = 'cosmos-sdk/MsgSend',
   CosmosUndelegate = 'cosmos-sdk/MsgUndelegate',
   CosmosUnjail = 'cosmos-sdk/MsgUnjail',
+  CosmosWithdrawDelegationReward = 'cosmos-sdk/MsgWithdrawDelegationReward',
   OperationsBanAccount = 'operations/MsgBanAccount',
   OperationsMint = 'operations/MsgMint',
   OperationsResetAccount = 'operations/MsgResetAccount',
@@ -40,6 +42,9 @@ export enum StdTxMessageType {
   PDVDistributeRewards = 'pdv/DistributeRewards',
   ProfileSetPrivate = 'profile/SetPrivate',
   ProfileSetPublic = 'profile/SetPublic',
+
+  // Undefined
+  Undefined = '',
 }
 
 export interface StdTxMessageValueMap {
@@ -93,6 +98,10 @@ export interface StdTxMessageValueMap {
   [StdTxMessageType.CosmosJail]: {
     address: Wallet['address'];
   };
+  [StdTxMessageType.CosmosModifyWithdrawAddress]: {
+    delegator_address: Wallet['address'];
+    withdraw_address: Wallet['address'];
+  };
   [StdTxMessageType.CosmosSend]: {
     amount: Fee[];
     from_address: Wallet['address'];
@@ -105,6 +114,10 @@ export interface StdTxMessageValueMap {
   }
   [StdTxMessageType.CosmosUnjail]: {
     address: Wallet['address'];
+  };
+  [StdTxMessageType.CosmosWithdrawDelegationReward]: {
+    delegator_address: Wallet['address'];
+    validator_address: Validator['operator_address'];
   };
   [StdTxMessageType.OperationsBanAccount]: {
     address: Wallet['address'];
@@ -151,6 +164,10 @@ export interface StdTxMessageValueMap {
       gender: Gender;
       lastName: string;
     };
+  };
+
+  // Undefined
+  [StdTxMessageType.Undefined]: {
   };
 }
 
