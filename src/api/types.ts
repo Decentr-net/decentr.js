@@ -35,6 +35,7 @@ export enum StdTxMessageType {
   CosmosUnjail = 'cosmos-sdk/MsgUnjail',
   CosmosVote = 'cosmos-sdk/MsgVote',
   CosmosWithdrawDelegationReward = 'cosmos-sdk/MsgWithdrawDelegationReward',
+  CosmosWithdrawValidatorCommission = 'cosmos-sdk/MsgWithdrawValidatorCommission',
   OperationsBanAccount = 'operations/MsgBanAccount',
   OperationsMint = 'operations/MsgMint',
   OperationsResetAccount = 'operations/MsgResetAccount',
@@ -128,6 +129,9 @@ export interface StdTxMessageValueMap {
   };
   [StdTxMessageType.CosmosWithdrawDelegationReward]: {
     delegator_address: Wallet['address'];
+    validator_address: Validator['operator_address'];
+  };
+  [StdTxMessageType.CosmosWithdrawValidatorCommission]: {
     validator_address: Validator['operator_address'];
   };
   [StdTxMessageType.OperationsBanAccount]: {
