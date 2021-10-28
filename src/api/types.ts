@@ -27,12 +27,15 @@ export enum StdTxMessageType {
   CosmosDelegate = 'cosmos-sdk/MsgDelegate',
   CosmosDeposit = 'cosmos-sdk/MsgDeposit',
   CosmosEditValidator = 'cosmos-sdk/MsgEditValidator',
+  CosmosFundCommunityPool = 'cosmos-sdk/MsgFundCommunityPool',
   CosmosJail = 'cosmos-sdk/MsgJail',
   CosmosModifyWithdrawAddress = 'cosmos-sdk/MsgModifyWithdrawAddress',
   CosmosSend = 'cosmos-sdk/MsgSend',
   CosmosUndelegate = 'cosmos-sdk/MsgUndelegate',
   CosmosUnjail = 'cosmos-sdk/MsgUnjail',
+  CosmosVote = 'cosmos-sdk/MsgVote',
   CosmosWithdrawDelegationReward = 'cosmos-sdk/MsgWithdrawDelegationReward',
+  CosmosWithdrawValidatorCommission = 'cosmos-sdk/MsgWithdrawValidatorCommission',
   OperationsBanAccount = 'operations/MsgBanAccount',
   OperationsMint = 'operations/MsgMint',
   OperationsResetAccount = 'operations/MsgResetAccount',
@@ -95,6 +98,10 @@ export interface StdTxMessageValueMap {
   };
   [StdTxMessageType.CosmosEditValidator]: {
   };
+  [StdTxMessageType.CosmosFundCommunityPool]: {
+    amount: DenomAmount[];
+    depositor: Wallet['address'];
+  };
   [StdTxMessageType.CosmosJail]: {
     address: Wallet['address'];
   };
@@ -115,8 +122,16 @@ export interface StdTxMessageValueMap {
   [StdTxMessageType.CosmosUnjail]: {
     address: Wallet['address'];
   };
+  [StdTxMessageType.CosmosVote]: {
+    proposal_id: string;
+    voter: Wallet['address'];
+    option: string;
+  };
   [StdTxMessageType.CosmosWithdrawDelegationReward]: {
     delegator_address: Wallet['address'];
+    validator_address: Validator['operator_address'];
+  };
+  [StdTxMessageType.CosmosWithdrawValidatorCommission]: {
     validator_address: Validator['operator_address'];
   };
   [StdTxMessageType.OperationsBanAccount]: {

@@ -14,5 +14,6 @@ export * from './profile';
 export * from './staking';
 export * from './supply';
 export * from './swap';
+export * from './token';
 export * from './txs';
 export * from './types';
