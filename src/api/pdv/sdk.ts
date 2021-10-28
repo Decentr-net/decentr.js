@@ -4,7 +4,6 @@ import {
   getPDVList,
   getPDVMeta,
   getRewards,
-  getTokenBalance,
   sendPDV,
 } from './pdv';
 import {
@@ -18,14 +17,6 @@ import {
 } from './types';
 
 export class DecentrPDVSDK {
-  constructor(
-    private apiUrl: string,
-  ) {
-  }
-
-  public getTokenBalance(walletAddress: Wallet['address']): Promise<number> {
-    return getTokenBalance(this.apiUrl, walletAddress);
-  }
 
   public getPDVList(
     cerberusUrl: string,

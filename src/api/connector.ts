@@ -13,6 +13,7 @@ import { Account, DecentrProfileSDK } from './profile';
 import { DecentrStakingSDK } from './staking';
 import { DecentrSupplySDK } from './supply';
 import { DecentrSwapSDK } from './swap';
+import { DecentrTokenSDK } from './token';
 import { DecentrTXsSDK } from './txs';
 import { StdTxMessageValueMap, StdTxResponseValue } from './types';
 
@@ -20,7 +21,7 @@ export class Decentr {
   private bankSDK: DecentrBankSDK | undefined;
   private blocksSDK: DecentrBlocksSDK | undefined;
   private communitySDK: DecentrCommunitySDK | undefined;
-  private distributionSDK: DecentrDistributionSDK | undefined
+  private distributionSDK: DecentrDistributionSDK | undefined;
   private imageSDK: DecentrImageSDK | undefined;
   private nodeSDK: DecentrNodeSDK | undefined;
   private mintingSDK: DecentrMintingSDK | undefined;
@@ -30,6 +31,7 @@ export class Decentr {
   private stakingSDK: DecentrStakingSDK | undefined;
   private supplySDK: DecentrSupplySDK | undefined;
   private swapSDK: DecentrSwapSDK | undefined;
+  private tokenSDK: DecentrTokenSDK | undefined;
   private txsSDK: DecentrTXsSDK | undefined;
 
   constructor(
@@ -112,7 +114,7 @@ export class Decentr {
 
   public get pdv(): DecentrPDVSDK {
     if (!this.pdvSDK) {
-      this.pdvSDK = new DecentrPDVSDK(this.apiUrl);
+      this.pdvSDK = new DecentrPDVSDK();
     }
 
     return this.pdvSDK;
@@ -152,6 +154,14 @@ export class Decentr {
     }
 
     return this.swapSDK;
+  }
+
+  public get token(): DecentrTokenSDK {
+    if (!this.tokenSDK) {
+      this.tokenSDK = new DecentrTokenSDK(this.apiUrl);
+    }
+
+    return this.tokenSDK;
   }
 
   public get txs(): DecentrTXsSDK {

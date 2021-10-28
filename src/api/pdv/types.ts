@@ -91,7 +91,3 @@ export interface PDVMeta {
   object_types: Record<PDVType, number>;
   reward: number;
 }
-
-export interface TokenBalanceResponse {
-  readonly balance: number;
-}
