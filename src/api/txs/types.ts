@@ -2,13 +2,17 @@ import { Wallet } from '../../wallet';
 import { StdTx, StdTxMessageValueMap } from '../types';
 import { BroadcastErrorCode } from '../messages';
 
+export type TransactionActionType = 'send' | 'withdraw_delegator_reward';
+
 export interface TXsSearchParameters {
   limit?: number;
-  messageAction?: string;
+  messageAction?: TransactionActionType | string;
   messageSender?: Wallet['address'];
   page?: number;
   txMaxHeight?: number;
   txMinHeight?: number;
+  transferRecipient?: Wallet['address'];
+  transferSender?: Wallet['address'];
 }
 
 interface TransactionLogEventAttribute {
