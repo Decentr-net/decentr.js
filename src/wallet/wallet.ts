@@ -6,7 +6,7 @@ import { mnemonicToSeedSync as bip39mnemonicToSeedSync } from 'bip39';
 import { publicKeyCreate as secp256k1PublicKeyCreate } from 'secp256k1';
 
 import { bytesToHex, hashBytes } from '../utils';
-import { DECENTR_DEFAULT_PATH, DECENTR_DEFAULT_PREFIX } from './constants';
+import { DECENTR_DERIVATION_PATH } from './constants';
 import { KeyPairBytes, Wallet } from './types';
 
 /**
@@ -27,16 +27,14 @@ export function createMasterKeyFromMnemonic(mnemonic: string): BIP32Interface {
  * Derive a keypair from a BIP32 master key.
  *
  * @param   masterKey - BIP32 master key
- * @param   path      - BIP32 derivation path, defaulting to {@link COSMOS_PATH|`COSMOS_PATH`}
  *
  * @returns derived public and private key pair
  * @throws  will throw if a private key cannot be derived
  */
 export function createKeyPairFromMasterKey(
   masterKey: BIP32Interface,
-  path: string = DECENTR_DEFAULT_PREFIX,
 ): KeyPairBytes {
-  const buffer = masterKey.derivePath(path).privateKey;
+  const buffer = masterKey.derivePath(DECENTR_DERIVATION_PATH).privateKey;
 
   if (!buffer) {
     throw new Error('Could not derive private key');
@@ -55,11 +53,11 @@ export function createKeyPairFromMasterKey(
  * Derive a Bech32 address from a public key.
  *
  * @param   publicKey - public key bytes
- * @param   prefix    - Bech32 human readable part, defaulting to {@link COSMOS_PREFIX|`COSMOS_PREFIX`}
+ * @param   prefix    - Bech32 human readable part
  *
  * @returns Bech32-encoded address
  */
-export function createAddress(publicKey: Bytes, prefix: string = DECENTR_DEFAULT_PREFIX): Bech32String {
+export function createAddress(publicKey: Bytes, prefix: string): Bech32String {
   const hash1 = hashBytes(publicKey, 'sha256');
   const hash2 = hashBytes(hash1, 'ripemd160');
   const words = bech32.toWords(hash2);
@@ -71,20 +69,16 @@ export function createAddress(publicKey: Bytes, prefix: string = DECENTR_DEFAULT
  * Create a {@link Wallet|`Wallet`} from a known mnemonic.
  *
  * @param   mnemonic - BIP39 mnemonic seed
- * @param   prefix   - Bech32 human readable part, defaulting to {@link COSMOS_PREFIX|`COSMOS_PREFIX`}
- * @param   path     - BIP32 derivation path, defaulting to {@link COSMOS_PATH|`COSMOS_PATH`}
  *
  * @returns a keypair and address derived from the provided mnemonic
  * @throws  will throw if the provided mnemonic is invalid
  */
 export function createWalletFromMnemonic(
   mnemonic: string,
-  prefix: string = DECENTR_DEFAULT_PREFIX,
-  path: string = DECENTR_DEFAULT_PATH,
 ): Wallet {
   const masterKey = createMasterKeyFromMnemonic(mnemonic);
 
-  return createWalletFromMasterKey(masterKey, prefix, path);
+  return createWalletFromMasterKey(masterKey);
 }
 
 
@@ -92,25 +86,21 @@ export function createWalletFromMnemonic(
  * Create a {@link Wallet|`Wallet`} from a BIP32 master key.
  *
  * @param   masterKey - BIP32 master key
- * @param   prefix    - Bech32 human readable part, defaulting to {@link COSMOS_PREFIX|`COSMOS_PREFIX`}
- * @param   path      - BIP32 derivation path, defaulting to {@link COSMOS_PATH|`COSMOS_PATH`}
  *
  * @returns a keypair and address derived from the provided master key
  */
-export function createWalletFromMasterKey(
-  masterKey: BIP32Interface,
-  prefix: string = DECENTR_DEFAULT_PREFIX,
-  path: string = DECENTR_DEFAULT_PATH,
-): Wallet {
+export function createWalletFromMasterKey(masterKey: BIP32Interface): Wallet {
   const {
     privateKey: privateKeyBytes,
     publicKey: publicKeyBytes,
-  } = createKeyPairFromMasterKey(masterKey, path);
+  } = createKeyPairFromMasterKey(masterKey);
 
-  const address = createAddress(publicKeyBytes, prefix);
+  const address = createAddress(publicKeyBytes, 'decentr');
+  const validatorAddress = createAddress(publicKeyBytes, 'decentrvaloper');
 
   return {
     address,
+    validatorAddress,
     privateKey: bytesToHex(privateKeyBytes),
     publicKey: bytesToHex(publicKeyBytes),
   };
