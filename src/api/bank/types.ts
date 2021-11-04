@@ -1,7 +1,6 @@
 import { Wallet } from '../../wallet';
 import { BroadcastOptions } from '../messages';
-import { DenomAmount, StdTxFee, StdTxMessageType, StdTxResponse } from '../types';
-import { TXsSearchResponse } from '../txs';
+import { DenomAmount, StdTxMessageType, StdTxResponse } from '../types';
 
 export type QueryTransferResponse = StdTxResponse<StdTxMessageType.CosmosSend>;
 
@@ -17,32 +16,4 @@ export interface TransferData {
   readonly amount: string;
   readonly from_address: Wallet['address'];
   readonly to_address: Wallet['address'];
-}
-
-export type TransferHistoryResponse = TXsSearchResponse<StdTxMessageType.CosmosSend>;
-
-export interface TransferHistoryPaginationOptions {
-  limit?: number;
-  page?: number;
-}
-
-export type TransferRole = 'sender' | 'recipient';
-
-export interface TransferHistoryTransaction {
-  comment: string;
-  amount: BankCoin;
-  fee: StdTxFee;
-  hash: string;
-  recipient: Wallet['address'];
-  sender: Wallet['address'];
-  timestamp: string;
-}
-
-export interface TransferHistory {
-  page: number;
-  count: number;
-  limit: number;
-  pageTotal: number;
-  totalCount: number;
-  transactions: TransferHistoryTransaction[];
 }

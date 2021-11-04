@@ -1,15 +1,12 @@
 import { Wallet } from '../../wallet';
 import { BroadcastResponse } from '../messages';
-import { getBankBalances, getTransferHistory, sendCoin } from './bank';
+import { getBankBalances, sendCoin } from './bank';
 import { StdTxMessageType } from '../types';
 import {
   BankBroadcastOptions,
   BankCoin,
   QueryTransferResponse,
   TransferData,
-  TransferHistory,
-  TransferHistoryPaginationOptions,
-  TransferRole,
 } from './types';
 
 export class DecentrBankSDK {
@@ -46,19 +43,6 @@ export class DecentrBankSDK {
       this.chainId,
       transferData,
       broadcastOptions as BankBroadcastOptions,
-    );
-  }
-
-  public getTransferHistory(
-    walletAddress: Wallet['address'],
-    role: TransferRole,
-    paginationOptions?: TransferHistoryPaginationOptions,
-  ): Promise<TransferHistory> {
-    return getTransferHistory(
-      this.apiUrl,
-      walletAddress,
-      role,
-      paginationOptions,
     );
   }
 }

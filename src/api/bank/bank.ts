@@ -5,10 +5,6 @@ import {
   BankCoin,
   QueryTransferResponse,
   TransferData,
-  TransferHistory,
-  TransferHistoryPaginationOptions,
-  TransferHistoryResponse,
-  TransferRole,
 } from './types'
 import { broadcast, BroadcastResponse } from '../messages';
 import { fetchJson } from '../../utils';
@@ -91,45 +87,4 @@ export async function sendCoin(
     },
     broadcastOptions,
   );
-}
-
-export async function getTransferHistory(
-  apiUrl: string,
-  walletAddress: Wallet['address'],
-  role: TransferRole,
-  paginationOptions?: TransferHistoryPaginationOptions,
-): Promise<TransferHistory> {
-  const response = await fetchJson<TransferHistoryResponse>(
-    `${apiUrl}/txs`,
-    {
-      queryParameters: {
-        ...paginationOptions,
-        [`transfer.${role}`]: walletAddress,
-        'message.action': 'send',
-      },
-    },
-  );
-
-  const transactions = response.txs.map((element) => {
-    const txValue = element.tx.value.msg[0].value;
-
-    return {
-      amount: txValue.amount[0],
-      comment: element.tx.value.memo,
-      fee: element.tx.value.fee,
-      hash: element.txhash,
-      recipient: txValue.to_address,
-      sender: txValue.from_address,
-      timestamp: element.timestamp,
-    };
-  });
-
-  return {
-    count: +response.count,
-    limit: +response.limit,
-    page: +response.page_number,
-    pageTotal: +response.page_total,
-    totalCount: +response.total_count,
-    transactions,
-  };
 }
