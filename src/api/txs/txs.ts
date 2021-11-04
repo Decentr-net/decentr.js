@@ -13,6 +13,8 @@ export function searchTransactions(
         'message.action': parameters?.messageAction,
         'message.sender': parameters?.messageSender,
         page: parameters?.page,
+        'transfer.recipient': parameters?.transferRecipient,
+        'transfer.sender': parameters?.transferSender,
         'tx.maxheight': parameters?.txMaxHeight,
         'tx.minheight': parameters?.txMinHeight,
       },
