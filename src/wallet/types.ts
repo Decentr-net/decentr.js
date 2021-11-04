@@ -21,4 +21,5 @@ export interface KeyPairBytes {
  */
 export interface Wallet extends KeyPair {
   address: Bech32String;
+  validatorAddress: Bech32String;
 }
