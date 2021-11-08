@@ -263,7 +263,7 @@ async function queryWithdrawValidatorRewards(
   chainId: string,
   walletAddress: Wallet['address'],
   validatorAddress: Validator['operator_address'],
-): Promise<StdTxResponse<StdTxMessageType.Undefined>> {
+): Promise<StdTxResponse<StdTxMessageType.CosmosWithdrawValidatorCommission>> {
   const url = createWithdrawValidatorRewardsUrl(apiUrl, validatorAddress);
 
   const body = await prepareQueryBody(
@@ -302,7 +302,7 @@ export function withdrawValidatorRewards(
   chainId: string,
   walletAddress: Wallet['address'],
   validatorAddress: Validator['operator_address'],
-): Promise<StdTxResponse<StdTxMessageType.Undefined>>;
+): Promise<StdTxResponse<StdTxMessageType.CosmosWithdrawValidatorCommission>>;
 
 export function withdrawValidatorRewards(
   apiUrl: string,
@@ -310,7 +310,7 @@ export function withdrawValidatorRewards(
   walletAddress: Wallet['address'],
   validatorAddress: Validator['operator_address'],
   broadcastOptions: DistributionBroadcastOptions,
-): Promise<BroadcastResponse<StdTxMessageType.Undefined>>;
+): Promise<BroadcastResponse<StdTxMessageType.CosmosWithdrawValidatorCommission>>;
 
 export async function withdrawValidatorRewards(
   apiUrl: string,
@@ -318,7 +318,7 @@ export async function withdrawValidatorRewards(
   walletAddress: Wallet['address'],
   validatorAddress: Validator['operator_address'],
   broadcastOptions?: DistributionBroadcastOptions,
-): Promise<StdTxResponse<StdTxMessageType.Undefined> | BroadcastResponse<StdTxMessageType.Undefined>> {
+): Promise<StdTxResponse<StdTxMessageType.CosmosWithdrawValidatorCommission> | BroadcastResponse<StdTxMessageType.CosmosWithdrawValidatorCommission>> {
   const stdTxResponse = await queryWithdrawValidatorRewards(
     apiUrl,
     chainId,

@@ -161,19 +161,19 @@ export class DecentrDistributionSDK {
   public withdrawValidatorRewards(
     walletAddress: Wallet['address'],
     validatorAddress: Validator['operator_address'],
-  ): Promise<StdTxResponse<StdTxMessageType.Undefined>>;
+  ): Promise<StdTxResponse<StdTxMessageType.CosmosWithdrawValidatorCommission>>;
 
   public withdrawValidatorRewards(
     walletAddress: Wallet['address'],
     validatorAddress: Validator['operator_address'],
     broadcastOptions: DistributionBroadcastOptions,
-  ): Promise<BroadcastResponse<StdTxMessageType.Undefined>>;
+  ): Promise<BroadcastResponse<StdTxMessageType.CosmosWithdrawValidatorCommission>>;
 
   public withdrawValidatorRewards(
     walletAddress: Wallet['address'],
     validatorAddress: Validator['operator_address'],
     broadcastOptions?: DistributionBroadcastOptions,
-  ): Promise<StdTxResponse<StdTxMessageType.Undefined> | BroadcastResponse<StdTxMessageType.Undefined>> {
+  ): Promise<StdTxResponse<StdTxMessageType.CosmosWithdrawValidatorCommission> | BroadcastResponse<StdTxMessageType.CosmosWithdrawValidatorCommission>> {
     return withdrawValidatorRewards(
       this.apiUrl,
       this.chainId,
