@@ -1,199 +1,160 @@
 import { Wallet } from '../../wallet';
-import { BroadcastResponse } from '../messages';
-import { Fee, StdTxMessageType } from '../types';
 import {
-  calculateCreateDelegationFee,
-  calculateCreateRedelegationFee,
-  calculateCreateUnbondingDelegationFee,
-  createDelegation,
-  createRedelegation,
-  createUnbondingDelegation,
+  delegateTokens,
   getDelegations,
   getDelegatorValidators,
   getPool,
   getRedelegations,
   getStakingParameters,
   getUnbondingDelegations,
+  getUnbondingDelegationsFromValidator,
   getValidator,
   getValidatorDelegations,
   getValidators,
   getValidatorUnbondingDelegations,
-} from './staking';
+  redelegateTokens,
+  undelegateTokens,
+  getDelegation,
+} from './api';
 import {
-  CreateDelegationRequest,
-  CreateRedelegationRequest,
-  CreateUnbondingDelegationRequest,
+  DelegateTokensOptions,
   Delegation,
-  DelegationBroadcastOptions,
   Pool,
-  QueryCreateDelegationResponse,
-  QueryCreateRedelegationResponse,
-  QueryCreateUnbondingDelegationResponse,
+  RedelegateTokensOptions,
   Redelegation,
   RedelegationsFilterParameters,
   StakingParameters,
   UnbondingDelegation,
+  UndelegateTokensOptions,
   Validator,
   ValidatorsFilterParameters,
 } from './types';
+import { BroadcastTxResponse } from '@cosmjs/stargate';
 
 export class DecentrStakingSDK {
   constructor(
-    private apiUrl: string,
-    private chainId: string,
+    private nodeUrl: string,
   ) {
   }
 
   public getPool(): Promise<Pool> {
-    return getPool(this.apiUrl);
+    return getPool(this.nodeUrl);
   }
 
   public getValidators(status?: ValidatorsFilterParameters): Promise<Validator[]> {
-    return getValidators(this.apiUrl, status);
+    return getValidators(this.nodeUrl, status);
   }
 
   public getValidator(address: Validator['operator_address']): Promise<Validator> {
-    return getValidator(this.apiUrl, address);
+    return getValidator(this.nodeUrl, address);
   }
 
   public getDelegations(
     delegatorAddress: Wallet['address'],
-  ): Promise<Delegation[]>;
+  ): Promise<Delegation[]> {
+    return getDelegations(this.nodeUrl, delegatorAddress);
+  }
 
-  public getDelegations(
+  public getDelegation(
     delegatorAddress: Wallet['address'],
-    fromValidatorAddress: Validator['operator_address'],
-  ): Promise<Delegation>;
-
-  public getDelegations(
-    delegatorAddress: Wallet['address'],
-    fromValidatorAddress?: Validator['operator_address'],
-  ): Promise<Delegation[] | Delegation> {
-    return getDelegations(this.apiUrl, delegatorAddress, fromValidatorAddress as string);
+    validatorAddress: Validator['operator_address'],
+  ): Promise<Delegation> {
+    return getDelegation(this.nodeUrl, delegatorAddress, validatorAddress);
   }
 
   public getValidatorDelegations(
     validatorAddress: Validator['operator_address'],
   ): Promise<Delegation[] | Delegation> {
-    return getValidatorDelegations(this.apiUrl, validatorAddress);
+    return getValidatorDelegations(this.nodeUrl, validatorAddress);
   }
 
   public getUnbondingDelegations(
     delegatorAddress: Wallet['address'],
-  ): Promise<UnbondingDelegation[]>
+  ): Promise<UnbondingDelegation[]> {
+    return getUnbondingDelegations(this.nodeUrl, delegatorAddress);
+  }
 
-  public getUnbondingDelegations(
+  public getUnbondingDelegationsFromValidator(
     delegatorAddress: Wallet['address'],
     fromValidatorAddress: Validator['operator_address'],
-  ): Promise<UnbondingDelegation>
-
-  public getUnbondingDelegations(
-    delegatorAddress: Wallet['address'],
-    fromValidatorAddress?: Validator['operator_address'],
   ): Promise<UnbondingDelegation[] | UnbondingDelegation> {
-    return getUnbondingDelegations(this.apiUrl, delegatorAddress, fromValidatorAddress as string);
+    return getUnbondingDelegationsFromValidator(this.nodeUrl, delegatorAddress, fromValidatorAddress);
   }
 
   public getValidatorUnbondingDelegations(
     validatorAddress: Validator['operator_address'],
   ): Promise<UnbondingDelegation[] | UnbondingDelegation> {
-    return getValidatorUnbondingDelegations(this.apiUrl, validatorAddress);
+    return getValidatorUnbondingDelegations(this.nodeUrl, validatorAddress);
   }
 
   public getRedelegations(
+    delegatorAddress: Wallet['address'],
     filter?: RedelegationsFilterParameters,
   ): Promise<Redelegation[]> {
-    return getRedelegations(this.apiUrl, filter);
+    return getRedelegations(this.nodeUrl, delegatorAddress, filter);
   }
 
   public getDelegatorValidators(
     delegatorAddress: Wallet['address'],
   ): Promise<Validator[]> {
-    return getDelegatorValidators(this.apiUrl, delegatorAddress);
+    return getDelegatorValidators(this.nodeUrl, delegatorAddress);
   }
 
   public getStakingParameters(): Promise<StakingParameters> {
-    return getStakingParameters(this.apiUrl);
+    return getStakingParameters(this.nodeUrl);
   }
 
-  public calculateCreateDelegationFee(
-    delegation: CreateDelegationRequest,
-  ): Promise<Fee[]> {
-    return calculateCreateDelegationFee(this.apiUrl, this.chainId, delegation);
-  }
+  // TODO
+  // public calculateCreateDelegationFee(
+  //   delegation: CreateDelegationRequest,
+  // ): Promise<Coin[]> {
+  //   return calculateCreateDelegationFee(this.nodeUrl, this.chainId, delegation);
+  // }
 
-  public createDelegation(
-    delegation: CreateDelegationRequest,
-  ): Promise<QueryCreateDelegationResponse>;
-
-  public createDelegation(
-    delegation: CreateDelegationRequest,
-    broadcastOptions: DelegationBroadcastOptions,
-  ): Promise<BroadcastResponse<StdTxMessageType.CosmosDelegate>>;
-
-  public createDelegation(
-    delegation: CreateDelegationRequest,
-    broadcastOptions?: DelegationBroadcastOptions,
-  ): Promise<QueryCreateDelegationResponse | BroadcastResponse<StdTxMessageType.CosmosDelegate>> {
-    return createDelegation(
-      this.apiUrl,
-      this.chainId,
-      delegation,
-      broadcastOptions as DelegationBroadcastOptions,
+  public delegateTokens(
+    options: DelegateTokensOptions,
+    privateKey: Wallet['privateKey'],
+  ): Promise<BroadcastTxResponse> {
+    return delegateTokens(
+      this.nodeUrl,
+      options,
+      privateKey
     );
   }
 
-  public calculateCreateUnbondingDelegationFee(
-    unbondingDelegation: CreateUnbondingDelegationRequest,
-  ): Promise<Fee[]> {
-    return calculateCreateUnbondingDelegationFee(this.apiUrl, this.chainId, unbondingDelegation);
-  }
+  // TODO
+  // public calculateCreateUnbondingDelegationFee(
+  //   unbondingDelegation: CreateUnbondingDelegationRequest,
+  // ): Promise<Coin[]> {
+  //   return calculateCreateUnbondingDelegationFee(this.nodeUrl, this.chainId, unbondingDelegation);
+  // }
 
-  public createUnbondingDelegation(
-    unbondingDelegation: CreateUnbondingDelegationRequest,
-  ): Promise<QueryCreateUnbondingDelegationResponse>;
-
-  public createUnbondingDelegation(
-    unbondingDelegation: CreateUnbondingDelegationRequest,
-    broadcastOptions: DelegationBroadcastOptions,
-  ): Promise<BroadcastResponse<StdTxMessageType.CosmosUndelegate>>;
-
-  public createUnbondingDelegation(
-    unbondingDelegation: CreateUnbondingDelegationRequest,
-    broadcastOptions?: DelegationBroadcastOptions,
-  ): Promise<QueryCreateUnbondingDelegationResponse | BroadcastResponse<StdTxMessageType.CosmosUndelegate>> {
-    return createUnbondingDelegation(
-      this.apiUrl,
-      this.chainId,
-      unbondingDelegation,
-      broadcastOptions as DelegationBroadcastOptions,
+  public undelegateTokens(
+    options: UndelegateTokensOptions,
+    privateKey: Wallet['privateKey'],
+  ): Promise<BroadcastTxResponse> {
+    return undelegateTokens(
+      this.nodeUrl,
+      options,
+      privateKey
     );
   }
 
-  public calculateCreateRedelegationFee(
-    redelegation: CreateRedelegationRequest,
-  ): Promise<Fee[]> {
-    return calculateCreateRedelegationFee(this.apiUrl, this.chainId, redelegation);
-  }
+  // TODO
+  // public calculateCreateRedelegationFee(
+  //   redelegation: CreateRedelegationRequest,
+  // ): Promise<Coin[]> {
+  //   return calculateCreateRedelegationFee(this.nodeUrl, this.chainId, redelegation);
+  // }
 
-  public createRedelegation(
-    redelegation: CreateRedelegationRequest,
-  ): Promise<QueryCreateRedelegationResponse>;
-
-  public createRedelegation(
-    redelegation: CreateRedelegationRequest,
-    broadcastOptions: DelegationBroadcastOptions,
-  ): Promise<BroadcastResponse<StdTxMessageType.CosmosBeginRedelegate>>;
-
-  public createRedelegation(
-    redelegation: CreateRedelegationRequest,
-    broadcastOptions?: DelegationBroadcastOptions,
-  ): Promise<QueryCreateRedelegationResponse | BroadcastResponse<StdTxMessageType.CosmosBeginRedelegate>> {
-    return createRedelegation(
-      this.apiUrl,
-      this.chainId,
-      redelegation,
-      broadcastOptions as DelegationBroadcastOptions,
+  public redelegateTokens(
+    options: RedelegateTokensOptions,
+    privateKey: Wallet['privateKey'],
+  ): Promise<BroadcastTxResponse> {
+    return redelegateTokens(
+      this.nodeUrl,
+      options,
+      privateKey,
     );
   }
 }

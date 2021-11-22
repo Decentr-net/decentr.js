@@ -6,7 +6,7 @@ import {
   getPDVMeta,
   getRewards,
   sendPDV,
-} from './pdv';
+} from './api';
 import {
   PDV,
   PDVDetails,

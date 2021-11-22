@@ -1,32 +1,26 @@
 import { Bytes } from '@tendermint/types';
 import { ecdsaSign as secp256k1EcdsaSign } from 'secp256k1';
+import { coin, EncodeObject } from '@cosmjs/proto-signing';
+import {
+  BroadcastTxResponse,
+  Coin,
+  isBroadcastTxFailure,
+  SigningStargateClient,
+} from '@cosmjs/stargate';
 
 import {
   bytesToHex,
+  coerceArray,
   encodeObjectCharactersToUnicode,
-  fetchJson,
   hashStringToBytes,
-  hasOwnProperty,
   hexToBytes,
   sortObjectKeys,
 } from '../utils';
-import { KeyPair, Wallet } from '../wallet';
-import { AuthHeaders, BaseRequest, Fee, QuerySimulateGasResponse } from './types';
-import { getMinGasPrice } from './operations';
+import { createSecp256k1WalletFromPrivateKey, KeyPair, Wallet } from '../wallet';
+import { AuthHeaders, BroadcastClientError, DECENTR_DENOM } from './types';
 
-const GAS_ADJUSTMENT = 1.35;
-const GAS_LIMIT = 1_000_000;
-
-export async function blockchainFetch<T>(url: string, queryParameters?: Record<string, string | number>): Promise<T> {
-  const response = await fetchJson<{ height: string; result: T } | T>(url, { queryParameters });
-
-  if (hasOwnProperty(response, 'height') &&
-    hasOwnProperty(response, 'result')
-  ) {
-    return (response as { result: T }).result;
-  }
-
-  return response as T;
+export function createDecentrCoin(amount: number | string): Coin {
+  return coin(amount, DECENTR_DENOM);
 }
 
 export function getSignature<T>(
@@ -66,92 +60,41 @@ export function getAuthHeaders<T>(
   };
 }
 
-export function createBaseRequest({
-    chainId: chain_id,
-    gas,
-    simulate,
-    walletAddress: from,
-  }: {
-    chainId: string;
-    gas?: string;
-    simulate?: boolean;
-    walletAddress: Wallet['address'];
-  }): BaseRequest {
-  return {
-    base_req: {
-      chain_id,
-      from,
-      gas,
-      simulate,
+export function assertIsBroadcastSuccess(result: BroadcastTxResponse): void {
+  if (isBroadcastTxFailure(result)) {
+    throw new BroadcastClientError(result.code);
+  }
+}
+
+export async function signAndBroadcast(
+  nodeUrl: string,
+  messages: EncodeObject | EncodeObject[],
+  minGasPrice: Coin,
+  privateKey: string,
+): Promise<BroadcastTxResponse> {
+  const wallet = await createSecp256k1WalletFromPrivateKey(privateKey);
+
+  // const gasPrice = GasPrice.fromString(minGasPrice.amount + minGasPrice.denom);
+
+  // TODO: replace with gasPrice
+  const signingStargateClient = await SigningStargateClient.connectWithSigner(nodeUrl, wallet);
+  // const signingStargateClient = await SigningStargateClient.connectWithSigner(nodeUrl, wallet, { gasPrice });
+
+  const accounts = await wallet.getAccounts();
+
+  const result = await signingStargateClient.signAndBroadcast(
+    accounts[0].address,
+    coerceArray(messages),
+    // TODO: change to 'auto'
+    {
+      amount: [createDecentrCoin(1)],
+      gas: '1',
     },
-  };
-}
+  );
 
-export async function addGas<T>(
-  body: T,
-  chainId: string,
-  url: string,
-  walletAddress: Wallet['address'],
-): Promise<(BaseRequest & T)> {
-  const bodyToEstimate = {
-    ...createBaseRequest({ chainId, walletAddress }),
-    ...body
-  };
+  signingStargateClient.disconnect();
 
-  const estimatedGas = await querySimulateGas(bodyToEstimate, chainId, walletAddress, url);
+  assertIsBroadcastSuccess(result);
 
-  const gasWanted = Math.ceil(+estimatedGas * GAS_ADJUSTMENT);
-  const gas = Math.min(gasWanted, GAS_LIMIT).toString();
-
-  return {
-    ...createBaseRequest({ chainId, walletAddress, gas }),
-    ...body,
-  };
-}
-
-async function querySimulateGas<T>(
-  bodyToEstimate: T,
-  chainId: string,
-  walletAddress: Wallet['address'],
-  url: string
-): Promise<QuerySimulateGasResponse['gas_estimate']> {
-  const gasEstimateRequest = createBaseRequest({
-    chainId,
-    simulate: true,
-    walletAddress,
-  });
-
-  const body = {
-    ...bodyToEstimate,
-    ...gasEstimateRequest,
-  };
-
-  return fetchJson<QuerySimulateGasResponse, BaseRequest & T>(url, {
-    method: 'POST',
-    body
-  })
-      .then(({ gas_estimate }) => gas_estimate);
-}
-
-export function prepareQueryBody<T>(
-  url: string,
-  chainId: string,
-  request: T,
-  owner: Wallet['address'],
-): Promise<(BaseRequest & T)> {
-  return addGas(request, chainId, url, owner);
-}
-
-export async function calculateTransactionFeeAmount(
-  apiUrl: string,
-  gas: string,
-): Promise<Fee[]> {
-  const minGasPrice = await getMinGasPrice(apiUrl).then((price) => price.amount);
-
-  const decAmount = Math.ceil(+minGasPrice * +gas).toString();
-
-  return [{
-    amount: decAmount,
-    denom: 'udec',
-  }];
+  return result;
 }

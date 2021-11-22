@@ -1,20 +1,18 @@
 import { bytesToHex, fetchJson } from '../../utils';
 import { KeyPair, Wallet } from '../../wallet';
-import { blockchainFetch, getSignature } from '../api-utils';
+import { getSignature } from '../api-utils';
 import { PDVAddress, PDVType, ProfileUpdate, sendPDV } from '../pdv';
-import { Account, AccountResponse, Profile } from './types';
+import { Account, Profile } from './types';
 
 export async function getAccount(
-  apiUrl: string,
+  nodeUrl: string,
   walletAddress: Wallet['address'],
 ): Promise<Account | undefined> {
-  const response = await blockchainFetch<AccountResponse>(
-    `${apiUrl}/auth/accounts/${walletAddress}`,
-  );
+  const url = `${nodeUrl}/cosmos/auth/v1beta1/accounts/${walletAddress}`;
 
-  const account = response.value;
-
-  return account.address ? account : undefined;
+  return fetchJson<{ account: Account }>(url)
+    .then(({ account }) => account.address ? account : undefined)
+    .catch(() => void 0);
 }
 
 export function setProfile(

@@ -1,6 +1,6 @@
 import { KeyPair } from '../../wallet';
 import { SaveImageResponse } from './types';
-import { saveImage } from './image';
+import { saveImage } from './api';
 
 export class DecentrImageSDK {
   constructor(

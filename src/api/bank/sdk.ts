@@ -1,48 +1,60 @@
+import { BroadcastTxResponse, Coin } from '@cosmjs/stargate';
+
 import { Wallet } from '../../wallet';
-import { BroadcastResponse } from '../messages';
-import { getBankBalances, sendCoin } from './bank';
-import { StdTxMessageType } from '../types';
+import { DECENTR_DENOM } from '../types';
 import {
-  BankBroadcastOptions,
-  BankCoin,
-  QueryTransferResponse,
-  TransferData,
-} from './types';
+  getBalance,
+  getDenomBalance,
+  getDenomSupply,
+  getSupply,
+  sendTokens
+} from './api';
+import { SendTokensOptions } from './types';
 
 export class DecentrBankSDK {
   constructor(
-    private apiUrl: string,
-    private chainId: string,
+    private nodeUrl: string,
   ) {
   }
 
-  public getBankBalances(
+  public getBalance(
     walletAddress: Wallet['address'],
-  ): Promise<BankCoin[]> {
-    return getBankBalances(
-      this.apiUrl,
+  ): Promise<Coin[]> {
+    return getBalance(
+      this.nodeUrl,
       walletAddress,
     );
   }
 
-  public sendCoin(
-    transferData: TransferData,
-  ): Promise<QueryTransferResponse>;
+  public getDenomBalance(
+    walletAddress: Wallet['address'],
+    denom: string = DECENTR_DENOM,
+  ): Promise<Coin> {
+    return getDenomBalance(
+      this.nodeUrl,
+      walletAddress,
+      denom,
+    );
+  }
 
-  public sendCoin(
-    transferData: TransferData,
-    broadcastOptions: BankBroadcastOptions,
-  ): Promise<BroadcastResponse<StdTxMessageType.CosmosSend>>;
+  public getSupply(): Promise<Coin[]> {
+    return getSupply(this.nodeUrl);
+  }
 
-  public sendCoin(
-    transferData: TransferData,
-    broadcastOptions?: BankBroadcastOptions,
-  ): Promise<QueryTransferResponse | BroadcastResponse<StdTxMessageType.CosmosSend>> {
-    return sendCoin(
-      this.apiUrl,
-      this.chainId,
-      transferData,
-      broadcastOptions as BankBroadcastOptions,
+  public getDenomSupply(
+    denom: string = DECENTR_DENOM,
+  ): Promise<Coin> {
+    return getDenomSupply(this.nodeUrl, denom);
+  }
+
+  public sendTokens(
+    options: SendTokensOptions,
+    privateKey: Wallet['privateKey'],
+  ): Promise<BroadcastTxResponse> {
+    return sendTokens(
+      this.nodeUrl,
+      options,
+      privateKey,
     );
   }
 }

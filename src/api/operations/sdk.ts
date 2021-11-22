@@ -1,42 +1,24 @@
+import { BroadcastTxResponse, Coin } from '@cosmjs/stargate';
+
 import { Wallet } from '../../wallet';
-import { BroadcastResponse } from '../messages';
-import { Fee, StdTxMessageType } from '../types';
-import { getMinGasPrice, resetAccount } from './operations';
-import { QueryResetAccountResponse, ResetAccountBroadcastOptions } from './types';
+import { getMinGasPrice, resetAccount } from './api';
 
 export class DecentrOperationsSDK {
   constructor(
-    private apiUrl: string,
-    private chainId: string,
+    private nodeUrl: string,
   ) {
   }
 
-  public getMinGasPrice(): Promise<Fee> {
-    return getMinGasPrice(this.apiUrl);
+  public getMinGasPrice(): Promise<Coin> {
+    return getMinGasPrice(this.nodeUrl);
   }
 
   public resetAccount(
-    walletAddress: Wallet['address'],
-    initiator: Wallet['address'],
-  ): Promise<QueryResetAccountResponse>;
-
-  public resetAccount(
-    walletAddress: Wallet['address'],
-    initiator: Wallet['address'],
-    broadcastOptions: ResetAccountBroadcastOptions,
-  ): Promise<BroadcastResponse<StdTxMessageType.OperationsResetAccount>>;
-
-  public resetAccount(
-    walletAddress: Wallet['address'],
-    initiator: Wallet['address'],
-    broadcastOptions?: ResetAccountBroadcastOptions,
-  ): Promise<QueryResetAccountResponse | BroadcastResponse<StdTxMessageType.OperationsResetAccount>> {
+    privateKey: Wallet['privateKey'],
+  ): Promise<BroadcastTxResponse> {
     return resetAccount(
-      this.apiUrl,
-      this.chainId,
-      walletAddress,
-      initiator,
-      broadcastOptions as ResetAccountBroadcastOptions,
+      this.nodeUrl,
+      privateKey,
     );
   }
 }

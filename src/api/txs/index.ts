@@ -1,3 +1,3 @@
 export * from './sdk';
-export * from './txs';
+export * from './api';
 export * from './types';

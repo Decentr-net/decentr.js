@@ -4,3 +4,7 @@
 // @formatter:off
 export const DECENTR_DERIVATION_PATH = "m/44'/118'/0'/0/0";
 // @formatter:on
+
+export const DECENTR_WALLET_PREFIX = 'decentr';
+
+export const DECENTR_VALIDATOR_WALLET_PREFIX = 'decentrvaloper';

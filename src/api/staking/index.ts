@@ -1,3 +1,3 @@
-export * from './staking';
+export * from './api';
 export * from './sdk';
 export * from './types';

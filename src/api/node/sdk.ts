@@ -1,13 +1,13 @@
-import { getNodeInfo } from './node';
+import { getNodeInfo } from './api';
 import { NodeInfoResponse } from './types';
 
 export class DecentrNodeSDK {
   constructor(
-    private nodeApi: string,
+    private nodeUrl: string,
   ) {
   }
 
   public getNodeInfo(): Promise<NodeInfoResponse> {
-    return getNodeInfo(this.nodeApi);
+    return getNodeInfo(this.nodeUrl);
   }
 }

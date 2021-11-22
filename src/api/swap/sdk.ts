@@ -1,5 +1,5 @@
 import { Wallet } from '../../wallet';
-import { createSwap, getFee, getSwapById, getSwapList } from './swap';
+import { createSwap, getFee, getSwapById, getSwapList } from './api';
 import { SwapDestinationNetwork, SwapDetails, SwapListPaginationOptions } from './types';
 
 export class DecentrSwapSDK {

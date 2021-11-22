@@ -11,11 +11,11 @@ export interface BlockBody {
 }
 
 export interface BlockData {
-  txs: string | null;
+  txs: string[];
 }
 
 export interface BlockEvidence {
-  evidence: string | null;
+  evidence: unknown[];
 }
 
 export interface BlockHeader {
@@ -37,23 +37,23 @@ export interface BlockHeader {
 
 export interface BlockId {
   hash: string;
-  parts: BlockIdParts;
+  part_set_header: BlockIdPartSetHeader;
 }
 
-export interface BlockIdParts {
+export interface BlockIdPartSetHeader {
   hash: string;
   total: string;
 }
 
 export interface BlockLastCommit {
   height: string;
-  round: string;
   block_id: BlockId;
+  round: number;
   signatures: BlockLastCommitSignature[];
 }
 
 export interface BlockLastCommitSignature {
-  block_id_flag: number;
+  block_id_flag: 'BLOCK_ID_FLAG_COMMIT' | string;
   validator_address: string;
   timestamp: string;
   signature: string;

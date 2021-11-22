@@ -1,2 +1,2 @@
-export * from './operations';
+export * from './api';
 export * from './sdk';

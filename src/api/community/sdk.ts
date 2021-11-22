@@ -1,170 +1,89 @@
-import { Wallet } from '../../wallet'
-import { BroadcastResponse } from '../messages';
-import { StdTxMessageType } from '../types';
+import { BroadcastTxResponse } from '@cosmjs/stargate';
+
+import { Wallet } from '../../wallet';
 import {
   createPost,
   deletePost,
-  follow,
-  getFollowees,
-  getModeratorAddresses,
   likePost,
+  getModeratorAddresses,
+  getFollowees,
+  follow,
   unfollow,
-} from './community';
+} from './api';
 import {
-  FollowingBroadcastOptions,
-  LikeWeight,
-  ModeratorAddressesResponse,
-  PostBroadcastOptions,
-  PostCreate,
-  PostIdentificationParameters,
-  QueryCreatePostResponse,
-  QueryDeletePostResponse,
-  QueryFollowResponse,
-  QuerySetLikeResponse,
-  QueryUnfollowResponse,
+  CreatePostOptions,
+  DeletePostOptions,
+  FollowOptions,
+  LikePostOptions,
+  UnfollowOptions,
 } from './types';
 
 export class DecentrCommunitySDK {
   constructor(
-    private apiUrl: string,
-    private chainId: string,
+    private nodeUrl: string,
   ) {
   }
 
-  public createPost(
-    walletAddress: Wallet['address'],
-    post: PostCreate,
-  ): Promise<QueryCreatePostResponse>;
-
-  public createPost(
-    walletAddress: Wallet['address'],
-    post: PostCreate,
-    broadcastOptions: PostBroadcastOptions,
-  ): Promise<BroadcastResponse<StdTxMessageType.CommunityCreatePost>>;
-
-  public createPost(
-    walletAddress: Wallet['address'],
-    post: PostCreate,
-    broadcastOptions?: PostBroadcastOptions,
-  ): Promise<QueryCreatePostResponse | BroadcastResponse<StdTxMessageType.CommunityCreatePost>> {
-    return createPost(
-      this.apiUrl,
-      this.chainId,
-      walletAddress,
-      post,
-      broadcastOptions as PostBroadcastOptions,
-    );
-  }
-
-  public deletePost(
-    walletAddress: Wallet['address'],
-    postIdentificationParameters: PostIdentificationParameters,
-  ): Promise<QueryDeletePostResponse>;
-
-  public deletePost(
-    walletAddress: Wallet['address'],
-    postIdentificationParameters: PostIdentificationParameters,
-    broadcastOptions: PostBroadcastOptions,
-  ): Promise<BroadcastResponse<StdTxMessageType.CommunityDeletePost>>;
-
-  public deletePost(
-    walletAddress: Wallet['address'],
-    postIdentificationParameters: PostIdentificationParameters,
-    broadcastOptions?: PostBroadcastOptions,
-  ): Promise<QueryDeletePostResponse | BroadcastResponse<StdTxMessageType.CommunityDeletePost>> {
-    return deletePost(
-      this.apiUrl,
-      this.chainId,
-      walletAddress,
-      postIdentificationParameters,
-      broadcastOptions as PostBroadcastOptions,
-    );
-  }
-
-  public likePost(
-    walletAddress: Wallet['address'],
-    postIdentificationParameters: PostIdentificationParameters,
-    likeWeight: LikeWeight,
-  ): Promise<QuerySetLikeResponse>;
-
-  public likePost(
-    walletAddress: Wallet['address'],
-    postIdentificationParameters: PostIdentificationParameters,
-    likeWeight: LikeWeight,
-    broadcastOptions: PostBroadcastOptions,
-  ): Promise<BroadcastResponse<StdTxMessageType.CommunitySetLike>>;
-
-  public likePost(
-    walletAddress: Wallet['address'],
-    postIdentificationParameters: PostIdentificationParameters,
-    likeWeight: LikeWeight,
-    broadcastOptions?: PostBroadcastOptions,
-  ): Promise<QuerySetLikeResponse | BroadcastResponse<StdTxMessageType.CommunitySetLike>> {
-    return likePost(
-      this.apiUrl,
-      this.chainId,
-      walletAddress,
-      postIdentificationParameters,
-      likeWeight,
-      broadcastOptions as PostBroadcastOptions,
-    );
-  }
-
-  public getModeratorAddresses(): Promise<ModeratorAddressesResponse> {
-    return getModeratorAddresses(this.apiUrl);
-  }
-
-  public follow(
-    follower: Wallet['address'],
-    whom: Wallet['address'],
-  ): Promise<QueryFollowResponse>;
-
-  public follow(
-    follower: Wallet['address'],
-    whom: Wallet['address'],
-    broadcastOptions: FollowingBroadcastOptions,
-  ): Promise<BroadcastResponse<StdTxMessageType.CommunityFollow>>;
-
-  public follow(
-    follower: Wallet['address'],
-    whom: Wallet['address'],
-    broadcastOptions?: FollowingBroadcastOptions,
-  ): Promise<QueryFollowResponse | BroadcastResponse<StdTxMessageType.CommunityFollow>> {
-    return follow(
-      this.apiUrl,
-      this.chainId,
-      follower,
-      whom,
-      broadcastOptions as FollowingBroadcastOptions,
-    );
-  }
-
-  public unfollow(
-    follower: Wallet['address'],
-    whom: Wallet['address'],
-  ): Promise<QueryUnfollowResponse>;
-
-  public unfollow(
-    follower: Wallet['address'],
-    whom: Wallet['address'],
-    broadcastOptions: FollowingBroadcastOptions,
-  ): Promise<BroadcastResponse<StdTxMessageType.CommunityUnfollow>>;
-
-  public unfollow(
-    follower: Wallet['address'],
-    whom: Wallet['address'],
-    broadcastOptions?: FollowingBroadcastOptions,
-  ): Promise<QueryUnfollowResponse | BroadcastResponse<StdTxMessageType.CommunityUnfollow>> {
-    return unfollow(
-      this.apiUrl,
-      this.chainId,
-      follower,
-      whom,
-      broadcastOptions as FollowingBroadcastOptions,
-    );
+  public getModeratorAddresses(): Promise<Wallet['address'][]> {
+    return getModeratorAddresses(this.nodeUrl);
   }
 
   public getFollowees(follower: Wallet['address']): Promise<Wallet['address'][]> {
-    return getFollowees(this.apiUrl, this.chainId, follower);
+    return getFollowees(this.nodeUrl, follower);
+  }
+
+  public createPost(
+    post: CreatePostOptions,
+    privateKey: Wallet['privateKey'],
+  ): Promise<BroadcastTxResponse> {
+    return createPost(
+      this.nodeUrl,
+      post,
+      privateKey,
+    );
+  }
+
+  public deletePost(
+    options: DeletePostOptions,
+    privateKey: Wallet['privateKey'],
+  ): Promise<BroadcastTxResponse> {
+    return deletePost(
+      this.nodeUrl,
+      options,
+      privateKey,
+    );
+  }
+
+  public likePost(
+    options: LikePostOptions,
+    privateKey: Wallet['privateKey'],
+  ): Promise<BroadcastTxResponse> {
+    return likePost(
+      this.nodeUrl,
+      options,
+      privateKey,
+    );
+  }
+
+  public follow(
+    options: FollowOptions,
+    privateKey: Wallet['privateKey'],
+  ): Promise<BroadcastTxResponse> {
+    return follow(
+      this.nodeUrl,
+      options,
+      privateKey,
+    );
+  }
+
+  public unfollow(
+    options: UnfollowOptions,
+    privateKey: Wallet['privateKey'],
+  ): Promise<BroadcastTxResponse> {
+    return unfollow(
+      this.nodeUrl,
+      options,
+      privateKey,
+    );
   }
 }

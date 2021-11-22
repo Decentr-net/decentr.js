@@ -1,15 +1,19 @@
-import { getTransactionByHash, searchTransactions } from './txs';
-import { Transaction, TXsSearchParameters, TXsSearchResponse } from './types';
+import { IndexedTx, SearchTxFilter, SearchTxQuery } from '@cosmjs/stargate';
+
+import { getTransactionByHash, searchTransactions } from './api';
 
 export class DecentrTXsSDK {
   constructor(private nodeUrl: string) {
   }
 
-  public search(parameters: TXsSearchParameters): Promise<TXsSearchResponse> {
-    return searchTransactions(this.nodeUrl, parameters);
+  public search(
+    query: SearchTxQuery,
+    filter: SearchTxFilter = {},
+  ): Promise<readonly IndexedTx[]> {
+    return searchTransactions(this.nodeUrl, query, filter);
   }
 
-  public getByHash(hash: Transaction['txhash']): Promise<Transaction> {
+  public getByHash(hash: IndexedTx['hash']): Promise<IndexedTx | null> {
     return getTransactionByHash(this.nodeUrl, hash);
   }
 }

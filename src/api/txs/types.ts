@@ -1,6 +1,4 @@
 import { Wallet } from '../../wallet';
-import { StdTx, StdTxMessageValueMap } from '../types';
-import { BroadcastErrorCode } from '../messages';
 
 export type TransactionActionType = 'send' | 'withdraw_delegator_reward';
 
@@ -31,23 +29,23 @@ export interface TransactionLog {
   log: string;
 }
 
-export interface Transaction<K extends keyof StdTxMessageValueMap = keyof StdTxMessageValueMap> {
-  code: BroadcastErrorCode;
+export interface Transaction {
+  // code: BroadcastErrorCode;
   gas_used?: string;
   gas_wanted?: string;
   height: string;
   logs: TransactionLog[];
   raw_log: string;
   timestamp: string;
-  tx: StdTx<K>;
+  // tx: StdTx<K>;
   txhash: string;
 }
 
-export interface TXsSearchResponse<K extends keyof StdTxMessageValueMap = keyof StdTxMessageValueMap> {
+export interface TXsSearchResponse {
   count: number;
   limit: number;
   page_number: number;
   page_total: number;
   total_count: number;
-  txs: Transaction<K>[];
+  txs: Transaction[];
 }

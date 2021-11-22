@@ -1,4 +1,4 @@
-import { DenomAmount } from '../types';
+import { Coin } from '@cosmjs/stargate';
 
 export interface TokenBalance {
   balance: string;
@@ -7,12 +7,12 @@ export interface TokenBalance {
 }
 
 export interface TokenBalanceHistory {
-  coins: DenomAmount[];
+  coins: Coin[];
   height: string;
 }
 
 export interface TokenPool {
   nextDistributionHeight: string;
-  size?: DenomAmount[];
+  size?: Coin[];
   totalDelta: string;
 }

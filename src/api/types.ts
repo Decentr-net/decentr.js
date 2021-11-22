@@ -1,19 +1,10 @@
+import { Coin } from '@cosmjs/stargate';
 import { Wallet } from '../wallet';
 import { LikeWeight, Post } from './community';
 import { Gender } from './pdv';
 import { Validator, ValidatorCommission } from './staking';
 
-export interface DenomAmount {
-  amount: string;
-  denom: string;
-}
-
-export type Fee = DenomAmount;
-
-export interface StdTxFee {
-  readonly amount: Fee[];
-  readonly gas: string;
-}
+export const DECENTR_DENOM = 'udec';
 
 export enum StdTxMessageType {
   CommunityCreatePost = 'community/CreatePost',
@@ -69,7 +60,7 @@ export interface StdTxMessageValueMap {
     whom: Wallet['address'];
   };
   [StdTxMessageType.CosmosBeginRedelegate]: {
-    amount: DenomAmount;
+    amount: Coin;
     delegator_address: Wallet['address'];
     validator_dst_address: Validator['operator_address'];
     validator_src_address: Validator['operator_address'];
@@ -80,21 +71,21 @@ export interface StdTxMessageValueMap {
     delegator_address: string;
     pubkey: string;
     validator_address: string;
-    value: DenomAmount;
+    value: Coin;
   };
   [StdTxMessageType.CosmosDelegate]: {
-    amount: DenomAmount;
+    amount: Coin;
     delegator_address: Wallet['address'];
     validator_address: Wallet['address'];
   };
   [StdTxMessageType.CosmosDeposit]: {
-    amount: DenomAmount[];
+    amount: Coin[];
     depositor: Wallet['address'];
     proposal_id: string;
   };
   [StdTxMessageType.CosmosEditValidator]: Record<string, unknown>;
   [StdTxMessageType.CosmosFundCommunityPool]: {
-    amount: DenomAmount[];
+    amount: Coin[];
     depositor: Wallet['address'];
   };
   [StdTxMessageType.CosmosJail]: {
@@ -105,12 +96,12 @@ export interface StdTxMessageValueMap {
     withdraw_address: Wallet['address'];
   };
   [StdTxMessageType.CosmosSend]: {
-    amount: Fee[];
+    amount: Coin[];
     from_address: Wallet['address'];
     to_address: Wallet['address'];
   };
   [StdTxMessageType.CosmosUndelegate]: {
-    amount: DenomAmount;
+    amount: Coin;
     delegator_address: Wallet['address'];
     validator_address: Validator['operator_address'],
   }
@@ -135,7 +126,7 @@ export interface StdTxMessageValueMap {
     owner: Wallet['address'];
   };
   [StdTxMessageType.OperationsMint]: {
-    coin: DenomAmount;
+    coin: Coin;
     owner: Wallet['address'];
   };
   [StdTxMessageType.OperationsResetAccount]: {
@@ -177,44 +168,37 @@ export interface StdTxMessageValueMap {
   };
 }
 
-export type StdTxMessageValue<K extends keyof StdTxMessageValueMap> = StdTxMessageValueMap[K];
-
-export interface StdTxMessage<K extends keyof StdTxMessageValueMap> {
-  readonly type: K;
-  readonly value: StdTxMessageValue<K>;
+export enum BroadcastErrorCode {
+  Undefined = 1,
+  ParseError,
+  InvalidSequence,
+  Unauthorized,
+  InsufficientFunds,
+  UnknownRequest,
+  InvalidAddress,
+  InvalidPubKey,
+  UnknownAddress,
+  InvalidCoins,
+  OutOfGas,
+  MemoTooLarge,
+  InsufficientFee,
+  TooManySignatures,
+  NoSignatures,
+  JSONMarshal,
+  JSONUnmarshal,
+  InvalidRequest,
+  TxInMemPoolCache,
+  MemPoolIsFull,
+  TxTooLarge,
+  Panic = 111222,
 }
 
-export interface StdTxValue<K extends keyof StdTxMessageValueMap> {
-  fee: StdTxFee;
-  memo: string;
-  msg: StdTxMessage<K>[];
-  signatures: null;
+export class BroadcastClientError {
+  constructor(public readonly broadcastErrorCode: BroadcastErrorCode) {
+  }
 }
-
-export interface StdTx<K extends keyof StdTxMessageValueMap> {
-  type: 'cosmos-sdk/StdTx';
-  value: StdTxValue<K>;
-}
-
-export type StdTxResponseValue<K extends keyof StdTxMessageValueMap> = StdTxValue<K>;
-
-export type StdTxResponse<K extends keyof StdTxMessageValueMap> = StdTx<K>;
 
 export interface AuthHeaders extends Record<string, string>{
   readonly 'Public-Key': string;
   readonly Signature: string;
-}
-
-export interface BaseRequest {
-  readonly base_req: {
-    readonly chain_id: string,
-    readonly from: Wallet['address'],
-    readonly gas?: string,
-    readonly gas_adjustment?: string,
-    readonly simulate?: boolean,
-  },
-}
-
-export interface QuerySimulateGasResponse {
-  readonly gas_estimate: string;
 }

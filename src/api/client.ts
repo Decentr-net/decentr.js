@@ -1,23 +1,19 @@
-import { Wallet } from '../wallet';
 import { DecentrBankSDK } from './bank';
 import { DecentrBlocksSDK } from './blocks';
 import { DecentrCommunitySDK } from './community';
 import { DecentrDistributionSDK } from './distribution';
 import { DecentrImageSDK } from './image';
-import { broadcast, BroadcastOptions, BroadcastResponse } from './messages';
 import { DecentrMintingSDK } from './minting';
 import { DecentrNodeSDK } from './node';
 import { DecentrOperationsSDK } from './operations';
 import { DecentrPDVSDK } from './pdv';
-import { Account, DecentrProfileSDK } from './profile';
+import { DecentrProfileSDK } from './profile';
 import { DecentrStakingSDK } from './staking';
-import { DecentrSupplySDK } from './supply';
 import { DecentrSwapSDK } from './swap';
 import { DecentrTokenSDK } from './token';
 import { DecentrTXsSDK } from './txs';
-import { StdTxMessageValueMap, StdTxResponseValue } from './types';
 
-export class Decentr {
+export class DecentrClient {
   private bankSDK: DecentrBankSDK | undefined;
   private blocksSDK: DecentrBlocksSDK | undefined;
   private communitySDK: DecentrCommunitySDK | undefined;
@@ -29,14 +25,12 @@ export class Decentr {
   private pdvSDK: DecentrPDVSDK | undefined;
   private profileSDK: DecentrProfileSDK | undefined;
   private stakingSDK: DecentrStakingSDK | undefined;
-  private supplySDK: DecentrSupplySDK | undefined;
   private swapSDK: DecentrSwapSDK | undefined;
   private tokenSDK: DecentrTokenSDK | undefined;
   private txsSDK: DecentrTXsSDK | undefined;
 
   constructor(
-    private apiUrl: string,
-    private chainId: string,
+    private nodeUrl: string,
     private servicesUrls?: {
       cerberus?: string,
       swap?: string,
@@ -46,7 +40,7 @@ export class Decentr {
 
   public get bank(): DecentrBankSDK {
     if (!this.bankSDK) {
-      this.bankSDK = new DecentrBankSDK(this.apiUrl, this.chainId);
+      this.bankSDK = new DecentrBankSDK(this.nodeUrl);
     }
 
     return this.bankSDK;
@@ -54,7 +48,7 @@ export class Decentr {
 
   public get blocks(): DecentrBlocksSDK {
     if (!this.blocksSDK) {
-      this.blocksSDK = new DecentrBlocksSDK(this.apiUrl);
+      this.blocksSDK = new DecentrBlocksSDK(this.nodeUrl);
     }
 
     return this.blocksSDK;
@@ -62,7 +56,7 @@ export class Decentr {
 
   public get community(): DecentrCommunitySDK {
     if (!this.communitySDK) {
-      this.communitySDK = new DecentrCommunitySDK(this.apiUrl, this.chainId);
+      this.communitySDK = new DecentrCommunitySDK(this.nodeUrl);
     }
 
     return this.communitySDK;
@@ -70,7 +64,7 @@ export class Decentr {
 
   public get distribution(): DecentrDistributionSDK {
     if (!this.distributionSDK) {
-      this.distributionSDK = new DecentrDistributionSDK(this.apiUrl, this.chainId);
+      this.distributionSDK = new DecentrDistributionSDK(this.nodeUrl);
     }
 
     return this.distributionSDK;
@@ -90,7 +84,7 @@ export class Decentr {
 
   public get minting(): DecentrMintingSDK {
     if (!this.mintingSDK) {
-      this.mintingSDK = new DecentrMintingSDK(this.apiUrl);
+      this.mintingSDK = new DecentrMintingSDK(this.nodeUrl);
     }
 
     return this.mintingSDK;
@@ -98,7 +92,7 @@ export class Decentr {
 
   public get node(): DecentrNodeSDK {
     if (!this.nodeSDK) {
-      this.nodeSDK = new DecentrNodeSDK(this.apiUrl);
+      this.nodeSDK = new DecentrNodeSDK(this.nodeUrl);
     }
 
     return this.nodeSDK;
@@ -106,7 +100,7 @@ export class Decentr {
 
   public get operations(): DecentrOperationsSDK {
     if (!this.operationsSDK) {
-      this.operationsSDK = new DecentrOperationsSDK(this.apiUrl, this.chainId);
+      this.operationsSDK = new DecentrOperationsSDK(this.nodeUrl);
     }
 
     return this.operationsSDK;
@@ -121,8 +115,12 @@ export class Decentr {
   }
 
   public get profile(): DecentrProfileSDK {
+    if (!this.servicesUrls?.cerberus) {
+      throw new Error(`You didn't provide Cerberus url`);
+    }
+
     if (!this.profileSDK) {
-      this.profileSDK = new DecentrProfileSDK(this.apiUrl);
+      this.profileSDK = new DecentrProfileSDK(this.nodeUrl, this.servicesUrls.cerberus);
     }
 
     return this.profileSDK;
@@ -130,18 +128,10 @@ export class Decentr {
 
   public get staking(): DecentrStakingSDK {
     if (!this.stakingSDK) {
-      this.stakingSDK = new DecentrStakingSDK(this.apiUrl, this.chainId);
+      this.stakingSDK = new DecentrStakingSDK(this.nodeUrl);
     }
 
     return this.stakingSDK;
-  }
-
-  public get supply(): DecentrSupplySDK {
-    if (!this.supplySDK) {
-      this.supplySDK = new DecentrSupplySDK(this.apiUrl);
-    }
-
-    return this.supplySDK;
   }
 
   public get swap(): DecentrSwapSDK {
@@ -158,7 +148,7 @@ export class Decentr {
 
   public get token(): DecentrTokenSDK {
     if (!this.tokenSDK) {
-      this.tokenSDK = new DecentrTokenSDK(this.apiUrl);
+      this.tokenSDK = new DecentrTokenSDK(this.nodeUrl);
     }
 
     return this.tokenSDK;
@@ -166,19 +156,9 @@ export class Decentr {
 
   public get txs(): DecentrTXsSDK {
     if (!this.txsSDK) {
-      this.txsSDK = new DecentrTXsSDK(this.apiUrl);
+      this.txsSDK = new DecentrTXsSDK(this.nodeUrl);
     }
 
     return this.txsSDK;
-  }
-
-  public broadcast<K extends keyof StdTxMessageValueMap>(
-    stdTxValue: StdTxResponseValue<K>,
-    account: Pick<Account, 'account_number' | 'sequence'> & {
-      privateKey: Wallet['privateKey'],
-    },
-    options: BroadcastOptions,
-  ): Promise<BroadcastResponse<K>> {
-    return broadcast(this.apiUrl, this.chainId, stdTxValue, account, options);
   }
 }

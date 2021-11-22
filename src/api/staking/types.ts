@@ -1,16 +1,16 @@
+import { Coin } from '@cosmjs/stargate';
+
 import { Wallet } from '../../wallet';
-import { DenomAmount, StdTxMessageType, StdTxResponse } from '../types';
-import { BroadcastOptions } from '../messages';
 
 export interface Pool {
-  not_bonded_tokens: number;
-  bonded_tokens: number;
+  not_bonded_tokens: string;
+  bonded_tokens: string;
 }
 
 export enum ValidatorStatus {
-  Unbonded,
-  Unbonding,
-  Bonded,
+  Unbonded = 'BOND_STATUS_UNBONDED',
+  Unbonding = 'BOND_STATUS_UNBONDING',
+  Bonded = 'BOND_STATUS_BONDED',
 }
 
 export interface ValidatorsFilterParameters {
@@ -34,9 +34,14 @@ export interface ValidatorCommission {
   update_time: string;
 }
 
+export interface ValidatorConsensusPubKey {
+  '@type': string;
+  key: string;
+}
+
 export interface Validator {
   commission: ValidatorCommission;
-  consensus_pubkey: string;
+  consensus_pubkey: ValidatorConsensusPubKey;
   delegator_shares: string;
   description: ValidatorDescription;
   jailed: boolean;
@@ -49,23 +54,12 @@ export interface Validator {
 }
 
 export interface Delegation {
-  delegator_address: Wallet['address'],
-  validator_address: Validator['operator_address'];
-  shares: string;
-  balance: DenomAmount;
-}
-
-export type QueryCreateDelegationResponse = StdTxResponse<StdTxMessageType.CosmosDelegate>;
-
-export interface DelegationBroadcastOptions extends BroadcastOptions {
-  broadcast: true,
-  privateKey: Wallet['privateKey'];
-}
-
-export interface CreateDelegationRequest
-  extends Pick<Delegation, 'delegator_address' | 'validator_address'>
-{
-  amount: Delegation['balance'];
+  delegation: {
+    delegator_address: Wallet['address'];
+    validator_address: Validator['operator_address'];
+    shares: string;
+  };
+  balance: Coin;
 }
 
 interface UnbondingDelegationEntry {
@@ -81,41 +75,29 @@ export interface UnbondingDelegation {
   entries: UnbondingDelegationEntry[];
 }
 
-export type QueryCreateUnbondingDelegationResponse = StdTxResponse<StdTxMessageType.CosmosUndelegate>;
-
-export interface CreateUnbondingDelegationRequest
-  extends Pick<UnbondingDelegation, 'delegator_address' | 'validator_address'>
-{
-  amount: Delegation['balance'];
-}
-
 interface RedelegationEntry {
   creation_height: number;
   completion_time: string;
   initial_balance: string;
   shares_dst: string;
-  balance: string;
 }
 
 export interface Redelegation {
-  delegator_address: Wallet['address'];
-  validator_src_address: Validator['operator_address'];
-  validator_dst_address: Validator['operator_address'];
-  entries: RedelegationEntry[];
-}
-
-export type QueryCreateRedelegationResponse = StdTxResponse<StdTxMessageType.CosmosBeginRedelegate>;
-
-export interface CreateRedelegationRequest
-  extends Omit<Redelegation, 'entries'>
-{
-  amount: Delegation['balance'];
+  redelegation: {
+    delegator_address: Wallet['address'];
+    entries: RedelegationEntry[];
+    validator_src_address: Validator['operator_address'];
+    validator_dst_address: Validator['operator_address'];
+  };
+  entries: {
+    redelegation_entry: RedelegationEntry;
+    balance: string;
+  }[];
 }
 
 export interface RedelegationsFilterParameters {
-  delegator?: Wallet['address'];
-  validator_from?: Validator['operator_address'];
-  validator_to?: Validator['operator_address'];
+  validatorSrcAddress?: Validator['operator_address'];
+  validatorDstAddress?: Validator['operator_address'];
 }
 
 export interface StakingParameters {
@@ -124,4 +106,26 @@ export interface StakingParameters {
   max_entries: number;
   historical_entries: number;
   bond_denom: string;
+}
+
+export interface DelegateTokensOptions {
+  readonly amount: number | string;
+  readonly comment?: string;
+  readonly denom?: string;
+  readonly validatorAddress: Validator['operator_address'];
+}
+
+export interface UndelegateTokensOptions {
+  readonly amount: number | string;
+  readonly comment?: string;
+  readonly denom?: string;
+  readonly validatorAddress: Validator['operator_address'];
+}
+
+export interface RedelegateTokensOptions {
+  readonly amount: number | string;
+  readonly comment?: string;
+  readonly denom?: string;
+  readonly validatorSrcAddress: Validator['operator_address'];
+  readonly validatorDstAddress: Validator['operator_address'];
 }
