@@ -1,3 +1,7 @@
+export interface PDVBlacklist {
+  cookieSource: string[];
+}
+
 export type PDVAddress = number;
 
 export enum PDVType {
