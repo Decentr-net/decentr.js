@@ -1,5 +1,6 @@
 import { Wallet } from '../../wallet';
 import {
+  getPDVBlacklist,
   getPDVDetails,
   getPDVList,
   getPDVMeta,
@@ -14,9 +15,16 @@ import {
   PDVAddress,
   PDVType,
   PDVMeta,
+  PDVBlacklist,
 } from './types';
 
 export class DecentrPDVSDK {
+
+  public getPDVBlacklist(
+    cerberusUrl: string,
+  ): Promise<PDVBlacklist> {
+    return getPDVBlacklist(cerberusUrl);
+  }
 
   public getPDVList(
     cerberusUrl: string,

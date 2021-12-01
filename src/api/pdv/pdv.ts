@@ -9,7 +9,14 @@ import {
   PDVMeta,
   PDVAddress,
   PDVType,
+  PDVBlacklist,
 } from './types';
+
+export function getPDVBlacklist(
+  cerberusUrl: string,
+): Promise<PDVBlacklist> {
+  return fetchJson(`${cerberusUrl}/v1/configs/blacklist`);
+}
 
 export function getRewards(
   cerberusUrl: string,
