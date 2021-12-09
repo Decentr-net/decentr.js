@@ -56,6 +56,7 @@ export interface Post {
   owner: Wallet['address'];
   pdv: number;
   previewImage: string;
+  slug: string;
   text: string;
   title: string;
 }
