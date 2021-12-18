@@ -20,17 +20,12 @@
     "lint": "eslint --max-warnings 0 src --ext .ts",
     "prebuild": "npm run clean",
     "prepublishOnly": "npm run lint && npm run test && npm run build",
-    "test": "karma start"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "npm run lint",
-      "pre-push": "npm run test"
-    }
+    "test": "karma start",
+    "prepare": "husky install"
   },
   "dependencies": {
     "@tendermint/belt": "^0.3.0",
-    "axios": "^0.21.1",
+    "axios": "^0.24.0",
     "bech32": "^2.0.0",
     "bip32": "^2.0.6",
     "bip39": "^3.0.2",
@@ -47,11 +42,10 @@
     "@types/secp256k1": "^4.0.1",
     "@typescript-eslint/eslint-plugin": "^5.7.0",
     "@typescript-eslint/parser": "^5.7.0",
-    "copy-webpack-plugin": "^6.4.0",
     "eslint": "^8.5.0",
     "eslint-plugin-import": "^2.25.3",
     "eslint-plugin-unicorn": "^39.0.0",
-    "husky": "^4.3.0",
+    "husky": "^7.0.0",
     "jasmine-core": "^3.6.0",
     "karma": "^6.0.0",
     "karma-chrome-launcher": "^3.1.0",
