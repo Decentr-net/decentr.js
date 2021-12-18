@@ -71,5 +71,5 @@ function valueIsEmpty(value: any): boolean {
   return typeof value === 'undefined'
     || value === null
     || (value as string) === ''
-    || typeof value === 'object' && !Object.keys(value).length
+    || typeof value === 'object' && Object.keys(value).length === 0;
 }

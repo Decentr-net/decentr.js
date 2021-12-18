@@ -74,8 +74,7 @@ export interface StdTxMessageValueMap {
     validator_dst_address: Validator['operator_address'];
     validator_src_address: Validator['operator_address'];
   };
-  [StdTxMessageType.CosmosBeginUnbonding]: {
-  };
+  [StdTxMessageType.CosmosBeginUnbonding]: Record<string, unknown>;
   [StdTxMessageType.CosmosCreateValidator]: Pick<Validator, 'description' | 'min_self_delegation'> & {
     commission: ValidatorCommission['commission_rates'];
     delegator_address: string;
@@ -93,8 +92,7 @@ export interface StdTxMessageValueMap {
     depositor: Wallet['address'];
     proposal_id: string;
   };
-  [StdTxMessageType.CosmosEditValidator]: {
-  };
+  [StdTxMessageType.CosmosEditValidator]: Record<string, unknown>;
   [StdTxMessageType.CosmosFundCommunityPool]: {
     amount: DenomAmount[];
     depositor: Wallet['address'];

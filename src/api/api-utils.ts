@@ -15,7 +15,7 @@ import { AuthHeaders, BaseRequest, Fee, QuerySimulateGasResponse } from './types
 import { getMinGasPrice } from './operations';
 
 const GAS_ADJUSTMENT = 1.35;
-const GAS_LIMIT = 1000000;
+const GAS_LIMIT = 1_000_000;
 
 export async function blockchainFetch<T>(url: string, queryParameters?: Record<string, string | number>): Promise<T> {
   const response = await fetchJson<{ height: string; result: T } | T>(url, { queryParameters });

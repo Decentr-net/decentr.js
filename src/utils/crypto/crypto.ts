@@ -15,7 +15,7 @@ export function encodeObjectCharactersToUnicode<T>(
   characters: string[],
 ): T {
   const mapFunction = (value: string) => {
-    return value.split('').map((character) => {
+    return [...value].map((character) => {
       return characters.includes(character)
         ? getUnicode(character)
         : character;
