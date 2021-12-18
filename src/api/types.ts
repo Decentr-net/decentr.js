@@ -45,9 +45,6 @@ export enum StdTxMessageType {
   PDVDistributeRewards = 'pdv/DistributeRewards',
   ProfileSetPrivate = 'profile/SetPrivate',
   ProfileSetPublic = 'profile/SetPublic',
-
-  // Undefined
-  Undefined = '',
 }
 
 export interface StdTxMessageValueMap {
@@ -179,10 +176,6 @@ export interface StdTxMessageValueMap {
       gender: Gender;
       lastName: string;
     };
-  };
-
-  // Undefined
-  [StdTxMessageType.Undefined]: {
   };
 }
 
