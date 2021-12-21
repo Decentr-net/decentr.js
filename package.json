@@ -21,7 +21,8 @@
     "prebuild": "npm run clean",
     "prepublishOnly": "npm run lint && npm run test && npm run build",
     "test": "karma start",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "proto": "bash scripts/get-proto.sh && bash scripts/define-proto.sh"
   },
   "dependencies": {
     "@cosmjs/proto-signing": "^0.26.5",
@@ -57,6 +58,7 @@
     "karma-webpack": "^4.0.2",
     "rimraf": "^3.0.2",
     "ts-loader": "^8.0.10",
+    "ts-proto": "^1.95.0",
     "typescript": "^3.5.1",
     "webpack": "^4.44.2",
     "webpack-bundle-analyzer": "^4.1.0",
