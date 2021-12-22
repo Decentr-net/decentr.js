@@ -2,12 +2,12 @@ import { BroadcastTxResponse, QueryClient } from '@cosmjs/stargate';
 import { Tendermint34Client } from '@cosmjs/tendermint-rpc';
 
 import { Wallet } from '../../wallet';
-import { Like, Post } from '../../../codec/community/community';
+import { Like, Post } from '../../codec/community/community';
 import {
   MsgDeletePost,
   MsgFollow,
   MsgUnfollow,
-} from '../../../codec/community/tx';
+} from '../../codec/community/tx';
 import { getMinGasPrice } from '../operations/api';
 import { signAndBroadcast } from '../api-utils';
 import { CommunityExtension, setupCommunityExtension } from './extension';

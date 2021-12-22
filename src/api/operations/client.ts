@@ -1,7 +1,7 @@
 import { BroadcastTxResponse, Coin, QueryClient } from '@cosmjs/stargate';
 import { Tendermint34Client } from '@cosmjs/tendermint-rpc';
 
-import { MsgResetAccount } from '../../../codec/operations/tx';
+import { MsgResetAccount } from '../../codec/operations/tx';
 import { Wallet } from '../../wallet';
 import { signAndBroadcast } from '../api-utils';
 import { getMinGasPrice } from './api';

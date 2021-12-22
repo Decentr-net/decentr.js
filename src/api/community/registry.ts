@@ -6,7 +6,7 @@ import {
   MsgFollow,
   MsgSetLike,
   MsgUnfollow,
-} from '../../../codec/community/tx';
+} from '../../codec/community/tx';
 import { createCustomRegistry } from '../api-utils';
 
 export enum MessageTypeUrl {

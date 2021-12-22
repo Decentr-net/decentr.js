@@ -1,12 +1,12 @@
 import { createProtobufRpcClient, QueryClient } from '@cosmjs/stargate';
 
-import { Post } from '../../../codec/community/community';
+import { Post } from '../../codec/community/community';
 import {
   GetPostRequest,
   ListFollowedRequest,
   ListUserPostsRequest,
   QueryClientImpl,
-} from '../../../codec/community/query';
+} from '../../codec/community/query';
 import { Wallet } from '../../wallet';
 
 export interface CommunityExtension {

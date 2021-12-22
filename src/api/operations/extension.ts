@@ -1,6 +1,6 @@
 import { Coin, createProtobufRpcClient, QueryClient } from '@cosmjs/stargate';
 
-import { QueryClientImpl } from '../../../codec/operations/query';
+import { QueryClientImpl } from '../../codec/operations/query';
 
 export interface OperationsExtension {
   readonly operations: {
