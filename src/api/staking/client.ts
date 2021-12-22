@@ -8,8 +8,8 @@ import {
   Validator,
 } from 'cosmjs-types/cosmos/staking/v1beta1/staking';
 import { BondStatusString } from '@cosmjs/stargate/build/queries/staking';
+import { BroadcastTxSuccess } from '@cosmjs/stargate/build/stargateclient';
 import {
-  BroadcastTxResponse,
   MsgDelegateEncodeObject,
   MsgUndelegateEncodeObject,
   QueryClient,
@@ -105,8 +105,8 @@ export class DecentrStakingClient {
 
   public getRedelegations(
     delegatorAddress: Wallet['address'],
-    sourceValidatorAddress: string,
-    destinationValidatorAddress: string,
+    sourceValidatorAddress: Validator['operatorAddress'],
+    destinationValidatorAddress: Validator['operatorAddress'],
   ): Promise<RedelegationResponse[]> {
     return this.queryClient.staking.redelegations(
       delegatorAddress,
@@ -137,7 +137,7 @@ export class DecentrStakingClient {
   public async delegateTokens(
     request: DelegateTokensRequest,
     privateKey: Wallet['privateKey'],
-  ): Promise<BroadcastTxResponse> {
+  ): Promise<BroadcastTxSuccess> {
     const minGasPrice = await getMinGasPrice(this.nodeUrl);
 
     const message: MsgDelegateEncodeObject = {
@@ -163,7 +163,7 @@ export class DecentrStakingClient {
   public async undelegateTokens(
     request: UndelegateTokensRequest,
     privateKey: Wallet['privateKey'],
-  ): Promise<BroadcastTxResponse> {
+  ): Promise<BroadcastTxSuccess> {
     const minGasPrice = await getMinGasPrice(this.nodeUrl);
 
     const message: MsgUndelegateEncodeObject = {
@@ -189,7 +189,7 @@ export class DecentrStakingClient {
   public async redelegateTokens(
     request: RedelegateTokensRequest,
     privateKey: Wallet['privateKey'],
-  ): Promise<BroadcastTxResponse> {
+  ): Promise<BroadcastTxSuccess> {
     const minGasPrice = await getMinGasPrice(this.nodeUrl);
 
     const message = {

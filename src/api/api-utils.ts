@@ -2,13 +2,13 @@ import { Bytes } from '@tendermint/types';
 import { ecdsaSign as secp256k1EcdsaSign } from 'secp256k1';
 import { coin, EncodeObject, GeneratedType } from '@cosmjs/proto-signing';
 import { Registry } from '@cosmjs/proto-signing/build/registry';
+import { BroadcastTxSuccess } from '@cosmjs/stargate/build/stargateclient';
 import {
   BroadcastTxResponse,
   Coin,
   isBroadcastTxFailure,
   SigningStargateClient,
 } from '@cosmjs/stargate';
-import { BroadcastTxSuccess } from '@cosmjs/stargate/build/stargateclient';
 
 import {
   bytesToHex,

@@ -3,6 +3,7 @@ export { BroadcastTxSuccess } from '@cosmjs/stargate/build/stargateclient';
 
 export { createDecentrCoin } from './api-utils';
 
+export * from './auth';
 export * from './bank';
 export * from './blocks';
 export * from './community';

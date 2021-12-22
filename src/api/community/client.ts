@@ -1,4 +1,5 @@
-import { BroadcastTxResponse, QueryClient } from '@cosmjs/stargate';
+import { BroadcastTxSuccess } from '@cosmjs/stargate/build/stargateclient';
+import { QueryClient } from '@cosmjs/stargate';
 import { Tendermint34Client } from '@cosmjs/tendermint-rpc';
 
 import { Wallet } from '../../wallet';
@@ -43,7 +44,7 @@ export class DecentrCommunityClient {
   public async createPost(
     request: CreatePostRequest,
     privateKey: Wallet['privateKey'],
-  ): Promise<BroadcastTxResponse> {
+  ): Promise<BroadcastTxSuccess> {
     const minGasPrice = await getMinGasPrice(this.nodeUrl);
 
     const message = {
@@ -65,7 +66,7 @@ export class DecentrCommunityClient {
   public async deletePost(
     request: DeletePostRequest,
     privateKey: Wallet['privateKey'],
-  ): Promise<BroadcastTxResponse> {
+  ): Promise<BroadcastTxSuccess> {
     const minGasPrice = await getMinGasPrice(this.nodeUrl);
 
     const message = {
@@ -85,7 +86,7 @@ export class DecentrCommunityClient {
   public async setLike(
     request: LikeRequest,
     privateKey: Wallet['privateKey'],
-  ): Promise<BroadcastTxResponse> {
+  ): Promise<BroadcastTxSuccess> {
     const minGasPrice = await getMinGasPrice(this.nodeUrl);
 
     const message = {
@@ -107,7 +108,7 @@ export class DecentrCommunityClient {
   public async follow(
     request: FollowRequest,
     privateKey: Wallet['privateKey'],
-  ): Promise<BroadcastTxResponse> {
+  ): Promise<BroadcastTxSuccess> {
     const minGasPrice = await getMinGasPrice(this.nodeUrl);
 
     const message = {
@@ -127,7 +128,7 @@ export class DecentrCommunityClient {
   public async unfollow(
     request: UnfollowRequest,
     privateKey: Wallet['privateKey'],
-  ): Promise<BroadcastTxResponse> {
+  ): Promise<BroadcastTxSuccess> {
     const minGasPrice = await getMinGasPrice(this.nodeUrl);
 
     const message = {

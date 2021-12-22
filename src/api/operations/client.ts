@@ -1,4 +1,5 @@
-import { BroadcastTxResponse, Coin, QueryClient } from '@cosmjs/stargate';
+import { BroadcastTxSuccess } from '@cosmjs/stargate/build/stargateclient';
+import { Coin, QueryClient } from '@cosmjs/stargate';
 import { Tendermint34Client } from '@cosmjs/tendermint-rpc';
 
 import { MsgResetAccount } from '../../codec/operations/tx';
@@ -33,7 +34,7 @@ export class DecentrOperationsClient {
   public async resetAccount(
     request: MsgResetAccount,
     privateKey: Wallet['privateKey'],
-  ): Promise<BroadcastTxResponse> {
+  ): Promise<BroadcastTxSuccess> {
     const minGasPrice = await getMinGasPrice(this.nodeUrl);
 
     const message = {

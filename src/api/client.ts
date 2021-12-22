@@ -1,3 +1,4 @@
+import { DecentrAuthClient } from './auth';
 import { DecentrBankClient } from './bank';
 import { DecentrBlocksClient } from './blocks';
 import { DecentrCommunityClient } from './community';
@@ -14,6 +15,7 @@ import { DecentrTokenClient } from './token';
 import { DecentrTXsClient } from './txs';
 
 export class DecentrClient {
+  private authClient: DecentrAuthClient | undefined;
   private bankClient: DecentrBankClient | undefined;
   private blocksClient: DecentrBlocksClient | undefined;
   private communityClient: DecentrCommunityClient | undefined;
@@ -36,6 +38,14 @@ export class DecentrClient {
       swap?: string,
     },
   ) {
+  }
+
+  public async auth(): Promise<DecentrAuthClient> {
+    if (!this.authClient) {
+      this.authClient = await DecentrAuthClient.create(this.nodeUrl);
+    }
+
+    return this.authClient;
   }
 
   public async bank(): Promise<DecentrBankClient> {
@@ -118,16 +128,13 @@ export class DecentrClient {
     return this.pdvClient;
   }
 
-  public async profile(): Promise<DecentrProfileClient> {
+  public profile(): DecentrProfileClient {
     if (!this.servicesUrls?.cerberus) {
       throw new Error(`You didn't provide Cerberus url`);
     }
 
     if (!this.profileClient) {
-      this.profileClient = await DecentrProfileClient.create(
-        this.nodeUrl,
-        this.servicesUrls?.cerberus,
-      );
+      this.profileClient = new DecentrProfileClient(this.servicesUrls.cerberus);
     }
 
     return this.profileClient;

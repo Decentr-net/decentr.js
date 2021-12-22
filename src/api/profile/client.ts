@@ -1,5 +1,3 @@
-import { Account, StargateClient } from '@cosmjs/stargate';
-
 import { KeyPair, Wallet } from '../../wallet';
 import { PDVAddress, PDVType, ProfilePDV } from '../pdv';
 import { sendPDV } from '../pdv/api';
@@ -8,20 +6,9 @@ import { bytesToHex, fetchJson } from '../../utils';
 import { Profile } from './types';
 
 export class DecentrProfileClient {
-  private constructor(
+  constructor(
     private cerberusUrl: string,
-    private stargateClient: StargateClient,
   ) {
-  }
-
-  public static async create(nodeUrl: string, cerberusUrl: string): Promise<DecentrProfileClient> {
-    const stargateClient = await StargateClient.connect(nodeUrl);
-
-    return new DecentrProfileClient(cerberusUrl, stargateClient);
-  }
-
-  public getAccount(walletAddress: Wallet['address']): Promise<Account | null> {
-    return this.stargateClient.getAccount(walletAddress);
   }
 
   public setProfile(

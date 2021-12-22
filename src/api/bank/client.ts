@@ -1,6 +1,6 @@
+import { BroadcastTxSuccess } from '@cosmjs/stargate/build/stargateclient';
 import {
   BankExtension,
-  BroadcastTxResponse,
   Coin,
   MsgSendEncodeObject,
   QueryClient,
@@ -58,7 +58,7 @@ export class DecentrBankClient {
   public async sendTokens(
     request: SendTokensRequest,
     privateKey: Wallet['privateKey'],
-  ): Promise<BroadcastTxResponse> {
+  ): Promise<BroadcastTxSuccess> {
     const minGasPrice = await getMinGasPrice(this.nodeUrl);
 
     const message: MsgSendEncodeObject = {
