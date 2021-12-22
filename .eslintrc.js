@@ -12,7 +12,7 @@ module.exports = {
   ],
   plugins: [
   ],
-  ignorePatterns: ['**/*.js'],
+  ignorePatterns: ['**/*.js', '**/codec/**/*.*'],
   rules: {
     "unicorn/prevent-abbreviations": [
       "off",

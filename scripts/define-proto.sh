@@ -8,7 +8,8 @@ cd "$PARENT_PATH"
 PROTO_DIR="../proto"
 DECENTR_SDK_DIR="$PROTO_DIR/decentr"
 THIRD_PARTY_DIR="$PROTO_DIR/3rdparty"
-OUT_DIR="../codec"
+COSMOS_SDK_DIR="$THIRD_PARTY_DIR/cosmos"
+OUT_DIR="../src/codec"
 
 rm -rf "$OUT_DIR"
 
@@ -26,10 +27,15 @@ mkdir -p "$OUT_DIR"
   "$DECENTR_SDK_DIR/operations/operations.proto" \
   "$DECENTR_SDK_DIR/operations/query.proto" \
   "$DECENTR_SDK_DIR/operations/tx.proto" \
-  "$DECENTR_SDK_DIR/token/query.proto"
+  "$DECENTR_SDK_DIR/token/query.proto" \
+  "$COSMOS_SDK_DIR/mint/v1beta1/mint.proto" \
+  "$COSMOS_SDK_DIR/mint/v1beta1/query.proto" \
 
 # Remove unnecessary codec files
 rm -rf \
   "$OUT_DIR/cosmos_proto/" \
   "$OUT_DIR/gogoproto/" \
   "$OUT_DIR/google/"
+
+#Remove proto dir
+rm -rf "$PROTO_DIR"

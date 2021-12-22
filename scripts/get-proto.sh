@@ -15,8 +15,9 @@ SUFFIX=${DECENTR_SDK_REF}
 
 [[ $SUFFIX =~ ^v[0-9]+\.[0-9]+\.[0-9]+(-.+)?$ ]] && SUFFIX=${SUFFIX#v}
 
-rm -rf "$PROTO_DIR"
-rm -rf "$TEMP_DIR"
+rm -rf \
+  "$PROTO_DIR" \
+  "$TEMP_DIR"
 
 mkdir -p "$TEMP_DIR"
 
