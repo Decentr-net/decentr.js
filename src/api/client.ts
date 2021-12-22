@@ -3,7 +3,7 @@ import { DecentrBlocksClient } from './blocks';
 import { DecentrCommunityClient } from './community';
 import { DecentrDistributionClient } from './distribution';
 import { DecentrImageClient } from './image';
-import { DecentrMintingClient } from './minting';
+import { DecentrMintClient } from './mint';
 import { DecentrNodeClient } from './node';
 import { DecentrOperationsClient } from './operations';
 import { DecentrPDVClient } from './pdv';
@@ -20,7 +20,7 @@ export class DecentrClient {
   private distributionClient: DecentrDistributionClient | undefined;
   private imageClient: DecentrImageClient | undefined;
   private nodeClient: DecentrNodeClient | undefined;
-  private mintingClient: DecentrMintingClient | undefined;
+  private mintClient: DecentrMintClient | undefined;
   private operationsClient: DecentrOperationsClient | undefined;
   private pdvClient: DecentrPDVClient | undefined;
   private profileClient: DecentrProfileClient | undefined;
@@ -82,12 +82,12 @@ export class DecentrClient {
     return this.imageClient;
   }
 
-  public get minting(): DecentrMintingClient {
-    if (!this.mintingClient) {
-      this.mintingClient = new DecentrMintingClient(this.nodeUrl);
+  public async mint(): Promise<DecentrMintClient> {
+    if (!this.mintClient) {
+      this.mintClient = await DecentrMintClient.create(this.nodeUrl);
     }
 
-    return this.mintingClient;
+    return this.mintClient;
   }
 
   public async node(): Promise<DecentrNodeClient> {

@@ -6,7 +6,7 @@ export * from './community';
 export * from './client';
 export * from './distribution';
 export * from './image';
-export * from './minting';
+export * from './mint';
 export * from './node';
 export * from './operations';
 export * from './pdv';
