@@ -11,17 +11,17 @@ import { MsgSend } from 'cosmjs-types/cosmos/bank/v1beta1/tx';
 
 import { Wallet } from '../../wallet';
 import { DECENTR_DENOM } from '../types';
-import { getMinGasPrice } from '../operations';
+import { getMinGasPrice } from '../operations/api';
 import { signAndBroadcast } from '../api-utils';
 
-export class DecentrBankSDK {
+export class DecentrBankClient {
   private constructor(
     private nodeUrl: string,
     private queryClient: QueryClient & BankExtension,
   ) {
   }
 
-  public static async create(nodeUrl: string): Promise<DecentrBankSDK> {
+  public static async create(nodeUrl: string): Promise<DecentrBankClient> {
     const tendermintClient = await Tendermint34Client.connect(nodeUrl);
 
     const queryClient = QueryClient.withExtensions(
@@ -29,7 +29,7 @@ export class DecentrBankSDK {
       setupBankExtension,
     );
 
-    return new DecentrBankSDK(nodeUrl, queryClient);
+    return new DecentrBankClient(nodeUrl, queryClient);
   }
 
   public getBalance(

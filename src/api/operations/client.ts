@@ -8,14 +8,14 @@ import { getMinGasPrice } from './api';
 import { OperationsExtension, setupOperationsExtension } from './extension';
 import { MessageTypeUrl, REGISTRY } from './registry';
 
-export class DecentrOperationsSDK {
+export class DecentrOperationsClient {
   private constructor(
     private nodeUrl: string,
     private queryClient: QueryClient & OperationsExtension,
   ) {
   }
 
-  public static async create(nodeUrl: string): Promise<DecentrOperationsSDK> {
+  public static async create(nodeUrl: string): Promise<DecentrOperationsClient> {
     const tendermintClient = await Tendermint34Client.connect(nodeUrl);
 
     const queryClient = QueryClient.withExtensions(
@@ -23,7 +23,7 @@ export class DecentrOperationsSDK {
       setupOperationsExtension,
     );
 
-    return new DecentrOperationsSDK(nodeUrl, queryClient);
+    return new DecentrOperationsClient(nodeUrl, queryClient);
   }
 
   public getMinGasPrice(): Promise<Coin> {

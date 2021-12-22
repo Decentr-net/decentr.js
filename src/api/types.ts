@@ -1,8 +1,9 @@
+import { Validator } from 'cosmjs-types/cosmos/staking/v1beta1/staking';
 import { Coin } from '@cosmjs/stargate';
+
 import { Wallet } from '../wallet';
 import { LikeWeight, Post } from './community';
 import { Gender } from './pdv';
-import { Validator, ValidatorCommission } from './staking';
 
 export const DECENTR_DENOM = 'udec';
 
@@ -62,13 +63,25 @@ export interface StdTxMessageValueMap {
   [StdTxMessageType.CosmosBeginRedelegate]: {
     amount: Coin;
     delegator_address: Wallet['address'];
-    validator_dst_address: Validator['operator_address'];
-    validator_src_address: Validator['operator_address'];
+    validator_dst_address: Validator['operatorAddress'];
+    validator_src_address: Validator['operatorAddress'];
   };
   [StdTxMessageType.CosmosBeginUnbonding]: Record<string, unknown>;
-  [StdTxMessageType.CosmosCreateValidator]: Pick<Validator, 'description' | 'min_self_delegation'> & {
-    commission: ValidatorCommission['commission_rates'];
+  [StdTxMessageType.CosmosCreateValidator]: {
+    commission: {
+      rate: string;
+      max_rate: string;
+      max_change_rate: string;
+    };
     delegator_address: string;
+    description: {
+      moniker: string;
+      identity: string;
+      website: string;
+      security_contact: string;
+      details: string;
+    }
+    min_self_delegation: string;
     pubkey: string;
     validator_address: string;
     value: Coin;
@@ -103,7 +116,7 @@ export interface StdTxMessageValueMap {
   [StdTxMessageType.CosmosUndelegate]: {
     amount: Coin;
     delegator_address: Wallet['address'];
-    validator_address: Validator['operator_address'],
+    validator_address: Validator['operatorAddress'],
   }
   [StdTxMessageType.CosmosUnjail]: {
     address: Wallet['address'];
@@ -115,10 +128,10 @@ export interface StdTxMessageValueMap {
   };
   [StdTxMessageType.CosmosWithdrawDelegationReward]: {
     delegator_address: Wallet['address'];
-    validator_address: Validator['operator_address'];
+    validator_address: Validator['operatorAddress'];
   };
   [StdTxMessageType.CosmosWithdrawValidatorCommission]: {
-    validator_address: Validator['operator_address'];
+    validator_address: Validator['operatorAddress'];
   };
   [StdTxMessageType.OperationsBanAccount]: {
     address: Wallet['address'];

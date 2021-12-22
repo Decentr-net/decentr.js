@@ -8,19 +8,19 @@ import {
   MsgFollow,
   MsgUnfollow,
 } from '../../../codec/community/tx';
-import { getMinGasPrice } from '../operations';
+import { getMinGasPrice } from '../operations/api';
 import { signAndBroadcast } from '../api-utils';
 import { CommunityExtension, setupCommunityExtension } from './extension';
 import { MessageTypeUrl, REGISTRY } from './registry';
 
-export class DecentrCommunitySDK {
+export class DecentrCommunityClient {
   private constructor(
     private nodeUrl: string,
     private queryClient: QueryClient & CommunityExtension,
   ) {
   }
 
-  public static async create(nodeUrl: string): Promise<DecentrCommunitySDK> {
+  public static async create(nodeUrl: string): Promise<DecentrCommunityClient> {
     const tendermintClient = await Tendermint34Client.connect(nodeUrl);
 
     const queryClient = QueryClient.withExtensions(
@@ -28,7 +28,7 @@ export class DecentrCommunitySDK {
       setupCommunityExtension,
     );
 
-    return new DecentrCommunitySDK(nodeUrl, queryClient);
+    return new DecentrCommunityClient(nodeUrl, queryClient);
   }
 
   public getModeratorAddresses(): Promise<Wallet['address'][]> {

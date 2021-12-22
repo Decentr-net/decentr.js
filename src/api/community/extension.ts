@@ -13,7 +13,7 @@ export interface CommunityExtension {
   readonly community: {
     readonly getFollowees: (request: ListFollowedRequest) => Promise<Wallet['address'][]>;
     readonly getModerators: () => Promise<Wallet['address'][]>;
-    readonly getPost: (request: GetPostRequest) => Promise<Post>;
+    readonly getPost: (request: GetPostRequest) => Promise<Post | undefined>;
     readonly getUserPosts: (request: ListUserPostsRequest) => Promise<Post[]>;
   };
 }
@@ -32,7 +32,7 @@ export function setupCommunityExtension(base: QueryClient): CommunityExtension  
         .then((response) => response.moderators),
 
       getPost: (request: GetPostRequest) => queryService.GetPost(request)
-        .then((response) => response.post as Post),
+        .then((response) => response.post),
 
       getUserPosts: (request: ListUserPostsRequest) => queryService.ListUserPosts(request)
         .then((response) => response.posts)

@@ -1,33 +1,33 @@
-import { DecentrBankSDK } from './bank';
-import { DecentrBlocksSDK } from './blocks';
-import { DecentrCommunitySDK } from './community';
-import { DecentrDistributionSDK } from './distribution';
-import { DecentrImageSDK } from './image';
-import { DecentrMintingSDK } from './minting';
-import { DecentrNodeSDK } from './node';
-import { DecentrOperationsSDK } from './operations';
-import { DecentrPDVSDK } from './pdv';
-import { DecentrProfileSDK } from './profile';
-import { DecentrStakingSDK } from './staking';
-import { DecentrSwapSDK } from './swap';
-import { DecentrTokenSDK } from './token';
-import { DecentrTXsSDK } from './txs';
+import { DecentrBankClient } from './bank';
+import { DecentrBlocksClient } from './blocks';
+import { DecentrCommunityClient } from './community';
+import { DecentrDistributionClient } from './distribution';
+import { DecentrImageClient } from './image';
+import { DecentrMintingClient } from './minting';
+import { DecentrNodeClient } from './node';
+import { DecentrOperationsClient } from './operations';
+import { DecentrPDVClient } from './pdv';
+import { DecentrProfileClient } from './profile';
+import { DecentrStakingClient } from './staking';
+import { DecentrSwapClient } from './swap';
+import { DecentrTokenClient } from './token';
+import { DecentrTXsClient } from './txs';
 
 export class DecentrClient {
-  private bankSDK: DecentrBankSDK | undefined;
-  private blocksSDK: DecentrBlocksSDK | undefined;
-  private communitySDK: DecentrCommunitySDK | undefined;
-  private distributionSDK: DecentrDistributionSDK | undefined;
-  private imageSDK: DecentrImageSDK | undefined;
-  private nodeSDK: DecentrNodeSDK | undefined;
-  private mintingSDK: DecentrMintingSDK | undefined;
-  private operationsSDK: DecentrOperationsSDK | undefined;
-  private pdvSDK: DecentrPDVSDK | undefined;
-  private profileSDK: DecentrProfileSDK | undefined;
-  private stakingSDK: DecentrStakingSDK | undefined;
-  private swapSDK: DecentrSwapSDK | undefined;
-  private tokenSDK: DecentrTokenSDK | undefined;
-  private txsSDK: DecentrTXsSDK | undefined;
+  private bankClient: DecentrBankClient | undefined;
+  private blocksClient: DecentrBlocksClient | undefined;
+  private communityClient: DecentrCommunityClient | undefined;
+  private distributionClient: DecentrDistributionClient | undefined;
+  private imageClient: DecentrImageClient | undefined;
+  private nodeClient: DecentrNodeClient | undefined;
+  private mintingClient: DecentrMintingClient | undefined;
+  private operationsClient: DecentrOperationsClient | undefined;
+  private pdvClient: DecentrPDVClient | undefined;
+  private profileClient: DecentrProfileClient | undefined;
+  private stakingClient: DecentrStakingClient | undefined;
+  private swapClient: DecentrSwapClient | undefined;
+  private tokenClient: DecentrTokenClient | undefined;
+  private txsClient: DecentrTXsClient | undefined;
 
   constructor(
     private nodeUrl: string,
@@ -38,127 +38,134 @@ export class DecentrClient {
   ) {
   }
 
-  public async bank(): Promise<DecentrBankSDK> {
-    if (!this.bankSDK) {
-      this.bankSDK = await DecentrBankSDK.create(this.nodeUrl);
+  public async bank(): Promise<DecentrBankClient> {
+    if (!this.bankClient) {
+      this.bankClient = await DecentrBankClient.create(this.nodeUrl);
     }
 
-    return this.bankSDK;
+    return this.bankClient;
   }
 
-  public get blocks(): DecentrBlocksSDK {
-    if (!this.blocksSDK) {
-      this.blocksSDK = new DecentrBlocksSDK(this.nodeUrl);
+  public async blocks(): Promise<DecentrBlocksClient> {
+    if (!this.blocksClient) {
+      this.blocksClient = await DecentrBlocksClient.create(this.nodeUrl);
     }
 
-    return this.blocksSDK;
+    return this.blocksClient;
   }
 
-  public async community(): Promise<DecentrCommunitySDK> {
-    if (!this.communitySDK) {
-      this.communitySDK = await DecentrCommunitySDK.create(this.nodeUrl);
+  public async community(): Promise<DecentrCommunityClient> {
+    if (!this.communityClient) {
+      this.communityClient = await DecentrCommunityClient.create(this.nodeUrl);
     }
 
-    return this.communitySDK;
+    return this.communityClient;
   }
 
-  public get distribution(): DecentrDistributionSDK {
-    if (!this.distributionSDK) {
-      this.distributionSDK = new DecentrDistributionSDK(this.nodeUrl);
+  public async distribution(): Promise<DecentrDistributionClient> {
+    if (!this.distributionClient) {
+      this.distributionClient = await DecentrDistributionClient.create(this.nodeUrl);
     }
 
-    return this.distributionSDK;
+    return this.distributionClient;
   }
 
-  public get image(): DecentrImageSDK {
+  public get image(): DecentrImageClient {
     if (!this.servicesUrls?.cerberus) {
       throw new Error(`You didn't provide Cerberus url`);
     }
 
-    if (!this.imageSDK) {
-      this.imageSDK = new DecentrImageSDK(this.servicesUrls?.cerberus);
+    if (!this.imageClient) {
+      this.imageClient = new DecentrImageClient(this.servicesUrls.cerberus);
     }
 
-    return this.imageSDK;
+    return this.imageClient;
   }
 
-  public get minting(): DecentrMintingSDK {
-    if (!this.mintingSDK) {
-      this.mintingSDK = new DecentrMintingSDK(this.nodeUrl);
+  public get minting(): DecentrMintingClient {
+    if (!this.mintingClient) {
+      this.mintingClient = new DecentrMintingClient(this.nodeUrl);
     }
 
-    return this.mintingSDK;
+    return this.mintingClient;
   }
 
-  public get node(): DecentrNodeSDK {
-    if (!this.nodeSDK) {
-      this.nodeSDK = new DecentrNodeSDK(this.nodeUrl);
+  public async node(): Promise<DecentrNodeClient> {
+    if (!this.nodeClient) {
+      this.nodeClient = await DecentrNodeClient.create(this.nodeUrl);
     }
 
-    return this.nodeSDK;
+    return this.nodeClient;
   }
 
-  public async operations(): Promise<DecentrOperationsSDK> {
-    if (!this.operationsSDK) {
-      this.operationsSDK = await DecentrOperationsSDK.create(this.nodeUrl);
+  public async operations(): Promise<DecentrOperationsClient> {
+    if (!this.operationsClient) {
+      this.operationsClient = await DecentrOperationsClient.create(this.nodeUrl);
     }
 
-    return this.operationsSDK;
+    return this.operationsClient;
   }
 
-  public get pdv(): DecentrPDVSDK {
-    if (!this.pdvSDK) {
-      this.pdvSDK = new DecentrPDVSDK();
-    }
-
-    return this.pdvSDK;
-  }
-
-  public get profile(): DecentrProfileSDK {
+  public get pdv(): DecentrPDVClient {
     if (!this.servicesUrls?.cerberus) {
       throw new Error(`You didn't provide Cerberus url`);
     }
 
-    if (!this.profileSDK) {
-      this.profileSDK = new DecentrProfileSDK(this.nodeUrl, this.servicesUrls.cerberus);
+    if (!this.pdvClient) {
+      this.pdvClient = new DecentrPDVClient(this.servicesUrls.cerberus);
     }
 
-    return this.profileSDK;
+    return this.pdvClient;
   }
 
-  public get staking(): DecentrStakingSDK {
-    if (!this.stakingSDK) {
-      this.stakingSDK = new DecentrStakingSDK(this.nodeUrl);
+  public async profile(): Promise<DecentrProfileClient> {
+    if (!this.servicesUrls?.cerberus) {
+      throw new Error(`You didn't provide Cerberus url`);
     }
 
-    return this.stakingSDK;
+    if (!this.profileClient) {
+      this.profileClient = await DecentrProfileClient.create(
+        this.nodeUrl,
+        this.servicesUrls?.cerberus,
+      );
+    }
+
+    return this.profileClient;
   }
 
-  public get swap(): DecentrSwapSDK {
+  public async staking(): Promise<DecentrStakingClient> {
+    if (!this.stakingClient) {
+      this.stakingClient = await DecentrStakingClient.create(this.nodeUrl);
+    }
+
+    return this.stakingClient;
+  }
+
+  public get swap(): DecentrSwapClient {
     if (!this.servicesUrls?.swap) {
       throw new Error(`You didn't provide Swap url`);
     }
 
-    if (!this.swapSDK) {
-      this.swapSDK = new DecentrSwapSDK(this.servicesUrls.swap);
+    if (!this.swapClient) {
+      this.swapClient = new DecentrSwapClient(this.servicesUrls.swap);
     }
 
-    return this.swapSDK;
+    return this.swapClient;
   }
 
-  public get token(): DecentrTokenSDK {
-    if (!this.tokenSDK) {
-      this.tokenSDK = new DecentrTokenSDK(this.nodeUrl);
+  public get token(): DecentrTokenClient {
+    if (!this.tokenClient) {
+      this.tokenClient = new DecentrTokenClient(this.nodeUrl);
     }
 
-    return this.tokenSDK;
+    return this.tokenClient;
   }
 
-  public get txs(): DecentrTXsSDK {
-    if (!this.txsSDK) {
-      this.txsSDK = new DecentrTXsSDK(this.nodeUrl);
+  public async txs(): Promise<DecentrTXsClient> {
+    if (!this.txsClient) {
+      this.txsClient = await DecentrTXsClient.create(this.nodeUrl);
     }
 
-    return this.txsSDK;
+    return this.txsClient;
   }
 }

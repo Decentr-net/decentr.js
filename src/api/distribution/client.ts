@@ -1,35 +1,35 @@
 import { Params } from 'cosmjs-types/cosmos/distribution/v1beta1/distribution';
 import {
   QueryDelegationRewardsResponse,
-  QueryDelegationTotalRewardsResponse
+  QueryDelegationTotalRewardsResponse,
 } from 'cosmjs-types/cosmos/distribution/v1beta1/query';
 import {
   MsgSetWithdrawAddress,
   MsgWithdrawValidatorCommission,
   MsgWithdrawDelegatorReward,
 } from 'cosmjs-types/cosmos/distribution/v1beta1/tx';
+import { Validator } from 'cosmjs-types/cosmos/staking/v1beta1/staking';
 import {
   BroadcastTxResponse,
   Coin,
   DistributionExtension,
   QueryClient,
-  setupDistributionExtension
+  setupDistributionExtension,
 } from '@cosmjs/stargate';
 import { Tendermint34Client } from '@cosmjs/tendermint-rpc';
 
 import { Wallet } from '../../wallet';
-import { Validator } from '../staking';
-import { getMinGasPrice } from '../operations';
+import { getMinGasPrice } from '../operations/api';
 import { signAndBroadcast } from '../api-utils';
 
-export class DecentrDistributionSDK {
+export class DecentrDistributionClient {
   private constructor(
     private nodeUrl: string,
     private queryClient: QueryClient & DistributionExtension,
   ) {
   }
 
-  public static async create(nodeUrl: string): Promise<DecentrDistributionSDK> {
+  public static async create(nodeUrl: string): Promise<DecentrDistributionClient> {
     const tendermintClient = await Tendermint34Client.connect(nodeUrl);
 
     const queryClient = QueryClient.withExtensions(
@@ -37,7 +37,7 @@ export class DecentrDistributionSDK {
       setupDistributionExtension,
     );
 
-    return new DecentrDistributionSDK(nodeUrl, queryClient);
+    return new DecentrDistributionClient(nodeUrl, queryClient);
   }
 
   public getCommunityPool(): Promise<Coin[]> {
@@ -58,7 +58,7 @@ export class DecentrDistributionSDK {
 
   public getDelegatorRewardsFromValidator(
     delegatorAddress: Wallet['address'],
-    validatorAddress: Validator['operator_address'],
+    validatorAddress: Validator['operatorAddress'],
   ): Promise<QueryDelegationRewardsResponse> {
     return this.queryClient.distribution.delegationRewards(
       delegatorAddress,
@@ -72,14 +72,14 @@ export class DecentrDistributionSDK {
   }
 
   public getValidatorCommission(
-    validatorAddress: Validator['operator_address'],
+    validatorAddress: Validator['operatorAddress'],
   ): Promise<Coin[]> {
     return this.queryClient.distribution.validatorCommission(validatorAddress)
       .then((response) => response.commission?.commission || []);
   }
 
   public getValidatorOutstandingRewards(
-    validatorAddress: Validator['operator_address'],
+    validatorAddress: Validator['operatorAddress'],
   ): Promise<Coin[]> {
     return this.queryClient.distribution.validatorOutstandingRewards(validatorAddress)
       .then((response) => response.rewards?.rewards || []);
