@@ -59,7 +59,9 @@ export class DecentrCommunityClient {
       message,
       minGasPrice,
       privateKey,
-      REGISTRY,
+      {
+        registry: REGISTRY,
+      }
     );
   }
 
@@ -79,7 +81,9 @@ export class DecentrCommunityClient {
       message,
       minGasPrice,
       privateKey,
-      REGISTRY,
+      {
+        registry: REGISTRY,
+      }
     );
   }
 
@@ -101,7 +105,9 @@ export class DecentrCommunityClient {
       message,
       minGasPrice,
       privateKey,
-      REGISTRY,
+      {
+        registry: REGISTRY,
+      }
     );
   }
 
@@ -121,7 +127,9 @@ export class DecentrCommunityClient {
       message,
       minGasPrice,
       privateKey,
-      REGISTRY,
+      {
+        registry: REGISTRY,
+      }
     );
   }
 
@@ -141,7 +149,9 @@ export class DecentrCommunityClient {
       message,
       minGasPrice,
       privateKey,
-      REGISTRY,
+      {
+        registry: REGISTRY,
+      }
     );
   }
 }

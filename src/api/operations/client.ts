@@ -47,7 +47,9 @@ export class DecentrOperationsClient {
       message,
       minGasPrice,
       privateKey,
-      REGISTRY,
+      {
+        registry: REGISTRY,
+      }
     );
   }
 }

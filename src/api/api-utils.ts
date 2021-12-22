@@ -73,7 +73,10 @@ export async function signAndBroadcast(
   messages: EncodeObject | EncodeObject[],
   minGasPrice: Coin,
   privateKey: string,
-  registry?: Registry,
+  options?: {
+    memo?: string,
+    registry?: Registry,
+  },
 ): Promise<BroadcastTxSuccess> {
   const wallet = await createSecp256k1WalletFromPrivateKey(privateKey);
 
@@ -81,7 +84,7 @@ export async function signAndBroadcast(
 
   // TODO: replace with gasPrice
   const signingStargateClient = await SigningStargateClient
-    .connectWithSigner(nodeUrl, wallet, { registry });
+    .connectWithSigner(nodeUrl, wallet, { registry: options?.registry });
   // const signingStargateClient = await SigningStargateClient
   //   .connectWithSigner(nodeUrl, wallet, { gasPrice }, { registry });
 
@@ -95,6 +98,7 @@ export async function signAndBroadcast(
       amount: [createDecentrCoin(1)],
       gas: '1',
     },
+    options?.memo,
   );
 
   signingStargateClient.disconnect();

@@ -58,6 +58,7 @@ export class DecentrBankClient {
   public async sendTokens(
     request: SendTokensRequest,
     privateKey: Wallet['privateKey'],
+    memo?: string,
   ): Promise<BroadcastTxSuccess> {
     const minGasPrice = await getMinGasPrice(this.nodeUrl);
 
@@ -71,6 +72,9 @@ export class DecentrBankClient {
       message,
       minGasPrice,
       privateKey,
+      {
+        memo,
+      }
     );
   }
 }
