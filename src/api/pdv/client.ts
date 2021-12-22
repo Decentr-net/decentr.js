@@ -48,8 +48,8 @@ export class DecentrPDVClient {
     return fetchJson(url, { headers });
   }
 
-  public getRewards(cerberusUrl: string): Promise<Record<PDVType, number>> {
-    return fetchJson(`${cerberusUrl}/v1/configs/rewards`);
+  public getRewards(): Promise<Record<PDVType, number>> {
+    return fetchJson(`${this.cerberusUrl}/v1/configs/rewards`);
   }
 
   public sendPDV(pdv: PDV[], wallet: Wallet): Promise<PDVAddress> {

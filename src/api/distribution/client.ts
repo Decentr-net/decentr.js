@@ -3,11 +3,6 @@ import {
   QueryDelegationRewardsResponse,
   QueryDelegationTotalRewardsResponse,
 } from 'cosmjs-types/cosmos/distribution/v1beta1/query';
-import {
-  MsgSetWithdrawAddress,
-  MsgWithdrawValidatorCommission,
-  MsgWithdrawDelegatorReward,
-} from 'cosmjs-types/cosmos/distribution/v1beta1/tx';
 import { Validator } from 'cosmjs-types/cosmos/staking/v1beta1/staking';
 import {
   BroadcastTxResponse,
@@ -21,6 +16,11 @@ import { Tendermint34Client } from '@cosmjs/tendermint-rpc';
 import { Wallet } from '../../wallet';
 import { getMinGasPrice } from '../operations/api';
 import { signAndBroadcast } from '../api-utils';
+import {
+  SetWithdrawAddressRequest,
+  WithdrawDelegatorRewardRequest,
+  WithdrawValidatorCommissionRequest
+} from './types';
 
 export class DecentrDistributionClient {
   private constructor(
@@ -85,8 +85,8 @@ export class DecentrDistributionClient {
       .then((response) => response.rewards?.rewards || []);
   }
 
-  public async replaceWithdrawAddress(
-    request: MsgSetWithdrawAddress,
+  public async setWithdrawAddress(
+    request: SetWithdrawAddressRequest,
     privateKey: Wallet['privateKey'],
   ): Promise<BroadcastTxResponse> {
     const minGasPrice = await getMinGasPrice(this.nodeUrl);
@@ -117,7 +117,7 @@ export class DecentrDistributionClient {
   // }
 
   public async withdrawDelegatorRewards(
-    request: MsgWithdrawDelegatorReward[],
+    request: WithdrawDelegatorRewardRequest,
     privateKey: Wallet['privateKey'],
   ): Promise<BroadcastTxResponse> {
     const minGasPrice = await getMinGasPrice(this.nodeUrl);
@@ -158,7 +158,7 @@ export class DecentrDistributionClient {
   // }
 
   public async withdrawValidatorRewards(
-    request: MsgWithdrawValidatorCommission,
+    request: WithdrawValidatorCommissionRequest,
     privateKey: Wallet['privateKey'],
   ): Promise<BroadcastTxResponse> {
     const minGasPrice = await getMinGasPrice(this.nodeUrl);

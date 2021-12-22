@@ -8,6 +8,7 @@ import {
   isBroadcastTxFailure,
   SigningStargateClient,
 } from '@cosmjs/stargate';
+import { BroadcastTxSuccess } from '@cosmjs/stargate/build/stargateclient';
 
 import {
   bytesToHex,
@@ -73,7 +74,7 @@ export async function signAndBroadcast(
   minGasPrice: Coin,
   privateKey: string,
   registry?: Registry,
-): Promise<BroadcastTxResponse> {
+): Promise<BroadcastTxSuccess> {
   const wallet = await createSecp256k1WalletFromPrivateKey(privateKey);
 
   // const gasPrice = GasPrice.fromString(minGasPrice.amount + minGasPrice.denom);
@@ -100,7 +101,7 @@ export async function signAndBroadcast(
 
   assertIsBroadcastSuccess(result);
 
-  return result;
+  return result as BroadcastTxSuccess;
 }
 
 export function createCustomRegistry(msgMap: Map<GeneratedType, string>): Registry {

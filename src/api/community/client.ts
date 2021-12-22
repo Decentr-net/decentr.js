@@ -2,16 +2,17 @@ import { BroadcastTxResponse, QueryClient } from '@cosmjs/stargate';
 import { Tendermint34Client } from '@cosmjs/tendermint-rpc';
 
 import { Wallet } from '../../wallet';
-import { Like, Post } from '../../codec/community/community';
-import {
-  MsgDeletePost,
-  MsgFollow,
-  MsgUnfollow,
-} from '../../codec/community/tx';
 import { getMinGasPrice } from '../operations/api';
 import { signAndBroadcast } from '../api-utils';
 import { CommunityExtension, setupCommunityExtension } from './extension';
 import { MessageTypeUrl, REGISTRY } from './registry';
+import {
+  CreatePostRequest,
+  DeletePostRequest,
+  FollowRequest,
+  LikeRequest,
+  UnfollowRequest,
+} from './types';
 
 export class DecentrCommunityClient {
   private constructor(
@@ -40,7 +41,7 @@ export class DecentrCommunityClient {
   }
 
   public async createPost(
-    request: Omit<Post, 'owner' | 'uuid'>,
+    request: CreatePostRequest,
     privateKey: Wallet['privateKey'],
   ): Promise<BroadcastTxResponse> {
     const minGasPrice = await getMinGasPrice(this.nodeUrl);
@@ -62,7 +63,7 @@ export class DecentrCommunityClient {
   }
 
   public async deletePost(
-    request: MsgDeletePost,
+    request: DeletePostRequest,
     privateKey: Wallet['privateKey'],
   ): Promise<BroadcastTxResponse> {
     const minGasPrice = await getMinGasPrice(this.nodeUrl);
@@ -82,7 +83,7 @@ export class DecentrCommunityClient {
   }
 
   public async setLike(
-    request: Like,
+    request: LikeRequest,
     privateKey: Wallet['privateKey'],
   ): Promise<BroadcastTxResponse> {
     const minGasPrice = await getMinGasPrice(this.nodeUrl);
@@ -104,7 +105,7 @@ export class DecentrCommunityClient {
   }
 
   public async follow(
-    request: MsgFollow,
+    request: FollowRequest,
     privateKey: Wallet['privateKey'],
   ): Promise<BroadcastTxResponse> {
     const minGasPrice = await getMinGasPrice(this.nodeUrl);
@@ -124,7 +125,7 @@ export class DecentrCommunityClient {
   }
 
   public async unfollow(
-    request: MsgUnfollow,
+    request: UnfollowRequest,
     privateKey: Wallet['privateKey'],
   ): Promise<BroadcastTxResponse> {
     const minGasPrice = await getMinGasPrice(this.nodeUrl);

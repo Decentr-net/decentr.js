@@ -1,4 +1,6 @@
 import { Wallet } from '../../wallet';
+import { MsgDeletePost, MsgFollow, MsgUnfollow } from '../../codec/community/tx';
+import { Like } from '../../codec/community/community';
 
 export enum PostCategory {
   WorldNews = 1,
@@ -10,12 +12,6 @@ export enum PostCategory {
   HealthAndFitness,
   CryptoAndBlockchain,
   Sports,
-}
-
-export enum LikeWeight {
-  Up = 1,
-  Zero = 0,
-  Down = -1,
 }
 
 export interface Post {
@@ -32,16 +28,8 @@ export interface Post {
   title: string;
 }
 
-export type CreatePostOptions = Pick<Post, 'category' | 'previewImage' | 'text' | 'title'>;
-
-export type DeletePostOptions = Pick<Post, 'uuid' | 'owner'>;
-
-export interface LikePostOptions extends Pick<Post, 'uuid' | 'owner'> {
-  weight: LikeWeight;
-}
-
-export interface FollowOptions {
-  whom: Wallet['address'];
-}
-
-export type UnfollowOptions = FollowOptions;
+export type CreatePostRequest = Pick<Post, 'category' | 'previewImage' | 'text' | 'title'>;
+export type DeletePostRequest = MsgDeletePost;
+export type FollowRequest = MsgFollow;
+export type LikeRequest = Like;
+export type UnfollowRequest = MsgUnfollow;

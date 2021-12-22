@@ -4,15 +4,15 @@ import {
   Coin,
   MsgSendEncodeObject,
   QueryClient,
-  setupBankExtension
+  setupBankExtension,
 } from '@cosmjs/stargate';
 import { Tendermint34Client } from '@cosmjs/tendermint-rpc';
-import { MsgSend } from 'cosmjs-types/cosmos/bank/v1beta1/tx';
 
 import { Wallet } from '../../wallet';
 import { DECENTR_DENOM } from '../types';
 import { getMinGasPrice } from '../operations/api';
 import { signAndBroadcast } from '../api-utils';
+import { SendTokensRequest } from './types';
 
 export class DecentrBankClient {
   private constructor(
@@ -56,7 +56,7 @@ export class DecentrBankClient {
   }
 
   public async sendTokens(
-    request: MsgSend,
+    request: SendTokensRequest,
     privateKey: Wallet['privateKey'],
   ): Promise<BroadcastTxResponse> {
     const minGasPrice = await getMinGasPrice(this.nodeUrl);

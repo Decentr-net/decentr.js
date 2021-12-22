@@ -1,4 +1,7 @@
-export { Coin, BroadcastTxResponse } from '@cosmjs/stargate';
+export { Coin } from '@cosmjs/stargate';
+export { BroadcastTxSuccess } from '@cosmjs/stargate/build/stargateclient';
+
+export { createDecentrCoin } from './api-utils';
 
 export * from './bank';
 export * from './blocks';

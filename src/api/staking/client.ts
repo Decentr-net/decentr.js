@@ -7,11 +7,6 @@ import {
   UnbondingDelegation,
   Validator,
 } from 'cosmjs-types/cosmos/staking/v1beta1/staking';
-import {
-  MsgBeginRedelegate,
-  MsgDelegate,
-  MsgUndelegate,
-} from 'cosmjs-types/cosmos/staking/v1beta1/tx';
 import { BondStatusString } from '@cosmjs/stargate/build/queries/staking';
 import {
   BroadcastTxResponse,
@@ -27,6 +22,7 @@ import { Tendermint34Client } from '@cosmjs/tendermint-rpc';
 import { Wallet } from '../../wallet';
 import { getMinGasPrice } from '../operations/api';
 import { signAndBroadcast } from '../api-utils';
+import { DelegateTokensRequest, RedelegateTokensRequest, UndelegateTokensRequest } from './types';
 
 export class DecentrStakingClient {
   private constructor(
@@ -139,7 +135,7 @@ export class DecentrStakingClient {
   // }
 
   public async delegateTokens(
-    request: MsgDelegate,
+    request: DelegateTokensRequest,
     privateKey: Wallet['privateKey'],
   ): Promise<BroadcastTxResponse> {
     const minGasPrice = await getMinGasPrice(this.nodeUrl);
@@ -165,7 +161,7 @@ export class DecentrStakingClient {
   // }
 
   public async undelegateTokens(
-    request: MsgUndelegate,
+    request: UndelegateTokensRequest,
     privateKey: Wallet['privateKey'],
   ): Promise<BroadcastTxResponse> {
     const minGasPrice = await getMinGasPrice(this.nodeUrl);
@@ -191,7 +187,7 @@ export class DecentrStakingClient {
   // }
 
   public async redelegateTokens(
-    request: MsgBeginRedelegate,
+    request: RedelegateTokensRequest,
     privateKey: Wallet['privateKey'],
   ): Promise<BroadcastTxResponse> {
     const minGasPrice = await getMinGasPrice(this.nodeUrl);
