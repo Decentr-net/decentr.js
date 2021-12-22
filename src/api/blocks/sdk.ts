@@ -1,15 +1,18 @@
-import { getBlock, getLatestBlock } from './api';
-import { Block, BlockHeader } from './types';
+import { Block, BlockHeader, StargateClient } from '@cosmjs/stargate';
 
 export class DecentrBlocksSDK {
-  constructor(private nodeUrl: string) {
+  private constructor(
+    private stargateClient: StargateClient,
+  ) {
   }
 
-  public getLatestBlock(): Promise<Block> {
-    return getLatestBlock(this.nodeUrl);
+  public static async create(nodeUrl: string): Promise<DecentrBlocksSDK> {
+    const stargateClient = await StargateClient.connect(nodeUrl);
+
+    return new DecentrBlocksSDK(stargateClient);
   }
 
-  public getBlock(height: BlockHeader['height']): Promise<Block> {
-    return getBlock(this.nodeUrl, height);
+  public getBlock(height?: BlockHeader['height']): Promise<Block> {
+    return this.stargateClient.getBlock(height);
   }
 }

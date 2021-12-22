@@ -38,9 +38,9 @@ export class DecentrClient {
   ) {
   }
 
-  public get bank(): DecentrBankSDK {
+  public async bank(): Promise<DecentrBankSDK> {
     if (!this.bankSDK) {
-      this.bankSDK = new DecentrBankSDK(this.nodeUrl);
+      this.bankSDK = await DecentrBankSDK.create(this.nodeUrl);
     }
 
     return this.bankSDK;
@@ -54,9 +54,9 @@ export class DecentrClient {
     return this.blocksSDK;
   }
 
-  public get community(): DecentrCommunitySDK {
+  public async community(): Promise<DecentrCommunitySDK> {
     if (!this.communitySDK) {
-      this.communitySDK = new DecentrCommunitySDK(this.nodeUrl);
+      this.communitySDK = await DecentrCommunitySDK.create(this.nodeUrl);
     }
 
     return this.communitySDK;
@@ -98,9 +98,9 @@ export class DecentrClient {
     return this.nodeSDK;
   }
 
-  public get operations(): DecentrOperationsSDK {
+  public async operations(): Promise<DecentrOperationsSDK> {
     if (!this.operationsSDK) {
-      this.operationsSDK = new DecentrOperationsSDK(this.nodeUrl);
+      this.operationsSDK = await DecentrOperationsSDK.create(this.nodeUrl);
     }
 
     return this.operationsSDK;

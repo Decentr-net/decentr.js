@@ -1,74 +1,105 @@
-import { BroadcastTxResponse, Coin } from '@cosmjs/stargate';
+import { Params } from 'cosmjs-types/cosmos/distribution/v1beta1/distribution';
+import {
+  QueryDelegationRewardsResponse,
+  QueryDelegationTotalRewardsResponse
+} from 'cosmjs-types/cosmos/distribution/v1beta1/query';
+import {
+  MsgSetWithdrawAddress,
+  MsgWithdrawValidatorCommission,
+  MsgWithdrawDelegatorReward,
+} from 'cosmjs-types/cosmos/distribution/v1beta1/tx';
+import {
+  BroadcastTxResponse,
+  Coin,
+  DistributionExtension,
+  QueryClient,
+  setupDistributionExtension
+} from '@cosmjs/stargate';
+import { Tendermint34Client } from '@cosmjs/tendermint-rpc';
 
 import { Wallet } from '../../wallet';
 import { Validator } from '../staking';
-import {
-  getCommunityPool,
-  getDelegatorRewards,
-  getDelegatorRewardsFromValidator,
-  getDistributionParameters,
-  getValidatorCommission,
-  getValidatorOutstandingRewards,
-  getWithdrawAddress,
-  withdrawDelegatorRewards,
-  withdrawValidatorRewards,
-  replaceWithdrawAddress,
-} from './api';
-import { DelegatorRewards, DistributionParameters } from './types';
+import { getMinGasPrice } from '../operations';
+import { signAndBroadcast } from '../api-utils';
 
 export class DecentrDistributionSDK {
-  constructor(
+  private constructor(
     private nodeUrl: string,
+    private queryClient: QueryClient & DistributionExtension,
   ) {
   }
 
-  public getCommunityPool(): Promise<Coin[]> {
-    return getCommunityPool(this.nodeUrl);
+  public static async create(nodeUrl: string): Promise<DecentrDistributionSDK> {
+    const tendermintClient = await Tendermint34Client.connect(nodeUrl);
+
+    const queryClient = QueryClient.withExtensions(
+      tendermintClient,
+      setupDistributionExtension,
+    );
+
+    return new DecentrDistributionSDK(nodeUrl, queryClient);
   }
 
-  public getDistributionParameters(): Promise<DistributionParameters> {
-    return getDistributionParameters(this.nodeUrl);
+  public getCommunityPool(): Promise<Coin[]> {
+    return this.queryClient.distribution.communityPool()
+      .then((response) => response.pool);
+  }
+
+  public getDistributionParameters(): Promise<Params> {
+    return this.queryClient.distribution.params()
+      .then((response) => response.params as Params);
   }
 
   public getDelegatorRewards(
     delegatorAddress: Wallet['address'],
-  ): Promise<DelegatorRewards> {
-    return getDelegatorRewards(this.nodeUrl, delegatorAddress);
+  ): Promise<QueryDelegationTotalRewardsResponse> {
+    return this.queryClient.distribution.delegationTotalRewards(delegatorAddress);
   }
 
   public getDelegatorRewardsFromValidator(
     delegatorAddress: Wallet['address'],
-    fromValidatorAddress: Validator['operator_address'],
-  ): Promise<DelegatorRewards | Coin[]> {
-    return getDelegatorRewardsFromValidator(this.nodeUrl, delegatorAddress, fromValidatorAddress);
+    validatorAddress: Validator['operator_address'],
+  ): Promise<QueryDelegationRewardsResponse> {
+    return this.queryClient.distribution.delegationRewards(
+      delegatorAddress,
+      validatorAddress,
+    );
   }
 
   public getWithdrawAddress(delegatorAddress: Wallet['address']): Promise<Wallet['address']> {
-    return getWithdrawAddress(this.nodeUrl, delegatorAddress);
+    return this.queryClient.distribution.delegatorWithdrawAddress(delegatorAddress)
+      .then((response) => response.withdrawAddress);
   }
 
   public getValidatorCommission(
     validatorAddress: Validator['operator_address'],
   ): Promise<Coin[]> {
-    return getValidatorCommission(this.nodeUrl, validatorAddress);
+    return this.queryClient.distribution.validatorCommission(validatorAddress)
+      .then((response) => response.commission?.commission || []);
   }
 
   public getValidatorOutstandingRewards(
     validatorAddress: Validator['operator_address'],
   ): Promise<Coin[]> {
-    return getValidatorOutstandingRewards(
-      this.nodeUrl,
-      validatorAddress,
-    );
+    return this.queryClient.distribution.validatorOutstandingRewards(validatorAddress)
+      .then((response) => response.rewards?.rewards || []);
   }
 
-  public replaceWithdrawAddress(
-    withdrawAddress: Wallet['address'],
+  public async replaceWithdrawAddress(
+    request: MsgSetWithdrawAddress,
     privateKey: Wallet['privateKey'],
   ): Promise<BroadcastTxResponse> {
-    return replaceWithdrawAddress(
+    const minGasPrice = await getMinGasPrice(this.nodeUrl);
+
+    const message = {
+      typeUrl: '/cosmos.distribution.v1beta1.MsgSetWithdrawAddress',
+      value: request,
+    };
+
+    return signAndBroadcast(
       this.nodeUrl,
-      withdrawAddress,
+      message,
+      minGasPrice,
       privateKey,
     );
   }
@@ -85,11 +116,23 @@ export class DecentrDistributionSDK {
   //   );
   // }
 
-  public withdrawDelegatorRewards(
-    validatorAddresses: Validator['operator_address'][],
+  public async withdrawDelegatorRewards(
+    request: MsgWithdrawDelegatorReward[],
     privateKey: Wallet['privateKey'],
   ): Promise<BroadcastTxResponse> {
-    return withdrawDelegatorRewards(this.nodeUrl, validatorAddresses, privateKey);
+    const minGasPrice = await getMinGasPrice(this.nodeUrl);
+
+    const messages = request.map((msg) => ({
+      typeUrl: '/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward',
+      value: msg,
+    }));
+
+    return signAndBroadcast(
+      this.nodeUrl,
+      messages,
+      minGasPrice,
+      privateKey,
+    );
   }
 
   // TODO: deprecated?
@@ -114,11 +157,21 @@ export class DecentrDistributionSDK {
   //   );
   // }
 
-  public withdrawValidatorRewards(
+  public async withdrawValidatorRewards(
+    request: MsgWithdrawValidatorCommission,
     privateKey: Wallet['privateKey'],
   ): Promise<BroadcastTxResponse> {
-    return withdrawValidatorRewards(
+    const minGasPrice = await getMinGasPrice(this.nodeUrl);
+
+    const message = {
+      typeUrl: '/cosmos.distribution.v1beta1.MsgSetWithdrawAddress',
+      value: request,
+    };
+
+    return signAndBroadcast(
       this.nodeUrl,
+      message,
+      minGasPrice,
       privateKey,
     );
   }

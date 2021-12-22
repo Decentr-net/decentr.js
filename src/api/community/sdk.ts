@@ -1,89 +1,145 @@
-import { BroadcastTxResponse } from '@cosmjs/stargate';
+import { BroadcastTxResponse, QueryClient } from '@cosmjs/stargate';
+import { Tendermint34Client } from '@cosmjs/tendermint-rpc';
 
 import { Wallet } from '../../wallet';
+import { Like, Post } from '../../../codec/community/community';
 import {
-  createPost,
-  deletePost,
-  likePost,
-  getModeratorAddresses,
-  getFollowees,
-  follow,
-  unfollow,
-} from './api';
-import {
-  CreatePostOptions,
-  DeletePostOptions,
-  FollowOptions,
-  LikePostOptions,
-  UnfollowOptions,
-} from './types';
+  MsgDeletePost,
+  MsgFollow,
+  MsgUnfollow,
+} from '../../../codec/community/tx';
+import { getMinGasPrice } from '../operations';
+import { signAndBroadcast } from '../api-utils';
+import { CommunityExtension, setupCommunityExtension } from './extension';
+import { MessageTypeUrl, REGISTRY } from './registry';
 
 export class DecentrCommunitySDK {
-  constructor(
+  private constructor(
     private nodeUrl: string,
+    private queryClient: QueryClient & CommunityExtension,
   ) {
   }
 
+  public static async create(nodeUrl: string): Promise<DecentrCommunitySDK> {
+    const tendermintClient = await Tendermint34Client.connect(nodeUrl);
+
+    const queryClient = QueryClient.withExtensions(
+      tendermintClient,
+      setupCommunityExtension,
+    );
+
+    return new DecentrCommunitySDK(nodeUrl, queryClient);
+  }
+
   public getModeratorAddresses(): Promise<Wallet['address'][]> {
-    return getModeratorAddresses(this.nodeUrl);
+    return this.queryClient.community.getModerators();
   }
 
   public getFollowees(follower: Wallet['address']): Promise<Wallet['address'][]> {
-    return getFollowees(this.nodeUrl, follower);
+    return this.queryClient.community.getFollowees({ owner: follower });
   }
 
-  public createPost(
-    post: CreatePostOptions,
+  public async createPost(
+    request: Omit<Post, 'owner' | 'uuid'>,
     privateKey: Wallet['privateKey'],
   ): Promise<BroadcastTxResponse> {
-    return createPost(
+    const minGasPrice = await getMinGasPrice(this.nodeUrl);
+
+    const message = {
+      typeUrl: MessageTypeUrl.CreatePost,
+      value: {
+        post: request,
+      },
+    };
+
+    return signAndBroadcast(
       this.nodeUrl,
-      post,
+      message,
+      minGasPrice,
       privateKey,
+      REGISTRY,
     );
   }
 
-  public deletePost(
-    options: DeletePostOptions,
+  public async deletePost(
+    request: MsgDeletePost,
     privateKey: Wallet['privateKey'],
   ): Promise<BroadcastTxResponse> {
-    return deletePost(
+    const minGasPrice = await getMinGasPrice(this.nodeUrl);
+
+    const message = {
+      typeUrl: MessageTypeUrl.DeletePost,
+      value: request,
+    };
+
+    return signAndBroadcast(
       this.nodeUrl,
-      options,
+      message,
+      minGasPrice,
       privateKey,
+      REGISTRY,
     );
   }
 
-  public likePost(
-    options: LikePostOptions,
+  public async setLike(
+    request: Like,
     privateKey: Wallet['privateKey'],
   ): Promise<BroadcastTxResponse> {
-    return likePost(
+    const minGasPrice = await getMinGasPrice(this.nodeUrl);
+
+    const message = {
+      typeUrl: MessageTypeUrl.SetLike,
+      value: {
+        like: request,
+      },
+    };
+
+    return signAndBroadcast(
       this.nodeUrl,
-      options,
+      message,
+      minGasPrice,
       privateKey,
+      REGISTRY,
     );
   }
 
-  public follow(
-    options: FollowOptions,
+  public async follow(
+    request: MsgFollow,
     privateKey: Wallet['privateKey'],
   ): Promise<BroadcastTxResponse> {
-    return follow(
+    const minGasPrice = await getMinGasPrice(this.nodeUrl);
+
+    const message = {
+      typeUrl: MessageTypeUrl.Follow,
+      value: request,
+    };
+
+    return signAndBroadcast(
       this.nodeUrl,
-      options,
+      message,
+      minGasPrice,
       privateKey,
+      REGISTRY,
     );
   }
 
-  public unfollow(
-    options: UnfollowOptions,
+  public async unfollow(
+    request: MsgUnfollow,
     privateKey: Wallet['privateKey'],
   ): Promise<BroadcastTxResponse> {
-    return unfollow(
+    const minGasPrice = await getMinGasPrice(this.nodeUrl);
+
+    const message = {
+      typeUrl: MessageTypeUrl.Unfollow,
+      value: request,
+    };
+
+    return signAndBroadcast(
       this.nodeUrl,
-      options,
+      message,
+      minGasPrice,
       privateKey,
+      REGISTRY,
     );
   }
 }

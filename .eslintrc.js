@@ -14,11 +14,8 @@ module.exports = {
   ],
   ignorePatterns: ['**/*.js'],
   rules: {
-    'unicorn/prevent-abbreviations': [
-      'error',
-      {
-        checkFilenames: false,
-      },
+    "unicorn/prevent-abbreviations": [
+      "off",
     ],
     'unicorn/empty-brace-spaces': [
       'off',

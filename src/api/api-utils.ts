@@ -1,6 +1,7 @@
 import { Bytes } from '@tendermint/types';
 import { ecdsaSign as secp256k1EcdsaSign } from 'secp256k1';
-import { coin, EncodeObject } from '@cosmjs/proto-signing';
+import { coin, EncodeObject, GeneratedType } from '@cosmjs/proto-signing';
+import { Registry } from '@cosmjs/proto-signing/build/registry';
 import {
   BroadcastTxResponse,
   Coin,
@@ -71,14 +72,17 @@ export async function signAndBroadcast(
   messages: EncodeObject | EncodeObject[],
   minGasPrice: Coin,
   privateKey: string,
+  registry?: Registry,
 ): Promise<BroadcastTxResponse> {
   const wallet = await createSecp256k1WalletFromPrivateKey(privateKey);
 
   // const gasPrice = GasPrice.fromString(minGasPrice.amount + minGasPrice.denom);
 
   // TODO: replace with gasPrice
-  const signingStargateClient = await SigningStargateClient.connectWithSigner(nodeUrl, wallet);
-  // const signingStargateClient = await SigningStargateClient.connectWithSigner(nodeUrl, wallet, { gasPrice });
+  const signingStargateClient = await SigningStargateClient
+    .connectWithSigner(nodeUrl, wallet, { registry });
+  // const signingStargateClient = await SigningStargateClient
+  //   .connectWithSigner(nodeUrl, wallet, { gasPrice }, { registry });
 
   const accounts = await wallet.getAccounts();
 
@@ -97,4 +101,11 @@ export async function signAndBroadcast(
   assertIsBroadcastSuccess(result);
 
   return result;
+}
+
+export function createCustomRegistry(msgMap: Map<GeneratedType, string>): Registry {
+  return new Registry([
+    ...[...msgMap.entries()]
+      .map(([msg, url]) => [url, msg] as [string, GeneratedType]),
+  ]);
 }
