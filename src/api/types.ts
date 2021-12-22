@@ -203,7 +203,7 @@ export enum BroadcastErrorCode {
   TxInMemPoolCache,
   MemPoolIsFull,
   TxTooLarge,
-  Panic = 111222,
+  Panic = 111_222,
 }
 
 export class BroadcastClientError {
