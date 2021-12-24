@@ -160,9 +160,9 @@ export class DecentrClient {
     return this.swapClient;
   }
 
-  public get token(): DecentrTokenClient {
+  public async token(): Promise<DecentrTokenClient> {
     if (!this.tokenClient) {
-      this.tokenClient = new DecentrTokenClient(this.nodeUrl);
+      this.tokenClient = await DecentrTokenClient.create(this.nodeUrl);
     }
 
     return this.tokenClient;

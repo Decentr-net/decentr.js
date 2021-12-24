@@ -1,17 +1,28 @@
+import { QueryClient } from '@cosmjs/stargate';
+import { Tendermint34Client } from '@cosmjs/tendermint-rpc';
+
 import { Wallet } from '../../wallet';
-import { fetchJson } from '../../utils';
-import { TokenBalance, TokenPool } from './types';
+import { setupTokenExtension, TokenExtension } from './extension';
 
 export class DecentrTokenClient {
-  constructor(
-    private nodeUrl: string,
+  private constructor(
+    private queryClient: QueryClient & TokenExtension,
   ) {
   }
 
-  public getTokenBalance(walletAddress: Wallet['address']): Promise<TokenBalance> {
-    const url = `${this.nodeUrl}/decentr/token/balance/${walletAddress}`;
+  public static async create(nodeUrl: string): Promise<DecentrTokenClient> {
+    const tendermintClient = await Tendermint34Client.connect(nodeUrl);
 
-    return fetchJson(url);
+    const queryClient = QueryClient.withExtensions(
+      tendermintClient,
+      setupTokenExtension,
+    );
+
+    return new DecentrTokenClient(queryClient);
+  }
+
+  public getTokenBalance(walletAddress: Wallet['address']): Promise<string | undefined> {
+    return this.queryClient.token.getBalance(walletAddress)
   }
 
   // TODO
@@ -22,9 +33,9 @@ export class DecentrTokenClient {
   //     .then((history) => history || []);
   // }
 
-  public getTokenPool(): Promise<TokenPool> {
-    const url = `${this.nodeUrl}/decentr/token/pool`;
-
-    return fetchJson(url);
-  }
+  // public getTokenPool(): Promise<TokenPool> {
+  //   const url = `${this.nodeUrl}/decentr/token/pool`;
+  //
+  //   return fetchJson(url);
+  // }
 }
