@@ -6,6 +6,7 @@ import { MintExtension, setupMintExtension } from './extension';
 export class DecentrMintClient {
   private constructor(
     private queryClient: QueryClient & MintExtension,
+    private tmClient: Tendermint34Client,
   ) {
   }
 
@@ -17,7 +18,11 @@ export class DecentrMintClient {
       setupMintExtension,
     );
 
-    return new DecentrMintClient(queryClient);
+    return new DecentrMintClient(queryClient, tendermintClient);
+  }
+
+  public disconnect(): void {
+    this.tmClient.disconnect();
   }
 
   public getInflation(): Promise<Uint8Array> {

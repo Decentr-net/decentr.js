@@ -19,6 +19,7 @@ export class DecentrCommunityClient {
   private constructor(
     private nodeUrl: string,
     private queryClient: QueryClient & CommunityExtension,
+    private tmClient: Tendermint34Client,
   ) {
   }
 
@@ -30,7 +31,11 @@ export class DecentrCommunityClient {
       setupCommunityExtension,
     );
 
-    return new DecentrCommunityClient(nodeUrl, queryClient);
+    return new DecentrCommunityClient(nodeUrl, queryClient, tendermintClient);
+  }
+
+  public disconnect(): void {
+    this.tmClient.disconnect();
   }
 
   public getModeratorAddresses(): Promise<Wallet['address'][]> {

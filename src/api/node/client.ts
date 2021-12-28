@@ -2,7 +2,7 @@ import { StatusResponse, Tendermint34Client } from '@cosmjs/tendermint-rpc';
 
 export class DecentrNodeClient {
   private constructor(
-    private tendermintClient: Tendermint34Client,
+    private tmClient: Tendermint34Client,
   ) {
   }
 
@@ -13,6 +13,10 @@ export class DecentrNodeClient {
   }
 
   public getNodeInfo(): Promise<StatusResponse> {
-    return this.tendermintClient.status();
+    return this.tmClient.status();
+  }
+
+  public disconnect(): void {
+    this.tmClient.disconnect();
   }
 }

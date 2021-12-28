@@ -2,7 +2,7 @@ import {
   IndexedTx,
   SearchTxFilter,
   SearchTxQuery,
-  StargateClient
+  StargateClient,
 } from '@cosmjs/stargate';
 
 export class DecentrTXsClient {
@@ -15,6 +15,10 @@ export class DecentrTXsClient {
     const stargateClient = await StargateClient.connect(nodeUrl);
 
     return new DecentrTXsClient(stargateClient);
+  }
+
+  public disconnect(): void {
+    return this.stargateClient.disconnect();
   }
 
   public search(

@@ -13,6 +13,7 @@ export class DecentrOperationsClient {
   private constructor(
     private nodeUrl: string,
     private queryClient: QueryClient & OperationsExtension,
+    private tmClient: Tendermint34Client,
   ) {
   }
 
@@ -24,7 +25,11 @@ export class DecentrOperationsClient {
       setupOperationsExtension,
     );
 
-    return new DecentrOperationsClient(nodeUrl, queryClient);
+    return new DecentrOperationsClient(nodeUrl, queryClient, tendermintClient);
+  }
+
+  public disconnect(): void {
+    this.tmClient.disconnect();
   }
 
   public getMinGasPrice(): Promise<Coin> {

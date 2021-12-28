@@ -12,6 +12,10 @@ export class DecentrBlocksClient {
     return new DecentrBlocksClient(stargateClient);
   }
 
+  public disconnect(): void {
+    this.stargateClient.disconnect();
+  }
+
   public getBlock(height?: BlockHeader['height']): Promise<Block> {
     return this.stargateClient.getBlock(height);
   }

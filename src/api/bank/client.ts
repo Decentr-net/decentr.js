@@ -18,6 +18,7 @@ export class DecentrBankClient {
   private constructor(
     private nodeUrl: string,
     private queryClient: QueryClient & BankExtension,
+    private tmClient: Tendermint34Client,
   ) {
   }
 
@@ -29,7 +30,11 @@ export class DecentrBankClient {
       setupBankExtension,
     );
 
-    return new DecentrBankClient(nodeUrl, queryClient);
+    return new DecentrBankClient(nodeUrl, queryClient, tendermintClient);
+  }
+
+  public disconnect(): void {
+    this.tmClient.disconnect();
   }
 
   public getBalance(

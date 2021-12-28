@@ -7,6 +7,7 @@ import { setupTokenExtension, TokenExtension } from './extension';
 export class DecentrTokenClient {
   private constructor(
     private queryClient: QueryClient & TokenExtension,
+    private tmClient: Tendermint34Client,
   ) {
   }
 
@@ -18,7 +19,11 @@ export class DecentrTokenClient {
       setupTokenExtension,
     );
 
-    return new DecentrTokenClient(queryClient);
+    return new DecentrTokenClient(queryClient, tendermintClient);
+  }
+
+  public disconnect(): void {
+    this.tmClient.disconnect();
   }
 
   public getTokenBalance(walletAddress: Wallet['address']): Promise<string | undefined> {

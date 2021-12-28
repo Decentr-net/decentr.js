@@ -14,6 +14,10 @@ export class DecentrAuthClient {
     return new DecentrAuthClient(stargateClient);
   }
 
+  public disconnect(): void {
+    this.stargateClient.disconnect();
+  }
+
   public getAccount(walletAddress: Wallet['address']): Promise<Account | null> {
     return this.stargateClient.getAccount(walletAddress);
   }

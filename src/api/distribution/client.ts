@@ -26,6 +26,7 @@ export class DecentrDistributionClient {
   private constructor(
     private nodeUrl: string,
     private queryClient: QueryClient & DistributionExtension,
+    private tmClient: Tendermint34Client,
   ) {
   }
 
@@ -37,7 +38,11 @@ export class DecentrDistributionClient {
       setupDistributionExtension,
     );
 
-    return new DecentrDistributionClient(nodeUrl, queryClient);
+    return new DecentrDistributionClient(nodeUrl, queryClient, tendermintClient);
+  }
+
+  public disconnect(): void {
+    this.tmClient.disconnect();
   }
 
   public getCommunityPool(): Promise<Coin[]> {

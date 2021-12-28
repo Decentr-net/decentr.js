@@ -29,6 +29,7 @@ export class DecentrStakingClient {
     private nodeUrl: string,
     private stargateClient: StargateClient,
     private queryClient: QueryClient & StakingExtension,
+    private tmClient: Tendermint34Client,
   ) {
   }
 
@@ -42,7 +43,12 @@ export class DecentrStakingClient {
       setupStakingExtension,
     );
 
-    return new DecentrStakingClient(nodeUrl, stargateClient, queryClient);
+    return new DecentrStakingClient(nodeUrl, stargateClient, queryClient, tendermintClient);
+  }
+
+  public disconnect(): void {
+    this.stargateClient.disconnect();
+    this.tmClient.disconnect();
   }
 
   public getPool(): Promise<Pool> {
