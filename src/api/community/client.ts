@@ -3,7 +3,6 @@ import { QueryClient } from '@cosmjs/stargate';
 import { Tendermint34Client } from '@cosmjs/tendermint-rpc';
 
 import { Wallet } from '../../wallet';
-import { getMinGasPrice } from '../operations/api';
 import { signAndBroadcast } from '../api-utils';
 import { CommunityExtension, setupCommunityExtension } from './extension';
 import { MessageTypeUrl, REGISTRY } from './registry';
@@ -50,8 +49,6 @@ export class DecentrCommunityClient {
     request: CreatePostRequest,
     privateKey: Wallet['privateKey'],
   ): Promise<BroadcastTxSuccess> {
-    const minGasPrice = await getMinGasPrice(this.nodeUrl);
-
     const message = {
       typeUrl: MessageTypeUrl.CreatePost,
       value: {
@@ -62,7 +59,6 @@ export class DecentrCommunityClient {
     return signAndBroadcast(
       this.nodeUrl,
       message,
-      minGasPrice,
       privateKey,
       {
         registry: REGISTRY,
@@ -74,8 +70,6 @@ export class DecentrCommunityClient {
     request: DeletePostRequest,
     privateKey: Wallet['privateKey'],
   ): Promise<BroadcastTxSuccess> {
-    const minGasPrice = await getMinGasPrice(this.nodeUrl);
-
     const message = {
       typeUrl: MessageTypeUrl.DeletePost,
       value: request,
@@ -84,7 +78,6 @@ export class DecentrCommunityClient {
     return signAndBroadcast(
       this.nodeUrl,
       message,
-      minGasPrice,
       privateKey,
       {
         registry: REGISTRY,
@@ -96,8 +89,6 @@ export class DecentrCommunityClient {
     request: LikeRequest,
     privateKey: Wallet['privateKey'],
   ): Promise<BroadcastTxSuccess> {
-    const minGasPrice = await getMinGasPrice(this.nodeUrl);
-
     const message = {
       typeUrl: MessageTypeUrl.SetLike,
       value: {
@@ -108,7 +99,6 @@ export class DecentrCommunityClient {
     return signAndBroadcast(
       this.nodeUrl,
       message,
-      minGasPrice,
       privateKey,
       {
         registry: REGISTRY,
@@ -120,8 +110,6 @@ export class DecentrCommunityClient {
     request: FollowRequest,
     privateKey: Wallet['privateKey'],
   ): Promise<BroadcastTxSuccess> {
-    const minGasPrice = await getMinGasPrice(this.nodeUrl);
-
     const message = {
       typeUrl: MessageTypeUrl.Follow,
       value: request,
@@ -130,7 +118,6 @@ export class DecentrCommunityClient {
     return signAndBroadcast(
       this.nodeUrl,
       message,
-      minGasPrice,
       privateKey,
       {
         registry: REGISTRY,
@@ -142,8 +129,6 @@ export class DecentrCommunityClient {
     request: UnfollowRequest,
     privateKey: Wallet['privateKey'],
   ): Promise<BroadcastTxSuccess> {
-    const minGasPrice = await getMinGasPrice(this.nodeUrl);
-
     const message = {
       typeUrl: MessageTypeUrl.Unfollow,
       value: request,
@@ -152,7 +137,6 @@ export class DecentrCommunityClient {
     return signAndBroadcast(
       this.nodeUrl,
       message,
-      minGasPrice,
       privateKey,
       {
         registry: REGISTRY,

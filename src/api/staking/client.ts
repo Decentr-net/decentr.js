@@ -20,7 +20,6 @@ import {
 import { Tendermint34Client } from '@cosmjs/tendermint-rpc';
 
 import { Wallet } from '../../wallet';
-import { getMinGasPrice } from '../operations/api';
 import { signAndBroadcast } from '../api-utils';
 import { DelegateTokensRequest, RedelegateTokensRequest, UndelegateTokensRequest } from './types';
 
@@ -144,8 +143,6 @@ export class DecentrStakingClient {
     request: DelegateTokensRequest,
     privateKey: Wallet['privateKey'],
   ): Promise<BroadcastTxSuccess> {
-    const minGasPrice = await getMinGasPrice(this.nodeUrl);
-
     const message: MsgDelegateEncodeObject = {
       typeUrl: '/cosmos.staking.v1beta1.MsgDelegate',
       value: request,
@@ -154,7 +151,6 @@ export class DecentrStakingClient {
     return signAndBroadcast(
       this.nodeUrl,
       message,
-      minGasPrice,
       privateKey,
     );
   }
@@ -170,8 +166,6 @@ export class DecentrStakingClient {
     request: UndelegateTokensRequest,
     privateKey: Wallet['privateKey'],
   ): Promise<BroadcastTxSuccess> {
-    const minGasPrice = await getMinGasPrice(this.nodeUrl);
-
     const message: MsgUndelegateEncodeObject = {
       typeUrl: '/cosmos.staking.v1beta1.MsgUndelegate',
       value: request,
@@ -180,7 +174,6 @@ export class DecentrStakingClient {
     return signAndBroadcast(
       this.nodeUrl,
       message,
-      minGasPrice,
       privateKey,
     );
   }
@@ -196,8 +189,6 @@ export class DecentrStakingClient {
     request: RedelegateTokensRequest,
     privateKey: Wallet['privateKey'],
   ): Promise<BroadcastTxSuccess> {
-    const minGasPrice = await getMinGasPrice(this.nodeUrl);
-
     const message = {
       typeUrl: '/cosmos.staking.v1beta1.MsgBeginRedelegate',
       value: request,
@@ -206,7 +197,6 @@ export class DecentrStakingClient {
     return signAndBroadcast(
       this.nodeUrl,
       message,
-      minGasPrice,
       privateKey,
     );
   }

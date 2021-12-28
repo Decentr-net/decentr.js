@@ -1,6 +1,5 @@
 import { KeyPair, Wallet } from '../../wallet';
-import { PDVAddress, PDVType, ProfilePDV } from '../pdv';
-import { sendPDV } from '../pdv/api';
+import { DecentrPDVClient, PDVAddress, PDVType, ProfilePDV } from '../pdv';
 import { getSignature } from '../api-utils';
 import { bytesToHex, fetchJson } from '../../utils';
 import { Profile } from './types';
@@ -15,16 +14,14 @@ export class DecentrProfileClient {
     profile: Omit<ProfilePDV, 'type'>,
     keyPair: KeyPair,
   ): Promise<PDVAddress> {
-    return sendPDV(
-      this.cerberusUrl,
-      [
-        {
-          ...profile,
-          type: PDVType.Profile,
-        },
-      ],
-      keyPair,
-    );
+    const pdvClient = new DecentrPDVClient(this.cerberusUrl);
+
+    const pdv: ProfilePDV = {
+      ...profile,
+      type: PDVType.Profile,
+    };
+
+    return pdvClient.sendPDV([pdv], keyPair);
   }
 
   public getProfile(

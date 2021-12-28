@@ -5,7 +5,6 @@ import { Tendermint34Client } from '@cosmjs/tendermint-rpc';
 import { MsgResetAccount } from '../../codec/operations/tx';
 import { Wallet } from '../../wallet';
 import { signAndBroadcast } from '../api-utils';
-import { getMinGasPrice } from './api';
 import { OperationsExtension, setupOperationsExtension } from './extension';
 import { MessageTypeUrl, REGISTRY } from './registry';
 
@@ -40,8 +39,6 @@ export class DecentrOperationsClient {
     request: MsgResetAccount,
     privateKey: Wallet['privateKey'],
   ): Promise<BroadcastTxSuccess> {
-    const minGasPrice = await getMinGasPrice(this.nodeUrl);
-
     const message = {
       typeUrl: MessageTypeUrl.ResetAccount,
       value: request,
@@ -50,7 +47,6 @@ export class DecentrOperationsClient {
     return signAndBroadcast(
       this.nodeUrl,
       message,
-      minGasPrice,
       privateKey,
       {
         registry: REGISTRY,

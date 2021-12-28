@@ -71,7 +71,6 @@ export function assertIsBroadcastSuccess(result: BroadcastTxResponse): void {
 export async function signAndBroadcast(
   nodeUrl: string,
   messages: EncodeObject | EncodeObject[],
-  minGasPrice: Coin,
   privateKey: string,
   options?: {
     memo?: string,
@@ -79,6 +78,8 @@ export async function signAndBroadcast(
   },
 ): Promise<BroadcastTxSuccess> {
   const wallet = await createSecp256k1WalletFromPrivateKey(privateKey);
+
+  // const minGasPrice = await getMinGasPrice(nodeUrl);
 
   // const gasPrice = GasPrice.fromString(minGasPrice.amount + minGasPrice.denom);
 

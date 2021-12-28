@@ -14,7 +14,6 @@ import {
 import { Tendermint34Client } from '@cosmjs/tendermint-rpc';
 
 import { Wallet } from '../../wallet';
-import { getMinGasPrice } from '../operations/api';
 import { signAndBroadcast } from '../api-utils';
 import {
   SetWithdrawAddressRequest,
@@ -94,8 +93,6 @@ export class DecentrDistributionClient {
     request: SetWithdrawAddressRequest,
     privateKey: Wallet['privateKey'],
   ): Promise<BroadcastTxSuccess> {
-    const minGasPrice = await getMinGasPrice(this.nodeUrl);
-
     const message = {
       typeUrl: '/cosmos.distribution.v1beta1.MsgSetWithdrawAddress',
       value: request,
@@ -104,7 +101,6 @@ export class DecentrDistributionClient {
     return signAndBroadcast(
       this.nodeUrl,
       message,
-      minGasPrice,
       privateKey,
     );
   }
@@ -125,8 +121,6 @@ export class DecentrDistributionClient {
     request: WithdrawDelegatorRewardRequest,
     privateKey: Wallet['privateKey'],
   ): Promise<BroadcastTxSuccess> {
-    const minGasPrice = await getMinGasPrice(this.nodeUrl);
-
     const messages = request.map((msg) => ({
       typeUrl: '/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward',
       value: msg,
@@ -135,7 +129,6 @@ export class DecentrDistributionClient {
     return signAndBroadcast(
       this.nodeUrl,
       messages,
-      minGasPrice,
       privateKey,
     );
   }
@@ -166,8 +159,6 @@ export class DecentrDistributionClient {
     request: WithdrawValidatorCommissionRequest,
     privateKey: Wallet['privateKey'],
   ): Promise<BroadcastTxSuccess> {
-    const minGasPrice = await getMinGasPrice(this.nodeUrl);
-
     const message = {
       typeUrl: '/cosmos.distribution.v1beta1.MsgSetWithdrawAddress',
       value: request,
@@ -176,7 +167,6 @@ export class DecentrDistributionClient {
     return signAndBroadcast(
       this.nodeUrl,
       message,
-      minGasPrice,
       privateKey,
     );
   }

@@ -1,7 +1,6 @@
-import { Wallet } from '../../wallet';
+import { KeyPair, Wallet } from '../../wallet';
 import { fetchJson } from '../../utils';
 import { getAuthHeaders } from '../api-utils';
-import { sendPDV } from './api';
 import {
   PDV,
   PDVDetails,
@@ -52,11 +51,26 @@ export class DecentrPDVClient {
     return fetchJson(`${this.cerberusUrl}/v1/configs/rewards`);
   }
 
-  public sendPDV(pdv: PDV[], wallet: Wallet): Promise<PDVAddress> {
-    return sendPDV(
-      this.cerberusUrl,
+  public sendPDV(pdv: PDV[], keyPair: KeyPair): Promise<PDVAddress> {
+    const path = `/v1/pdv`;
+
+    const cerberusAddress = `${this.cerberusUrl}${path}`;
+
+    const body = {
+      version: 'v1',
       pdv,
-      wallet,
+    };
+
+    const headers = getAuthHeaders(
+      `${JSON.stringify(body)}${path}`,
+      keyPair,
+      { disableEncode: true },
     );
+
+    return fetchJson<{ id: number }, { version: string; pdv: PDV[] }>(cerberusAddress, {
+      method: 'POST',
+      body,
+      headers,
+    }).then(({ id }) => id);
   }
 }

@@ -10,7 +10,6 @@ import { Tendermint34Client } from '@cosmjs/tendermint-rpc';
 
 import { Wallet } from '../../wallet';
 import { DECENTR_DENOM } from '../types';
-import { getMinGasPrice } from '../operations/api';
 import { signAndBroadcast } from '../api-utils';
 import { SendTokensRequest } from './types';
 
@@ -65,8 +64,6 @@ export class DecentrBankClient {
     privateKey: Wallet['privateKey'],
     memo?: string,
   ): Promise<BroadcastTxSuccess> {
-    const minGasPrice = await getMinGasPrice(this.nodeUrl);
-
     const message: MsgSendEncodeObject = {
       typeUrl: '/cosmos.bank.v1beta1.MsgSend',
       value: request,
@@ -75,7 +72,6 @@ export class DecentrBankClient {
     return signAndBroadcast(
       this.nodeUrl,
       message,
-      minGasPrice,
       privateKey,
       {
         memo,
