@@ -1,7 +1,7 @@
 import { GeneratedType } from '@cosmjs/proto-signing';
 
 import { MsgResetAccount } from '../../codec/operations/tx';
-import { createCustomRegistry } from '../api-utils';
+import { createCustomRegistry } from '../../utils';
 
 export enum MessageTypeUrl {
   ResetAccount = '/decentr.operations.MsgResetAccount',

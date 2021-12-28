@@ -9,7 +9,6 @@ import {
 } from 'cosmjs-types/cosmos/staking/v1beta1/staking';
 import { BondStatusString } from '@cosmjs/stargate/build/queries/staking';
 import {
-  DeliverTxResponse,
   MsgDelegateEncodeObject,
   MsgUndelegateEncodeObject,
   QueryClient,
@@ -20,7 +19,7 @@ import {
 import { Tendermint34Client } from '@cosmjs/tendermint-rpc';
 
 import { Wallet } from '../../wallet';
-import { signAndBroadcast } from '../api-utils';
+import { createSignerOrSimulator, SignerOrSimulator } from '../api-utils';
 import { DelegateTokensRequest, RedelegateTokensRequest, UndelegateTokensRequest } from './types';
 
 export class DecentrStakingClient {
@@ -139,19 +138,23 @@ export class DecentrStakingClient {
   //   return calculateCreateDelegationFee(this.nodeUrl, this.chainId, delegation);
   // }
 
-  public async delegateTokens(
+  public delegateTokens(
     request: DelegateTokensRequest,
     privateKey: Wallet['privateKey'],
-  ): Promise<DeliverTxResponse> {
+    options?: {
+      memo?: string,
+    },
+  ): SignerOrSimulator {
     const message: MsgDelegateEncodeObject = {
       typeUrl: '/cosmos.staking.v1beta1.MsgDelegate',
       value: request,
     };
 
-    return signAndBroadcast(
+    return createSignerOrSimulator(
       this.nodeUrl,
       message,
       privateKey,
+      options,
     );
   }
 
@@ -162,19 +165,23 @@ export class DecentrStakingClient {
   //   return calculateCreateUnbondingDelegationFee(this.nodeUrl, this.chainId, unbondingDelegation);
   // }
 
-  public async undelegateTokens(
+  public undelegateTokens(
     request: UndelegateTokensRequest,
     privateKey: Wallet['privateKey'],
-  ): Promise<DeliverTxResponse> {
+    options?: {
+      memo?: string,
+    },
+  ): SignerOrSimulator {
     const message: MsgUndelegateEncodeObject = {
       typeUrl: '/cosmos.staking.v1beta1.MsgUndelegate',
       value: request,
     };
 
-    return signAndBroadcast(
+    return createSignerOrSimulator(
       this.nodeUrl,
       message,
       privateKey,
+      options,
     );
   }
 
@@ -185,19 +192,23 @@ export class DecentrStakingClient {
   //   return calculateCreateRedelegationFee(this.nodeUrl, this.chainId, redelegation);
   // }
 
-  public async redelegateTokens(
+  public redelegateTokens(
     request: RedelegateTokensRequest,
     privateKey: Wallet['privateKey'],
-  ): Promise<DeliverTxResponse> {
+    options?: {
+      memo?: string,
+    },
+  ): SignerOrSimulator {
     const message = {
       typeUrl: '/cosmos.staking.v1beta1.MsgBeginRedelegate',
       value: request,
     };
 
-    return signAndBroadcast(
+    return createSignerOrSimulator(
       this.nodeUrl,
       message,
       privateKey,
+      options,
     );
   }
 }

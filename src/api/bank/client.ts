@@ -1,7 +1,6 @@
 import {
   BankExtension,
   Coin,
-  DeliverTxResponse,
   MsgSendEncodeObject,
   QueryClient,
   setupBankExtension,
@@ -10,7 +9,7 @@ import { Tendermint34Client } from '@cosmjs/tendermint-rpc';
 
 import { Wallet } from '../../wallet';
 import { DECENTR_DENOM } from '../types';
-import { signAndBroadcast } from '../api-utils';
+import { createSignerOrSimulator, SignerOrSimulator } from '../api-utils';
 import { SendTokensRequest } from './types';
 
 export class DecentrBankClient {
@@ -59,23 +58,23 @@ export class DecentrBankClient {
     return this.queryClient.bank.supplyOf(denom);
   }
 
-  public async sendTokens(
+  public sendTokens(
     request: SendTokensRequest,
     privateKey: Wallet['privateKey'],
-    memo?: string,
-  ): Promise<DeliverTxResponse> {
+    options?: {
+      memo?: string,
+    },
+  ): SignerOrSimulator {
     const message: MsgSendEncodeObject = {
       typeUrl: '/cosmos.bank.v1beta1.MsgSend',
       value: request,
     };
 
-    return signAndBroadcast(
+    return createSignerOrSimulator(
       this.nodeUrl,
       message,
       privateKey,
-      {
-        memo,
-      }
+      options,
     );
   }
 }

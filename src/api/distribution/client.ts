@@ -6,7 +6,6 @@ import {
 import { Validator } from 'cosmjs-types/cosmos/staking/v1beta1/staking';
 import {
   Coin,
-  DeliverTxResponse,
   DistributionExtension,
   QueryClient,
   setupDistributionExtension,
@@ -14,11 +13,11 @@ import {
 import { Tendermint34Client } from '@cosmjs/tendermint-rpc';
 
 import { Wallet } from '../../wallet';
-import { signAndBroadcast } from '../api-utils';
+import { createSignerOrSimulator, SignerOrSimulator } from '../api-utils';
 import {
   SetWithdrawAddressRequest,
   WithdrawDelegatorRewardRequest,
-  WithdrawValidatorCommissionRequest
+  WithdrawValidatorCommissionRequest,
 } from './types';
 
 export class DecentrDistributionClient {
@@ -89,19 +88,23 @@ export class DecentrDistributionClient {
       .then((response) => response.rewards?.rewards || []);
   }
 
-  public async setWithdrawAddress(
+  public setWithdrawAddress(
     request: SetWithdrawAddressRequest,
     privateKey: Wallet['privateKey'],
-  ): Promise<DeliverTxResponse> {
+    options?: {
+      memo?: string,
+    },
+  ): SignerOrSimulator {
     const message = {
       typeUrl: '/cosmos.distribution.v1beta1.MsgSetWithdrawAddress',
       value: request,
     };
 
-    return signAndBroadcast(
+    return createSignerOrSimulator(
       this.nodeUrl,
       message,
       privateKey,
+      options,
     );
   }
 
@@ -117,19 +120,23 @@ export class DecentrDistributionClient {
   //   );
   // }
 
-  public async withdrawDelegatorRewards(
+  public withdrawDelegatorRewards(
     request: WithdrawDelegatorRewardRequest,
     privateKey: Wallet['privateKey'],
-  ): Promise<DeliverTxResponse> {
+    options?: {
+      memo?: string,
+    },
+  ): SignerOrSimulator {
     const messages = request.map((msg) => ({
       typeUrl: '/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward',
       value: msg,
     }));
 
-    return signAndBroadcast(
+    return createSignerOrSimulator(
       this.nodeUrl,
       messages,
       privateKey,
+      options,
     );
   }
 
@@ -155,19 +162,23 @@ export class DecentrDistributionClient {
   //   );
   // }
 
-  public async withdrawValidatorRewards(
+  public withdrawValidatorRewards(
     request: WithdrawValidatorCommissionRequest,
     privateKey: Wallet['privateKey'],
-  ): Promise<DeliverTxResponse> {
+    options?: {
+      memo?: string,
+    },
+  ): SignerOrSimulator {
     const message = {
       typeUrl: '/cosmos.distribution.v1beta1.MsgSetWithdrawAddress',
       value: request,
     };
 
-    return signAndBroadcast(
+    return createSignerOrSimulator(
       this.nodeUrl,
       message,
       privateKey,
+      options,
     );
   }
 }

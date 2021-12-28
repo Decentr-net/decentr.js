@@ -7,7 +7,7 @@ import {
   MsgSetLike,
   MsgUnfollow,
 } from '../../codec/community/tx';
-import { createCustomRegistry } from '../api-utils';
+import { createCustomRegistry } from '../../utils';
 
 export enum MessageTypeUrl {
   CreatePost = '/decentr.community.MsgCreatePost',

@@ -1,4 +1,4 @@
-import { coin, EncodeObject, GeneratedType, Registry } from '@cosmjs/proto-signing';
+import { coin, EncodeObject, Registry } from '@cosmjs/proto-signing';
 import {
   Coin,
   DeliverTxResponse,
@@ -12,17 +12,25 @@ import { createSecp256k1WalletFromPrivateKey } from '../wallet';
 import { getMinGasPrice } from './operations/standalone';
 import { BroadcastClientError, DECENTR_DENOM } from './types';
 
+interface SignerWrapper {
+  readonly disconnect: () => void;
+
+  readonly signAndBroadcast: () => Promise<DeliverTxResponse>;
+
+  readonly simulate: () => Promise<number>;
+}
+
 export function createDecentrCoin(amount: number | string): Coin {
   return coin(amount, DECENTR_DENOM);
 }
 
-export function assertIsBroadcastSuccess(result: DeliverTxResponse): void {
+function assertIsBroadcastSuccess(result: DeliverTxResponse): void {
   if (isDeliverTxSuccess(result)) {
     throw new BroadcastClientError(result.code);
   }
 }
 
-export async function signAndBroadcast(
+async function createSignerWrapper(
   nodeUrl: string,
   messages: EncodeObject | EncodeObject[],
   privateKey: string,
@@ -30,7 +38,7 @@ export async function signAndBroadcast(
     memo?: string,
     registry?: Registry,
   },
-): Promise<DeliverTxResponse> {
+): Promise<SignerWrapper> {
   const wallet = await createSecp256k1WalletFromPrivateKey(privateKey);
 
   const minGasPrice = await getMinGasPrice(nodeUrl);
@@ -50,23 +58,90 @@ export async function signAndBroadcast(
 
   const address = accounts[0].address;
 
-  const result = await signingStargateClient.signAndBroadcast(
-    address,
-    coerceArray(messages),
-    'auto',
-    options?.memo,
-  );
+  const messagesArray = coerceArray(messages);
 
-  signingStargateClient.disconnect();
+  return {
+    disconnect: () => signingStargateClient.disconnect(),
+
+    simulate: () => signingStargateClient
+      .simulate(address, messagesArray, options?.memo),
+
+    signAndBroadcast: () => signingStargateClient
+      .signAndBroadcast(address, messagesArray, 'auto', options?.memo),
+  };
+}
+
+async function simulate(
+  nodeUrl: string,
+  messages: EncodeObject | EncodeObject[],
+  privateKey: string,
+  options?: {
+    memo?: string,
+    registry?: Registry,
+  },
+): Promise<number> {
+  const signer = await createSignerWrapper(nodeUrl, messages, privateKey, options);
+
+  const gas = await signer.simulate();
+
+  signer.disconnect();
+
+  return gas;
+}
+
+async function signAndBroadcast(
+  nodeUrl: string,
+  messages: EncodeObject | EncodeObject[],
+  privateKey: string,
+  options?: {
+    memo?: string,
+    registry?: Registry,
+  },
+): Promise<DeliverTxResponse> {
+  const signer = await createSignerWrapper(nodeUrl, messages, privateKey, options);
+
+  const result = await signer.signAndBroadcast();
+
+  signer.disconnect();
 
   assertIsBroadcastSuccess(result);
 
   return result;
 }
 
-export function createCustomRegistry(msgMap: Map<GeneratedType, string>): Registry {
-  return new Registry([
-    ...[...msgMap.entries()]
-      .map(([msg, url]) => [url, msg] as [string, GeneratedType]),
-  ]);
+export async function broadcastOrSimulate(
+  nodeUrl: string,
+  messages: EncodeObject | EncodeObject[],
+  privateKey: string,
+  options?: {
+    memo?: string,
+    registry?: Registry,
+    simulate?: boolean,
+  },
+): Promise<DeliverTxResponse | number> {
+  return options?.simulate
+    ? simulate(nodeUrl, messages, privateKey, options)
+    : signAndBroadcast(nodeUrl, messages, privateKey, options);
+}
+
+export interface SignerOrSimulator {
+  readonly signAndBroadcast: () => Promise<DeliverTxResponse>;
+
+  readonly simulate: () => Promise<number>;
+}
+
+export function createSignerOrSimulator(
+  nodeUrl: string,
+  messages: EncodeObject | EncodeObject[],
+  privateKey: string,
+  options?: {
+    memo?: string,
+    registry?: Registry,
+  },
+): SignerOrSimulator {
+  return {
+    signAndBroadcast: () => signAndBroadcast(nodeUrl, messages, privateKey, options),
+
+    simulate: () => simulate(nodeUrl, messages, privateKey, options),
+  };
 }

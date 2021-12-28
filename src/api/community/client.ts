@@ -1,8 +1,8 @@
-import { DeliverTxResponse, QueryClient } from '@cosmjs/stargate';
+import { QueryClient } from '@cosmjs/stargate';
 import { Tendermint34Client } from '@cosmjs/tendermint-rpc';
 
 import { Wallet } from '../../wallet';
-import { signAndBroadcast } from '../api-utils';
+import { createSignerOrSimulator, SignerOrSimulator } from '../api-utils';
 import { CommunityExtension, setupCommunityExtension } from './extension';
 import { MessageTypeUrl, REGISTRY } from './registry';
 import {
@@ -44,10 +44,13 @@ export class DecentrCommunityClient {
     return this.queryClient.community.getFollowees({ owner: follower });
   }
 
-  public async createPost(
+  public createPost(
     request: CreatePostRequest,
     privateKey: Wallet['privateKey'],
-  ): Promise<DeliverTxResponse> {
+    options?: {
+      memo?: string,
+    },
+  ): SignerOrSimulator {
     const message = {
       typeUrl: MessageTypeUrl.CreatePost,
       value: {
@@ -55,39 +58,47 @@ export class DecentrCommunityClient {
       },
     };
 
-    return signAndBroadcast(
+    return createSignerOrSimulator(
       this.nodeUrl,
       message,
       privateKey,
       {
+        ...options,
         registry: REGISTRY,
-      }
+      },
     );
   }
 
-  public async deletePost(
+  public deletePost(
     request: DeletePostRequest,
     privateKey: Wallet['privateKey'],
-  ): Promise<DeliverTxResponse> {
+    options?: {
+      memo?: string,
+    },
+  ): SignerOrSimulator {
     const message = {
       typeUrl: MessageTypeUrl.DeletePost,
       value: request,
     };
 
-    return signAndBroadcast(
+    return createSignerOrSimulator(
       this.nodeUrl,
       message,
       privateKey,
       {
+        ...options,
         registry: REGISTRY,
-      }
+      },
     );
   }
 
-  public async setLike(
+  public setLike(
     request: LikeRequest,
     privateKey: Wallet['privateKey'],
-  ): Promise<DeliverTxResponse> {
+    options?: {
+      memo?: string,
+    },
+  ): SignerOrSimulator {
     const message = {
       typeUrl: MessageTypeUrl.SetLike,
       value: {
@@ -95,51 +106,60 @@ export class DecentrCommunityClient {
       },
     };
 
-    return signAndBroadcast(
+    return createSignerOrSimulator(
       this.nodeUrl,
       message,
       privateKey,
       {
+        ...options,
         registry: REGISTRY,
-      }
+      },
     );
   }
 
-  public async follow(
+  public follow(
     request: FollowRequest,
     privateKey: Wallet['privateKey'],
-  ): Promise<DeliverTxResponse> {
+    options?: {
+      memo?: string,
+    },
+  ): SignerOrSimulator {
     const message = {
       typeUrl: MessageTypeUrl.Follow,
       value: request,
     };
 
-    return signAndBroadcast(
+    return createSignerOrSimulator(
       this.nodeUrl,
       message,
       privateKey,
       {
+        ...options,
         registry: REGISTRY,
-      }
+      },
     );
   }
 
-  public async unfollow(
+  public unfollow(
     request: UnfollowRequest,
     privateKey: Wallet['privateKey'],
-  ): Promise<DeliverTxResponse> {
+    options?: {
+      memo?: string,
+    },
+  ): SignerOrSimulator {
     const message = {
       typeUrl: MessageTypeUrl.Unfollow,
       value: request,
     };
 
-    return signAndBroadcast(
+    return createSignerOrSimulator(
       this.nodeUrl,
       message,
       privateKey,
       {
+        ...options,
         registry: REGISTRY,
-      }
+      },
     );
   }
 }
