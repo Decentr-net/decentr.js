@@ -1,6 +1,5 @@
 import { KeyPair } from '../../wallet';
-import { fetchJson } from '../../utils';
-import { getAuthHeaders } from '../api-utils';
+import { fetchJson, getAuthHeaders } from '../../utils';
 import { SwapDestinationNetwork, SwapDetails, SwapListPaginationOptions } from './types';
 
 export class DecentrSwapClient {
@@ -29,9 +28,11 @@ export class DecentrSwapClient {
     keys: KeyPair,
     swapId: number,
   ): Promise<SwapDetails> {
-    const url = `${this.swapUrl}/v1/swap/${swapId}`;
+    const path = `/v1/swap/${swapId}`
 
-    const headers = getAuthHeaders(`/v1/swap/${swapId}`, keys);
+    const url = `${this.swapUrl}${path}`;
+
+    const headers = getAuthHeaders(path, keys);
 
     return fetchJson(url, {
       headers,

@@ -1,6 +1,5 @@
 import { KeyPair } from '../../wallet';
-import { blobToBase64, fetchJson } from '../../utils';
-import { getAuthHeaders } from '../api-utils';
+import { blobToBase64, fetchJson, getAuthHeaders } from '../../utils';
 import { SaveImageResponse } from './types';
 
 export class DecentrImageClient {
@@ -13,11 +12,13 @@ export class DecentrImageClient {
     image: File,
     keyPair: KeyPair,
   ): Promise<SaveImageResponse> {
-    const cerberusAddress = `${this.cerberusUrl}/v1/images`;
+    const path = '/v1/images';
+
+    const cerberusAddress = `${this.cerberusUrl}${path}`;
 
     const base64 = await blobToBase64(image);
 
-    const headers = getAuthHeaders(`${base64}/v1/images`, keyPair, { disableEncode: true });
+    const headers = getAuthHeaders(`${base64}${path}`, keyPair, { disableEncode: true });
 
     return fetchJson<SaveImageResponse, string>(cerberusAddress, {
       method: 'POST',

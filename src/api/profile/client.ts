@@ -1,7 +1,6 @@
 import { KeyPair, Wallet } from '../../wallet';
 import { DecentrPDVClient, PDVAddress, PDVType, ProfilePDV } from '../pdv';
-import { getSignature } from '../api-utils';
-import { bytesToHex, fetchJson } from '../../utils';
+import { fetchJson, getAuthHeaders } from '../../utils';
 import { Profile } from './types';
 
 export class DecentrProfileClient {
@@ -36,19 +35,13 @@ export class DecentrProfileClient {
     walletAddresses: Wallet['address'][],
     keys?: KeyPair,
   ): Promise<Record<Profile['address'], Profile>> {
-    let headers = {};
+    const path = `/v1/profiles`;
 
-    if (keys) {
-      const signature = getSignature(`/v1/profiles`, keys.privateKey);
-      const signatureHex = bytesToHex(signature);
+    const headers = keys
+      ? getAuthHeaders(path, keys)
+      : {};
 
-      headers = {
-        'Public-Key': keys.publicKey,
-        Signature: signatureHex,
-      };
-    }
-
-    return fetchJson<Profile[]>(`${this.cerberusUrl}/v1/profiles`, {
+    return fetchJson<Profile[]>(`${this.cerberusUrl}${path}`, {
       headers,
       queryParameters: {
         address: walletAddresses,

@@ -210,8 +210,3 @@ export class BroadcastClientError {
   constructor(public readonly broadcastErrorCode: BroadcastErrorCode) {
   }
 }
-
-export interface AuthHeaders extends Record<string, string>{
-  readonly 'Public-Key': string;
-  readonly Signature: string;
-}

@@ -1,6 +1,5 @@
 import { KeyPair, Wallet } from '../../wallet';
-import { fetchJson } from '../../utils';
-import { getAuthHeaders } from '../api-utils';
+import { fetchJson, getAuthHeaders } from '../../utils';
 import {
   PDV,
   PDVDetails,
