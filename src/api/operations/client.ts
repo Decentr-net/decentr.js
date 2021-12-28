@@ -34,13 +34,13 @@ export class DecentrOperationsClient {
     return this.queryClient.operations.getMinGasPrice();
   }
 
-  public async resetAccount(
+  public resetAccount(
     request: MsgResetAccount,
     privateKey: Wallet['privateKey'],
     options?: {
       memo?: string,
     },
-  ): Promise<SignerOrSimulator> {
+  ): SignerOrSimulator {
     const message = {
       typeUrl: MessageTypeUrl.ResetAccount,
       value: request,
