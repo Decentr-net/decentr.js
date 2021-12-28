@@ -1,7 +1,7 @@
-import { BroadcastTxSuccess } from '@cosmjs/stargate/build/stargateclient';
 import {
   BankExtension,
   Coin,
+  DeliverTxResponse,
   MsgSendEncodeObject,
   QueryClient,
   setupBankExtension,
@@ -63,7 +63,7 @@ export class DecentrBankClient {
     request: SendTokensRequest,
     privateKey: Wallet['privateKey'],
     memo?: string,
-  ): Promise<BroadcastTxSuccess> {
+  ): Promise<DeliverTxResponse> {
     const message: MsgSendEncodeObject = {
       typeUrl: '/cosmos.bank.v1beta1.MsgSend',
       value: request,

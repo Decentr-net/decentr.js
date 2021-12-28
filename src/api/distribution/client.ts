@@ -4,9 +4,9 @@ import {
   QueryDelegationTotalRewardsResponse,
 } from 'cosmjs-types/cosmos/distribution/v1beta1/query';
 import { Validator } from 'cosmjs-types/cosmos/staking/v1beta1/staking';
-import { BroadcastTxSuccess } from '@cosmjs/stargate/build/stargateclient';
 import {
   Coin,
+  DeliverTxResponse,
   DistributionExtension,
   QueryClient,
   setupDistributionExtension,
@@ -92,7 +92,7 @@ export class DecentrDistributionClient {
   public async setWithdrawAddress(
     request: SetWithdrawAddressRequest,
     privateKey: Wallet['privateKey'],
-  ): Promise<BroadcastTxSuccess> {
+  ): Promise<DeliverTxResponse> {
     const message = {
       typeUrl: '/cosmos.distribution.v1beta1.MsgSetWithdrawAddress',
       value: request,
@@ -120,7 +120,7 @@ export class DecentrDistributionClient {
   public async withdrawDelegatorRewards(
     request: WithdrawDelegatorRewardRequest,
     privateKey: Wallet['privateKey'],
-  ): Promise<BroadcastTxSuccess> {
+  ): Promise<DeliverTxResponse> {
     const messages = request.map((msg) => ({
       typeUrl: '/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward',
       value: msg,
@@ -158,7 +158,7 @@ export class DecentrDistributionClient {
   public async withdrawValidatorRewards(
     request: WithdrawValidatorCommissionRequest,
     privateKey: Wallet['privateKey'],
-  ): Promise<BroadcastTxSuccess> {
+  ): Promise<DeliverTxResponse> {
     const message = {
       typeUrl: '/cosmos.distribution.v1beta1.MsgSetWithdrawAddress',
       value: request,

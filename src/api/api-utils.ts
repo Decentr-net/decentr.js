@@ -1,23 +1,23 @@
-import { coin, EncodeObject, GeneratedType } from '@cosmjs/proto-signing';
-import { Registry } from '@cosmjs/proto-signing/build/registry';
-import { BroadcastTxSuccess } from '@cosmjs/stargate/build/stargateclient';
+import { coin, EncodeObject, GeneratedType, Registry } from '@cosmjs/proto-signing';
 import {
-  BroadcastTxResponse,
   Coin,
-  isBroadcastTxFailure,
+  DeliverTxResponse,
+  GasPrice,
+  isDeliverTxSuccess,
   SigningStargateClient,
 } from '@cosmjs/stargate';
 
 import { coerceArray } from '../utils';
 import { createSecp256k1WalletFromPrivateKey } from '../wallet';
+import { getMinGasPrice } from './operations/standalone';
 import { BroadcastClientError, DECENTR_DENOM } from './types';
 
 export function createDecentrCoin(amount: number | string): Coin {
   return coin(amount, DECENTR_DENOM);
 }
 
-export function assertIsBroadcastSuccess(result: BroadcastTxResponse): void {
-  if (isBroadcastTxFailure(result)) {
+export function assertIsBroadcastSuccess(result: DeliverTxResponse): void {
+  if (isDeliverTxSuccess(result)) {
     throw new BroadcastClientError(result.code);
   }
 }
@@ -30,29 +30,30 @@ export async function signAndBroadcast(
     memo?: string,
     registry?: Registry,
   },
-): Promise<BroadcastTxSuccess> {
+): Promise<DeliverTxResponse> {
   const wallet = await createSecp256k1WalletFromPrivateKey(privateKey);
 
-  // const minGasPrice = await getMinGasPrice(nodeUrl);
+  const minGasPrice = await getMinGasPrice(nodeUrl);
 
-  // const gasPrice = GasPrice.fromString(minGasPrice.amount + minGasPrice.denom);
+  const gasPrice = GasPrice.fromString(minGasPrice.amount + minGasPrice.denom);
 
-  // TODO: replace with gasPrice
-  const signingStargateClient = await SigningStargateClient
-    .connectWithSigner(nodeUrl, wallet, { registry: options?.registry });
-  // const signingStargateClient = await SigningStargateClient
-  //   .connectWithSigner(nodeUrl, wallet, { gasPrice }, { registry });
+  const signingStargateClient = await SigningStargateClient.connectWithSigner(
+    nodeUrl,
+    wallet,
+    {
+      gasPrice,
+      registry: options?.registry,
+    },
+  );
 
   const accounts = await wallet.getAccounts();
 
+  const address = accounts[0].address;
+
   const result = await signingStargateClient.signAndBroadcast(
-    accounts[0].address,
+    address,
     coerceArray(messages),
-    // TODO: change to 'auto'
-    {
-      amount: [createDecentrCoin(1)],
-      gas: '1',
-    },
+    'auto',
     options?.memo,
   );
 
@@ -60,7 +61,7 @@ export async function signAndBroadcast(
 
   assertIsBroadcastSuccess(result);
 
-  return result as BroadcastTxSuccess;
+  return result;
 }
 
 export function createCustomRegistry(msgMap: Map<GeneratedType, string>): Registry {

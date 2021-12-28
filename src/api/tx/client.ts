@@ -5,16 +5,16 @@ import {
   StargateClient,
 } from '@cosmjs/stargate';
 
-export class DecentrTXsClient {
+export class DecentrTxClient {
   private constructor(
     private stargateClient: StargateClient,
   ) {
   }
 
-  public static async create(nodeUrl: string): Promise<DecentrTXsClient> {
+  public static async create(nodeUrl: string): Promise<DecentrTxClient> {
     const stargateClient = await StargateClient.connect(nodeUrl);
 
-    return new DecentrTXsClient(stargateClient);
+    return new DecentrTxClient(stargateClient);
   }
 
   public disconnect(): void {

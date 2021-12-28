@@ -12,7 +12,7 @@ import { DecentrProfileClient } from './profile';
 import { DecentrStakingClient } from './staking';
 import { DecentrSwapClient } from './swap';
 import { DecentrTokenClient } from './token';
-import { DecentrTXsClient } from './txs';
+import { DecentrTxClient } from './tx';
 
 export class DecentrClient {
   private authClient: DecentrAuthClient | undefined;
@@ -29,7 +29,7 @@ export class DecentrClient {
   private stakingClient: DecentrStakingClient | undefined;
   private swapClient: DecentrSwapClient | undefined;
   private tokenClient: DecentrTokenClient | undefined;
-  private txsClient: DecentrTXsClient | undefined;
+  private txClient: DecentrTxClient | undefined;
 
   constructor(
     private nodeUrl: string,
@@ -168,11 +168,11 @@ export class DecentrClient {
     return this.tokenClient;
   }
 
-  public async txs(): Promise<DecentrTXsClient> {
-    if (!this.txsClient) {
-      this.txsClient = await DecentrTXsClient.create(this.nodeUrl);
+  public async txs(): Promise<DecentrTxClient> {
+    if (!this.txClient) {
+      this.txClient = await DecentrTxClient.create(this.nodeUrl);
     }
 
-    return this.txsClient;
+    return this.txClient;
   }
 }

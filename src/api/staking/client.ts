@@ -8,8 +8,8 @@ import {
   Validator,
 } from 'cosmjs-types/cosmos/staking/v1beta1/staking';
 import { BondStatusString } from '@cosmjs/stargate/build/queries/staking';
-import { BroadcastTxSuccess } from '@cosmjs/stargate/build/stargateclient';
 import {
+  DeliverTxResponse,
   MsgDelegateEncodeObject,
   MsgUndelegateEncodeObject,
   QueryClient,
@@ -142,7 +142,7 @@ export class DecentrStakingClient {
   public async delegateTokens(
     request: DelegateTokensRequest,
     privateKey: Wallet['privateKey'],
-  ): Promise<BroadcastTxSuccess> {
+  ): Promise<DeliverTxResponse> {
     const message: MsgDelegateEncodeObject = {
       typeUrl: '/cosmos.staking.v1beta1.MsgDelegate',
       value: request,
@@ -165,7 +165,7 @@ export class DecentrStakingClient {
   public async undelegateTokens(
     request: UndelegateTokensRequest,
     privateKey: Wallet['privateKey'],
-  ): Promise<BroadcastTxSuccess> {
+  ): Promise<DeliverTxResponse> {
     const message: MsgUndelegateEncodeObject = {
       typeUrl: '/cosmos.staking.v1beta1.MsgUndelegate',
       value: request,
@@ -188,7 +188,7 @@ export class DecentrStakingClient {
   public async redelegateTokens(
     request: RedelegateTokensRequest,
     privateKey: Wallet['privateKey'],
-  ): Promise<BroadcastTxSuccess> {
+  ): Promise<DeliverTxResponse> {
     const message = {
       typeUrl: '/cosmos.staking.v1beta1.MsgBeginRedelegate',
       value: request,

@@ -1,5 +1,4 @@
-import { BroadcastTxSuccess } from '@cosmjs/stargate/build/stargateclient';
-import { QueryClient } from '@cosmjs/stargate';
+import { DeliverTxResponse, QueryClient } from '@cosmjs/stargate';
 import { Tendermint34Client } from '@cosmjs/tendermint-rpc';
 
 import { Wallet } from '../../wallet';
@@ -48,7 +47,7 @@ export class DecentrCommunityClient {
   public async createPost(
     request: CreatePostRequest,
     privateKey: Wallet['privateKey'],
-  ): Promise<BroadcastTxSuccess> {
+  ): Promise<DeliverTxResponse> {
     const message = {
       typeUrl: MessageTypeUrl.CreatePost,
       value: {
@@ -69,7 +68,7 @@ export class DecentrCommunityClient {
   public async deletePost(
     request: DeletePostRequest,
     privateKey: Wallet['privateKey'],
-  ): Promise<BroadcastTxSuccess> {
+  ): Promise<DeliverTxResponse> {
     const message = {
       typeUrl: MessageTypeUrl.DeletePost,
       value: request,
@@ -88,7 +87,7 @@ export class DecentrCommunityClient {
   public async setLike(
     request: LikeRequest,
     privateKey: Wallet['privateKey'],
-  ): Promise<BroadcastTxSuccess> {
+  ): Promise<DeliverTxResponse> {
     const message = {
       typeUrl: MessageTypeUrl.SetLike,
       value: {
@@ -109,7 +108,7 @@ export class DecentrCommunityClient {
   public async follow(
     request: FollowRequest,
     privateKey: Wallet['privateKey'],
-  ): Promise<BroadcastTxSuccess> {
+  ): Promise<DeliverTxResponse> {
     const message = {
       typeUrl: MessageTypeUrl.Follow,
       value: request,
@@ -128,7 +127,7 @@ export class DecentrCommunityClient {
   public async unfollow(
     request: UnfollowRequest,
     privateKey: Wallet['privateKey'],
-  ): Promise<BroadcastTxSuccess> {
+  ): Promise<DeliverTxResponse> {
     const message = {
       typeUrl: MessageTypeUrl.Unfollow,
       value: request,

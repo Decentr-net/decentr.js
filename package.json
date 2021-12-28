@@ -25,15 +25,15 @@
     "proto": "bash scripts/get-proto.sh && bash scripts/define-proto.sh"
   },
   "dependencies": {
-    "@cosmjs/proto-signing": "^0.26.5",
-    "@cosmjs/stargate": "^0.26.5",
-    "@cosmjs/tendermint-rpc": "^0.26.5",
+    "@cosmjs/proto-signing": "^0.27.0-rc2",
+    "@cosmjs/stargate": "^0.27.0-rc2",
+    "@cosmjs/tendermint-rpc": "^0.27.0-rc2",
     "@tendermint/belt": "^0.3.0",
     "axios": "^0.24.0",
     "bech32": "^2.0.0",
     "bip32": "^2.0.6",
     "bip39": "^3.0.2",
-    "cosmjs-types": "^0.2.1",
+    "cosmjs-types": "^0.4.0",
     "create-hash": "^1.2.0",
     "secp256k1": "^4.0.2"
   },

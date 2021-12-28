@@ -1,5 +1,4 @@
-export { Coin } from '@cosmjs/stargate';
-export { BroadcastTxSuccess } from '@cosmjs/stargate/build/stargateclient';
+export { Coin, DeliverTxResponse } from '@cosmjs/stargate';
 
 export { createDecentrCoin } from './api-utils';
 
@@ -18,5 +17,5 @@ export * from './profile';
 export * from './staking';
 export * from './swap';
 export * from './token';
-export * from './txs';
+export * from './tx';
 export * from './types';
