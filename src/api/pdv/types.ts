@@ -95,3 +95,5 @@ export interface PDVMeta {
   object_types: Record<PDVType, number>;
   reward: number;
 }
+
+export type PDVRewards = Record<PDVType, string>;

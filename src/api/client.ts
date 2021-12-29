@@ -36,6 +36,7 @@ export class DecentrClient {
     private servicesUrls?: {
       cerberus?: string,
       swap?: string,
+      theseus?: string,
     },
   ) {
   }
@@ -133,8 +134,15 @@ export class DecentrClient {
       throw new Error(`You didn't provide Cerberus url`);
     }
 
+    if (!this.servicesUrls?.theseus) {
+      throw new Error(`You didn't provide Theseus url`);
+    }
+
     if (!this.profileClient) {
-      this.profileClient = new DecentrProfileClient(this.servicesUrls.cerberus);
+      this.profileClient = new DecentrProfileClient(
+        this.servicesUrls.cerberus,
+        this.servicesUrls.theseus,
+      );
     }
 
     return this.profileClient;
@@ -165,8 +173,16 @@ export class DecentrClient {
       throw new Error(`You didn't provide Cerberus url`);
     }
 
+    if (!this.servicesUrls?.theseus) {
+      throw new Error(`You didn't provide Theseus url`);
+    }
+
     if (!this.tokenClient) {
-      this.tokenClient = await DecentrTokenClient.create(this.nodeUrl, this.servicesUrls.cerberus);
+      this.tokenClient = await DecentrTokenClient.create(
+        this.nodeUrl,
+        this.servicesUrls.cerberus,
+        this.servicesUrls.theseus,
+      );
     }
 
     return this.tokenClient;

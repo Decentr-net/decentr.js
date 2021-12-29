@@ -6,9 +6,9 @@ import {
   PDVListItem,
   PDVListPaginationOptions,
   PDVAddress,
-  PDVType,
   PDVMeta,
   PDVBlacklist,
+  PDVRewards,
 } from './types';
 
 export class DecentrPDVClient {
@@ -46,7 +46,7 @@ export class DecentrPDVClient {
     return fetchJson(url, { headers });
   }
 
-  public getRewards(): Promise<Record<PDVType, number>> {
+  public getRewards(): Promise<PDVRewards> {
     return fetchJson(`${this.cerberusUrl}/v1/configs/rewards`);
   }
 

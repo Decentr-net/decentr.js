@@ -4,19 +4,21 @@ import { Tendermint34Client } from '@cosmjs/tendermint-rpc';
 import { fetchJson } from '../../utils';
 import { Wallet } from '../../wallet';
 import { setupTokenExtension, TokenExtension } from './extension';
-import { TokenDelta, TokenPool } from './types';
+import { AdvDdvStatistics, TokenDelta, TokenPool } from './types';
 
 export class DecentrTokenClient {
   private constructor(
     private queryClient: QueryClient & TokenExtension,
     private tmClient: Tendermint34Client,
     private cerberusUrl: string,
+    private theseusUrl: string,
   ) {
   }
 
   public static async create(
     nodeUrl: string,
     cerberusUrl: string,
+    theseusUrl: string,
   ): Promise<DecentrTokenClient> {
     const tendermintClient = await Tendermint34Client.connect(nodeUrl);
 
@@ -25,7 +27,7 @@ export class DecentrTokenClient {
       setupTokenExtension,
     );
 
-    return new DecentrTokenClient(queryClient, tendermintClient, cerberusUrl);
+    return new DecentrTokenClient(queryClient, tendermintClient, cerberusUrl, theseusUrl);
   }
 
   public disconnect(): void {
@@ -34,6 +36,12 @@ export class DecentrTokenClient {
 
   public getBalance(walletAddress: Wallet['address']): Promise<string | undefined> {
     return this.queryClient.token.getBalance(walletAddress)
+  }
+
+  public getAdvDdvStats(): Promise<AdvDdvStatistics> {
+    const url = `${this.theseusUrl}/v1/profiles/stats`;
+
+    return fetchJson(url);
   }
 
   public getDelta(walletAddress: Wallet['address']): Promise<TokenDelta> {

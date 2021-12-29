@@ -1,11 +1,12 @@
 import { KeyPair, Wallet } from '../../wallet';
 import { DecentrPDVClient, PDVAddress, PDVType, ProfilePDV } from '../pdv';
 import { fetchJson, getAuthHeaders } from '../../utils';
-import { Profile } from './types';
+import { Profile, ProfileStatistics } from './types';
 
 export class DecentrProfileClient {
   constructor(
     private cerberusUrl: string,
+    private theseusUrl: string,
   ) {
   }
 
@@ -55,5 +56,11 @@ export class DecentrProfileClient {
 
       return profiles;
     });
+  }
+
+  public getStats(walletAddress: Wallet['address']): Promise<ProfileStatistics> {
+    const url = `${this.theseusUrl}/v1/profiles/${walletAddress}/stats`;
+
+    return fetchJson(url);
   }
 }
