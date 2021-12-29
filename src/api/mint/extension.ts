@@ -1,6 +1,5 @@
+import { QueryClientImpl } from 'cosmjs-types/cosmos/mint/v1beta1/query';
 import { createProtobufRpcClient, QueryClient } from '@cosmjs/stargate';
-
-import { QueryClientImpl, } from '../../codec/cosmos/mint/v1beta1/query';
 
 export interface MintExtension {
   readonly mint: {

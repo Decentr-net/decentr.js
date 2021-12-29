@@ -28,8 +28,6 @@ mkdir -p "$OUT_DIR"
   "$DECENTR_SDK_DIR/operations/query.proto" \
   "$DECENTR_SDK_DIR/operations/tx.proto" \
   "$DECENTR_SDK_DIR/token/query.proto" \
-  "$COSMOS_SDK_DIR/mint/v1beta1/mint.proto" \
-  "$COSMOS_SDK_DIR/mint/v1beta1/query.proto" \
 
 # Remove unnecessary codec files
 rm -rf \
