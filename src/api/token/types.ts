@@ -12,7 +12,12 @@ export interface TokenBalanceHistory {
 }
 
 export interface TokenPool {
-  nextDistributionHeight: string;
-  size?: Coin[];
-  totalDelta: string;
+  size: string,
+  total_delta: string;
+  next_distribution_date: string;
+}
+
+export interface TokenDelta {
+  delta: string;
+  pool: TokenPool;
 }

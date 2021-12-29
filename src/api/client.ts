@@ -161,8 +161,12 @@ export class DecentrClient {
   }
 
   public async token(): Promise<DecentrTokenClient> {
+    if (!this.servicesUrls?.cerberus) {
+      throw new Error(`You didn't provide Cerberus url`);
+    }
+
     if (!this.tokenClient) {
-      this.tokenClient = await DecentrTokenClient.create(this.nodeUrl);
+      this.tokenClient = await DecentrTokenClient.create(this.nodeUrl, this.servicesUrls.cerberus);
     }
 
     return this.tokenClient;
