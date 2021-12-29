@@ -64,12 +64,15 @@ export interface PageResponse {
   total: Long;
 }
 
-const basePageRequest: object = {
-  offset: Long.UZERO,
-  limit: Long.UZERO,
-  countTotal: false,
-  reverse: false,
-};
+function createBasePageRequest(): PageRequest {
+  return {
+    key: new Uint8Array(),
+    offset: Long.UZERO,
+    limit: Long.UZERO,
+    countTotal: false,
+    reverse: false,
+  };
+}
 
 export const PageRequest = {
   encode(
@@ -97,8 +100,7 @@ export const PageRequest = {
   decode(input: _m0.Reader | Uint8Array, length?: number): PageRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...basePageRequest } as PageRequest;
-    message.key = new Uint8Array();
+    const message = createBasePageRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -126,7 +128,7 @@ export const PageRequest = {
   },
 
   fromJSON(object: any): PageRequest {
-    const message = { ...basePageRequest } as PageRequest;
+    const message = createBasePageRequest();
     message.key =
       object.key !== undefined && object.key !== null
         ? bytesFromBase64(object.key)
@@ -168,7 +170,7 @@ export const PageRequest = {
   fromPartial<I extends Exact<DeepPartial<PageRequest>, I>>(
     object: I
   ): PageRequest {
-    const message = { ...basePageRequest } as PageRequest;
+    const message = createBasePageRequest();
     message.key = object.key ?? new Uint8Array();
     message.offset =
       object.offset !== undefined && object.offset !== null
@@ -184,7 +186,9 @@ export const PageRequest = {
   },
 };
 
-const basePageResponse: object = { total: Long.UZERO };
+function createBasePageResponse(): PageResponse {
+  return { nextKey: new Uint8Array(), total: Long.UZERO };
+}
 
 export const PageResponse = {
   encode(
@@ -203,8 +207,7 @@ export const PageResponse = {
   decode(input: _m0.Reader | Uint8Array, length?: number): PageResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...basePageResponse } as PageResponse;
-    message.nextKey = new Uint8Array();
+    const message = createBasePageResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -223,7 +226,7 @@ export const PageResponse = {
   },
 
   fromJSON(object: any): PageResponse {
-    const message = { ...basePageResponse } as PageResponse;
+    const message = createBasePageResponse();
     message.nextKey =
       object.nextKey !== undefined && object.nextKey !== null
         ? bytesFromBase64(object.nextKey)
@@ -249,7 +252,7 @@ export const PageResponse = {
   fromPartial<I extends Exact<DeepPartial<PageResponse>, I>>(
     object: I
   ): PageResponse {
-    const message = { ...basePageResponse } as PageResponse;
+    const message = createBasePageResponse();
     message.nextKey = object.nextKey ?? new Uint8Array();
     message.total =
       object.total !== undefined && object.total !== null

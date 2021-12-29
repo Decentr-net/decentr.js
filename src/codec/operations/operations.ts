@@ -16,7 +16,9 @@ export interface FixedGasParams {
   distributeRewards: Long;
 }
 
-const baseParams: object = { supervisors: "" };
+function createBaseParams(): Params {
+  return { supervisors: [], fixedGas: undefined, minGasPrice: undefined };
+}
 
 export const Params = {
   encode(
@@ -41,8 +43,7 @@ export const Params = {
   decode(input: _m0.Reader | Uint8Array, length?: number): Params {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseParams } as Params;
-    message.supervisors = [];
+    const message = createBaseParams();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -64,7 +65,7 @@ export const Params = {
   },
 
   fromJSON(object: any): Params {
-    const message = { ...baseParams } as Params;
+    const message = createBaseParams();
     message.supervisors = (object.supervisors ?? []).map((e: any) => String(e));
     message.fixedGas =
       object.fixedGas !== undefined && object.fixedGas !== null
@@ -96,7 +97,7 @@ export const Params = {
   },
 
   fromPartial<I extends Exact<DeepPartial<Params>, I>>(object: I): Params {
-    const message = { ...baseParams } as Params;
+    const message = createBaseParams();
     message.supervisors = object.supervisors?.map((e) => e) || [];
     message.fixedGas =
       object.fixedGas !== undefined && object.fixedGas !== null
@@ -110,10 +111,9 @@ export const Params = {
   },
 };
 
-const baseFixedGasParams: object = {
-  resetAccount: Long.UZERO,
-  distributeRewards: Long.UZERO,
-};
+function createBaseFixedGasParams(): FixedGasParams {
+  return { resetAccount: Long.UZERO, distributeRewards: Long.UZERO };
+}
 
 export const FixedGasParams = {
   encode(
@@ -132,7 +132,7 @@ export const FixedGasParams = {
   decode(input: _m0.Reader | Uint8Array, length?: number): FixedGasParams {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseFixedGasParams } as FixedGasParams;
+    const message = createBaseFixedGasParams();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -151,7 +151,7 @@ export const FixedGasParams = {
   },
 
   fromJSON(object: any): FixedGasParams {
-    const message = { ...baseFixedGasParams } as FixedGasParams;
+    const message = createBaseFixedGasParams();
     message.resetAccount =
       object.resetAccount !== undefined && object.resetAccount !== null
         ? Long.fromString(object.resetAccount)
@@ -178,7 +178,7 @@ export const FixedGasParams = {
   fromPartial<I extends Exact<DeepPartial<FixedGasParams>, I>>(
     object: I
   ): FixedGasParams {
-    const message = { ...baseFixedGasParams } as FixedGasParams;
+    const message = createBaseFixedGasParams();
     message.resetAccount =
       object.resetAccount !== undefined && object.resetAccount !== null
         ? Long.fromValue(object.resetAccount)

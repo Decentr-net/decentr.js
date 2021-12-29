@@ -13,7 +13,9 @@ export interface BalanceResponse {
   balance?: DecProto;
 }
 
-const baseBalanceRequest: object = { address: "" };
+function createBaseBalanceRequest(): BalanceRequest {
+  return { address: "" };
+}
 
 export const BalanceRequest = {
   encode(
@@ -29,7 +31,7 @@ export const BalanceRequest = {
   decode(input: _m0.Reader | Uint8Array, length?: number): BalanceRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseBalanceRequest } as BalanceRequest;
+    const message = createBaseBalanceRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -45,7 +47,7 @@ export const BalanceRequest = {
   },
 
   fromJSON(object: any): BalanceRequest {
-    const message = { ...baseBalanceRequest } as BalanceRequest;
+    const message = createBaseBalanceRequest();
     message.address =
       object.address !== undefined && object.address !== null
         ? String(object.address)
@@ -62,13 +64,15 @@ export const BalanceRequest = {
   fromPartial<I extends Exact<DeepPartial<BalanceRequest>, I>>(
     object: I
   ): BalanceRequest {
-    const message = { ...baseBalanceRequest } as BalanceRequest;
+    const message = createBaseBalanceRequest();
     message.address = object.address ?? "";
     return message;
   },
 };
 
-const baseBalanceResponse: object = {};
+function createBaseBalanceResponse(): BalanceResponse {
+  return { balance: undefined };
+}
 
 export const BalanceResponse = {
   encode(
@@ -84,7 +88,7 @@ export const BalanceResponse = {
   decode(input: _m0.Reader | Uint8Array, length?: number): BalanceResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseBalanceResponse } as BalanceResponse;
+    const message = createBaseBalanceResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -100,7 +104,7 @@ export const BalanceResponse = {
   },
 
   fromJSON(object: any): BalanceResponse {
-    const message = { ...baseBalanceResponse } as BalanceResponse;
+    const message = createBaseBalanceResponse();
     message.balance =
       object.balance !== undefined && object.balance !== null
         ? DecProto.fromJSON(object.balance)
@@ -120,7 +124,7 @@ export const BalanceResponse = {
   fromPartial<I extends Exact<DeepPartial<BalanceResponse>, I>>(
     object: I
   ): BalanceResponse {
-    const message = { ...baseBalanceResponse } as BalanceResponse;
+    const message = createBaseBalanceResponse();
     message.balance =
       object.balance !== undefined && object.balance !== null
         ? DecProto.fromPartial(object.balance)

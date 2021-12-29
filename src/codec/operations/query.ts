@@ -11,7 +11,9 @@ export interface MinGasPriceResponse {
   minGasPrice?: DecCoin;
 }
 
-const baseMinGasPriceRequest: object = {};
+function createBaseMinGasPriceRequest(): MinGasPriceRequest {
+  return {};
+}
 
 export const MinGasPriceRequest = {
   encode(
@@ -24,7 +26,7 @@ export const MinGasPriceRequest = {
   decode(input: _m0.Reader | Uint8Array, length?: number): MinGasPriceRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMinGasPriceRequest } as MinGasPriceRequest;
+    const message = createBaseMinGasPriceRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -37,7 +39,7 @@ export const MinGasPriceRequest = {
   },
 
   fromJSON(_: any): MinGasPriceRequest {
-    const message = { ...baseMinGasPriceRequest } as MinGasPriceRequest;
+    const message = createBaseMinGasPriceRequest();
     return message;
   },
 
@@ -49,12 +51,14 @@ export const MinGasPriceRequest = {
   fromPartial<I extends Exact<DeepPartial<MinGasPriceRequest>, I>>(
     _: I
   ): MinGasPriceRequest {
-    const message = { ...baseMinGasPriceRequest } as MinGasPriceRequest;
+    const message = createBaseMinGasPriceRequest();
     return message;
   },
 };
 
-const baseMinGasPriceResponse: object = {};
+function createBaseMinGasPriceResponse(): MinGasPriceResponse {
+  return { minGasPrice: undefined };
+}
 
 export const MinGasPriceResponse = {
   encode(
@@ -70,7 +74,7 @@ export const MinGasPriceResponse = {
   decode(input: _m0.Reader | Uint8Array, length?: number): MinGasPriceResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMinGasPriceResponse } as MinGasPriceResponse;
+    const message = createBaseMinGasPriceResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -86,7 +90,7 @@ export const MinGasPriceResponse = {
   },
 
   fromJSON(object: any): MinGasPriceResponse {
-    const message = { ...baseMinGasPriceResponse } as MinGasPriceResponse;
+    const message = createBaseMinGasPriceResponse();
     message.minGasPrice =
       object.minGasPrice !== undefined && object.minGasPrice !== null
         ? DecCoin.fromJSON(object.minGasPrice)
@@ -106,7 +110,7 @@ export const MinGasPriceResponse = {
   fromPartial<I extends Exact<DeepPartial<MinGasPriceResponse>, I>>(
     object: I
   ): MinGasPriceResponse {
-    const message = { ...baseMinGasPriceResponse } as MinGasPriceResponse;
+    const message = createBaseMinGasPriceResponse();
     message.minGasPrice =
       object.minGasPrice !== undefined && object.minGasPrice !== null
         ? DecCoin.fromPartial(object.minGasPrice)

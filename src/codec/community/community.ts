@@ -151,7 +151,9 @@ export interface Like {
   weight: LikeWeight;
 }
 
-const baseParams: object = { moderators: "" };
+function createBaseParams(): Params {
+  return { moderators: [], fixedGas: undefined };
+}
 
 export const Params = {
   encode(
@@ -173,8 +175,7 @@ export const Params = {
   decode(input: _m0.Reader | Uint8Array, length?: number): Params {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseParams } as Params;
-    message.moderators = [];
+    const message = createBaseParams();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -193,7 +194,7 @@ export const Params = {
   },
 
   fromJSON(object: any): Params {
-    const message = { ...baseParams } as Params;
+    const message = createBaseParams();
     message.moderators = (object.moderators ?? []).map((e: any) => String(e));
     message.fixedGas =
       object.fixedGas !== undefined && object.fixedGas !== null
@@ -217,7 +218,7 @@ export const Params = {
   },
 
   fromPartial<I extends Exact<DeepPartial<Params>, I>>(object: I): Params {
-    const message = { ...baseParams } as Params;
+    const message = createBaseParams();
     message.moderators = object.moderators?.map((e) => e) || [];
     message.fixedGas =
       object.fixedGas !== undefined && object.fixedGas !== null
@@ -227,13 +228,15 @@ export const Params = {
   },
 };
 
-const baseFixedGasParams: object = {
-  createPost: Long.UZERO,
-  deletePost: Long.UZERO,
-  setLike: Long.UZERO,
-  follow: Long.UZERO,
-  unfollow: Long.UZERO,
-};
+function createBaseFixedGasParams(): FixedGasParams {
+  return {
+    createPost: Long.UZERO,
+    deletePost: Long.UZERO,
+    setLike: Long.UZERO,
+    follow: Long.UZERO,
+    unfollow: Long.UZERO,
+  };
+}
 
 export const FixedGasParams = {
   encode(
@@ -261,7 +264,7 @@ export const FixedGasParams = {
   decode(input: _m0.Reader | Uint8Array, length?: number): FixedGasParams {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseFixedGasParams } as FixedGasParams;
+    const message = createBaseFixedGasParams();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -289,7 +292,7 @@ export const FixedGasParams = {
   },
 
   fromJSON(object: any): FixedGasParams {
-    const message = { ...baseFixedGasParams } as FixedGasParams;
+    const message = createBaseFixedGasParams();
     message.createPost =
       object.createPost !== undefined && object.createPost !== null
         ? Long.fromString(object.createPost)
@@ -331,7 +334,7 @@ export const FixedGasParams = {
   fromPartial<I extends Exact<DeepPartial<FixedGasParams>, I>>(
     object: I
   ): FixedGasParams {
-    const message = { ...baseFixedGasParams } as FixedGasParams;
+    const message = createBaseFixedGasParams();
     message.createPost =
       object.createPost !== undefined && object.createPost !== null
         ? Long.fromValue(object.createPost)
@@ -356,14 +359,16 @@ export const FixedGasParams = {
   },
 };
 
-const basePost: object = {
-  owner: "",
-  uuid: "",
-  title: "",
-  previewImage: "",
-  category: 0,
-  text: "",
-};
+function createBasePost(): Post {
+  return {
+    owner: "",
+    uuid: "",
+    title: "",
+    previewImage: "",
+    category: 0,
+    text: "",
+  };
+}
 
 export const Post = {
   encode(message: Post, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -391,7 +396,7 @@ export const Post = {
   decode(input: _m0.Reader | Uint8Array, length?: number): Post {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...basePost } as Post;
+    const message = createBasePost();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -422,7 +427,7 @@ export const Post = {
   },
 
   fromJSON(object: any): Post {
-    const message = { ...basePost } as Post;
+    const message = createBasePost();
     message.owner =
       object.owner !== undefined && object.owner !== null
         ? String(object.owner)
@@ -464,7 +469,7 @@ export const Post = {
   },
 
   fromPartial<I extends Exact<DeepPartial<Post>, I>>(object: I): Post {
-    const message = { ...basePost } as Post;
+    const message = createBasePost();
     message.owner = object.owner ?? "";
     message.uuid = object.uuid ?? "";
     message.title = object.title ?? "";
@@ -475,7 +480,9 @@ export const Post = {
   },
 };
 
-const baseLike: object = { owner: "", postOwner: "", postUuid: "", weight: 0 };
+function createBaseLike(): Like {
+  return { owner: "", postOwner: "", postUuid: "", weight: 0 };
+}
 
 export const Like = {
   encode(message: Like, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -497,7 +504,7 @@ export const Like = {
   decode(input: _m0.Reader | Uint8Array, length?: number): Like {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseLike } as Like;
+    const message = createBaseLike();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -522,7 +529,7 @@ export const Like = {
   },
 
   fromJSON(object: any): Like {
-    const message = { ...baseLike } as Like;
+    const message = createBaseLike();
     message.owner =
       object.owner !== undefined && object.owner !== null
         ? String(object.owner)
@@ -553,7 +560,7 @@ export const Like = {
   },
 
   fromPartial<I extends Exact<DeepPartial<Like>, I>>(object: I): Like {
-    const message = { ...baseLike } as Like;
+    const message = createBaseLike();
     message.owner = object.owner ?? "";
     message.postOwner = object.postOwner ?? "";
     message.postUuid = object.postUuid ?? "";

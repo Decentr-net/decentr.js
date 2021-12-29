@@ -28,7 +28,9 @@ export interface Params {
   blocksPerYear: Long;
 }
 
-const baseMinter: object = { inflation: "", annualProvisions: "" };
+function createBaseMinter(): Minter {
+  return { inflation: "", annualProvisions: "" };
+}
 
 export const Minter = {
   encode(
@@ -47,7 +49,7 @@ export const Minter = {
   decode(input: _m0.Reader | Uint8Array, length?: number): Minter {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMinter } as Minter;
+    const message = createBaseMinter();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -66,7 +68,7 @@ export const Minter = {
   },
 
   fromJSON(object: any): Minter {
-    const message = { ...baseMinter } as Minter;
+    const message = createBaseMinter();
     message.inflation =
       object.inflation !== undefined && object.inflation !== null
         ? String(object.inflation)
@@ -87,21 +89,23 @@ export const Minter = {
   },
 
   fromPartial<I extends Exact<DeepPartial<Minter>, I>>(object: I): Minter {
-    const message = { ...baseMinter } as Minter;
+    const message = createBaseMinter();
     message.inflation = object.inflation ?? "";
     message.annualProvisions = object.annualProvisions ?? "";
     return message;
   },
 };
 
-const baseParams: object = {
-  mintDenom: "",
-  inflationRateChange: "",
-  inflationMax: "",
-  inflationMin: "",
-  goalBonded: "",
-  blocksPerYear: Long.UZERO,
-};
+function createBaseParams(): Params {
+  return {
+    mintDenom: "",
+    inflationRateChange: "",
+    inflationMax: "",
+    inflationMin: "",
+    goalBonded: "",
+    blocksPerYear: Long.UZERO,
+  };
+}
 
 export const Params = {
   encode(
@@ -132,7 +136,7 @@ export const Params = {
   decode(input: _m0.Reader | Uint8Array, length?: number): Params {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseParams } as Params;
+    const message = createBaseParams();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -163,7 +167,7 @@ export const Params = {
   },
 
   fromJSON(object: any): Params {
-    const message = { ...baseParams } as Params;
+    const message = createBaseParams();
     message.mintDenom =
       object.mintDenom !== undefined && object.mintDenom !== null
         ? String(object.mintDenom)
@@ -208,7 +212,7 @@ export const Params = {
   },
 
   fromPartial<I extends Exact<DeepPartial<Params>, I>>(object: I): Params {
-    const message = { ...baseParams } as Params;
+    const message = createBaseParams();
     message.mintDenom = object.mintDenom ?? "";
     message.inflationRateChange = object.inflationRateChange ?? "";
     message.inflationMax = object.inflationMax ?? "";

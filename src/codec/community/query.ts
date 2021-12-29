@@ -44,7 +44,9 @@ export interface ListFollowedResponse {
   pagination?: PageResponse;
 }
 
-const baseGetPostRequest: object = { postOwner: "", postUuid: "" };
+function createBaseGetPostRequest(): GetPostRequest {
+  return { postOwner: "", postUuid: "" };
+}
 
 export const GetPostRequest = {
   encode(
@@ -63,7 +65,7 @@ export const GetPostRequest = {
   decode(input: _m0.Reader | Uint8Array, length?: number): GetPostRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseGetPostRequest } as GetPostRequest;
+    const message = createBaseGetPostRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -82,7 +84,7 @@ export const GetPostRequest = {
   },
 
   fromJSON(object: any): GetPostRequest {
-    const message = { ...baseGetPostRequest } as GetPostRequest;
+    const message = createBaseGetPostRequest();
     message.postOwner =
       object.postOwner !== undefined && object.postOwner !== null
         ? String(object.postOwner)
@@ -104,14 +106,16 @@ export const GetPostRequest = {
   fromPartial<I extends Exact<DeepPartial<GetPostRequest>, I>>(
     object: I
   ): GetPostRequest {
-    const message = { ...baseGetPostRequest } as GetPostRequest;
+    const message = createBaseGetPostRequest();
     message.postOwner = object.postOwner ?? "";
     message.postUuid = object.postUuid ?? "";
     return message;
   },
 };
 
-const baseGetPostResponse: object = {};
+function createBaseGetPostResponse(): GetPostResponse {
+  return { post: undefined };
+}
 
 export const GetPostResponse = {
   encode(
@@ -127,7 +131,7 @@ export const GetPostResponse = {
   decode(input: _m0.Reader | Uint8Array, length?: number): GetPostResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseGetPostResponse } as GetPostResponse;
+    const message = createBaseGetPostResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -143,7 +147,7 @@ export const GetPostResponse = {
   },
 
   fromJSON(object: any): GetPostResponse {
-    const message = { ...baseGetPostResponse } as GetPostResponse;
+    const message = createBaseGetPostResponse();
     message.post =
       object.post !== undefined && object.post !== null
         ? Post.fromJSON(object.post)
@@ -161,7 +165,7 @@ export const GetPostResponse = {
   fromPartial<I extends Exact<DeepPartial<GetPostResponse>, I>>(
     object: I
   ): GetPostResponse {
-    const message = { ...baseGetPostResponse } as GetPostResponse;
+    const message = createBaseGetPostResponse();
     message.post =
       object.post !== undefined && object.post !== null
         ? Post.fromPartial(object.post)
@@ -170,7 +174,9 @@ export const GetPostResponse = {
   },
 };
 
-const baseListUserPostsRequest: object = { owner: "" };
+function createBaseListUserPostsRequest(): ListUserPostsRequest {
+  return { owner: "", pagination: undefined };
+}
 
 export const ListUserPostsRequest = {
   encode(
@@ -192,7 +198,7 @@ export const ListUserPostsRequest = {
   ): ListUserPostsRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseListUserPostsRequest } as ListUserPostsRequest;
+    const message = createBaseListUserPostsRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -211,7 +217,7 @@ export const ListUserPostsRequest = {
   },
 
   fromJSON(object: any): ListUserPostsRequest {
-    const message = { ...baseListUserPostsRequest } as ListUserPostsRequest;
+    const message = createBaseListUserPostsRequest();
     message.owner =
       object.owner !== undefined && object.owner !== null
         ? String(object.owner)
@@ -236,7 +242,7 @@ export const ListUserPostsRequest = {
   fromPartial<I extends Exact<DeepPartial<ListUserPostsRequest>, I>>(
     object: I
   ): ListUserPostsRequest {
-    const message = { ...baseListUserPostsRequest } as ListUserPostsRequest;
+    const message = createBaseListUserPostsRequest();
     message.owner = object.owner ?? "";
     message.pagination =
       object.pagination !== undefined && object.pagination !== null
@@ -246,7 +252,9 @@ export const ListUserPostsRequest = {
   },
 };
 
-const baseListUserPostsResponse: object = {};
+function createBaseListUserPostsResponse(): ListUserPostsResponse {
+  return { posts: [], pagination: undefined };
+}
 
 export const ListUserPostsResponse = {
   encode(
@@ -271,8 +279,7 @@ export const ListUserPostsResponse = {
   ): ListUserPostsResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseListUserPostsResponse } as ListUserPostsResponse;
-    message.posts = [];
+    const message = createBaseListUserPostsResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -291,7 +298,7 @@ export const ListUserPostsResponse = {
   },
 
   fromJSON(object: any): ListUserPostsResponse {
-    const message = { ...baseListUserPostsResponse } as ListUserPostsResponse;
+    const message = createBaseListUserPostsResponse();
     message.posts = (object.posts ?? []).map((e: any) => Post.fromJSON(e));
     message.pagination =
       object.pagination !== undefined && object.pagination !== null
@@ -317,7 +324,7 @@ export const ListUserPostsResponse = {
   fromPartial<I extends Exact<DeepPartial<ListUserPostsResponse>, I>>(
     object: I
   ): ListUserPostsResponse {
-    const message = { ...baseListUserPostsResponse } as ListUserPostsResponse;
+    const message = createBaseListUserPostsResponse();
     message.posts = object.posts?.map((e) => Post.fromPartial(e)) || [];
     message.pagination =
       object.pagination !== undefined && object.pagination !== null
@@ -327,7 +334,9 @@ export const ListUserPostsResponse = {
   },
 };
 
-const baseModeratorsRequest: object = {};
+function createBaseModeratorsRequest(): ModeratorsRequest {
+  return {};
+}
 
 export const ModeratorsRequest = {
   encode(
@@ -340,7 +349,7 @@ export const ModeratorsRequest = {
   decode(input: _m0.Reader | Uint8Array, length?: number): ModeratorsRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseModeratorsRequest } as ModeratorsRequest;
+    const message = createBaseModeratorsRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -353,7 +362,7 @@ export const ModeratorsRequest = {
   },
 
   fromJSON(_: any): ModeratorsRequest {
-    const message = { ...baseModeratorsRequest } as ModeratorsRequest;
+    const message = createBaseModeratorsRequest();
     return message;
   },
 
@@ -365,12 +374,14 @@ export const ModeratorsRequest = {
   fromPartial<I extends Exact<DeepPartial<ModeratorsRequest>, I>>(
     _: I
   ): ModeratorsRequest {
-    const message = { ...baseModeratorsRequest } as ModeratorsRequest;
+    const message = createBaseModeratorsRequest();
     return message;
   },
 };
 
-const baseModeratorsResponse: object = { moderators: "" };
+function createBaseModeratorsResponse(): ModeratorsResponse {
+  return { moderators: [] };
+}
 
 export const ModeratorsResponse = {
   encode(
@@ -386,8 +397,7 @@ export const ModeratorsResponse = {
   decode(input: _m0.Reader | Uint8Array, length?: number): ModeratorsResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseModeratorsResponse } as ModeratorsResponse;
-    message.moderators = [];
+    const message = createBaseModeratorsResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -403,7 +413,7 @@ export const ModeratorsResponse = {
   },
 
   fromJSON(object: any): ModeratorsResponse {
-    const message = { ...baseModeratorsResponse } as ModeratorsResponse;
+    const message = createBaseModeratorsResponse();
     message.moderators = (object.moderators ?? []).map((e: any) => String(e));
     return message;
   },
@@ -421,13 +431,15 @@ export const ModeratorsResponse = {
   fromPartial<I extends Exact<DeepPartial<ModeratorsResponse>, I>>(
     object: I
   ): ModeratorsResponse {
-    const message = { ...baseModeratorsResponse } as ModeratorsResponse;
+    const message = createBaseModeratorsResponse();
     message.moderators = object.moderators?.map((e) => e) || [];
     return message;
   },
 };
 
-const baseListFollowedRequest: object = { owner: "" };
+function createBaseListFollowedRequest(): ListFollowedRequest {
+  return { owner: "", pagination: undefined };
+}
 
 export const ListFollowedRequest = {
   encode(
@@ -446,7 +458,7 @@ export const ListFollowedRequest = {
   decode(input: _m0.Reader | Uint8Array, length?: number): ListFollowedRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseListFollowedRequest } as ListFollowedRequest;
+    const message = createBaseListFollowedRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -465,7 +477,7 @@ export const ListFollowedRequest = {
   },
 
   fromJSON(object: any): ListFollowedRequest {
-    const message = { ...baseListFollowedRequest } as ListFollowedRequest;
+    const message = createBaseListFollowedRequest();
     message.owner =
       object.owner !== undefined && object.owner !== null
         ? String(object.owner)
@@ -490,7 +502,7 @@ export const ListFollowedRequest = {
   fromPartial<I extends Exact<DeepPartial<ListFollowedRequest>, I>>(
     object: I
   ): ListFollowedRequest {
-    const message = { ...baseListFollowedRequest } as ListFollowedRequest;
+    const message = createBaseListFollowedRequest();
     message.owner = object.owner ?? "";
     message.pagination =
       object.pagination !== undefined && object.pagination !== null
@@ -500,7 +512,9 @@ export const ListFollowedRequest = {
   },
 };
 
-const baseListFollowedResponse: object = { followed: "" };
+function createBaseListFollowedResponse(): ListFollowedResponse {
+  return { followed: [], pagination: undefined };
+}
 
 export const ListFollowedResponse = {
   encode(
@@ -525,8 +539,7 @@ export const ListFollowedResponse = {
   ): ListFollowedResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseListFollowedResponse } as ListFollowedResponse;
-    message.followed = [];
+    const message = createBaseListFollowedResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -545,7 +558,7 @@ export const ListFollowedResponse = {
   },
 
   fromJSON(object: any): ListFollowedResponse {
-    const message = { ...baseListFollowedResponse } as ListFollowedResponse;
+    const message = createBaseListFollowedResponse();
     message.followed = (object.followed ?? []).map((e: any) => String(e));
     message.pagination =
       object.pagination !== undefined && object.pagination !== null
@@ -571,7 +584,7 @@ export const ListFollowedResponse = {
   fromPartial<I extends Exact<DeepPartial<ListFollowedResponse>, I>>(
     object: I
   ): ListFollowedResponse {
-    const message = { ...baseListFollowedResponse } as ListFollowedResponse;
+    const message = createBaseListFollowedResponse();
     message.followed = object.followed?.map((e) => e) || [];
     message.pagination =
       object.pagination !== undefined && object.pagination !== null

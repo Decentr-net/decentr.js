@@ -36,7 +36,9 @@ export interface DecProto {
   dec: string;
 }
 
-const baseCoin: object = { denom: "", amount: "" };
+function createBaseCoin(): Coin {
+  return { denom: "", amount: "" };
+}
 
 export const Coin = {
   encode(message: Coin, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -52,7 +54,7 @@ export const Coin = {
   decode(input: _m0.Reader | Uint8Array, length?: number): Coin {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseCoin } as Coin;
+    const message = createBaseCoin();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -71,7 +73,7 @@ export const Coin = {
   },
 
   fromJSON(object: any): Coin {
-    const message = { ...baseCoin } as Coin;
+    const message = createBaseCoin();
     message.denom =
       object.denom !== undefined && object.denom !== null
         ? String(object.denom)
@@ -91,14 +93,16 @@ export const Coin = {
   },
 
   fromPartial<I extends Exact<DeepPartial<Coin>, I>>(object: I): Coin {
-    const message = { ...baseCoin } as Coin;
+    const message = createBaseCoin();
     message.denom = object.denom ?? "";
     message.amount = object.amount ?? "";
     return message;
   },
 };
 
-const baseDecCoin: object = { denom: "", amount: "" };
+function createBaseDecCoin(): DecCoin {
+  return { denom: "", amount: "" };
+}
 
 export const DecCoin = {
   encode(
@@ -117,7 +121,7 @@ export const DecCoin = {
   decode(input: _m0.Reader | Uint8Array, length?: number): DecCoin {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseDecCoin } as DecCoin;
+    const message = createBaseDecCoin();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -136,7 +140,7 @@ export const DecCoin = {
   },
 
   fromJSON(object: any): DecCoin {
-    const message = { ...baseDecCoin } as DecCoin;
+    const message = createBaseDecCoin();
     message.denom =
       object.denom !== undefined && object.denom !== null
         ? String(object.denom)
@@ -156,14 +160,16 @@ export const DecCoin = {
   },
 
   fromPartial<I extends Exact<DeepPartial<DecCoin>, I>>(object: I): DecCoin {
-    const message = { ...baseDecCoin } as DecCoin;
+    const message = createBaseDecCoin();
     message.denom = object.denom ?? "";
     message.amount = object.amount ?? "";
     return message;
   },
 };
 
-const baseIntProto: object = { int: "" };
+function createBaseIntProto(): IntProto {
+  return { int: "" };
+}
 
 export const IntProto = {
   encode(
@@ -179,7 +185,7 @@ export const IntProto = {
   decode(input: _m0.Reader | Uint8Array, length?: number): IntProto {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseIntProto } as IntProto;
+    const message = createBaseIntProto();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -195,7 +201,7 @@ export const IntProto = {
   },
 
   fromJSON(object: any): IntProto {
-    const message = { ...baseIntProto } as IntProto;
+    const message = createBaseIntProto();
     message.int =
       object.int !== undefined && object.int !== null ? String(object.int) : "";
     return message;
@@ -208,13 +214,15 @@ export const IntProto = {
   },
 
   fromPartial<I extends Exact<DeepPartial<IntProto>, I>>(object: I): IntProto {
-    const message = { ...baseIntProto } as IntProto;
+    const message = createBaseIntProto();
     message.int = object.int ?? "";
     return message;
   },
 };
 
-const baseDecProto: object = { dec: "" };
+function createBaseDecProto(): DecProto {
+  return { dec: "" };
+}
 
 export const DecProto = {
   encode(
@@ -230,7 +238,7 @@ export const DecProto = {
   decode(input: _m0.Reader | Uint8Array, length?: number): DecProto {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseDecProto } as DecProto;
+    const message = createBaseDecProto();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -246,7 +254,7 @@ export const DecProto = {
   },
 
   fromJSON(object: any): DecProto {
-    const message = { ...baseDecProto } as DecProto;
+    const message = createBaseDecProto();
     message.dec =
       object.dec !== undefined && object.dec !== null ? String(object.dec) : "";
     return message;
@@ -259,7 +267,7 @@ export const DecProto = {
   },
 
   fromPartial<I extends Exact<DeepPartial<DecProto>, I>>(object: I): DecProto {
-    const message = { ...baseDecProto } as DecProto;
+    const message = createBaseDecProto();
     message.dec = object.dec ?? "";
     return message;
   },

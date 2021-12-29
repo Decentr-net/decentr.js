@@ -41,7 +41,9 @@ export interface QueryAnnualProvisionsResponse {
   annualProvisions: Uint8Array;
 }
 
-const baseQueryParamsRequest: object = {};
+function createBaseQueryParamsRequest(): QueryParamsRequest {
+  return {};
+}
 
 export const QueryParamsRequest = {
   encode(
@@ -54,7 +56,7 @@ export const QueryParamsRequest = {
   decode(input: _m0.Reader | Uint8Array, length?: number): QueryParamsRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryParamsRequest } as QueryParamsRequest;
+    const message = createBaseQueryParamsRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -67,7 +69,7 @@ export const QueryParamsRequest = {
   },
 
   fromJSON(_: any): QueryParamsRequest {
-    const message = { ...baseQueryParamsRequest } as QueryParamsRequest;
+    const message = createBaseQueryParamsRequest();
     return message;
   },
 
@@ -79,12 +81,14 @@ export const QueryParamsRequest = {
   fromPartial<I extends Exact<DeepPartial<QueryParamsRequest>, I>>(
     _: I
   ): QueryParamsRequest {
-    const message = { ...baseQueryParamsRequest } as QueryParamsRequest;
+    const message = createBaseQueryParamsRequest();
     return message;
   },
 };
 
-const baseQueryParamsResponse: object = {};
+function createBaseQueryParamsResponse(): QueryParamsResponse {
+  return { params: undefined };
+}
 
 export const QueryParamsResponse = {
   encode(
@@ -100,7 +104,7 @@ export const QueryParamsResponse = {
   decode(input: _m0.Reader | Uint8Array, length?: number): QueryParamsResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryParamsResponse } as QueryParamsResponse;
+    const message = createBaseQueryParamsResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -116,7 +120,7 @@ export const QueryParamsResponse = {
   },
 
   fromJSON(object: any): QueryParamsResponse {
-    const message = { ...baseQueryParamsResponse } as QueryParamsResponse;
+    const message = createBaseQueryParamsResponse();
     message.params =
       object.params !== undefined && object.params !== null
         ? Params.fromJSON(object.params)
@@ -134,7 +138,7 @@ export const QueryParamsResponse = {
   fromPartial<I extends Exact<DeepPartial<QueryParamsResponse>, I>>(
     object: I
   ): QueryParamsResponse {
-    const message = { ...baseQueryParamsResponse } as QueryParamsResponse;
+    const message = createBaseQueryParamsResponse();
     message.params =
       object.params !== undefined && object.params !== null
         ? Params.fromPartial(object.params)
@@ -143,7 +147,9 @@ export const QueryParamsResponse = {
   },
 };
 
-const baseQueryInflationRequest: object = {};
+function createBaseQueryInflationRequest(): QueryInflationRequest {
+  return {};
+}
 
 export const QueryInflationRequest = {
   encode(
@@ -159,7 +165,7 @@ export const QueryInflationRequest = {
   ): QueryInflationRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryInflationRequest } as QueryInflationRequest;
+    const message = createBaseQueryInflationRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -172,7 +178,7 @@ export const QueryInflationRequest = {
   },
 
   fromJSON(_: any): QueryInflationRequest {
-    const message = { ...baseQueryInflationRequest } as QueryInflationRequest;
+    const message = createBaseQueryInflationRequest();
     return message;
   },
 
@@ -184,12 +190,14 @@ export const QueryInflationRequest = {
   fromPartial<I extends Exact<DeepPartial<QueryInflationRequest>, I>>(
     _: I
   ): QueryInflationRequest {
-    const message = { ...baseQueryInflationRequest } as QueryInflationRequest;
+    const message = createBaseQueryInflationRequest();
     return message;
   },
 };
 
-const baseQueryInflationResponse: object = {};
+function createBaseQueryInflationResponse(): QueryInflationResponse {
+  return { inflation: new Uint8Array() };
+}
 
 export const QueryInflationResponse = {
   encode(
@@ -208,8 +216,7 @@ export const QueryInflationResponse = {
   ): QueryInflationResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryInflationResponse } as QueryInflationResponse;
-    message.inflation = new Uint8Array();
+    const message = createBaseQueryInflationResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -225,7 +232,7 @@ export const QueryInflationResponse = {
   },
 
   fromJSON(object: any): QueryInflationResponse {
-    const message = { ...baseQueryInflationResponse } as QueryInflationResponse;
+    const message = createBaseQueryInflationResponse();
     message.inflation =
       object.inflation !== undefined && object.inflation !== null
         ? bytesFromBase64(object.inflation)
@@ -245,13 +252,15 @@ export const QueryInflationResponse = {
   fromPartial<I extends Exact<DeepPartial<QueryInflationResponse>, I>>(
     object: I
   ): QueryInflationResponse {
-    const message = { ...baseQueryInflationResponse } as QueryInflationResponse;
+    const message = createBaseQueryInflationResponse();
     message.inflation = object.inflation ?? new Uint8Array();
     return message;
   },
 };
 
-const baseQueryAnnualProvisionsRequest: object = {};
+function createBaseQueryAnnualProvisionsRequest(): QueryAnnualProvisionsRequest {
+  return {};
+}
 
 export const QueryAnnualProvisionsRequest = {
   encode(
@@ -267,9 +276,7 @@ export const QueryAnnualProvisionsRequest = {
   ): QueryAnnualProvisionsRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryAnnualProvisionsRequest,
-    } as QueryAnnualProvisionsRequest;
+    const message = createBaseQueryAnnualProvisionsRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -282,9 +289,7 @@ export const QueryAnnualProvisionsRequest = {
   },
 
   fromJSON(_: any): QueryAnnualProvisionsRequest {
-    const message = {
-      ...baseQueryAnnualProvisionsRequest,
-    } as QueryAnnualProvisionsRequest;
+    const message = createBaseQueryAnnualProvisionsRequest();
     return message;
   },
 
@@ -296,14 +301,14 @@ export const QueryAnnualProvisionsRequest = {
   fromPartial<I extends Exact<DeepPartial<QueryAnnualProvisionsRequest>, I>>(
     _: I
   ): QueryAnnualProvisionsRequest {
-    const message = {
-      ...baseQueryAnnualProvisionsRequest,
-    } as QueryAnnualProvisionsRequest;
+    const message = createBaseQueryAnnualProvisionsRequest();
     return message;
   },
 };
 
-const baseQueryAnnualProvisionsResponse: object = {};
+function createBaseQueryAnnualProvisionsResponse(): QueryAnnualProvisionsResponse {
+  return { annualProvisions: new Uint8Array() };
+}
 
 export const QueryAnnualProvisionsResponse = {
   encode(
@@ -322,10 +327,7 @@ export const QueryAnnualProvisionsResponse = {
   ): QueryAnnualProvisionsResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryAnnualProvisionsResponse,
-    } as QueryAnnualProvisionsResponse;
-    message.annualProvisions = new Uint8Array();
+    const message = createBaseQueryAnnualProvisionsResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -341,9 +343,7 @@ export const QueryAnnualProvisionsResponse = {
   },
 
   fromJSON(object: any): QueryAnnualProvisionsResponse {
-    const message = {
-      ...baseQueryAnnualProvisionsResponse,
-    } as QueryAnnualProvisionsResponse;
+    const message = createBaseQueryAnnualProvisionsResponse();
     message.annualProvisions =
       object.annualProvisions !== undefined && object.annualProvisions !== null
         ? bytesFromBase64(object.annualProvisions)
@@ -365,9 +365,7 @@ export const QueryAnnualProvisionsResponse = {
   fromPartial<I extends Exact<DeepPartial<QueryAnnualProvisionsResponse>, I>>(
     object: I
   ): QueryAnnualProvisionsResponse {
-    const message = {
-      ...baseQueryAnnualProvisionsResponse,
-    } as QueryAnnualProvisionsResponse;
+    const message = createBaseQueryAnnualProvisionsResponse();
     message.annualProvisions = object.annualProvisions ?? new Uint8Array();
     return message;
   },

@@ -38,7 +38,9 @@ export interface MsgBurn {
 
 export interface MsgBurnResponse {}
 
-const baseReward: object = { receiver: "" };
+function createBaseReward(): Reward {
+  return { receiver: "", reward: undefined };
+}
 
 export const Reward = {
   encode(
@@ -57,7 +59,7 @@ export const Reward = {
   decode(input: _m0.Reader | Uint8Array, length?: number): Reward {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseReward } as Reward;
+    const message = createBaseReward();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -76,7 +78,7 @@ export const Reward = {
   },
 
   fromJSON(object: any): Reward {
-    const message = { ...baseReward } as Reward;
+    const message = createBaseReward();
     message.receiver =
       object.receiver !== undefined && object.receiver !== null
         ? String(object.receiver)
@@ -99,7 +101,7 @@ export const Reward = {
   },
 
   fromPartial<I extends Exact<DeepPartial<Reward>, I>>(object: I): Reward {
-    const message = { ...baseReward } as Reward;
+    const message = createBaseReward();
     message.receiver = object.receiver ?? "";
     message.reward =
       object.reward !== undefined && object.reward !== null
@@ -109,7 +111,9 @@ export const Reward = {
   },
 };
 
-const baseMsgDistributeRewards: object = { owner: "" };
+function createBaseMsgDistributeRewards(): MsgDistributeRewards {
+  return { owner: "", rewards: [] };
+}
 
 export const MsgDistributeRewards = {
   encode(
@@ -131,8 +135,7 @@ export const MsgDistributeRewards = {
   ): MsgDistributeRewards {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgDistributeRewards } as MsgDistributeRewards;
-    message.rewards = [];
+    const message = createBaseMsgDistributeRewards();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -151,7 +154,7 @@ export const MsgDistributeRewards = {
   },
 
   fromJSON(object: any): MsgDistributeRewards {
-    const message = { ...baseMsgDistributeRewards } as MsgDistributeRewards;
+    const message = createBaseMsgDistributeRewards();
     message.owner =
       object.owner !== undefined && object.owner !== null
         ? String(object.owner)
@@ -178,14 +181,16 @@ export const MsgDistributeRewards = {
   fromPartial<I extends Exact<DeepPartial<MsgDistributeRewards>, I>>(
     object: I
   ): MsgDistributeRewards {
-    const message = { ...baseMsgDistributeRewards } as MsgDistributeRewards;
+    const message = createBaseMsgDistributeRewards();
     message.owner = object.owner ?? "";
     message.rewards = object.rewards?.map((e) => Reward.fromPartial(e)) || [];
     return message;
   },
 };
 
-const baseMsgDistributeRewardsResponse: object = {};
+function createBaseMsgDistributeRewardsResponse(): MsgDistributeRewardsResponse {
+  return {};
+}
 
 export const MsgDistributeRewardsResponse = {
   encode(
@@ -201,9 +206,7 @@ export const MsgDistributeRewardsResponse = {
   ): MsgDistributeRewardsResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgDistributeRewardsResponse,
-    } as MsgDistributeRewardsResponse;
+    const message = createBaseMsgDistributeRewardsResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -216,9 +219,7 @@ export const MsgDistributeRewardsResponse = {
   },
 
   fromJSON(_: any): MsgDistributeRewardsResponse {
-    const message = {
-      ...baseMsgDistributeRewardsResponse,
-    } as MsgDistributeRewardsResponse;
+    const message = createBaseMsgDistributeRewardsResponse();
     return message;
   },
 
@@ -230,14 +231,14 @@ export const MsgDistributeRewardsResponse = {
   fromPartial<I extends Exact<DeepPartial<MsgDistributeRewardsResponse>, I>>(
     _: I
   ): MsgDistributeRewardsResponse {
-    const message = {
-      ...baseMsgDistributeRewardsResponse,
-    } as MsgDistributeRewardsResponse;
+    const message = createBaseMsgDistributeRewardsResponse();
     return message;
   },
 };
 
-const baseMsgResetAccount: object = { owner: "", address: "" };
+function createBaseMsgResetAccount(): MsgResetAccount {
+  return { owner: "", address: "" };
+}
 
 export const MsgResetAccount = {
   encode(
@@ -256,7 +257,7 @@ export const MsgResetAccount = {
   decode(input: _m0.Reader | Uint8Array, length?: number): MsgResetAccount {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgResetAccount } as MsgResetAccount;
+    const message = createBaseMsgResetAccount();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -275,7 +276,7 @@ export const MsgResetAccount = {
   },
 
   fromJSON(object: any): MsgResetAccount {
-    const message = { ...baseMsgResetAccount } as MsgResetAccount;
+    const message = createBaseMsgResetAccount();
     message.owner =
       object.owner !== undefined && object.owner !== null
         ? String(object.owner)
@@ -297,14 +298,16 @@ export const MsgResetAccount = {
   fromPartial<I extends Exact<DeepPartial<MsgResetAccount>, I>>(
     object: I
   ): MsgResetAccount {
-    const message = { ...baseMsgResetAccount } as MsgResetAccount;
+    const message = createBaseMsgResetAccount();
     message.owner = object.owner ?? "";
     message.address = object.address ?? "";
     return message;
   },
 };
 
-const baseMsgResetAccountResponse: object = {};
+function createBaseMsgResetAccountResponse(): MsgResetAccountResponse {
+  return {};
+}
 
 export const MsgResetAccountResponse = {
   encode(
@@ -320,9 +323,7 @@ export const MsgResetAccountResponse = {
   ): MsgResetAccountResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgResetAccountResponse,
-    } as MsgResetAccountResponse;
+    const message = createBaseMsgResetAccountResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -335,9 +336,7 @@ export const MsgResetAccountResponse = {
   },
 
   fromJSON(_: any): MsgResetAccountResponse {
-    const message = {
-      ...baseMsgResetAccountResponse,
-    } as MsgResetAccountResponse;
+    const message = createBaseMsgResetAccountResponse();
     return message;
   },
 
@@ -349,14 +348,14 @@ export const MsgResetAccountResponse = {
   fromPartial<I extends Exact<DeepPartial<MsgResetAccountResponse>, I>>(
     _: I
   ): MsgResetAccountResponse {
-    const message = {
-      ...baseMsgResetAccountResponse,
-    } as MsgResetAccountResponse;
+    const message = createBaseMsgResetAccountResponse();
     return message;
   },
 };
 
-const baseMsgMint: object = { owner: "" };
+function createBaseMsgMint(): MsgMint {
+  return { owner: "", coin: undefined };
+}
 
 export const MsgMint = {
   encode(
@@ -375,7 +374,7 @@ export const MsgMint = {
   decode(input: _m0.Reader | Uint8Array, length?: number): MsgMint {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgMint } as MsgMint;
+    const message = createBaseMsgMint();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -394,7 +393,7 @@ export const MsgMint = {
   },
 
   fromJSON(object: any): MsgMint {
-    const message = { ...baseMsgMint } as MsgMint;
+    const message = createBaseMsgMint();
     message.owner =
       object.owner !== undefined && object.owner !== null
         ? String(object.owner)
@@ -415,7 +414,7 @@ export const MsgMint = {
   },
 
   fromPartial<I extends Exact<DeepPartial<MsgMint>, I>>(object: I): MsgMint {
-    const message = { ...baseMsgMint } as MsgMint;
+    const message = createBaseMsgMint();
     message.owner = object.owner ?? "";
     message.coin =
       object.coin !== undefined && object.coin !== null
@@ -425,7 +424,9 @@ export const MsgMint = {
   },
 };
 
-const baseMsgMintResponse: object = {};
+function createBaseMsgMintResponse(): MsgMintResponse {
+  return {};
+}
 
 export const MsgMintResponse = {
   encode(
@@ -438,7 +439,7 @@ export const MsgMintResponse = {
   decode(input: _m0.Reader | Uint8Array, length?: number): MsgMintResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgMintResponse } as MsgMintResponse;
+    const message = createBaseMsgMintResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -451,7 +452,7 @@ export const MsgMintResponse = {
   },
 
   fromJSON(_: any): MsgMintResponse {
-    const message = { ...baseMsgMintResponse } as MsgMintResponse;
+    const message = createBaseMsgMintResponse();
     return message;
   },
 
@@ -463,12 +464,14 @@ export const MsgMintResponse = {
   fromPartial<I extends Exact<DeepPartial<MsgMintResponse>, I>>(
     _: I
   ): MsgMintResponse {
-    const message = { ...baseMsgMintResponse } as MsgMintResponse;
+    const message = createBaseMsgMintResponse();
     return message;
   },
 };
 
-const baseMsgBurn: object = { owner: "" };
+function createBaseMsgBurn(): MsgBurn {
+  return { owner: "", coin: undefined };
+}
 
 export const MsgBurn = {
   encode(
@@ -487,7 +490,7 @@ export const MsgBurn = {
   decode(input: _m0.Reader | Uint8Array, length?: number): MsgBurn {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgBurn } as MsgBurn;
+    const message = createBaseMsgBurn();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -506,7 +509,7 @@ export const MsgBurn = {
   },
 
   fromJSON(object: any): MsgBurn {
-    const message = { ...baseMsgBurn } as MsgBurn;
+    const message = createBaseMsgBurn();
     message.owner =
       object.owner !== undefined && object.owner !== null
         ? String(object.owner)
@@ -527,7 +530,7 @@ export const MsgBurn = {
   },
 
   fromPartial<I extends Exact<DeepPartial<MsgBurn>, I>>(object: I): MsgBurn {
-    const message = { ...baseMsgBurn } as MsgBurn;
+    const message = createBaseMsgBurn();
     message.owner = object.owner ?? "";
     message.coin =
       object.coin !== undefined && object.coin !== null
@@ -537,7 +540,9 @@ export const MsgBurn = {
   },
 };
 
-const baseMsgBurnResponse: object = {};
+function createBaseMsgBurnResponse(): MsgBurnResponse {
+  return {};
+}
 
 export const MsgBurnResponse = {
   encode(
@@ -550,7 +555,7 @@ export const MsgBurnResponse = {
   decode(input: _m0.Reader | Uint8Array, length?: number): MsgBurnResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgBurnResponse } as MsgBurnResponse;
+    const message = createBaseMsgBurnResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -563,7 +568,7 @@ export const MsgBurnResponse = {
   },
 
   fromJSON(_: any): MsgBurnResponse {
-    const message = { ...baseMsgBurnResponse } as MsgBurnResponse;
+    const message = createBaseMsgBurnResponse();
     return message;
   },
 
@@ -575,7 +580,7 @@ export const MsgBurnResponse = {
   fromPartial<I extends Exact<DeepPartial<MsgBurnResponse>, I>>(
     _: I
   ): MsgBurnResponse {
-    const message = { ...baseMsgBurnResponse } as MsgBurnResponse;
+    const message = createBaseMsgBurnResponse();
     return message;
   },
 };

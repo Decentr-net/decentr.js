@@ -39,7 +39,9 @@ export interface MsgUnfollow {
 
 export interface MsgUnfollowResponse {}
 
-const baseMsgCreatePost: object = {};
+function createBaseMsgCreatePost(): MsgCreatePost {
+  return { post: undefined };
+}
 
 export const MsgCreatePost = {
   encode(
@@ -55,7 +57,7 @@ export const MsgCreatePost = {
   decode(input: _m0.Reader | Uint8Array, length?: number): MsgCreatePost {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgCreatePost } as MsgCreatePost;
+    const message = createBaseMsgCreatePost();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -71,7 +73,7 @@ export const MsgCreatePost = {
   },
 
   fromJSON(object: any): MsgCreatePost {
-    const message = { ...baseMsgCreatePost } as MsgCreatePost;
+    const message = createBaseMsgCreatePost();
     message.post =
       object.post !== undefined && object.post !== null
         ? Post.fromJSON(object.post)
@@ -89,7 +91,7 @@ export const MsgCreatePost = {
   fromPartial<I extends Exact<DeepPartial<MsgCreatePost>, I>>(
     object: I
   ): MsgCreatePost {
-    const message = { ...baseMsgCreatePost } as MsgCreatePost;
+    const message = createBaseMsgCreatePost();
     message.post =
       object.post !== undefined && object.post !== null
         ? Post.fromPartial(object.post)
@@ -98,7 +100,9 @@ export const MsgCreatePost = {
   },
 };
 
-const baseMsgCreatePostResponse: object = {};
+function createBaseMsgCreatePostResponse(): MsgCreatePostResponse {
+  return {};
+}
 
 export const MsgCreatePostResponse = {
   encode(
@@ -114,7 +118,7 @@ export const MsgCreatePostResponse = {
   ): MsgCreatePostResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgCreatePostResponse } as MsgCreatePostResponse;
+    const message = createBaseMsgCreatePostResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -127,7 +131,7 @@ export const MsgCreatePostResponse = {
   },
 
   fromJSON(_: any): MsgCreatePostResponse {
-    const message = { ...baseMsgCreatePostResponse } as MsgCreatePostResponse;
+    const message = createBaseMsgCreatePostResponse();
     return message;
   },
 
@@ -139,12 +143,14 @@ export const MsgCreatePostResponse = {
   fromPartial<I extends Exact<DeepPartial<MsgCreatePostResponse>, I>>(
     _: I
   ): MsgCreatePostResponse {
-    const message = { ...baseMsgCreatePostResponse } as MsgCreatePostResponse;
+    const message = createBaseMsgCreatePostResponse();
     return message;
   },
 };
 
-const baseMsgDeletePost: object = { postOwner: "", postUuid: "", owner: "" };
+function createBaseMsgDeletePost(): MsgDeletePost {
+  return { postOwner: "", postUuid: "", owner: "" };
+}
 
 export const MsgDeletePost = {
   encode(
@@ -166,7 +172,7 @@ export const MsgDeletePost = {
   decode(input: _m0.Reader | Uint8Array, length?: number): MsgDeletePost {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgDeletePost } as MsgDeletePost;
+    const message = createBaseMsgDeletePost();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -188,7 +194,7 @@ export const MsgDeletePost = {
   },
 
   fromJSON(object: any): MsgDeletePost {
-    const message = { ...baseMsgDeletePost } as MsgDeletePost;
+    const message = createBaseMsgDeletePost();
     message.postOwner =
       object.postOwner !== undefined && object.postOwner !== null
         ? String(object.postOwner)
@@ -215,7 +221,7 @@ export const MsgDeletePost = {
   fromPartial<I extends Exact<DeepPartial<MsgDeletePost>, I>>(
     object: I
   ): MsgDeletePost {
-    const message = { ...baseMsgDeletePost } as MsgDeletePost;
+    const message = createBaseMsgDeletePost();
     message.postOwner = object.postOwner ?? "";
     message.postUuid = object.postUuid ?? "";
     message.owner = object.owner ?? "";
@@ -223,7 +229,9 @@ export const MsgDeletePost = {
   },
 };
 
-const baseMsgDeletePostResponse: object = {};
+function createBaseMsgDeletePostResponse(): MsgDeletePostResponse {
+  return {};
+}
 
 export const MsgDeletePostResponse = {
   encode(
@@ -239,7 +247,7 @@ export const MsgDeletePostResponse = {
   ): MsgDeletePostResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgDeletePostResponse } as MsgDeletePostResponse;
+    const message = createBaseMsgDeletePostResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -252,7 +260,7 @@ export const MsgDeletePostResponse = {
   },
 
   fromJSON(_: any): MsgDeletePostResponse {
-    const message = { ...baseMsgDeletePostResponse } as MsgDeletePostResponse;
+    const message = createBaseMsgDeletePostResponse();
     return message;
   },
 
@@ -264,12 +272,14 @@ export const MsgDeletePostResponse = {
   fromPartial<I extends Exact<DeepPartial<MsgDeletePostResponse>, I>>(
     _: I
   ): MsgDeletePostResponse {
-    const message = { ...baseMsgDeletePostResponse } as MsgDeletePostResponse;
+    const message = createBaseMsgDeletePostResponse();
     return message;
   },
 };
 
-const baseMsgSetLike: object = {};
+function createBaseMsgSetLike(): MsgSetLike {
+  return { like: undefined };
+}
 
 export const MsgSetLike = {
   encode(
@@ -285,7 +295,7 @@ export const MsgSetLike = {
   decode(input: _m0.Reader | Uint8Array, length?: number): MsgSetLike {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgSetLike } as MsgSetLike;
+    const message = createBaseMsgSetLike();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -301,7 +311,7 @@ export const MsgSetLike = {
   },
 
   fromJSON(object: any): MsgSetLike {
-    const message = { ...baseMsgSetLike } as MsgSetLike;
+    const message = createBaseMsgSetLike();
     message.like =
       object.like !== undefined && object.like !== null
         ? Like.fromJSON(object.like)
@@ -319,7 +329,7 @@ export const MsgSetLike = {
   fromPartial<I extends Exact<DeepPartial<MsgSetLike>, I>>(
     object: I
   ): MsgSetLike {
-    const message = { ...baseMsgSetLike } as MsgSetLike;
+    const message = createBaseMsgSetLike();
     message.like =
       object.like !== undefined && object.like !== null
         ? Like.fromPartial(object.like)
@@ -328,7 +338,9 @@ export const MsgSetLike = {
   },
 };
 
-const baseMsgSetLikeResponse: object = {};
+function createBaseMsgSetLikeResponse(): MsgSetLikeResponse {
+  return {};
+}
 
 export const MsgSetLikeResponse = {
   encode(
@@ -341,7 +353,7 @@ export const MsgSetLikeResponse = {
   decode(input: _m0.Reader | Uint8Array, length?: number): MsgSetLikeResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgSetLikeResponse } as MsgSetLikeResponse;
+    const message = createBaseMsgSetLikeResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -354,7 +366,7 @@ export const MsgSetLikeResponse = {
   },
 
   fromJSON(_: any): MsgSetLikeResponse {
-    const message = { ...baseMsgSetLikeResponse } as MsgSetLikeResponse;
+    const message = createBaseMsgSetLikeResponse();
     return message;
   },
 
@@ -366,12 +378,14 @@ export const MsgSetLikeResponse = {
   fromPartial<I extends Exact<DeepPartial<MsgSetLikeResponse>, I>>(
     _: I
   ): MsgSetLikeResponse {
-    const message = { ...baseMsgSetLikeResponse } as MsgSetLikeResponse;
+    const message = createBaseMsgSetLikeResponse();
     return message;
   },
 };
 
-const baseMsgFollow: object = { owner: "", whom: "" };
+function createBaseMsgFollow(): MsgFollow {
+  return { owner: "", whom: "" };
+}
 
 export const MsgFollow = {
   encode(
@@ -390,7 +404,7 @@ export const MsgFollow = {
   decode(input: _m0.Reader | Uint8Array, length?: number): MsgFollow {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgFollow } as MsgFollow;
+    const message = createBaseMsgFollow();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -409,7 +423,7 @@ export const MsgFollow = {
   },
 
   fromJSON(object: any): MsgFollow {
-    const message = { ...baseMsgFollow } as MsgFollow;
+    const message = createBaseMsgFollow();
     message.owner =
       object.owner !== undefined && object.owner !== null
         ? String(object.owner)
@@ -431,14 +445,16 @@ export const MsgFollow = {
   fromPartial<I extends Exact<DeepPartial<MsgFollow>, I>>(
     object: I
   ): MsgFollow {
-    const message = { ...baseMsgFollow } as MsgFollow;
+    const message = createBaseMsgFollow();
     message.owner = object.owner ?? "";
     message.whom = object.whom ?? "";
     return message;
   },
 };
 
-const baseMsgFollowResponse: object = {};
+function createBaseMsgFollowResponse(): MsgFollowResponse {
+  return {};
+}
 
 export const MsgFollowResponse = {
   encode(
@@ -451,7 +467,7 @@ export const MsgFollowResponse = {
   decode(input: _m0.Reader | Uint8Array, length?: number): MsgFollowResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgFollowResponse } as MsgFollowResponse;
+    const message = createBaseMsgFollowResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -464,7 +480,7 @@ export const MsgFollowResponse = {
   },
 
   fromJSON(_: any): MsgFollowResponse {
-    const message = { ...baseMsgFollowResponse } as MsgFollowResponse;
+    const message = createBaseMsgFollowResponse();
     return message;
   },
 
@@ -476,12 +492,14 @@ export const MsgFollowResponse = {
   fromPartial<I extends Exact<DeepPartial<MsgFollowResponse>, I>>(
     _: I
   ): MsgFollowResponse {
-    const message = { ...baseMsgFollowResponse } as MsgFollowResponse;
+    const message = createBaseMsgFollowResponse();
     return message;
   },
 };
 
-const baseMsgUnfollow: object = { owner: "", whom: "" };
+function createBaseMsgUnfollow(): MsgUnfollow {
+  return { owner: "", whom: "" };
+}
 
 export const MsgUnfollow = {
   encode(
@@ -500,7 +518,7 @@ export const MsgUnfollow = {
   decode(input: _m0.Reader | Uint8Array, length?: number): MsgUnfollow {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgUnfollow } as MsgUnfollow;
+    const message = createBaseMsgUnfollow();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -519,7 +537,7 @@ export const MsgUnfollow = {
   },
 
   fromJSON(object: any): MsgUnfollow {
-    const message = { ...baseMsgUnfollow } as MsgUnfollow;
+    const message = createBaseMsgUnfollow();
     message.owner =
       object.owner !== undefined && object.owner !== null
         ? String(object.owner)
@@ -541,14 +559,16 @@ export const MsgUnfollow = {
   fromPartial<I extends Exact<DeepPartial<MsgUnfollow>, I>>(
     object: I
   ): MsgUnfollow {
-    const message = { ...baseMsgUnfollow } as MsgUnfollow;
+    const message = createBaseMsgUnfollow();
     message.owner = object.owner ?? "";
     message.whom = object.whom ?? "";
     return message;
   },
 };
 
-const baseMsgUnfollowResponse: object = {};
+function createBaseMsgUnfollowResponse(): MsgUnfollowResponse {
+  return {};
+}
 
 export const MsgUnfollowResponse = {
   encode(
@@ -561,7 +581,7 @@ export const MsgUnfollowResponse = {
   decode(input: _m0.Reader | Uint8Array, length?: number): MsgUnfollowResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgUnfollowResponse } as MsgUnfollowResponse;
+    const message = createBaseMsgUnfollowResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -574,7 +594,7 @@ export const MsgUnfollowResponse = {
   },
 
   fromJSON(_: any): MsgUnfollowResponse {
-    const message = { ...baseMsgUnfollowResponse } as MsgUnfollowResponse;
+    const message = createBaseMsgUnfollowResponse();
     return message;
   },
 
@@ -586,7 +606,7 @@ export const MsgUnfollowResponse = {
   fromPartial<I extends Exact<DeepPartial<MsgUnfollowResponse>, I>>(
     _: I
   ): MsgUnfollowResponse {
-    const message = { ...baseMsgUnfollowResponse } as MsgUnfollowResponse;
+    const message = createBaseMsgUnfollowResponse();
     return message;
   },
 };
