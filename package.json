@@ -16,6 +16,7 @@
   "license": "MIT",
   "scripts": {
     "build": "webpack",
+    "watch": "webpack --config webpack.config.dev.js -w",
     "clean": "rimraf lib",
     "lint": "eslint --max-warnings 0 src --ext .ts",
     "prebuild": "npm run clean",

@@ -25,9 +25,6 @@ module.exports = function(config) {
       'text/x-typescript': ['ts','tsx'],
     },
 
-    webpack: {
-      module: webpackConfig.module,
-      resolve: webpackConfig.resolve,
-    },
+    webpack: webpackConfig,
   })
 }
