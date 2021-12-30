@@ -1,7 +1,6 @@
 import { Params } from 'cosmjs-types/cosmos/distribution/v1beta1/distribution';
 import {
-  QueryDelegationRewardsResponse,
-  QueryDelegationTotalRewardsResponse,
+  QueryDelegationTotalRewardsResponse
 } from 'cosmjs-types/cosmos/distribution/v1beta1/query';
 import { Validator } from 'cosmjs-types/cosmos/staking/v1beta1/staking';
 import {
@@ -13,12 +12,14 @@ import {
 import { Tendermint34Client } from '@cosmjs/tendermint-rpc';
 
 import { Wallet } from '../../wallet';
-import { createSignerOrSimulator, SignerOrSimulator } from '../api-utils';
+import { correctDecodedCoin } from '../../utils';
+import { createSignerOrSimulator, createTypedEncodeObject, SignerOrSimulator } from '../api-utils';
 import {
   SetWithdrawAddressRequest,
   WithdrawDelegatorRewardRequest,
   WithdrawValidatorCommissionRequest,
 } from './types';
+import { TxMessageTypeUrl } from '../registry';
 
 export class DecentrDistributionClient {
   private constructor(
@@ -56,17 +57,26 @@ export class DecentrDistributionClient {
   public getDelegatorRewards(
     delegatorAddress: Wallet['address'],
   ): Promise<QueryDelegationTotalRewardsResponse> {
-    return this.queryClient.distribution.delegationTotalRewards(delegatorAddress);
+    return this.queryClient.distribution.delegationTotalRewards(delegatorAddress)
+      .then((rewards) => ({
+        rewards: rewards.rewards.map((reward) => ({
+          ...reward,
+          reward: reward.reward.map((coin) => correctDecodedCoin(coin)),
+        })),
+        total: rewards.total.map((coin) => correctDecodedCoin(coin)),
+      }));
   }
 
   public getDelegatorRewardsFromValidator(
     delegatorAddress: Wallet['address'],
     validatorAddress: Validator['operatorAddress'],
-  ): Promise<QueryDelegationRewardsResponse> {
+  ): Promise<Coin[]> {
     return this.queryClient.distribution.delegationRewards(
       delegatorAddress,
       validatorAddress,
-    );
+    )
+      .then((response) => response.rewards)
+      .then((coins) => coins.map((coin) => correctDecodedCoin(coin)));
   }
 
   public getWithdrawAddress(delegatorAddress: Wallet['address']): Promise<Wallet['address']> {
@@ -95,10 +105,10 @@ export class DecentrDistributionClient {
       memo?: string,
     },
   ): SignerOrSimulator {
-    const message = {
-      typeUrl: '/cosmos.distribution.v1beta1.MsgSetWithdrawAddress',
-      value: request,
-    };
+    const message = createTypedEncodeObject(
+      TxMessageTypeUrl.DistributionSetWithdrawAddress,
+      request,
+    );
 
     return createSignerOrSimulator(
       this.nodeUrl,
@@ -108,18 +118,6 @@ export class DecentrDistributionClient {
     );
   }
 
-  // TODO
-  // public calculateWithdrawDelegatorRewardsFee(
-  //   delegatorAddress: Wallet['address'],
-  //   fromValidatorAddress? : Validator['operator_address']
-  // ): Promise<Coin[]> {
-  //   return calculateWithdrawDelegatorRewardsFee(
-  //     this.apiUrl,
-  //     delegatorAddress,
-  //     fromValidatorAddress,
-  //   );
-  // }
-
   public withdrawDelegatorRewards(
     request: WithdrawDelegatorRewardRequest,
     privateKey: Wallet['privateKey'],
@@ -127,10 +125,10 @@ export class DecentrDistributionClient {
       memo?: string,
     },
   ): SignerOrSimulator {
-    const messages = request.map((msg) => ({
-      typeUrl: '/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward',
-      value: msg,
-    }));
+    const messages = request.map((msg) => createTypedEncodeObject(
+      TxMessageTypeUrl.DistributionWithdrawDelegatorReward,
+      msg,
+    ));
 
     return createSignerOrSimulator(
       this.nodeUrl,
@@ -140,28 +138,6 @@ export class DecentrDistributionClient {
     );
   }
 
-  // TODO: deprecated?
-  // public getValidatorDistribution(
-  //   validatorAddress: Validator['operator_address'],
-  // ): Promise<ValidatorDistribution> {
-  //   return getValidatorDistribution(
-  //     this.apiUrl,
-  //     validatorAddress,
-  //   );
-  // }
-
-  // TODO
-  // public calculateWithdrawValidatorRewardsFee(
-  //   walletAddress: Wallet['address'],
-  //   validatorAddress : Validator['operator_address']
-  // ): Promise<Fee[]> {
-  //   return calculateWithdrawValidatorRewardsFee(
-  //     this.apiUrl,
-  //     walletAddress,
-  //     validatorAddress,
-  //   );
-  // }
-
   public withdrawValidatorRewards(
     request: WithdrawValidatorCommissionRequest,
     privateKey: Wallet['privateKey'],
@@ -169,10 +145,10 @@ export class DecentrDistributionClient {
       memo?: string,
     },
   ): SignerOrSimulator {
-    const message = {
-      typeUrl: '/cosmos.distribution.v1beta1.MsgSetWithdrawAddress',
-      value: request,
-    };
+    const message = createTypedEncodeObject(
+      TxMessageTypeUrl.DistributionWithdrawValidatorCommission,
+      request,
+    );
 
     return createSignerOrSimulator(
       this.nodeUrl,

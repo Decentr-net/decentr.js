@@ -1,11 +1,11 @@
 import { Coin, QueryClient } from '@cosmjs/stargate';
 import { Tendermint34Client } from '@cosmjs/tendermint-rpc';
 
-import { MsgResetAccount } from '../../codec/operations/tx';
 import { Wallet } from '../../wallet';
-import { createSignerOrSimulator, SignerOrSimulator } from '../api-utils';
+import { createSignerOrSimulator, createTypedEncodeObject, SignerOrSimulator } from '../api-utils';
+import { TxMessageTypeUrl } from '../registry';
 import { OperationsExtension, setupOperationsExtension } from './extension';
-import { MessageTypeUrl, REGISTRY } from './registry';
+import { ResetAccountRequest } from './types';
 
 export class DecentrOperationsClient {
   private constructor(
@@ -35,25 +35,22 @@ export class DecentrOperationsClient {
   }
 
   public resetAccount(
-    request: MsgResetAccount,
+    request: ResetAccountRequest,
     privateKey: Wallet['privateKey'],
     options?: {
       memo?: string,
     },
   ): SignerOrSimulator {
-    const message = {
-      typeUrl: MessageTypeUrl.ResetAccount,
-      value: request,
-    };
+    const message = createTypedEncodeObject(
+      TxMessageTypeUrl.OperationsResetAccount,
+      request,
+    );
 
     return createSignerOrSimulator(
       this.nodeUrl,
       message,
       privateKey,
-      {
-        ...options,
-        registry: REGISTRY,
-      },
+      options,
     );
   }
 }

@@ -1,3 +1,4 @@
 export * from './client';
+export { DecodedBlock as Block } from './types';
 
-export { Block, BlockHeader } from '@cosmjs/stargate';
+export { BlockHeader } from '@cosmjs/stargate';

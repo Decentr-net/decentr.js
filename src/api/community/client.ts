@@ -1,10 +1,11 @@
 import { QueryClient } from '@cosmjs/stargate';
 import { Tendermint34Client } from '@cosmjs/tendermint-rpc';
 
+import { MsgCreatePost } from '../../codec/community/tx';
 import { Wallet } from '../../wallet';
-import { createSignerOrSimulator, SignerOrSimulator } from '../api-utils';
+import { createSignerOrSimulator, createTypedEncodeObject, SignerOrSimulator } from '../api-utils';
+import { TxMessageTypeUrl } from '../registry';
 import { CommunityExtension, setupCommunityExtension } from './extension';
-import { MessageTypeUrl, REGISTRY } from './registry';
 import {
   CreatePostRequest,
   DeletePostRequest,
@@ -51,21 +52,18 @@ export class DecentrCommunityClient {
       memo?: string,
     },
   ): SignerOrSimulator {
-    const message = {
-      typeUrl: MessageTypeUrl.CreatePost,
-      value: {
+    const message = createTypedEncodeObject(
+      TxMessageTypeUrl.CommunityCreatePost,
+      {
         post: request,
-      },
-    };
+      } as MsgCreatePost,
+    );
 
     return createSignerOrSimulator(
       this.nodeUrl,
       message,
       privateKey,
-      {
-        ...options,
-        registry: REGISTRY,
-      },
+      options,
     );
   }
 
@@ -76,19 +74,16 @@ export class DecentrCommunityClient {
       memo?: string,
     },
   ): SignerOrSimulator {
-    const message = {
-      typeUrl: MessageTypeUrl.DeletePost,
-      value: request,
-    };
+    const message = createTypedEncodeObject(
+      TxMessageTypeUrl.CommunityDeletePost,
+      request,
+    );
 
     return createSignerOrSimulator(
       this.nodeUrl,
       message,
       privateKey,
-      {
-        ...options,
-        registry: REGISTRY,
-      },
+      options,
     );
   }
 
@@ -99,21 +94,16 @@ export class DecentrCommunityClient {
       memo?: string,
     },
   ): SignerOrSimulator {
-    const message = {
-      typeUrl: MessageTypeUrl.SetLike,
-      value: {
-        like: request,
-      },
-    };
+    const message = createTypedEncodeObject(
+      TxMessageTypeUrl.CommunitySetLike,
+      { like: request },
+    );
 
     return createSignerOrSimulator(
       this.nodeUrl,
       message,
       privateKey,
-      {
-        ...options,
-        registry: REGISTRY,
-      },
+      options,
     );
   }
 
@@ -124,19 +114,16 @@ export class DecentrCommunityClient {
       memo?: string,
     },
   ): SignerOrSimulator {
-    const message = {
-      typeUrl: MessageTypeUrl.Follow,
-      value: request,
-    };
+    const message = createTypedEncodeObject(
+      TxMessageTypeUrl.CommunityFollow,
+      request,
+    );
 
     return createSignerOrSimulator(
       this.nodeUrl,
       message,
       privateKey,
-      {
-        ...options,
-        registry: REGISTRY,
-      },
+      options,
     );
   }
 
@@ -147,19 +134,16 @@ export class DecentrCommunityClient {
       memo?: string,
     },
   ): SignerOrSimulator {
-    const message = {
-      typeUrl: MessageTypeUrl.Unfollow,
-      value: request,
-    };
+    const message = createTypedEncodeObject(
+      TxMessageTypeUrl.CommunityUnfollow,
+      request,
+    );
 
     return createSignerOrSimulator(
       this.nodeUrl,
       message,
       privateKey,
-      {
-        ...options,
-        registry: REGISTRY,
-      },
+      options,
     );
   }
 }

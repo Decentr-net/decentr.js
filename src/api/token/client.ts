@@ -1,7 +1,7 @@
 import { QueryClient } from '@cosmjs/stargate';
 import { Tendermint34Client } from '@cosmjs/tendermint-rpc';
 
-import { fetchJson } from '../../utils';
+import { correctDecodedFloatNumber, fetchJson } from '../../utils';
 import { Wallet } from '../../wallet';
 import { setupTokenExtension, TokenExtension } from './extension';
 import { AdvDdvStatistics, TokenDelta, TokenPool } from './types';
@@ -36,6 +36,7 @@ export class DecentrTokenClient {
 
   public getBalance(walletAddress: Wallet['address']): Promise<string | undefined> {
     return this.queryClient.token.getBalance(walletAddress)
+      .then((balance) => balance && correctDecodedFloatNumber(balance));
   }
 
   public getAdvDdvStats(): Promise<AdvDdvStatistics> {
@@ -55,12 +56,4 @@ export class DecentrTokenClient {
 
     return fetchJson(url);
   }
-
-  // TODO
-  // public getTokenBalanceHistory(walletAddress: Wallet['address']): Promise<TokenBalanceHistory[]> {
-  //   const url = `${this.nodeUrl}/token/balance/${walletAddress}/history`;
-  //
-  //   return fetchJson<TokenBalanceHistory[]>(url)
-  //     .then((history) => history || []);
-  // }
 }

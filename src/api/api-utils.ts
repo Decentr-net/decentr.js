@@ -3,13 +3,14 @@ import {
   Coin,
   DeliverTxResponse,
   GasPrice,
-  isDeliverTxSuccess,
+  isDeliverTxFailure,
   SigningStargateClient,
 } from '@cosmjs/stargate';
 
 import { coerceArray } from '../utils';
 import { createSecp256k1WalletFromPrivateKey } from '../wallet';
 import { getMinGasPrice } from './operations/standalone';
+import { REGISTRY, TxMessageValueMap, TypedEncodeObject } from './registry';
 import { BroadcastClientError, DECENTR_DENOM } from './types';
 
 interface SignerWrapper {
@@ -24,8 +25,18 @@ export function createDecentrCoin(amount: number | string): Coin {
   return coin(amount, DECENTR_DENOM);
 }
 
+export function createTypedEncodeObject<K extends keyof TxMessageValueMap>(
+  typeUrl: K,
+  value: TxMessageValueMap[K],
+): TypedEncodeObject<K> {
+  return {
+    typeUrl,
+    value,
+  };
+}
+
 function assertIsBroadcastSuccess(result: DeliverTxResponse): void {
-  if (isDeliverTxSuccess(result)) {
+  if (isDeliverTxFailure(result)) {
     throw new BroadcastClientError(result.code);
   }
 }
@@ -36,7 +47,6 @@ async function createSignerWrapper(
   privateKey: string,
   options?: {
     memo?: string,
-    registry?: Registry,
   },
 ): Promise<SignerWrapper> {
   const wallet = await createSecp256k1WalletFromPrivateKey(privateKey);
@@ -50,7 +60,7 @@ async function createSignerWrapper(
     wallet,
     {
       gasPrice,
-      registry: options?.registry,
+      registry: REGISTRY,
     },
   );
 
@@ -89,13 +99,12 @@ async function simulate(
   return gas;
 }
 
-async function signAndBroadcast(
+async function signAndBroadcast<K extends keyof TxMessageValueMap>(
   nodeUrl: string,
-  messages: EncodeObject | EncodeObject[],
+  messages: TypedEncodeObject<K> | TypedEncodeObject<K>[],
   privateKey: string,
   options?: {
     memo?: string,
-    registry?: Registry,
   },
 ): Promise<DeliverTxResponse> {
   const signer = await createSignerWrapper(nodeUrl, messages, privateKey, options);
@@ -109,34 +118,18 @@ async function signAndBroadcast(
   return result;
 }
 
-export async function broadcastOrSimulate(
-  nodeUrl: string,
-  messages: EncodeObject | EncodeObject[],
-  privateKey: string,
-  options?: {
-    memo?: string,
-    registry?: Registry,
-    simulate?: boolean,
-  },
-): Promise<DeliverTxResponse | number> {
-  return options?.simulate
-    ? simulate(nodeUrl, messages, privateKey, options)
-    : signAndBroadcast(nodeUrl, messages, privateKey, options);
-}
-
 export interface SignerOrSimulator {
   readonly signAndBroadcast: () => Promise<DeliverTxResponse>;
 
   readonly simulate: () => Promise<number>;
 }
 
-export function createSignerOrSimulator(
+export function createSignerOrSimulator<K extends keyof TxMessageValueMap>(
   nodeUrl: string,
-  messages: EncodeObject | EncodeObject[],
+  messages: TypedEncodeObject<K> | TypedEncodeObject<K>[],
   privateKey: string,
   options?: {
     memo?: string,
-    registry?: Registry,
   },
 ): SignerOrSimulator {
   return {

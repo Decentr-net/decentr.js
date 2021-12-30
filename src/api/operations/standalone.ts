@@ -1,5 +1,6 @@
 import { Coin } from '@cosmjs/stargate';
 
+import { correctDecodedFloatNumber } from '../../utils';
 import { DecentrOperationsClient } from './client';
 
 export async function getMinGasPrice(
@@ -11,5 +12,8 @@ export async function getMinGasPrice(
 
   operationsClient.disconnect();
 
-  return result;
+  return {
+    ...result,
+    amount: correctDecodedFloatNumber(result.amount),
+  };
 }

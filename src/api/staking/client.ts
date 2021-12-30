@@ -9,8 +9,6 @@ import {
 } from 'cosmjs-types/cosmos/staking/v1beta1/staking';
 import { BondStatusString } from '@cosmjs/stargate/build/queries/staking';
 import {
-  MsgDelegateEncodeObject,
-  MsgUndelegateEncodeObject,
   QueryClient,
   setupStakingExtension,
   StakingExtension,
@@ -19,8 +17,10 @@ import {
 import { Tendermint34Client } from '@cosmjs/tendermint-rpc';
 
 import { Wallet } from '../../wallet';
-import { createSignerOrSimulator, SignerOrSimulator } from '../api-utils';
+import { createSignerOrSimulator, createTypedEncodeObject, SignerOrSimulator } from '../api-utils';
+import { TxMessageTypeUrl } from '../registry';
 import { DelegateTokensRequest, RedelegateTokensRequest, UndelegateTokensRequest } from './types';
+import { correctValidatorCommission } from './utils';
 
 export class DecentrStakingClient {
   private constructor(
@@ -56,12 +56,16 @@ export class DecentrStakingClient {
 
   public getValidators(status: BondStatusString): Promise<Validator[]> {
     return this.queryClient.staking.validators(status)
-      .then((response) => response.validators);
+      .then((response) => response.validators)
+      .then((validators) => validators
+        .map((validator) => correctValidatorCommission(validator))
+      );
   }
 
   public getValidator(address: Validator['operatorAddress']): Promise<Validator> {
     return this.queryClient.staking.validator(address)
-      .then((response) => response.validator as Validator);
+      .then((response) => response.validator as Validator)
+      .then(correctValidatorCommission);
   }
 
   public getDelegations(
@@ -131,13 +135,6 @@ export class DecentrStakingClient {
       .then((response) => response.params as Params);
   }
 
-  // TODO
-  // public calculateCreateDelegationFee(
-  //   delegation: CreateDelegationRequest,
-  // ): Promise<Coin[]> {
-  //   return calculateCreateDelegationFee(this.nodeUrl, this.chainId, delegation);
-  // }
-
   public delegateTokens(
     request: DelegateTokensRequest,
     privateKey: Wallet['privateKey'],
@@ -145,10 +142,10 @@ export class DecentrStakingClient {
       memo?: string,
     },
   ): SignerOrSimulator {
-    const message: MsgDelegateEncodeObject = {
-      typeUrl: '/cosmos.staking.v1beta1.MsgDelegate',
-      value: request,
-    };
+    const message = createTypedEncodeObject(
+      TxMessageTypeUrl.StakingDelegate,
+      request,
+    );
 
     return createSignerOrSimulator(
       this.nodeUrl,
@@ -157,13 +154,6 @@ export class DecentrStakingClient {
       options,
     );
   }
-
-  // TODO
-  // public calculateCreateUnbondingDelegationFee(
-  //   unbondingDelegation: CreateUnbondingDelegationRequest,
-  // ): Promise<Coin[]> {
-  //   return calculateCreateUnbondingDelegationFee(this.nodeUrl, this.chainId, unbondingDelegation);
-  // }
 
   public undelegateTokens(
     request: UndelegateTokensRequest,
@@ -172,10 +162,10 @@ export class DecentrStakingClient {
       memo?: string,
     },
   ): SignerOrSimulator {
-    const message: MsgUndelegateEncodeObject = {
-      typeUrl: '/cosmos.staking.v1beta1.MsgUndelegate',
-      value: request,
-    };
+    const message = createTypedEncodeObject(
+      TxMessageTypeUrl.StakingUndelegate,
+      request,
+    );
 
     return createSignerOrSimulator(
       this.nodeUrl,
@@ -185,13 +175,6 @@ export class DecentrStakingClient {
     );
   }
 
-  // TODO
-  // public calculateCreateRedelegationFee(
-  //   redelegation: CreateRedelegationRequest,
-  // ): Promise<Coin[]> {
-  //   return calculateCreateRedelegationFee(this.nodeUrl, this.chainId, redelegation);
-  // }
-
   public redelegateTokens(
     request: RedelegateTokensRequest,
     privateKey: Wallet['privateKey'],
@@ -199,10 +182,10 @@ export class DecentrStakingClient {
       memo?: string,
     },
   ): SignerOrSimulator {
-    const message = {
-      typeUrl: '/cosmos.staking.v1beta1.MsgBeginRedelegate',
-      value: request,
-    };
+    const message = createTypedEncodeObject(
+      TxMessageTypeUrl.StakingBeginRedelegate,
+      request,
+    );
 
     return createSignerOrSimulator(
       this.nodeUrl,

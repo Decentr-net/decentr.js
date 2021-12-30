@@ -1,7 +1,6 @@
 import {
   BankExtension,
   Coin,
-  MsgSendEncodeObject,
   QueryClient,
   setupBankExtension,
 } from '@cosmjs/stargate';
@@ -9,8 +8,9 @@ import { Tendermint34Client } from '@cosmjs/tendermint-rpc';
 
 import { Wallet } from '../../wallet';
 import { DECENTR_DENOM } from '../types';
-import { createSignerOrSimulator, SignerOrSimulator } from '../api-utils';
+import { createSignerOrSimulator, createTypedEncodeObject, SignerOrSimulator } from '../api-utils';
 import { SendTokensRequest } from './types';
+import { TxMessageTypeUrl } from '../registry';
 
 export class DecentrBankClient {
   private constructor(
@@ -65,10 +65,10 @@ export class DecentrBankClient {
       memo?: string,
     },
   ): SignerOrSimulator {
-    const message: MsgSendEncodeObject = {
-      typeUrl: '/cosmos.bank.v1beta1.MsgSend',
-      value: request,
-    };
+    const message = createTypedEncodeObject(
+      TxMessageTypeUrl.BankSend,
+      request,
+    );
 
     return createSignerOrSimulator(
       this.nodeUrl,

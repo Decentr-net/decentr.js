@@ -26,5 +26,8 @@ module.exports = {
     'unicorn/prefer-node-protocol': [
       'off',
     ],
+    'unicorn/prefer-object-from-entries': [
+      'off',
+    ],
   },
 };
