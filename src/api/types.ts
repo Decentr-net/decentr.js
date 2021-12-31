@@ -1,6 +1,16 @@
-import { TxMessageValueMap } from './registry';
+import { TxMessageValueMap, TypedEncodeObject } from './registry';
+import { TxBody } from 'cosmjs-types/cosmos/tx/v1beta1/tx';
+import { DecodedTxRaw } from '@cosmjs/proto-signing';
 
 export const DECENTR_DENOM = 'udec';
+
+export interface DecodedTxBody extends Omit<TxBody, 'messages'> {
+  messages: TypedEncodeObject[];
+}
+
+export interface DecodedTx extends Omit<DecodedTxRaw, 'body'> {
+  readonly body: DecodedTxBody;
+}
 
 export type TxMessageValue<K extends keyof TxMessageValueMap> = TxMessageValueMap[K];
 

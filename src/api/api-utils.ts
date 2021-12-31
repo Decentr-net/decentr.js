@@ -1,4 +1,4 @@
-import { coin, EncodeObject, Registry } from '@cosmjs/proto-signing';
+import { coin, decodeTxRaw, EncodeObject, Registry } from '@cosmjs/proto-signing';
 import {
   Coin,
   DeliverTxResponse,
@@ -10,8 +10,30 @@ import {
 import { coerceArray } from '../utils';
 import { createSecp256k1WalletFromPrivateKey } from '../wallet';
 import { getMinGasPrice } from './operations/standalone';
-import { REGISTRY, TxMessageValueMap, TypedEncodeObject } from './registry';
-import { BroadcastClientError, DECENTR_DENOM } from './types';
+import { REGISTRY, TxMessageTypeUrl, TxMessageValueMap, TypedEncodeObject } from './registry';
+import { BroadcastClientError, DECENTR_DENOM, DecodedTx } from './types';
+
+export function createDecentrCoin(amount: number | string): Coin {
+  return coin(amount, DECENTR_DENOM);
+}
+
+export function decodeTx(tx: Uint8Array): DecodedTx {
+  const decodedTxRaw = decodeTxRaw(tx);
+
+  const decodedMessages = decodedTxRaw.body.messages
+    .map((message) => ({
+      typeUrl: message.typeUrl as TxMessageTypeUrl,
+      value: REGISTRY.decode(message),
+    }));
+
+  return {
+    ...decodedTxRaw,
+    body: {
+      ...decodedTxRaw.body,
+      messages: decodedMessages,
+    },
+  };
+}
 
 interface SignerWrapper {
   readonly disconnect: () => void;
@@ -19,10 +41,6 @@ interface SignerWrapper {
   readonly signAndBroadcast: () => Promise<DeliverTxResponse>;
 
   readonly simulate: () => Promise<number>;
-}
-
-export function createDecentrCoin(amount: number | string): Coin {
-  return coin(amount, DECENTR_DENOM);
 }
 
 export function createTypedEncodeObject<K extends keyof TxMessageValueMap>(

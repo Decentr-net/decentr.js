@@ -1,7 +1,6 @@
 import { QueryClient } from '@cosmjs/stargate';
 import { Tendermint34Client } from '@cosmjs/tendermint-rpc';
 
-import { MsgCreatePost } from '../../codec/community/tx';
 import { Wallet } from '../../wallet';
 import { createSignerOrSimulator, createTypedEncodeObject, SignerOrSimulator } from '../api-utils';
 import { TxMessageTypeUrl } from '../registry';
@@ -54,9 +53,7 @@ export class DecentrCommunityClient {
   ): SignerOrSimulator {
     const message = createTypedEncodeObject(
       TxMessageTypeUrl.CommunityCreatePost,
-      {
-        post: request,
-      } as MsgCreatePost,
+      { post: request },
     );
 
     return createSignerOrSimulator(

@@ -5,6 +5,9 @@ import {
   StargateClient,
 } from '@cosmjs/stargate';
 
+import { DecodedIndexedTx } from './types';
+import { decodeIndexedTx } from './utils';
+
 export class DecentrTxClient {
   private constructor(
     private stargateClient: StargateClient,
@@ -24,11 +27,16 @@ export class DecentrTxClient {
   public search(
     query: SearchTxQuery,
     filter: SearchTxFilter = {},
-  ): Promise<readonly IndexedTx[]> {
-    return this.stargateClient.searchTx(query, filter);
+  ): Promise<readonly DecodedIndexedTx[]> {
+    return this.stargateClient.searchTx(query, filter)
+      .then((txs) => txs.map((tx) => decodeIndexedTx(tx)));
   }
 
-  public getByHash(hash: IndexedTx['hash']): Promise<IndexedTx | null> {
-    return this.stargateClient.getTx(hash);
+  public getByHash(hash: IndexedTx['hash']): Promise<DecodedIndexedTx | undefined> {
+    return this.stargateClient.getTx(hash)
+      .then((tx) => tx
+        ? decodeIndexedTx(tx)
+        : undefined
+      );
   }
 }

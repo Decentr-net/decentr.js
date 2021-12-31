@@ -1,6 +1,6 @@
 import { BlockHeader, StargateClient } from '@cosmjs/stargate';
-import { decodeTxRaw } from '@cosmjs/proto-signing';
 
+import { decodeTx } from '../api-utils';
 import { DecodedBlock } from './types';
 
 export class DecentrBlocksClient {
@@ -23,7 +23,7 @@ export class DecentrBlocksClient {
     return this.stargateClient.getBlock(height)
       .then((block) => ({
         ...block,
-        txs: block.txs.map((tx) => decodeTxRaw(tx)),
+        txs: block.txs.map((tx) => decodeTx(tx)),
       }));
   }
 }

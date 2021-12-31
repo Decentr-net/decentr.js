@@ -27,18 +27,18 @@ import { MsgResetAccount } from '../codec/operations/tx';
 
 export enum TxMessageTypeUrl {
   BankSend = '/cosmos.bank.v1beta1.MsgSend',
-  CommunityCreatePost = '/decentr.community.MsgCreatePost',
-  CommunityDeletePost = '/decentr.community.MsgDeletePost',
-  CommunityFollow = '/decentr.community.MsgFollow',
-  CommunitySetLike = '/decentr.community.MsgSetLike',
-  CommunityUnfollow = '/decentr.community.MsgUnfollow',
+  CommunityCreatePost = '/community.MsgCreatePost',
+  CommunityDeletePost = '/community.MsgDeletePost',
+  CommunityFollow = '/community.MsgFollow',
+  CommunitySetLike = '/community.MsgSetLike',
+  CommunityUnfollow = '/community.MsgUnfollow',
   DistributionFundCommunityPool = '/cosmos.distribution.v1beta1.MsgFundCommunityPool',
   DistributionSetWithdrawAddress = '/cosmos.distribution.v1beta1.MsgSetWithdrawAddress',
   DistributionWithdrawDelegatorReward = '/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward',
   DistributionWithdrawValidatorCommission = '/cosmos.distribution.v1beta1.MsgWithdrawValidatorCommission',
   GovDeposit = '/cosmos.gov.v1beta1.MsgDeposit',
   GovVote = '/cosmos.gov.v1beta1.MsgVote',
-  OperationsResetAccount = '/decentr.operations.MsgResetAccount',
+  OperationsResetAccount = '/operations.MsgResetAccount',
   StakingBeginRedelegate = '/cosmos.staking.v1beta1.MsgBeginRedelegate',
   StakingCreateValidator = '/cosmos.staking.v1beta1.MsgCreateValidator',
   StakingDelegate = '/cosmos.staking.v1beta1.MsgDelegate',
@@ -88,7 +88,7 @@ export interface TxMessageValueMap {
   [TxMessageTypeUrl.StakingUndelegate]: MsgUndelegate,
 }
 
-export interface TypedEncodeObject<K extends keyof TxMessageValueMap> {
+export interface TypedEncodeObject<K extends keyof TxMessageValueMap = keyof TxMessageValueMap> {
   typeUrl: K;
   value: TxMessageValueMap[K];
 }

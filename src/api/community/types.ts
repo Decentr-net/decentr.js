@@ -1,4 +1,4 @@
-import { MsgDeletePost, MsgFollow, MsgUnfollow } from '../../codec/community/tx';
+import { MsgCreatePost, MsgDeletePost, MsgFollow, MsgUnfollow } from '../../codec/community/tx';
 import { Like, Post as BlockchainPost } from '../../codec/community/community';
 
 export interface Post extends BlockchainPost {
@@ -9,7 +9,7 @@ export interface Post extends BlockchainPost {
   slug: string;
 }
 
-export type CreatePostRequest = Pick<Post, 'category' | 'previewImage' | 'text' | 'title'>;
+export type CreatePostRequest = MsgCreatePost['post'];
 export type DeletePostRequest = MsgDeletePost;
 export type FollowRequest = MsgFollow;
 export type LikeRequest = Like;

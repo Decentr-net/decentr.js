@@ -1,6 +1,7 @@
-import { DecodedTxRaw } from '@cosmjs/proto-signing';
 import { Block } from '@cosmjs/stargate';
 
+import { DecodedTx } from '../types';
+
 export interface DecodedBlock extends Omit<Block, 'txs'> {
-  readonly txs: DecodedTxRaw[];
+  readonly txs: DecodedTx[];
 }
