@@ -20,6 +20,7 @@
     "clean": "rimraf lib",
     "lint": "eslint --max-warnings 0 src --ext .ts",
     "prebuild": "npm run clean",
+    "prepack": "npm run build",
     "prepublishOnly": "npm run lint && npm run test && npm run build",
     "test": "karma start",
     "prepare": "husky install",
