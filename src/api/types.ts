@@ -1,6 +1,7 @@
-import { TxMessageValueMap, TypedEncodeObject } from './registry';
 import { TxBody } from 'cosmjs-types/cosmos/tx/v1beta1/tx';
 import { DecodedTxRaw } from '@cosmjs/proto-signing';
+
+import { TxMessageValueMap, TypedEncodeObject } from './registry';
 
 export const DECENTR_DENOM = 'udec';
 

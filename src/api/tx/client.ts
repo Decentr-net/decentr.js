@@ -27,7 +27,7 @@ export class DecentrTxClient {
   public search(
     query: SearchTxQuery,
     filter: SearchTxFilter = {},
-  ): Promise<readonly DecodedIndexedTx[]> {
+  ): Promise<DecodedIndexedTx[]> {
     return this.stargateClient.searchTx(query, filter)
       .then((txs) => txs.map((tx) => decodeIndexedTx(tx)));
   }
