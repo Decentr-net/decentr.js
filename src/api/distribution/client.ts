@@ -88,14 +88,14 @@ export class DecentrDistributionClient {
     validatorAddress: Validator['operatorAddress'],
   ): Promise<Coin[]> {
     return this.queryClient.distribution.validatorCommission(validatorAddress)
-      .then((response) => response.commission?.commission || []);
+      .then((response) => (response.commission?.commission || []).map((coin) => correctDecodedCoin(coin)));
   }
 
   public getValidatorOutstandingRewards(
     validatorAddress: Validator['operatorAddress'],
   ): Promise<Coin[]> {
     return this.queryClient.distribution.validatorOutstandingRewards(validatorAddress)
-      .then((response) => response.rewards?.rewards || []);
+      .then((response) => (response.rewards?.rewards || []).map((coin) => correctDecodedCoin(coin)));
   }
 
   public setWithdrawAddress(
