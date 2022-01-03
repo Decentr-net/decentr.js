@@ -1,6 +1,7 @@
 import { QueryClient } from '@cosmjs/stargate';
 import { Tendermint34Client } from '@cosmjs/tendermint-rpc';
 
+import { bytesToDecimalString } from '../../utils';
 import { MintExtension, setupMintExtension } from './extension';
 
 export class DecentrMintClient {
@@ -25,7 +26,8 @@ export class DecentrMintClient {
     this.tmClient.disconnect();
   }
 
-  public getInflation(): Promise<Uint8Array> {
-    return this.queryClient.mint.getInflation();
+  public getInflation(): Promise<string> {
+    return this.queryClient.mint.getInflation()
+      .then(bytesToDecimalString);
   }
 }
