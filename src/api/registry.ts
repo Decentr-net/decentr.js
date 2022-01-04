@@ -6,6 +6,7 @@ import {
   MsgWithdrawValidatorCommission,
 } from 'cosmjs-types/cosmos/distribution/v1beta1/tx';
 import { MsgDeposit, MsgVote } from 'cosmjs-types/cosmos/gov/v1beta1/tx';
+import { MsgUnjail } from 'cosmjs-types/cosmos/slashing/v1beta1/tx';
 import {
   MsgBeginRedelegate,
   MsgCreateValidator,
@@ -23,7 +24,7 @@ import {
   MsgSetLike,
   MsgUnfollow,
 } from '../codec/community/tx';
-import { MsgResetAccount } from '../codec/operations/tx';
+import { MsgBurn, MsgDistributeRewards, MsgMint, MsgResetAccount } from '../codec/operations/tx';
 
 export enum TxMessageTypeUrl {
   BankSend = '/cosmos.bank.v1beta1.MsgSend',
@@ -38,7 +39,11 @@ export enum TxMessageTypeUrl {
   DistributionWithdrawValidatorCommission = '/cosmos.distribution.v1beta1.MsgWithdrawValidatorCommission',
   GovDeposit = '/cosmos.gov.v1beta1.MsgDeposit',
   GovVote = '/cosmos.gov.v1beta1.MsgVote',
+  OperationsBurn = '/operations.MsgBurn',
+  OperationsDistributeRewards = '/operations.MsgDistributeRewards',
+  OperationsMint = '/operations.MsgMint',
   OperationsResetAccount = '/operations.MsgResetAccount',
+  SlashingUnjail = '/cosmos.slashing.v1beta1.MsgUnjail',
   StakingBeginRedelegate = '/cosmos.staking.v1beta1.MsgBeginRedelegate',
   StakingCreateValidator = '/cosmos.staking.v1beta1.MsgCreateValidator',
   StakingDelegate = '/cosmos.staking.v1beta1.MsgDelegate',
@@ -59,7 +64,11 @@ const REGISTRY_MAP: Record<TxMessageTypeUrl, GeneratedType> = {
   [TxMessageTypeUrl.DistributionWithdrawValidatorCommission]: MsgWithdrawValidatorCommission,
   [TxMessageTypeUrl.GovDeposit]: MsgDeposit,
   [TxMessageTypeUrl.GovVote]: MsgVote,
+  [TxMessageTypeUrl.OperationsBurn]: MsgBurn,
+  [TxMessageTypeUrl.OperationsDistributeRewards]: MsgDistributeRewards,
+  [TxMessageTypeUrl.OperationsMint]: MsgMint,
   [TxMessageTypeUrl.OperationsResetAccount]: MsgResetAccount,
+  [TxMessageTypeUrl.SlashingUnjail]: MsgUnjail,
   [TxMessageTypeUrl.StakingBeginRedelegate]: MsgBeginRedelegate,
   [TxMessageTypeUrl.StakingCreateValidator]: MsgCreateValidator,
   [TxMessageTypeUrl.StakingDelegate]: MsgDelegate,
@@ -80,7 +89,11 @@ export interface TxMessageValueMap {
   [TxMessageTypeUrl.DistributionWithdrawValidatorCommission]: MsgWithdrawValidatorCommission,
   [TxMessageTypeUrl.GovDeposit]: MsgDeposit,
   [TxMessageTypeUrl.GovVote]: MsgVote,
+  [TxMessageTypeUrl.OperationsBurn]: MsgBurn,
+  [TxMessageTypeUrl.OperationsDistributeRewards]: MsgDistributeRewards,
+  [TxMessageTypeUrl.OperationsMint]: MsgMint,
   [TxMessageTypeUrl.OperationsResetAccount]: MsgResetAccount,
+  [TxMessageTypeUrl.SlashingUnjail]: MsgUnjail,
   [TxMessageTypeUrl.StakingBeginRedelegate]: MsgBeginRedelegate,
   [TxMessageTypeUrl.StakingCreateValidator]: MsgCreateValidator,
   [TxMessageTypeUrl.StakingDelegate]: MsgDelegate,
