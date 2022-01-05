@@ -2,7 +2,7 @@ export { decodeTxRaw } from '@cosmjs/proto-signing';
 export { Coin, DeliverTxResponse } from '@cosmjs/stargate';
 
 export { createDecentrCoin } from './api-utils';
-export { TxMessageTypeUrl } from './registry';
+export { TxMessageTypeUrl, TypedEncodeObject } from './registry';
 
 export * from './auth';
 export * from './bank';
