@@ -1,5 +1,5 @@
 import { KeyPair, Wallet } from '../../wallet';
-import { DecentrPDVClient, PDVAddress, PDVType, ProfilePDV } from '../pdv';
+import { DecentrPDVClient, PDVAddress, PDVType, ProfilePDV, ProfileUpdate } from '../pdv';
 import { fetchJson, getAuthHeaders } from '../../utils';
 import { Profile, ProfileStatistics } from './types';
 
@@ -11,7 +11,7 @@ export class DecentrProfileClient {
   }
 
   public setProfile(
-    profile: Omit<ProfilePDV, 'type'>,
+    profile: ProfileUpdate,
     keyPair: KeyPair,
   ): Promise<PDVAddress> {
     const pdvClient = new DecentrPDVClient(this.cerberusUrl);
