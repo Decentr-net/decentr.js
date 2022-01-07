@@ -8,9 +8,10 @@ import { Tendermint34Client } from '@cosmjs/tendermint-rpc';
 
 import { Wallet } from '../../wallet';
 import { DECENTR_DENOM } from '../types';
-import { createSignerOrSimulator, createTypedEncodeObject, SignerOrSimulator } from '../api-utils';
-import { SendTokensRequest } from './types';
+import { createTypedEncodeObject } from '../api-utils';
 import { TxMessageTypeUrl } from '../registry';
+import { TransactionSigner } from '../transaction-signer';
+import { SendTokensRequest } from './types';
 
 export class DecentrBankClient {
   private constructor(
@@ -64,13 +65,13 @@ export class DecentrBankClient {
     options?: {
       memo?: string,
     },
-  ): SignerOrSimulator {
+  ): TransactionSigner {
     const message = createTypedEncodeObject(
       TxMessageTypeUrl.BankSend,
       request,
     );
 
-    return createSignerOrSimulator(
+    return new TransactionSigner(
       this.nodeUrl,
       message,
       privateKey,

@@ -2,8 +2,9 @@ import { QueryClient } from '@cosmjs/stargate';
 import { Tendermint34Client } from '@cosmjs/tendermint-rpc';
 
 import { Wallet } from '../../wallet';
-import { createSignerOrSimulator, createTypedEncodeObject, SignerOrSimulator } from '../api-utils';
+import { createTypedEncodeObject } from '../api-utils';
 import { TxMessageTypeUrl } from '../registry';
+import { TransactionSigner } from '../transaction-signer';
 import { CommunityExtension, setupCommunityExtension } from './extension';
 import {
   CreatePostRequest,
@@ -50,13 +51,13 @@ export class DecentrCommunityClient {
     options?: {
       memo?: string,
     },
-  ): SignerOrSimulator {
+  ): TransactionSigner {
     const message = createTypedEncodeObject(
       TxMessageTypeUrl.CommunityCreatePost,
       { post: request },
     );
 
-    return createSignerOrSimulator(
+    return new TransactionSigner(
       this.nodeUrl,
       message,
       privateKey,
@@ -70,13 +71,13 @@ export class DecentrCommunityClient {
     options?: {
       memo?: string,
     },
-  ): SignerOrSimulator {
+  ): TransactionSigner {
     const message = createTypedEncodeObject(
       TxMessageTypeUrl.CommunityDeletePost,
       request,
     );
 
-    return createSignerOrSimulator(
+    return new TransactionSigner(
       this.nodeUrl,
       message,
       privateKey,
@@ -90,13 +91,13 @@ export class DecentrCommunityClient {
     options?: {
       memo?: string,
     },
-  ): SignerOrSimulator {
+  ): TransactionSigner {
     const message = createTypedEncodeObject(
       TxMessageTypeUrl.CommunitySetLike,
       { like: request },
     );
 
-    return createSignerOrSimulator(
+    return new TransactionSigner(
       this.nodeUrl,
       message,
       privateKey,
@@ -110,13 +111,13 @@ export class DecentrCommunityClient {
     options?: {
       memo?: string,
     },
-  ): SignerOrSimulator {
+  ): TransactionSigner {
     const message = createTypedEncodeObject(
       TxMessageTypeUrl.CommunityFollow,
       request,
     );
 
-    return createSignerOrSimulator(
+    return new TransactionSigner(
       this.nodeUrl,
       message,
       privateKey,
@@ -130,13 +131,13 @@ export class DecentrCommunityClient {
     options?: {
       memo?: string,
     },
-  ): SignerOrSimulator {
+  ): TransactionSigner {
     const message = createTypedEncodeObject(
       TxMessageTypeUrl.CommunityUnfollow,
       request,
     );
 
-    return createSignerOrSimulator(
+    return new TransactionSigner(
       this.nodeUrl,
       message,
       privateKey,

@@ -17,10 +17,11 @@ import {
 import { Tendermint34Client } from '@cosmjs/tendermint-rpc';
 
 import { Wallet } from '../../wallet';
-import { createSignerOrSimulator, createTypedEncodeObject, SignerOrSimulator } from '../api-utils';
+import { createTypedEncodeObject } from '../api-utils';
 import { TxMessageTypeUrl } from '../registry';
 import { DelegateTokensRequest, RedelegateTokensRequest, UndelegateTokensRequest } from './types';
 import { correctValidatorCommission } from './utils';
+import { TransactionSigner } from '../transaction-signer';
 
 export class DecentrStakingClient {
   private constructor(
@@ -141,13 +142,13 @@ export class DecentrStakingClient {
     options?: {
       memo?: string,
     },
-  ): SignerOrSimulator {
+  ): TransactionSigner {
     const message = createTypedEncodeObject(
       TxMessageTypeUrl.StakingDelegate,
       request,
     );
 
-    return createSignerOrSimulator(
+    return new TransactionSigner(
       this.nodeUrl,
       message,
       privateKey,
@@ -161,13 +162,13 @@ export class DecentrStakingClient {
     options?: {
       memo?: string,
     },
-  ): SignerOrSimulator {
+  ): TransactionSigner {
     const message = createTypedEncodeObject(
       TxMessageTypeUrl.StakingUndelegate,
       request,
     );
 
-    return createSignerOrSimulator(
+    return new TransactionSigner(
       this.nodeUrl,
       message,
       privateKey,
@@ -181,13 +182,13 @@ export class DecentrStakingClient {
     options?: {
       memo?: string,
     },
-  ): SignerOrSimulator {
+  ): TransactionSigner {
     const message = createTypedEncodeObject(
       TxMessageTypeUrl.StakingBeginRedelegate,
       request,
     );
 
-    return createSignerOrSimulator(
+    return new TransactionSigner(
       this.nodeUrl,
       message,
       privateKey,
