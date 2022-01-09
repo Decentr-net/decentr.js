@@ -15,6 +15,7 @@ export enum PDVType {
 export enum Gender {
   Male = 'male',
   Female = 'female',
+  Unspecified = '',
 }
 
 export interface PDVSource {
@@ -52,13 +53,13 @@ export interface LocationPDV {
 }
 
 export interface ProfileUpdate {
-  avatar: string;
-  bio: string;
-  birthday: string;
+  avatar?: string;
+  bio?: string;
+  birthday?: string;
   emails: string[];
   firstName: string;        // maxlength: 64
   gender: Gender;
-  lastName: string;         // maxlength: 64
+  lastName?: string;         // maxlength: 64
 }
 
 export interface ProfilePDV extends ProfileUpdate {
@@ -95,3 +96,5 @@ export interface PDVMeta {
   object_types: Record<PDVType, number>;
   reward: number;
 }
+
+export type PDVRewards = Record<PDVType, string>;

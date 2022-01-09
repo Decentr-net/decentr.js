@@ -1,3 +1,4 @@
-export * from './profile';
-export * from './sdk';
+export * from './client';
 export * from './types';
+
+export { Account } from '@cosmjs/stargate';

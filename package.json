@@ -16,19 +16,26 @@
   "license": "MIT",
   "scripts": {
     "build": "webpack",
+    "watch": "webpack --config webpack.config.dev.js -w",
     "clean": "rimraf lib",
     "lint": "eslint --max-warnings 0 src --ext .ts",
     "prebuild": "npm run clean",
+    "prepack": "npm run build",
     "prepublishOnly": "npm run lint && npm run test && npm run build",
     "test": "karma start",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "proto": "bash scripts/get-proto.sh && bash scripts/define-proto.sh"
   },
   "dependencies": {
+    "@cosmjs/proto-signing": "^0.27.0-rc2",
+    "@cosmjs/stargate": "^0.27.0-rc2",
+    "@cosmjs/tendermint-rpc": "^0.27.0-rc2",
     "@tendermint/belt": "^0.3.0",
     "axios": "^0.24.0",
     "bech32": "^2.0.0",
     "bip32": "^2.0.6",
     "bip39": "^3.0.2",
+    "cosmjs-types": "^0.4.0",
     "create-hash": "^1.2.0",
     "secp256k1": "^4.0.2"
   },
@@ -54,6 +61,7 @@
     "karma-webpack": "^4.0.2",
     "rimraf": "^3.0.2",
     "ts-loader": "^8.0.10",
+    "ts-proto": "^1.96.1",
     "typescript": "^3.5.1",
     "webpack": "^4.44.2",
     "webpack-bundle-analyzer": "^4.1.0",

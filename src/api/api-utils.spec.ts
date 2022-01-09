@@ -1,4 +1,4 @@
-import { getSignature } from './api-utils';
+import { getSignature } from '../utils';
 import { bytesToHex } from '../utils';
 
 describe('api-utils', () => {

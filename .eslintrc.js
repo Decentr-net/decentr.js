@@ -12,13 +12,10 @@ module.exports = {
   ],
   plugins: [
   ],
-  ignorePatterns: ['**/*.js'],
+  ignorePatterns: ['**/*.js', '**/codec/**/*.*'],
   rules: {
-    'unicorn/prevent-abbreviations': [
-      'error',
-      {
-        checkFilenames: false,
-      },
+    "unicorn/prevent-abbreviations": [
+      "off",
     ],
     'unicorn/empty-brace-spaces': [
       'off',
@@ -27,6 +24,9 @@ module.exports = {
       'off',
     ],
     'unicorn/prefer-node-protocol': [
+      'off',
+    ],
+    'unicorn/prefer-object-from-entries': [
       'off',
     ],
   },
