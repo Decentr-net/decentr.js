@@ -11,16 +11,16 @@ import {
 } from '@cosmjs/stargate';
 import { Tendermint34Client } from '@cosmjs/tendermint-rpc';
 
+import {
+  MsgSetWithdrawAddress,
+  MsgWithdrawDelegatorReward,
+  MsgWithdrawValidatorCommission
+} from 'cosmjs-types/cosmos/distribution/v1beta1/tx';
 import { Wallet } from '../../wallet';
 import { correctDecodedCoin } from '../../utils';
 import { createTypedEncodeObject } from '../api-utils';
 import { TxMessageTypeUrl } from '../registry';
 import { TransactionSigner } from '../transaction-signer';
-import {
-  SetWithdrawAddressRequest,
-  WithdrawDelegatorRewardRequest,
-  WithdrawValidatorCommissionRequest,
-} from './types';
 
 export class DecentrDistributionClient {
   private constructor(
@@ -100,7 +100,7 @@ export class DecentrDistributionClient {
   }
 
   public setWithdrawAddress(
-    request: SetWithdrawAddressRequest,
+    request: MsgSetWithdrawAddress,
     privateKey: Wallet['privateKey'],
     options?: {
       memo?: string,
@@ -120,7 +120,7 @@ export class DecentrDistributionClient {
   }
 
   public withdrawDelegatorRewards(
-    request: WithdrawDelegatorRewardRequest,
+    request: MsgWithdrawDelegatorReward[],
     privateKey: Wallet['privateKey'],
     options?: {
       memo?: string,
@@ -140,7 +140,7 @@ export class DecentrDistributionClient {
   }
 
   public withdrawValidatorRewards(
-    request: WithdrawValidatorCommissionRequest,
+    request: MsgWithdrawValidatorCommission,
     privateKey: Wallet['privateKey'],
     options?: {
       memo?: string,

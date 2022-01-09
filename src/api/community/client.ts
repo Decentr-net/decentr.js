@@ -1,18 +1,18 @@
 import { QueryClient } from '@cosmjs/stargate';
 import { Tendermint34Client } from '@cosmjs/tendermint-rpc';
 
+import {
+  MsgCreatePost,
+  MsgDeletePost,
+  MsgFollow,
+  MsgSetLike,
+  MsgUnfollow,
+} from '../../codec/community/tx';
 import { Wallet } from '../../wallet';
 import { createTypedEncodeObject } from '../api-utils';
 import { TxMessageTypeUrl } from '../registry';
 import { TransactionSigner } from '../transaction-signer';
 import { CommunityExtension, setupCommunityExtension } from './extension';
-import {
-  CreatePostRequest,
-  DeletePostRequest,
-  FollowRequest,
-  LikeRequest,
-  UnfollowRequest,
-} from './types';
 
 export class DecentrCommunityClient {
   private constructor(
@@ -46,7 +46,7 @@ export class DecentrCommunityClient {
   }
 
   public createPost(
-    request: CreatePostRequest,
+    request: MsgCreatePost['post'],
     privateKey: Wallet['privateKey'],
     options?: {
       memo?: string,
@@ -66,7 +66,7 @@ export class DecentrCommunityClient {
   }
 
   public deletePost(
-    request: DeletePostRequest,
+    request: MsgDeletePost,
     privateKey: Wallet['privateKey'],
     options?: {
       memo?: string,
@@ -86,7 +86,7 @@ export class DecentrCommunityClient {
   }
 
   public setLike(
-    request: LikeRequest,
+    request: MsgSetLike['like'],
     privateKey: Wallet['privateKey'],
     options?: {
       memo?: string,
@@ -106,7 +106,7 @@ export class DecentrCommunityClient {
   }
 
   public follow(
-    request: FollowRequest,
+    request: MsgFollow,
     privateKey: Wallet['privateKey'],
     options?: {
       memo?: string,
@@ -126,7 +126,7 @@ export class DecentrCommunityClient {
   }
 
   public unfollow(
-    request: UnfollowRequest,
+    request: MsgUnfollow,
     privateKey: Wallet['privateKey'],
     options?: {
       memo?: string,
