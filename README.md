@@ -249,7 +249,7 @@ Response of `signAndBroadcast` method is a [DeliverTxResponse](https://github.co
 ```
 *Notice*: `height` is an optional param, method will return the latest block if `height` is not supplied.
 
-Response of `getBlock` method is a [DecodedBlock](https://github.com/Decentr-net/decentr.js/blob/master/src/api/blocks/types.ts#L5).
+Response of `getBlock` method is a [DecodedBlock](https://github.com/Decentr-net/decentr.js/blob/develop/src/api/blocks/types.ts#L5).
 
 ## 📜 Community <a id="community" />
 
@@ -568,7 +568,7 @@ Response of `getValidatorOutstandingRewards` method is a [Coin](https://github.c
   };
   const imageResponse = await imageClient.saveImage(image, keyPair);
 ```
-Response of `saveImage` method is an [SaveImageResponse](https://github.com/Decentr-net/decentr.js/blob/master/src/api/image/types.ts#L1)
+Response of `saveImage` method is an [SaveImageResponse](https://github.com/Decentr-net/decentr.js/blob/develop/src/api/image/types.ts#L1)
 
 ## 📜 Mint <a id="mint" />
 
@@ -712,7 +712,7 @@ Response of `getMinGasPrice` method is a [Coin](https://github.com/cosmos/cosmjs
 ```ts
   const pDVBlacklist = await pDVClient.getPDVBlacklist();
 ```
-Response of `getPDVBlacklist` method is a [PDVBlacklist](https://github.com/Decentr-net/decentr.js/blob/master/src/api/pdv/types.ts#L1)
+Response of `getPDVBlacklist` method is a [PDVBlacklist](https://github.com/Decentr-net/decentr.js/blob/develop/src/api/pdv/types.ts#L1)
 
 2. **Get PDV list**
 ```ts
@@ -732,7 +732,7 @@ Response of `getPDVList` method is an id (timestamp) array like `[1641748368, 16
   const pDVAddress = 1641748368;
   const pDVMeta = await pDVClient.getPDVMeta(pDVAddress, walletAddress);
 ```
-Response of `getPDVMeta` method is a [PDVMeta](https://github.com/Decentr-net/decentr.js/blob/master/src/api/pdv/types.ts#L94)
+Response of `getPDVMeta` method is a [PDVMeta](https://github.com/Decentr-net/decentr.js/blob/develop/src/api/pdv/types.ts#L94)
 
 4. **Get PDV details**
 ```ts
@@ -744,13 +744,13 @@ Response of `getPDVMeta` method is a [PDVMeta](https://github.com/Decentr-net/de
   const pDVAddress = 1641748368;
   const pDVDetails = await pDVClient.getPDVDetails(pDVAddress, wallet);
 ```
-Response of `getPDVDetails` method is a [PDVMeta](https://github.com/Decentr-net/decentr.js/blob/master/src/api/pdv/types.ts#L89)
+Response of `getPDVDetails` method is a [PDVMeta](https://github.com/Decentr-net/decentr.js/blob/develop/src/api/pdv/types.ts#L89)
 
 5. **Get rewards configuration**
 ```ts
   const rewards = await pDVClient.getRewards();
 ```
-Response of `getRewards` method is a [PDVMeta](https://github.com/Decentr-net/decentr.js/blob/master/src/api/pdv/types.ts#L99)
+Response of `getRewards` method is a [PDVMeta](https://github.com/Decentr-net/decentr.js/blob/develop/src/api/pdv/types.ts#L99)
 
 6. **Send PDV**
 ```ts
@@ -824,7 +824,7 @@ Response of `sendPDV` method is an id (timestamp) of PDV.
   // keyPair is an optional param required to get private profile data (birthday, gender etc.)
   const profile = await profileClient.getProfile(walletAddress, keyPair);
 ```
-Response of `getProfile` method is a [Profile](https://github.com/Decentr-net/decentr.js/blob/master/src/api/profile/types.ts#L4)
+Response of `getProfile` method is a [Profile](https://github.com/Decentr-net/decentr.js/blob/develop/src/api/profile/types.ts#L4)
 
 3. **Get profiles**
 ```ts
@@ -843,7 +843,7 @@ Response of `getProfile` method is an object of type `{ decentrAddress1: profile
   const walletAddress = 'decentrAddress';
   const stats = await pDVClient.getStats(walletAddress);
 ```
-Response of `getStats` method is a [ProfileStatistics](https://github.com/Decentr-net/decentr.js/blob/master/src/api/profile/types.ts#L15)
+Response of `getStats` method is a [ProfileStatistics](https://github.com/Decentr-net/decentr.js/blob/develop/src/api/profile/types.ts#L15)
 
 ## 📜 Staking <a id="staking" />
 
@@ -1104,20 +1104,20 @@ Response of `getBalance` method is a string like `1.001234`.
   const walletAddress = 'decentrWalletAddress';
   const balance = await tokenClient.getAdvDdvStats();
 ```
-Response of `getAdvDdvStats` method is an [AdvDdvStatistics](https://github.com/Decentr-net/decentr.js/blob/009e3ea9ceddf63426df262d1686bb5fd833b999/src/api/token/types.ts#L1)
+Response of `getAdvDdvStats` method is an [AdvDdvStatistics](https://github.com/Decentr-net/decentr.js/blob/develop/src/api/token/types.ts#L1)
 
 3. **Get delta**
 ```ts
   const walletAddress = 'decentrWalletAddress';
   const delta = await tokenClient.getDelta(walletAddress);
 ```
-Response of `getDelta` method is an [TokenDelta](https://github.com/Decentr-net/decentr.js/blob/009e3ea9ceddf63426df262d1686bb5fd833b999/src/api/token/types.ts#L12)
+Response of `getDelta` method is an [TokenDelta](https://github.com/Decentr-net/decentr.js/blob/develop/src/api/token/types.ts#L12)
 
 4. **Get pool**
 ```ts
   const pool = await tokenClient.getPool();
 ```
-Response of `getDelta` method is an [TokenPool](https://github.com/Decentr-net/decentr.js/blob/009e3ea9ceddf63426df262d1686bb5fd833b999/src/api/token/types.ts#L6)
+Response of `getDelta` method is an [TokenPool](https://github.com/Decentr-net/decentr.js/blob/develop/src/api/token/types.ts#L6)
 
 ## 📜 Tx <a id="tx" />
 
@@ -1164,14 +1164,14 @@ Response of `getDelta` method is an [TokenPool](https://github.com/Decentr-net/d
   };
   const txsByTags = await txClient.search(queryByHeight);
 ```
-Response of `search` method is an [DecodedIndexedTx](https://github.com/Decentr-net/decentr.js/blob/009e3ea9ceddf63426df262d1686bb5fd833b999/src/api/tx/types.ts#L10) array.
+Response of `search` method is an [DecodedIndexedTx](https://github.com/Decentr-net/decentr.js/blob/develop/src/api/tx/types.ts#L10) array.
 
 2. **Get by hash**
 ```ts
   const txHash = 'ABCDEF0123456GHIJKL7890';
   const tx = await txClient.getByHash(txHash);
 ```
-Response of `getByHash` method is an [DecodedIndexedTx](https://github.com/Decentr-net/decentr.js/blob/009e3ea9ceddf63426df262d1686bb5fd833b999/src/api/tx/types.ts#L10)
+Response of `getByHash` method is an [DecodedIndexedTx](https://github.com/Decentr-net/decentr.js/blob/develop/src/api/tx/types.ts#L10)
 
 ## 🥂 License <a id="license" />
 
