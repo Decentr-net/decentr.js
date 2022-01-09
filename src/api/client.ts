@@ -129,7 +129,7 @@ export class DecentrClient {
     return this.pdvClient;
   }
 
-  public profile(): DecentrProfileClient {
+  public get profile(): DecentrProfileClient {
     if (!this.servicesUrls?.cerberus) {
       throw new Error(`You didn't provide Cerberus url`);
     }
