@@ -1,2 +1,2 @@
-export * from './operations';
-export * from './sdk';
+export * from './client';
+export * from './types';

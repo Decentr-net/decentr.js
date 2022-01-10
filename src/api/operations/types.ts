@@ -1,10 +1,3 @@
-import { Wallet } from '../../wallet';
-import { BroadcastOptions } from '../messages';
-import { StdTxMessageType, StdTxResponse } from '../types';
+import { MsgResetAccount } from '../../codec/operations/tx';
 
-export type QueryResetAccountResponse = StdTxResponse<StdTxMessageType.OperationsResetAccount>;
-
-export interface ResetAccountBroadcastOptions extends BroadcastOptions {
-  readonly broadcast: true;
-  readonly privateKey: Wallet['privateKey'];
-}
+export type ResetAccountRequest = MsgResetAccount;

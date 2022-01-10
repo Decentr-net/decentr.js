@@ -1,19 +1,23 @@
-export * from './api-utils';
+export { decodeTxRaw } from '@cosmjs/proto-signing';
+export { Coin, DeliverTxResponse } from '@cosmjs/stargate';
+
+export { createDecentrCoin } from './api-utils';
+export { TxMessageTypeUrl, TypedEncodeObject } from './registry';
+
+export * from './auth';
 export * from './bank';
 export * from './blocks';
 export * from './community';
-export * from './connector';
+export * from './client';
 export * from './distribution';
 export * from './image';
-export * from './messages';
-export * from './minting';
+export * from './mint';
 export * from './node';
 export * from './operations';
 export * from './pdv';
 export * from './profile';
 export * from './staking';
-export * from './supply';
 export * from './swap';
 export * from './token';
-export * from './txs';
+export * from './tx';
 export * from './types';

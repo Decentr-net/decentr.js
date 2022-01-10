@@ -11,7 +11,8 @@
 
 - Mnemonic generation (24 words combination)
 - Wallet generation based on mnemonic (address, private key, public key)
-- Transactions with optional broadcasting
+- Querying to almost all decentr services
+- Creating and broadcasting transactions
 
 ## 🔧 Installation
 
@@ -21,7 +22,27 @@ npm install decentr-js
 
 ## 🎬 Getting started
 
-## Mnemonic
+#Table of contents
+1. [Mnemonic](#mnemonic)
+2. [Wallet](#wallet)
+3. [Decentr API](#decentr-api)
+   1. [Auth](#auth)
+   2. [Bank](#bank)
+   3. [Blocks](#blocks)
+   4. [Community](#community)
+   5. [Distribution](#distribution)
+   6. [Image](#image)
+   7. [Mint](#mint)
+   8. [Node](#node)
+   9. [Operations](#operations)
+   10. [PDV](#pdv)
+   11. [Profile](#profile)
+   12. [Staking](#staking)
+   13. [Token](#token)
+   14. [Tx](#tx)
+4. [License](#license)
+
+## Mnemonic <a id="mnemonic" />
 
 **Generate mnemonic phrase (24 words)**
 
@@ -33,7 +54,7 @@ const mnemonic = generateMnemonic();
 */
 ```
 
-## Wallet
+## Wallet <a id="wallet" />
 
 **Create wallet with address and keys**
 
@@ -53,1204 +74,1105 @@ const wallet = createWalletFromMnemonic(seed);
 */
 ```
 
-# Using Decentr api
+# Using Decentr api <a id="decentr-api" />
 
-##! Notice
-
-**All methods described in Decentr class below are available as standalone functions, but require extra parameters:**
-
-```ts
-const restUrl = 'http://rest.testnet.decentr.xyz';
-const chainId = 'testnet';
-const walletAddress = 'decentr1p4s4djk5dqstfswg6k8sljhkzku4a6ve9dmng5';
-
-AND
-
-import { Decentr } from 'decentr-js';
-const decentr = new DecentrConnect(restUrl, chainId);
-
-decentr.profile.getAccount(walletAddress)
-  .then((account) => ...)
-
-OR
-
-import { getAccount } from 'decentr-js';
-
-getAccount(restUrl, chainId, walletAddress)
-  .then((account) => ...)
-```
-
-**Some methods of Decentr class provide optional broadcasting, which is also available as standalone function**
-
-```ts
-const restUrl = 'http://rest.testnet.decentr.xyz';
-const chainId = 'testnet';
-const walletAddress = 'decentr1p4s4djk5dqstfswg6k8sljhkzku4a6ve9dmng5';
-const privateKey = 'fbf265ca5872907c4dbd33bf87c683d84b96987eb42d4a6c50f335eac57ece3e';
-const post = {
-  category: PostCategory.Sports,
-  text: 'Some text',
-  title: 'Title',
-  previewImage: '',
-};
-
-AND
-
-import { Decentr } from 'decentr-js';
-
-const decentr = new Decentr(restUrl, chainId);
-
-decentr.community.createPost(
-  walletAddress,
-  post,
-  {
-    broadcast: true,
-    privateKey,
-  },
-).then(...);
-
-OR
-
-import { Decentr, broadcast } from 'decentr-js';
-
-const decentr = new Decentr(restUrl, chainId);
-
-const stdTxResponse = await decentr.community.createPost(walletAddress, post);
-
-const account = await decentr.profile.getAccount(walletAddress);
-await broadcast(
-  restUrl,
-  chainId,
-  stdTxResponse.value,
-  {
-    ...account,
-    privateKey,
-  },
-);
-
-```
-
-## Decentr connector class
+## Decentr client
 
 **For less text, we define some basic variables here**
 
 ```ts
-import { Decentr } from 'decentr-js';
+import { DecentrClient } from 'decentr-js';
 
-const REST_URL = 'http://rest.testnet.decentr.xyz';
-const CHAIN_ID = 'testnet';
+const NODE_URL = 'http://rest.testnet.decentr.xyz:26657'; // blockchain node
 
-const decentr = new Decentr(REST_URL, CHAIN_ID);
+const CERBERUS_URL = 'https://cerberus.testnet.decentr.xyz'; // pdv server
+const THESEUS_URL = 'https://theseus.testnet.decentr.xyz'; // offchain server
+
+const decentrClient = new Decentr(NODE_URL, {
+  cerberus: CERBERUS_URL,
+  theseus: THESEUS_URL,
+});
 ```
 
-## 📜 Node
+## 📜 Auth <a id="auth" />
 
-**Get node info**
+**Auth client has the following interface**
+
+```
+  class DecentrAuthClient {
+    getAccount(walletAddress: Wallet['address']): Promise<Account | null>;
+  }
+```
+
+**How to get instance of auth client**
+```
+  const authClient = await decentrClient.auth();
+  
+  OR
+  
+  import { DecentrAuthClient } from 'decentr-js'
+  const authClient = await DecentrAuthClient.create(NODE_URL);
+```
+
+### Methods
+
+1. **Get account**
 ```ts
+  const walletAddress = 'decentr1234567890abcdefghijklmno';
+  const account = await authClient.getAccount(walletAddress);
+```
+Response of `getAccount` method is an [Account](https://github.com/cosmos/cosmjs/blob/57a56cfa6ae8c06f4c28949a1028dc764816bbe8/packages/stargate/src/accounts.ts#L15) or `null` if account is not exist.
 
-decentr.node.getNodeInfo().then(console.log);
+## 📜 Bank <a id="bank" />
 
-/* 
-CONSOLE OUTPUT:
+**Bank client has the following interface**
 
-{
-  application_version: {
-    build_deps: [
-      "gopkg.in/yaml.v2@v2.3.0",
-      ...
+```
+  class DecentrBankClient {
+    getBalance(walletAddress: Wallet['address']): Promise<Coin[]>;
+
+    getDenomBalance(walletAddress: Wallet['address'], denom: string): Promise<Coin>;
+
+    getSupply(): Promise<Coin[]>;
+    
+    getDenomSupply(denom: string): Promise<Coin>;
+    
+    public sendTokens(
+      request: MsgSend,
+      privateKey: Wallet['privateKey'],
+      options?: {
+        memo?: string,
+      },
+    ): TransactionSigner;
+  }
+```
+
+**How to get instance of bank client**
+```
+  const bankClient = await decentrClient.bank();
+  
+  OR
+  
+  import { DecentrBankClient } from 'decentr-js'
+  const bankClient = await DecentrBankClient.create(NODE_URL);
+```
+
+### Methods
+
+1. **Get balance**
+```ts
+  const walletAddress = 'decentr1234567890abcdefghijklmno';
+  const balance = await bankClient.getBalance(decentr1234567890abcdefghijklmno);
+```
+
+Response of `getBalance` method is a [Coin](https://github.com/cosmos/cosmjs/blob/57a56cfa6ae8c06f4c28949a1028dc764816bbe8/packages/amino/src/coins.ts#L3) array.
+
+2. **Get denom balance**
+```ts
+  const walletAddress = 'decentr1234567890abcdefghijklmno';
+  const denom = 'udec';
+  const denomBalance = await bankClient.getDenomBalance(decentr1234567890abcdefghijklmno, denom);
+```
+*Notice*: `denom` is an optional param, it is `udec` by default.
+
+Response of `getDenomBalance` method is a [Coin](https://github.com/cosmos/cosmjs/blob/57a56cfa6ae8c06f4c28949a1028dc764816bbe8/packages/amino/src/coins.ts#L3).
+
+3. **Get supply**
+```ts
+  const walletAddress = 'decentr1234567890abcdefghijklmno';
+  const supply = await bankClient.getSupply(decentr1234567890abcdefghijklmno);
+```
+Response of `getSupply` method is a [Coin](https://github.com/cosmos/cosmjs/blob/57a56cfa6ae8c06f4c28949a1028dc764816bbe8/packages/amino/src/coins.ts#L3) array.
+
+4. **Get denom supply**
+```ts
+  const denom = 'udec';
+  const denomSupply = await bankClient.getDenomSupply(denom);
+```
+*Notice*: `denom` is an optional param, it is `udec` by default.
+
+Response of `getDenomSupply` method is a [Coin](https://github.com/cosmos/cosmjs/blob/57a56cfa6ae8c06f4c28949a1028dc764816bbe8/packages/amino/src/coins.ts#L3).
+
+5. **Send tokens**
+```ts
+  const message = {
+    fromAddress: 'decentrFromAddress',
+    toAddress: 'decentrToAddress',
+    amount: [
+      {
+        amount: '100000000',
+        denom: 'udec',
+      },
     ],
-    build_tags: ""
-    client_name: "decentrcli"
-    commit: "0c2ff258f20269ab6538bf7c6771fbfac249308f"
-    go: "go version go1.14.8 linux/amd64"
-    name: "decentr"
-    server_name: "decentrd"
-    version: "1.1.0"
-  },
-  node_info: {
-    channels: "4020212223303800",
-    id: "8d044c9353d01fd6e1dff552b7804b6c8b3e961d",
-    listen_addr: "tcp://0.0.0.0:26656",
-    moniker: "TestNode",
-    network: "testnet",
-    other: {
-      rpc_address: "tcp://0.0.0.0:26657",
-      tx_index: "on"
-    },
-    protocol_version: {
-      app: "0",
-      block: "10",
-      p2p: "7"
-    },
-    version: "0.33.9"
-  }
-}
-*/
+  };
+  const privateKey = '1234567890abcdefghijklmno';
+  const memo = 'My gift to decentr user';
+  const transactionSigner = bankClient.sendTokens(message, privateKey, { memo });
 ```
 
-## 📜 Profile
-
-**Get account**
->Note: returns `undefined` instead of empty fields if account doesn't exist 
+<a id="transactionSigner"></a>
+`transactionSigner` is an interface that allows `simulate` or `broadcast` transaction
 
 ```ts
-const walletAddress = 'decentr1p4s4djk5dqstfswg6k8sljhkzku4a6ve9dmng5';
+  const gas = await transactionSigner.simulate(); // estimated gas that will be spent on broadcasting
+```
 
-decentr.profile.getAccount(walletAddress).then(console.log);
+```ts
+  const transaction = await transactionSigner.signAndBroadcast();
+```
+Response of `signAndBroadcast` method is a [DeliverTxResponse](https://github.com/cosmos/cosmjs/blob/57a56cfa6ae8c06f4c28949a1028dc764816bbe8/packages/stargate/src/stargateclient.ts#L99).
 
-/* 
-CONSOLE OUTPUT:
+## 📜 Blocks <a id="blocks" />
 
-{
-  address: "decentr1jejdpqt3xx3vu4h335ml8qmdddhv0nefhxxkdr",
-  coins: [
+**Blocks client has the following interface**
+```
+  class DecentrBlocksClient {
+    getBlock(height?: BlockHeader['height']): Promise<DecodedBlock>;
+  }
+```
+**How to get instance of bank client**
+```
+  const blocksClient = await decentrClient.blocks();
+  
+  OR
+  
+  import { DecentrBlocksClient } from 'decentr-js'
+  const blocksClient = await DecentrBlocksClient.create(NODE_URL);
+```
+
+### Methods
+
+1. **Get block**
+```ts
+  const height = 12345;
+  const block = await blocksClient.getBlock(decentr1234567890abcdefghijklmno)
+```
+*Notice*: `height` is an optional param, method will return the latest block if `height` is not supplied.
+
+Response of `getBlock` method is a [DecodedBlock](https://github.com/Decentr-net/decentr.js/blob/develop/src/api/blocks/types.ts#L5).
+
+## 📜 Community <a id="community" />
+
+**Community client has the following interface**
+```
+  class DecentrCommunityClient {
+    getModeratorAddresses(): Promise<Wallet['address'][]>;
+
+    getFollowees(follower: Wallet['address']): Promise<Wallet['address'][]>;
+
+    createPost(
+      request: MsgCreatePost['post'],
+      privateKey: Wallet['privateKey'],
+      options?: {
+        memo?: string,
+      },
+    ): TransactionSigner;
+
+    deletePost(
+      request: MsgDeletePost,
+      privateKey: Wallet['privateKey'],
+      options?: {
+        memo?: string,
+      },
+    ): TransactionSigner;
+
+    setLike(
+      request: MsgSetLike['like'],
+      privateKey: Wallet['privateKey'],
+      options?: {
+        memo?: string,
+      },
+    ): TransactionSigner;
+
+    follow(
+      request: MsgFollow,
+      privateKey: Wallet['privateKey'],
+      options?: {
+        memo?: string,
+      },
+    ): TransactionSigner;
+
+    unfollow(
+      request: MsgUnfollow,
+      privateKey: Wallet['privateKey'],
+      options?: {
+        memo?: string,
+      },
+    ): TransactionSigner;
+  }
+```
+**How to get instance of community client**
+```
+  const communityClient = await decentrClient.community();
+  
+  OR
+  
+  import { DecentrCommunityClient } from 'decentr-js'
+  const communityClient = await DecentrCommunityClient.create(NODE_URL);
+```
+
+### Methods
+
+1. **Get moderators**
+```ts
+  const moderators = await communityClient.getModeratorAddresses();
+```
+Response of `getModeratorAddresses` method is a wallet addresses array;
+
+2. **Get followees**
+```ts
+  const walletAddress = 'decentr123456789abcdefghijklmno';
+  const followees = await communityClient.getFollowees(walletAddress);
+```
+Response of `getFollowees` method is a wallet address array;
+
+3. **Create post**
+```ts
+  import { PostCategory } from 'decentr-js';
+  const message = {
+    owner: 'decentrAuthorAddress', // author's walletAddress
+    uuid: '12345-abcde-67890-fghijk',
+    title: 'Post title',
+    previewImage: 'http://image.png',
+    category: PostCategory.CATEGORY_TRAVEL_AND_TOURISM,
+    text: 'Post text',
+  };
+  const privateKey = '1234567890abcdefghijklmno';
+  const transactionSigner = communityClient.createPost(message, privateKey);
+```
+*Notice*: more about `transactionSigner` you can read [here](#transactionSigner)
+
+4. **Delete post**
+```ts
+  const message = {
+    postOwner: 'decentrAuthorAddress',
+    postUuid: '12345-abcde-67890-fghijk',
+    owner: 'decentrInitiatorAddress',
+  };
+  const privateKey = '1234567890abcdefghijklmno';
+  const transactionSigner = communityClient.deletePost(message, privateKey);
+```
+*Notice*: more about `transactionSigner` you can read [here](#transactionSigner)
+
+5. **Set like**
+```ts
+  import { LikeWeight } from 'decentr-js'
+  const message = {
+    postOwner: 'decentrAuthorAddress',
+    postUuid: '12345-abcde-67890-fghijk',
+    owner: 'decentrInitiatorAddress',
+    weight: LikeWeight.LIKE_WEIGHT_UP,
+  };
+  const privateKey = '1234567890abcdefghijklmno';
+  const transactionSigner = communityClient.deletePost(message, privateKey);
+```
+*Notice*: more about `transactionSigner` you can read [here](#transactionSigner)
+
+6. **Follow**
+```ts
+  import { LikeWeight } from 'decentr-js'
+  const message = {
+    owner: 'decentrFollowerAddress',
+    whom: 'decentrWhomToFollowAddress',
+  };
+  const privateKey = '1234567890abcdefghijklmno';
+  const transactionSigner = communityClient.deletePost(message, privateKey);
+```
+*Notice*: more about `transactionSigner` you can read [here](#transactionSigner)
+
+7. **Unfollow**
+```ts
+  import { LikeWeight } from 'decentr-js'
+  const message = {
+    owner: 'decentrFollowerAddress',
+    whom: 'decentrWhomToUnfollowAddress',
+  };
+  const privateKey = '1234567890abcdefghijklmno';
+  const transactionSigner = communityClient.deletePost(message, privateKey);
+```
+*Notice*: more about `transactionSigner` you can read [here](#transactionSigner)
+
+## 📜 Distribution <a id="distribution" />
+
+**Distribution client has the following interface**
+```
+  class DecentrDistributionClient {
+    getCommunityPool(): Promise<Coin[]>;
+
+    getDistributionParameters(): Promise<Params>;
+
+    getDelegatorRewards(delegatorAddress: Wallet['address']): Promise<QueryDelegationTotalRewardsResponse>;
+
+    getDelegatorRewardsFromValidator(
+      delegatorAddress: Wallet['address'],
+      validatorAddress: Validator['operatorAddress'],
+    ): Promise<Coin[]>;
+
+    getWithdrawAddress(delegatorAddress: Wallet['address']): Promise<Wallet['address']>;
+
+    getValidatorCommission(validatorAddress: Validator['operatorAddress']): Promise<Coin[]>;
+
+    getValidatorOutstandingRewards(validatorAddress: Validator['operatorAddress']): Promise<Coin[]>;
+
+    setWithdrawAddress(
+      request: SetWithdrawAddressRequest,
+      privateKey: Wallet['privateKey'],
+      options?: {
+        memo?: string,
+      },
+    ): TransactionSigner;
+    
+    withdrawDelegatorRewards(
+      request: WithdrawDelegatorRewardRequest,
+      privateKey: Wallet['privateKey'],
+      options?: {
+        memo?: string,
+      },
+    ): TransactionSigner;
+    
+    withdrawValidatorRewards(
+      request: WithdrawValidatorCommissionRequest,
+      privateKey: Wallet['privateKey'],
+      options?: {
+        memo?: string,
+      },
+    ): TransactionSigner;
+  }
+```
+**How to get instance of distribution client**
+```
+  const distributionClient = await decentrClient.distribution();
+  
+  OR
+  
+  import { DecentrDistributionClient } from 'decentr-js'
+  const distributionClient = await DecentrDistributionClient.create(NODE_URL);
+```
+
+### Methods
+
+1. **Get community pool**
+```ts
+  const communityPool = await distributionClient.getCommunityPool();
+```
+Response of `getCommunityPool` method is a [Coin](https://github.com/cosmos/cosmjs/blob/57a56cfa6ae8c06f4c28949a1028dc764816bbe8/packages/amino/src/coins.ts#L3) array.
+
+2. **Get parameters**
+```ts
+  const parameters = await distributionClient.getDistributionParameters(walletAddress);
+```
+Response of `getDistributionParameters` method is a [Params](https://github.com/confio/cosmjs-types/blob/e3e0c4ba52d38af45522f5705c24eb734494b9a4/src/cosmos/distribution/v1beta1/distribution.ts#L9);
+
+3. **Get delegator rewards**
+```ts
+  const delegatorAddress = 'decentrDelegatorAddress';
+  const delegatorRewards = await distributionClient.getDelegatorRewards(delegatorAddress);
+```
+Response of `getDelegatorRewards` method is a [QueryDelegationTotalRewardsResponse](https://github.com/confio/cosmjs-types/blob/e3e0c4ba52d38af45522f5705c24eb734494b9a4/src/cosmos/distribution/v1beta1/query.ts#L119)
+
+4. **Get delegator rewards from validator**
+```ts
+  const delegatorAddress = 'decentrDelegatorAddress';
+  const validatorAddress = 'decentrvaloperValidatorAddress';
+  const delegatorRewards = await distributionClient.getDelegatorRewardsFromValidator(delegatorAddress, validatorAddress);
+```
+Response of `getDelegatorRewardsFromValidator` method is a [Coin](https://github.com/cosmos/cosmjs/blob/57a56cfa6ae8c06f4c28949a1028dc764816bbe8/packages/amino/src/coins.ts#L3) array.
+
+5. **Get withdraw address**
+```ts
+  const walletAddress = 'decentrWalletAddress';
+  const withdrawAddress = await distributionClient.getWithdrawAddress(walletAddress);
+```
+Response of `getWithdrawAddress` method is a wallet address where staking rewards will be transferred;
+
+6. **Get validator commission**
+```ts
+  const validatorAddress = 'decentrvaloperValidatorAddress';
+  const commission = await distributionClient.getValidatorCommission(validatorAddress);
+```
+Response of `getValidatorCommission` method is a [Coin](https://github.com/cosmos/cosmjs/blob/57a56cfa6ae8c06f4c28949a1028dc764816bbe8/packages/amino/src/coins.ts#L3) array.
+
+7. **Get validator outstanding rewards**
+```ts
+  const validatorAddress = 'decentrvaloperValidatorAddress';
+  const outstandingRewards = await distributionClient.getValidatorOutstandingRewards(validatorAddress);
+```
+Response of `getValidatorOutstandingRewards` method is a [Coin](https://github.com/cosmos/cosmjs/blob/57a56cfa6ae8c06f4c28949a1028dc764816bbe8/packages/amino/src/coins.ts#L3) array.
+
+8. **Set withdraw address**
+```ts
+  const message = {
+    delegatorAddress: 'decentrDelegatorAddress',
+    withdrawAddress: 'decentrWithdrawAddrews',
+  };
+  const privateKey = '1234567890abcdefghijklmno';
+  const transactionSigner = distributionClient.setWithdrawAddress(message, privateKey);
+```
+*Notice*: more about `transactionSigner` you can read [here](#transactionSigner)
+
+9. **Withdraw delegator rewards**
+```ts
+  const messages = [
     {
-      denom: "udec",
-      amount: "790000"
-    }
-  ],
-  public_key: {
-    type: "tendermint/PubKeySecp256k1"
-    value: "A2Y+oEbooAQumYeb9r7jbediO1PMITBnBDiPA5K8ClHh",
+      delegatorAddress: 'decentrDelegatorAddress',
+      validatorAddress: 'decentrWithdrawAddrews1',
+    },
+    {
+      delegatorAddress: 'decentrDelegatorAddress',
+      validatorAddress: 'decentrWithdrawAddrews2',
+    },
+  ];
+  const privateKey = '1234567890abcdefghijklmno';
+  const transactionSigner = distributionClient.withdrawDelegatorRewards(messages, privateKey);
+```
+*Notice*: more about `transactionSigner` you can read [here](#transactionSigner)
+
+10. **Withdraw validator rewards**
+```ts
+  const message = {
+     validatorAddress: 'decentrvaloperValidatorAddress',
+  };
+  const privateKey = '1234567890abcdefghijklmno';
+  const transactionSigner = distributionClient.withdrawValidatorRewards(message, privateKey);
+```
+*Notice*: more about `transactionSigner` you can read [here](#transactionSigner)
+
+## 📜 Image <a id="image" />
+
+**Image client has the following interface**
+
+```
+  class DecentrImageClient {
+    saveImage(image: File, keyPair: KeyPair): Promise<SaveImageResponse>;
   }
-  account_number: "11",
-  sequence: "42"
-}
-*/
 ```
 
-**Set profile**
-
-```ts
-const cerberusUrl = 'https://cerberus.testnet.decentr.xyz'
-const privateKey = 'fbf265ca5872907c4dbd33bf87c683d84b96987eb42d4a6c50f335eac57ece3e';
-const publicKey = '03dae8cf229d1db63c8d854bd1c73e280147ebd3bb40df12381d16b0eb071a72b6';
-
-const profile = {
-  avatar: 'http://avatar.png',
-  bio: 'My bio',
-  birthday: '1991-01-01',
-  emails: ['email@email.com'],
-  firstName: 'Firstname',
-  gender: Gender.Male,
-  lastName: 'Lastname',
-};
-
-await decentr.profile.setProfile(
-  cerberusUrl,
-  profile,
-  {
-    privateKey,
-    publicKey,
-  },
-);
+**How to get instance of image client**
+```
+  const imageClient = decentrClient.image;
+  
+  OR
+  
+  import { DecentrImageClient } from 'decentr-js'
+  const imageClient = new DecentrImageClient(CERBERUS_URL);
 ```
 
-**Get profiles**
+### Methods
 
+1. **Save image**
 ```ts
-const cerberusUrl = 'https://cerberus.testnet.decentr.xyz'
+  const image = 'your image file of File interface';
+  const keyPair = {
+    privateKey: '1234567890abcdefghijklmno',
+    publicKey: 'abcdefghijklmno1234567890',
+  };
+  const imageResponse = await imageClient.saveImage(image, keyPair);
+```
+Response of `saveImage` method is an [SaveImageResponse](https://github.com/Decentr-net/decentr.js/blob/develop/src/api/image/types.ts#L1)
 
-const walletAddresses = ['decentr1p4s4djk5dqstfswg6k8sljhkzku4a6ve9dmng5'];
-const privateKey = 'fbf265ca5872907c4dbd33bf87c683d84b96987eb42d4a6c50f335eac57ece3e';
-const publicKey = '03dae8cf229d1db63c8d854bd1c73e280147ebd3bb40df12381d16b0eb071a72b6';
+## 📜 Mint <a id="mint" />
 
-decentr.profile.getProfiles(cerberusUrl, walletAddresses, { privateKey, publicKey })
-  .then(console.log);
+**Mint client has the following interface**
 
-/*
-CONSOLE OUTPUT:
-[
-  decentr1p4s4djk5dqstfswg6k8sljhkzku4a6ve9dmng5: {
+```
+  class DecentrMintClient {
+    getInflation(): Promise<string>;
+  }
+```
+
+**How to get instance of mint client**
+```
+  const mintClient = await decentrClient.mint();
+  
+  OR
+  
+  import { DecentrMintClient } from 'decentr-js'
+  const mintClient = await DecentrMintClient.create(NODE_URL);
+```
+
+### Methods
+
+1. **Get inflation**
+```ts
+  const inflation = await mintClient.getInflation();
+```
+Response of `getInflation` method is a string like `0.135`.
+
+## 📜 Node <a id="node" />
+
+**Node client has the following interface**
+
+```
+  class DecentrNodeClient {
+    getNodeInfo(): Promise<StatusResponse>;
+  }
+```
+
+**How to get instance of node client**
+```
+  const nodeClient = await decentrClient.node();
+  
+  OR
+  
+  import { DecentrNodeClient } from 'decentr-js'
+  const nodeClient = await DecentrNodeClient.create(NODE_URL);
+```
+
+### Methods
+
+1. **Get node info**
+```ts
+  const nodeInfo = await nodeClient.getNodeInfo();
+```
+Response of `getNodeInfo` method is a [StatusResponse](https://github.com/cosmos/cosmjs/blob/e7b107a0d0419fbd5280645a70153548235617fa/packages/tendermint-rpc/src/tendermint34/responses.ts#L127).
+
+## 📜 Operations <a id="operations" />
+
+**Operations client has the following interface**
+
+```
+  class DecentrOperationsClient {
+    getMinGasPrice(): Promise<Coin>;
+
+    resetAccount(
+      request: ResetAccountRequest,
+      privateKey: Wallet['privateKey'],
+      options?: {
+        memo?: string,
+      },
+    ): TransactionSigner;
+  }
+```
+
+**How to get instance of operations client**
+```
+  const operationsClient = await decentrClient.operations();
+  
+  OR
+  
+  import { DecentrOperationsClient } from 'decentr-js'
+  const operationsClient = await DecentrOperationsClient.create(NODE_URL);
+```
+
+### Methods
+
+1. **Get min gas price**
+```ts
+  const minGasPrice = await operationsClient.getMinGasPrice();
+```
+Response of `getMinGasPrice` method is a [Coin](https://github.com/cosmos/cosmjs/blob/57a56cfa6ae8c06f4c28949a1028dc764816bbe8/packages/amino/src/coins.ts#L3)
+
+2. **Reset account**
+```ts
+  const message = {
+    owner: 'decentrInitiatorAddress',
+    address: 'decentrResetAddress',
+  };
+  const privateKey = '1234567890abcdefghijklmno';
+  const transactionSigner = operationsClient.resetAccount(message, privateKey);
+```
+*Notice*: more about `transactionSigner` you can read [here](#transactionSigner)
+
+## 📜 PDV <a id="pdv" />
+
+**PDV client has the following interface**
+
+```
+  class DecentrPDVClient {
+    getPDVBlacklist(): Promise<PDVBlacklist>;
+
+    getPDVList(
+      walletAddress: Wallet['address'],
+      paginationOptions?: PDVListPaginationOptions,
+    ): Promise<PDVListItem[]>;
+    
+    getPDVMeta(pdvAddress: number, walletAddress: Wallet['address']): Promise<PDVMeta>;
+    
+    getPDVDetails(pdvAddress: number, wallet: Wallet): Promise<PDVDetails>;
+    
+    getRewards(): Promise<PDVRewards>;
+    
+    sendPDV(pdv: PDV[], keyPair: KeyPair): Promise<PDVAddress>
+  }
+```
+
+**How to get instance of PDV client**
+```
+  const pDVClient = decentrClient.pdv;
+  
+  OR
+  
+  import { DecentrPDVClient } from 'decentr-js'
+  const pDVClient = new DecentrPDVClient(CERBERUS_URL);
+```
+
+### Methods
+
+1. **Get PDV blacklist**
+```ts
+  const pDVBlacklist = await pDVClient.getPDVBlacklist();
+```
+Response of `getPDVBlacklist` method is a [PDVBlacklist](https://github.com/Decentr-net/decentr.js/blob/develop/src/api/pdv/types.ts#L1)
+
+2. **Get PDV list**
+```ts
+  const walletAddress = 'decentrPDVOwnerAddress';
+  const pagination = {
+    limit: 20,
+    from: 12345678, // optional, timestamp of previous PDVListItem
+  };
+  const privateKey = '1234567890abcdefghijklmno';
+  const pdvList = operationsClient.getPDVList(walletAddress, pagination);
+```
+Response of `getPDVList` method is an id (timestamp) array like `[1641748368, 1641744563, 164158725]`
+
+3. **Get PDV meta**
+```ts
+  const walletAddress = 'decentrPDVOwnerAddress';
+  const pDVAddress = 1641748368;
+  const pDVMeta = await pDVClient.getPDVMeta(pDVAddress, walletAddress);
+```
+Response of `getPDVMeta` method is a [PDVMeta](https://github.com/Decentr-net/decentr.js/blob/develop/src/api/pdv/types.ts#L94)
+
+4. **Get PDV details**
+```ts
+  const wallet = { 
+    address: 'decentrPDVOwnerAddress',
+    privateKey: '1234567890abcdefghijklmno',
+    publicKey: 'abcdefghijklmno1234567890',
+  };
+  const pDVAddress = 1641748368;
+  const pDVDetails = await pDVClient.getPDVDetails(pDVAddress, wallet);
+```
+Response of `getPDVDetails` method is a [PDVMeta](https://github.com/Decentr-net/decentr.js/blob/develop/src/api/pdv/types.ts#L89)
+
+5. **Get rewards configuration**
+```ts
+  const rewards = await pDVClient.getRewards();
+```
+Response of `getRewards` method is a [PDVMeta](https://github.com/Decentr-net/decentr.js/blob/develop/src/api/pdv/types.ts#L99)
+
+6. **Send PDV**
+```ts
+  const PDV = []; // array of your PDV's;
+  const keyPair = {
+    privateKey: '1234567890abcdefghijklmno',
+    publicKey: 'abcdefghijklmno1234567890',
+  };
+  const pDVAddress = await pDVClient.sendPDV(pdv, keyPair);
+```
+Response of `sendPDV` method is an id (timestamp) of PDV.
+
+## 📜 Profile <a id="profile" />
+
+**Profile client has the following interface**
+
+```
+  class DecentrProfileClient {
+    setProfile(profile: ProfileUpdate, keyPair: KeyPair): Promise<PDVAddress>;
+
+    getProfile(walletAddress: Wallet['address'], keys?: KeyPair): Promise<Profile>;
+    
+    getProfiles(
+      walletAddresses: Wallet['address'][],
+      keys?: KeyPair,
+    ): Promise<Record<Profile['address'], Profile>>;
+    
+    getStats(walletAddress: Wallet['address']): Promise<ProfileStatistics>;
+  }
+```
+
+**How to get instance of PDV client**
+```
+  const profileClient = decentrClient.profile;
+  
+  OR
+  
+  import { DecentrProfileClient } from 'decentr-js'
+  const profileClient = new DecentrProfileClient(CERBERUS_URL, THESEUS_URL);
+```
+
+### Methods
+
+1. **Set profile**
+```ts
+  import { Gender } from 'decentr-js';
+  const profile = {
     avatar: 'http://avatar.png',
-    bio: 'My bio',
+    bio: 'bio',
     birthday: '1991-01-01',
-    // you will get 'emails' property if keyPair u provide belongs to this walletAddress
     emails: ['email@email.com'],
-    firstName: 'Firstname',
+    firstName: 'firstName',        // maxlength: 64
     gender: Gender.Male,
-    lastName: 'Lastname',
+    lastName: 'lastName',          // maxlength: 64
+  } 
+  const keyPair = {
+    privateKey: '1234567890abcdefghijklmno',
+    publicKey: 'abcdefghijklmno1234567890',
+  };
+  const pDVAddress = await profileClient.setProfile(profile, keyPair);
+```
+Response of `sendPDV` method is an id (timestamp) of PDV.
+
+2. **Get profile**
+```ts
+  const walletAddress = 'decentrAddress';
+  const keyPair = {
+    privateKey: '1234567890abcdefghijklmno',
+    publicKey: 'abcdefghijklmno1234567890',
+  };
+  // keyPair is an optional param required to get private profile data (birthday, gender etc.)
+  const profile = await profileClient.getProfile(walletAddress, keyPair);
+```
+Response of `getProfile` method is a [Profile](https://github.com/Decentr-net/decentr.js/blob/develop/src/api/profile/types.ts#L4)
+
+3. **Get profiles**
+```ts
+  const walletAddresses = ['decentrAddress1', 'decentrAddress2'];
+  const keyPair = {
+    privateKey: '1234567890abcdefghijklmno',
+    publicKey: 'abcdefghijklmno1234567890',
+  };
+  // keyPair is an optional param required to get private profile data only for request initiator's profile (birthday, gender etc.)
+  const profiles = await profileClient.getProfiles(walletAddress, keyPair);
+```
+Response of `getProfile` method is an object of type `{ decentrAddress1: profileObj1, decentrAddress2: profileObj2 }`.
+
+4. **Get profile stats**
+```ts
+  const walletAddress = 'decentrAddress';
+  const stats = await pDVClient.getStats(walletAddress);
+```
+Response of `getStats` method is a [ProfileStatistics](https://github.com/Decentr-net/decentr.js/blob/develop/src/api/profile/types.ts#L15)
+
+## 📜 Staking <a id="staking" />
+
+**Staking client has the following interface**
+```
+  class DecentrStakingClient {
+    getPool(): Promise<Pool>;
+
+    getValidators(status: BondStatusString): Promise<Validator[]>;
+
+    getValidator(address: Validator['operatorAddress']): Promise<Validator>;
+
+    getDelegations(delegatorAddress: Wallet['address']): Promise<DelegationResponse[]>;
+
+    getDelegation(
+      delegatorAddress: Wallet['address'],
+      validatorAddress: Validator['operatorAddress'],
+    ): Promise<Coin | null>;
+
+    getValidatorDelegations(validatorAddress: Validator['operatorAddress']): Promise<DelegationResponse[]>;
+
+    getUnbondingDelegations(delegatorAddress: Wallet['address']): Promise<UnbondingDelegation[]>;
+
+    getUnbondingDelegation(
+      delegatorAddress: Wallet['address'],
+      validatorAddress: Validator['operatorAddress'],
+    ): Promise<UnbondingDelegation | undefined>;
+    
+    getValidatorUnbondingDelegations(
+      validatorAddress: Validator['operatorAddress'],
+    ): Promise<UnbondingDelegation[]>;
+    
+    getRedelegations(
+      delegatorAddress: Wallet['address'],
+      sourceValidatorAddress: Validator['operatorAddress'],
+      destinationValidatorAddress: Validator['operatorAddress'],
+    ): Promise<RedelegationResponse[]>;
+    
+    getDelegatorValidators(
+      delegatorAddress: Wallet['address'],
+    ): Promise<Validator[]>;
+    
+    getStakingParameters(): Promise<Params>;
+    
+    delegateTokens(
+      request: DelegateTokensRequest,
+      privateKey: Wallet['privateKey'],
+      options?: {
+        memo?: string,
+      },
+    ): TransactionSigner;
+    
+    undelegateTokens(
+      request: UndelegateTokensRequest,
+      privateKey: Wallet['privateKey'],
+      options?: {
+        memo?: string,
+      },
+    ): TransactionSigner;
+    
+    redelegateTokens(
+      request: RedelegateTokensRequest,
+      privateKey: Wallet['privateKey'],
+      options?: {
+        memo?: string,
+      },
+    ): TransactionSigner;
   }
-]
-*/
+```
+**How to get instance of staking client**
+```
+  const stakingClient = await decentrClient.staking();
+  
+  OR
+  
+  import { DecentrStakingClient } from 'decentr-js'
+  const stakingClient = await DecentrStakingClient.create(NODE_URL);
 ```
 
-**Get profiles**
+### Methods
 
+1. **Get pool**
 ```ts
-const cerberusUrl = 'https://cerberus.testnet.decentr.xyz'
-
-const walletAddress = 'decentr1p4s4djk5dqstfswg6k8sljhkzku4a6ve9dmng5';
-const privateKey = 'fbf265ca5872907c4dbd33bf87c683d84b96987eb42d4a6c50f335eac57ece3e';
-const publicKey = '03dae8cf229d1db63c8d854bd1c73e280147ebd3bb40df12381d16b0eb071a72b6';
-
-decentr.profile.getProfile(cerberusUrl, walletAddress, { privateKey, publicKey })
-  .then(console.log);
-
-/*
-CONSOLE OUTPUT:
-{
-  avatar: 'http://avatar.png',
-  bio: 'My bio',
-  birthday: '1991-01-01',
-  // you will get 'emails' property if keyPair u provide belongs to this walletAddress
-  emails: ['email@email.com'],
-  firstName: 'Firstname',
-  gender: Gender.Male,
-  lastName: 'Lastname',
-}
-*/
+  const pool = await stakingClient.getPool();
 ```
+Response of `pool` method is a [Pool](https://github.com/confio/cosmjs-types/blob/e3e0c4ba52d38af45522f5705c24eb734494b9a4/src/cosmos/staking/v1beta1/staking.ts#L292)
 
-## 📜 PDV (Personal Data Value)
-
-**Get token balance**
-
+2. **Get validators**
 ```ts
-const walletAddress = 'decentr1p4s4djk5dqstfswg6k8sljhkzku4a6ve9dmng5';
-
-decentr.pdv.getTokenBalance(walletAddress)
-  .then(console.log);
-
-/*
-CONSOLE OUTPUT:
-
-2e-7
-*/
+  const validators = await stakingClient.getValidators('BOND_STATUS_BONDED');
 ```
+Response of `getValidators` method is a [Validator](https://github.com/confio/cosmjs-types/blob/e3e0c4ba52d38af45522f5705c24eb734494b9a4/src/cosmos/staking/v1beta1/staking.ts#L117) array.
 
-**Send PDV data**
-
+3. **Get validator**
 ```ts
-const cerberusUrl = 'https://cerberus.testnet.decentr.xyz';
-
-const pdv = [{
-  domain: 'decentr.net',
-  path: '/',
-  data: [
-    {
-      type: 'cookie',
-      name: 'my test cookie',
-      value: 'some test value',
-      domain: '*',
-      host_only: true,
-      path: '*',
-      secure: true,
-      same_site: 'None',
-      expiration_date: 1861920000
-    },
-  ],
-}];
-
-const wallet: Wallet = {
-  address: 'decentr1p4s4djk5dqstfswg6k8sljhkzku4a6ve9dmng5',
-  privateKey: '8c313682470073d56d2d8f5b7fde53c072024a9fd9135501125035d53c8a1f60',
-  publicKey:  '03dae8cf229d1db63c8d854bd1c73e280147ebd3bb40df12381d16b0eb071a72b6'
-}
-
-await decentr.pdv.sendPDV(pdv, wallet, {
-  broadcast: true,
-});
+  const validatorAddress = 'decentrvaloperValidatorAddress';
+  const validator = await stakingClient.getValidator(validatorAddress);
 ```
+Response of `getDelegatorRewards` method is a [Validator](https://github.com/confio/cosmjs-types/blob/e3e0c4ba52d38af45522f5705c24eb734494b9a4/src/cosmos/staking/v1beta1/staking.ts#L117)
 
-**Get PDV list**
-
+4. **Get delegations**
 ```ts
-const cerberusUrl = 'https://cerberus.testnet.decentr.xyz';
-
-const walletAddress = 'decentr1p4s4djk5dqstfswg6k8sljhkzku4a6ve9dmng5';
-
-const paginationParams = { // Optional
-  from: 1609255398, // Unix timestamp of previous pdv item, optional
-  limit: 20,
-}
-
-decentr.pdv.getPDVlist(cerberusUrl, walletAddress, paginationParams)
-  .then(console.log);
-
-/*
-CONSOLE OUTPUT:
-
-[
-  1609255398,    // id = timestamp
-  1609212345,
-[
-*/
+  const delegatorAddress = 'decentrDelegatorAddress';
+  const delegations = await stakingClient.getDelegations(delegatorAddress);
 ```
+Response of `getDelegatorRewardsFromValidator` method is a [DelegationResponse](https://github.com/confio/cosmjs-types/blob/e3e0c4ba52d38af45522f5705c24eb734494b9a4/src/cosmos/staking/v1beta1/staking.ts#L263) array.
 
-**Get PDV details**
-
+5. **Get delegation**
 ```ts
-const cerberusUrl = 'https://cerberus.testnet.decentr.xyz';
-
-const pDVaddress = '1622203271';
-
-const wallet: Wallet = {
-  address:    'decentr1j6e6j53vh95jcq9k9lnsrsvj3h8dkdgmm20zhu',
-  privateKey: '8c313682470073d56d2d8f5b7fde53c072024a9fd9135501125035d53c8a1f60',
-  publicKey:  '03dae8cf229d1db63c8d854bd1c73e280147ebd3bb40df12381d16b0eb071a72b6'
-}
-
-decentr.pdv.getPDVDetails(cerberusUrl, PDVaddress, wallet)
-  .then(console.log);
-
-/*
-CONSOLE OUTPUT:
-
-{
-  version: 'v1',
-  pdv: [
-    {
-      type: 'cookie',
-      name: 'my test cookie',
-      value: 'some test value',
-      domain: '*',
-      hostOnly: true,
-      path: '*',
-      secure: true,
-      sameSite: 'None',
-      expirationDate: 1861920000
-    },
-  ]
-}
-*/
+  const delegatorAddress = 'decentrDelegatorAddress';
+  const validatorAddress = 'decentrvaloperValidatorAddress';
+  const delegation = await stakingClient.getDelegation(delegatorAddress, validatorAddress);
 ```
+Response of `getDelegation` method is a [Coin](https://github.com/cosmos/cosmjs/blob/57a56cfa6ae8c06f4c28949a1028dc764816bbe8/packages/amino/src/coins.ts#L3) array.
 
-**Get PDV meta**
-
+6. **Get validator delegations**
 ```ts
-const cerberusUrl = 'https://cerberus.testnet.decentr.xyz';
-const pdvAddress: number = 1612457008;
-const walletAddress = 'decentr1p4s4djk5dqstfswg6k8sljhkzku4a6ve9dmng5';
-
-decentr.pdv.getPDVMeta(cerberusUrl, pdvAddress, walletAddress)
-  .then(console.log);
-
-/*
-CONSOLE OUTPUT:
-
-{
-  "object_types": {
-    "cookie": 3600,   // [PDVType]:[reward]
-  },
-  "reward": 7600
-}
-*/
+  const validatorAddress = 'decentrvaloperValidatorAddress';
+  const validatorDelegations = await stakingClient.getValidatorDelegations(validatorAddress);
 ```
+Response of `getValidatorDelegations` method is a [DelegationResponse](https://github.com/confio/cosmjs-types/blob/e3e0c4ba52d38af45522f5705c24eb734494b9a4/src/cosmos/staking/v1beta1/staking.ts#L263) array.
 
-**Get rewards per PDV**
-
+7. **Get unbonding delegations**
 ```ts
-const cerberusUrl = 'https://cerberus.testnet.decentr.xyz';
-
-decentr.pdv.getRewards(cerberusUrl)
-  .then(console.log);
-
-/*
-CONSOLE OUTPUT:
-
-{
-  "advertiserId":1,
-  "cookie":1,
-  "location":1,
-  "profile":1,
-  "searchHistory":1,
-}
-*/
+  const delegatorAddress = 'decentrDelegatorAddress';
+  const unbondingDelegations = await stakingClient.getUnbondingDelegations(delegatorAddress);
 ```
+Response of `getUnbondingDelegations` method is a [UnbondingDelegation](https://github.com/confio/cosmjs-types/blob/e3e0c4ba52d38af45522f5705c24eb734494b9a4/src/cosmos/staking/v1beta1/staking.ts#L197) array.
 
-## 📜 Posts
-
-**Get moderator accounts addresses**
-
+5. **Get unbonding delegation**
 ```ts
-decentr.community.getModeratorAddresses().then(console.log);
-
-/*
-CONSOLE OUTPUT:
-
-[
-  "decentr1p4s4djk5dqstfswg6k8sljhkzku4a6ve9dmng5",
-]
-*/
+  const delegatorAddress = 'decentrDelegatorAddress';
+  const validatorAddress = 'decentrvaloperValidatorAddress';
+  const unbondingDelegation = await stakingClient
+    .getUnbondingDelegation(delegatorAddress, validatorAddress);
 ```
+Response of `getUnbondingDelegation` method is a [UnbondingDelegation](https://github.com/confio/cosmjs-types/blob/e3e0c4ba52d38af45522f5705c24eb734494b9a4/src/cosmos/staking/v1beta1/staking.ts#L197)
 
-**Create post**
-
+6. **Get validator unbonding delegations**
 ```ts
-const walletAddress = 'decentr1j6e6j53vh95jcq9k9lnsrsvj3h8dkdgmm20zhu';
-const privateKey = '8c313682470073d56d2d8f5b7fde53c072024a9fd9135501125035d53c8a1f60';
-
-const post = {
-  category: PostCategory.WorldNews,
-  previewImage: 'image source',
-  title: 'Post title',
-  text: 'Post text',
-}
-
-decentr.community.createPost(walletAddress, post,   {
-  broadcast: true,
-  privateKey,
-});
+  const validatorAddress = 'decentrvaloperValidatorAddress';
+  const unboindingDelegations = await stakingClient
+    .getValidatorUnbondingDelegations(validatorAddress, validatorAddress);
 ```
+Response of `getValidatorUnbondingDelegations` method is a [UnbondingDelegation](https://github.com/confio/cosmjs-types/blob/e3e0c4ba52d38af45522f5705c24eb734494b9a4/src/cosmos/staking/v1beta1/staking.ts#L197) array.
 
-**Delete post**
-
+7. **Get redelegations**
 ```ts
-const walletAddress = 'decentr1j6e6j53vh95jcq9k9lnsrsvj3h8dkdgmm20zhu';
-const privateKey = '8c313682470073d56d2d8f5b7fde53c072024a9fd9135501125035d53c8a1f60';
-
-const authorWalletAddress = 'decentr1urlzs0q6g8lqedjgfa5nxvnldp7nxlunnky8ux';
-const postId = 'cf4699e5-3411-11eb-8f45-0242ac11000b'
-
-decentr.community.deletePost(walletAddress, {
-  author: authorWalletAddress,
-  postId,
-}, {
-  broadcast: true,
-  privateKey,
-});
+  const delegatorAddress = 'decentrDelegatorAddress';
+  const sourceValidatorAddress = 'decentrvaloperSourceValidatorAddress';
+  const destinationValidatorAddress = 'decentrvaloperDestinationValidatorAddress';
+  const redelegations = await stakingClient.getRedelegations(
+    delegatorAddress,
+    sourceValidatorAddress,
+    destinationValidatorAddress,
+  );
 ```
+Response of `getRedelegations` method is a [RedelegationResponse](https://github.com/confio/cosmjs-types/blob/e3e0c4ba52d38af45522f5705c24eb734494b9a4/src/cosmos/staking/v1beta1/staking.ts#L283) array.
 
-**Like post**
-
+8. **Get delegator validators**
 ```ts
-const walletAddress = 'decentr1j6e6j53vh95jcq9k9lnsrsvj3h8dkdgmm20zhu';
-const privateKey = '8c313682470073d56d2d8f5b7fde53c072024a9fd9135501125035d53c8a1f60';
-
-const authorWalletAddress = 'decentr1urlzs0q6g8lqedjgfa5nxvnldp7nxlunnky8ux';
-const postId = 'cf4699e5-3411-11eb-8f45-0242ac11000b';
-
-const likeWeight = LikeWeight.Down  (LikeWeight.Up, LikeWeight.Zero, LikeWeight.Down)
-
-decentr.community.likePost(
-  walletAddress,
-  {
-    author: authorWalletAddress,
-    postId,
-  },
-  likeWeight,
-  {
-    broadcast: true,
-    privateKey,
-  },
-);
+  const delegatorAddress = 'decentrDelegatorAddress';
+  const validators = await stakingClient.getDelegatorValidators(delegatorAddress);
 ```
+Response of `getDelegatorValidators` method is a [Validator](https://github.com/confio/cosmjs-types/blob/e3e0c4ba52d38af45522f5705c24eb734494b9a4/src/cosmos/staking/v1beta1/staking.ts#L117) array.
 
-**Follow**
-
+8. **Get staking parameters**
 ```ts
-const yourWalletAddress = 'decentr1j6e6j53vh95jcq9k9lnsrsvj3h8dkdgmm20zhu';
-const yourPrivateKey = '8c313682470073d56d2d8f5b7fde53c072024a9fd9135501125035d53c8a1f60';
-
-const followTargetWalletAddress = '8c313682470073d56d2d8f5b7fde53c072024a9fd9135501125035d53c8a1f60';
-
-decentr.community.follow(
-  yourWalletAddress,
-  followTargetWalletAddress,
-  {
-    broadcast: true,
-    privateKey: yourPrivateKey,
-  },
-);
+  const parameters = await stakingClient.getStakingParameters();
 ```
+Response of `getStakingParameters` method is a [Params](https://github.com/confio/cosmjs-types/blob/e3e0c4ba52d38af45522f5705c24eb734494b9a4/src/cosmos/staking/v1beta1/staking.ts#L246)
 
-**Unfollow**
-
+9. **Delegate tokens**
 ```ts
-const yourWalletAddress = 'decentr1j6e6j53vh95jcq9k9lnsrsvj3h8dkdgmm20zhu';
-const yourPrivateKey = '8c313682470073d56d2d8f5b7fde53c072024a9fd9135501125035d53c8a1f60';
-
-const unfollowTargetWalletAddress = '8c313682470073d56d2d8f5b7fde53c072024a9fd9135501125035d53c8a1f60';
-
-decentr.community.unfollow(
-  yourWalletAddress,
-  unfollowTargetWalletAddress,
-  {
-    broadcast: true,
-    privateKey: yourPrivateKey,
-  },
-);
-```
-
-**Get followees**
-
-```ts
-const walletAddress = 'decentr1j6e6j53vh95jcq9k9lnsrsvj3h8dkdgmm20zhu';
-
-decentr.community.getFollowees(
-  walletAddress,
-).then(console.log);
-
-/*
-CONSOLE OUTPUT:
-
-['decentr1lxhvzgpetd5tmdmd2g9arkun80m0nkvhckqvhc']
-*/
-```
-
-## 🏦 Bank
-
-**Get balances**
-
-```ts
-const walletAddress = 'decentr1p4s4djk5dqstfswg6k8sljhkzku4a6ve9dmng5';
-
-decentr.bank.getBankBalances(walletAddress).then(console.log);
-
-/* 
-CONSOLE OUTPUT:
-
-[{
-  "denom": "udec",
-  "amount": "999955"
-}]
-*/
-```
-
-**Send coin**
-
-```ts
-const wallet: Wallet = {
-  address:    'decentr1p4s4djk5dqstfswg6k8sljhkzku4a6ve9dmng5',
-  privateKey: 'fbf265ca5872907c4dbd33bf87c683d84b96987eb42d4a6c50f335eac57ece3e',
-  publicKey:  '03dae8cf229d1db63c8d854bd1c73e280147ebd3bb40df12381d16b0eb071a72b6'
-};
-
-const walletAddressTo = "decentr1j6e6j53vh95jcq9k9lnsrsvj3h8dkdgmm20zhu";
-const amount = "15";
-const comment = 'my test transfer';
-
-decentr.bank.sendCoin(
-  {
-    from_address: wallet.address,
-    to_address: walletAddressTo,
-    amount,
-    comment,
-  },
-  {
-    broadcast: true,
-    privateKey: wallet.privateKey,
-  },
-).then(console.log);
-
-/*
-CONSOLE OUTPUT:
-
-{
-  "from_address": "decentr1p4s4djk5dqstfswg6k8sljhkzku4a6ve9dmng5",
-  "to_address": "decentr1j6e6j53vh95jcq9k9lnsrsvj3h8dkdgmm20zhu",
-  "amount": [
-    {
-      "denom": "udec",
-      "amount": "15"
-    }
-  ]
-}
-*/
-```
-
-## 📜 Staking
-
-**Get validators**
-
-```ts
-import { ValidatorStatus } from './types'
-
-const filterParams = {    // OPTIONAL, will return Bonded by default
-  status: ValidatorStatus.Unbonded,
-}
-
-decentr.staking.getValidators(filterParams)
-  .then(console.log);
-
-/*
-CONSOLE OUTPUT:
-
-[
-  {
-    operator_address: 'decentrvaloper1yw8degnl8e2h045rrewnqd2a37k5tkntg6wdcc',
-    consensus_pubkey: 'decentrvalconspub1zcjduepqx7sjquzlf0nwcv85f94sd98xmvhetv8mrk4uxngumg6vwyvfmq4q73gt36',
-    jailed: false,
-    status: 2,
-    tokens: '100000000000000',
-    delegator_shares: '100000000000000.000000000000000000',
-    description: {
-      moniker: 'poseidon',
-      identity: '',
-      website: '',
-      security_contact: '',
-      details: ''
-    },
-    unbonding_height: '0',
-    unbonding_time: '1970-01-01T00:00:00Z',
-    commission: {
-      commission_rates: {
-        rate: '0.100000000000000000',
-        max_rate: '0.200000000000000000',
-        max_change_rate: '0.010000000000000000'
+  const message = {
+    delegatorAddress: 'decentrDelegatorAddress',
+    validatorAddress: 'decentrvaloperValidatorAddress',
+    amount: [
+      {
+        amount: '100000000',
+        denom: 'udec',
       },
-      update_time: '2020-12-23T19:04:43.316496Z'
+    ],
+  };
+  const privateKey = '1234567890abcdefghijklmno';
+  const transactionSigner = stakingClient.delegateTokens(message, privateKey);
+```
+*Notice*: more about `transactionSigner` you can read [here](#transactionSigner)
+
+9. **Undelegate tokens**
+```ts
+  const message = {
+    delegatorAddress: 'decentrDelegatorAddress',
+    validatorAddress: 'decentrvaloperValidatorAddress',
+    amount: {
+      amount: '100000000',
+      denom: 'udec',
     },
-    min_self_delegation: '1'
+  };
+  const privateKey = '1234567890abcdefghijklmno';
+  const transactionSigner = stakingClient.undelegateTokens(message, privateKey);
+```
+*Notice*: more about `transactionSigner` you can read [here](#transactionSigner)
+
+9. **Redelegate tokens**
+```ts
+  const message = {
+    delegatorAddress: 'decentrDelegatorAddress',
+    validatorSrcAddress: 'decentrvaloperSourceValidatorAddress',
+    validatorDstAddress: 'decentrvaloperDestinationValidatorAddress',
+    amount: {
+      amount: '100000000',
+      denom: 'udec',
+    },
+  };
+  const privateKey = '1234567890abcdefghijklmno';
+  const transactionSigner = stakingClient.redelegateTokens(message, privateKey);
+```
+*Notice*: more about `transactionSigner` you can read [here](#transactionSigner)
+
+## 📜 Token <a id="token" />
+
+**Token client has the following interface**
+
+```
+  class DecentrTokenClient {
+    getBalance(walletAddress: Wallet['address']): Promise<string>;
+    
+    getAdvDdvStats(): Promise<AdvDdvStatistics>;
+    
+    getDelta(walletAddress: Wallet['address']): Promise<TokenDelta>;
+    
+    getPool(): Promise<TokenPool>;
   }
-]
-*/
 ```
 
-**Get validator**
-
-```ts
-
-const validatorAddress = 'decentrvaloper1yw8degnl8e2h045rrewnqd2a37k5tkntg6wdcc';
-
-decentr.staking.getValidator(validatorAddress)
-  .then(console.log);
-
-/*
-CONSOLE OUTPUT:
-
-{
-  operator_address: 'decentrvaloper1yw8degnl8e2h045rrewnqd2a37k5tkntg6wdcc',
-  consensus_pubkey: 'decentrvalconspub1zcjduepqx7sjquzlf0nwcv85f94sd98xmvhetv8mrk4uxngumg6vwyvfmq4q73gt36',
-  jailed: false,
-  status: 2,
-  tokens: '100000000000000',
-  delegator_shares: '100000000000000.000000000000000000',
-  description: {
-    moniker: 'poseidon',
-    identity: '',
-    website: '',
-    security_contact: '',
-    details: ''
-  },
-  unbonding_height: '0',
-  unbonding_time: '1970-01-01T00:00:00Z',
-  commission: {
-    commission_rates: {
-      rate: '0.100000000000000000',
-      max_rate: '0.200000000000000000',
-      max_change_rate: '0.010000000000000000'
-    },
-    update_time: '2020-12-23T19:04:43.316496Z'
-  },
-  min_self_delegation: '1'
-}
-*/
+**How to get instance of token client**
+```
+  const tokenClient = await decentrClient.token();
+  
+  OR
+  
+  import { DecentrTokenClient } from 'decentr-js';
+  const tokenClient = await DecentrTokenClient.create(NODE_URL, CERBERUS_URL, THESEUS_URL);
 ```
 
-**Get pool**
+### Methods
 
+1. **Get PDV balance**
 ```ts
-
-decentr.staking.getPool()
-  .then(console.log);
-
-/*
-CONSOLE OUTPUT:
-
-{
-  "not_bonded_tokens": "97029900000000",
-  "bonded_tokens": "398010000000000"
-}
-*/
+  const walletAddress = 'decentrWalletAddress';
+  const balance = await tokenClient.getBalance(walletAddress);
 ```
+Response of `getBalance` method is a string like `1.001234`.
 
-## 🔲 Blocks
-
-**Get latest block**
-
+2. **Get ADV/DDV stats**
 ```ts
+  const walletAddress = 'decentrWalletAddress';
+  const balance = await tokenClient.getAdvDdvStats();
+```
+Response of `getAdvDdvStats` method is an [AdvDdvStatistics](https://github.com/Decentr-net/decentr.js/blob/develop/src/api/token/types.ts#L1)
 
-decentr.blocks.getLatestBlock()
-  .then(console.log);
+3. **Get delta**
+```ts
+  const walletAddress = 'decentrWalletAddress';
+  const delta = await tokenClient.getDelta(walletAddress);
+```
+Response of `getDelta` method is an [TokenDelta](https://github.com/Decentr-net/decentr.js/blob/develop/src/api/token/types.ts#L12)
 
-/*
-CONSOLE OUTPUT:
+4. **Get pool**
+```ts
+  const pool = await tokenClient.getPool();
+```
+Response of `getDelta` method is an [TokenPool](https://github.com/Decentr-net/decentr.js/blob/develop/src/api/token/types.ts#L6)
 
-{
-  "block_id": {
-    "hash": "375D47568E1E9001E178D52DC948FC28401A57D94CF48DDF3662402E57FD6751",
-    "parts": {
-      "total": "1",
-      "hash": "4D710E15E8D0C32BB0BC9B4CFB4E1566F946805B5E01902FE98DA10732E89119"
-    }
-  },
-  "block": {
-    "header": {
-      "version": {
-        "block": "10",
-        "app": "0"
-      },
-      "chain_id": "testnet4",
-      "height": "3394",
-      "time": "2021-03-10T23:21:41.269688854Z",
-      "last_block_id": {
-        "hash": "03561F01ED82A0BA2B6B976C22EDA5172851961CD99245582E58A1830F53AE05",
-        "parts": {
-          "total": "1",
-          "hash": "B8607F87E5DD7BA89EDE90F819BC5B0A16361EB620C16C79427EC85510248E74"
-        }
-      },
-      "last_commit_hash": "7FC9ED7629534B04C864C31DB5C872AE61A4D5C56FF3C6ACEFE88FB2CFEE6C6B",
-      "data_hash": "",
-      "validators_hash": "BE14F8B06ED7F8BA532BEEF4948CEB42C2B063096471233ADFFDE26D901C944B",
-      "next_validators_hash": "BE14F8B06ED7F8BA532BEEF4948CEB42C2B063096471233ADFFDE26D901C944B",
-      "consensus_hash": "048091BC7DDC283F77BFBF91D73C44DA58C3DF8A9CBC867405D8B7F3DAADA22F",
-      "app_hash": "6E9C4649FC6D72F2844EB6FF2C613ED0FC08DE9C97D1451DDF0FD96D6237F48B",
-      "last_results_hash": "",
-      "evidence_hash": "",
-      "proposer_address": "54B612929384D59CE870FAF0147E48D3E4F93F1B"
-    },
-    "data": {
-      "txs": null
-    },
-    "evidence": {
-      "evidence": null
-    },
-    "last_commit": {
-      "height": "3393",
-      "round": "0",
-      "block_id": {
-        "hash": "03561F01ED82A0BA2B6B976C22EDA5172851961CD99245582E58A1830F53AE05",
-        "parts": {
-          "total": "1",
-          "hash": "B8607F87E5DD7BA89EDE90F819BC5B0A16361EB620C16C79427EC85510248E74"
-        }
-      },
-      "signatures": [
-        {
-          "block_id_flag": 2,
-          "validator_address": "02693DD1D220E641EC96AD131943312DFF1B71A0",
-          "timestamp": "2021-03-10T23:21:41.269797389Z",
-          "signature": "BOkvY2TMtoCV2RtZDfAaYw/LvS2rWM7MHoh+U1HXovD5QYfKsqCZVxTzaMWyjVz7rbrAm/bZoVG5ttrEQsr5CQ=="
-        },
-        {
-          "block_id_flag": 2,
-          "validator_address": "279620A2A6636072F5A4E26576EBEA7383F49F0D",
-          "timestamp": "2021-03-10T23:21:41.269688854Z",
-          "signature": "H4dTIbFXrzvFsoPrB0G3Hu84DY5VEf0PoLiez+rUO9DJkm/XYzxVGL4FGGtaIrlUNGQShO58ATJJtUv1IC6OCA=="
-        },
-        {
-          "block_id_flag": 2,
-          "validator_address": "4A14E0888B5623FA42FDB33CD8A320B48F1899E2",
-          "timestamp": "2021-03-10T23:21:41.2403987Z",
-          "signature": "NbQkDYlqqS2meB1e+RTD03tzXRJrbuXJpufXEVqsL1aNwhQGMVRKr28pS/rfiqk4Y3EiRV23fde+akEJyHBpAA=="
-        },
-        {
-          "block_id_flag": 2,
-          "validator_address": "54B612929384D59CE870FAF0147E48D3E4F93F1B",
-          "timestamp": "2021-03-10T23:21:41.269141575Z",
-          "signature": "uTzDKh9dUczn6195Pc6nYLgEQWJgb7rpsDO4SjF5ZxIFIT8KZlkAig0UIoRYFYGemlaEyGrEOBW5TFh7otSNDw=="
-        },
-        {
-          "block_id_flag": 2,
-          "validator_address": "5E24F5BF6B4877D5478A75FB2E3EB2B4E9C9F46D",
-          "timestamp": "2021-03-10T23:21:41.26991759Z",
-          "signature": "+7VVu58xeg/FU3xKNcP7zDmNO1hz+ye+Bq5qrpYymhES0fhhp2hY96WxH/zot7yWxwWXLEFis7fyXPOIfCPdCA=="
-        }
-      ]
-    }
+## 📜 Tx <a id="tx" />
+
+**Tx client has the following interface**
+
+```
+  class DecentrTxClient {
+    search(query: SearchTxQuery,filter: SearchTxFilter = {}): Promise<DecodedIndexedTx[]>
+    
+    getByHash(hash: IndexedTx['hash']): Promise<DecodedIndexedTx>;
   }
-}
-*/
 ```
 
-**Get block**
+**How to get instance of tx client**
+```
+  const txClient = await decentrClient.tx();
+  
+  OR
+  
+  import { DecentrTxClient } from 'decentr-js';
+  const txClient = await DecentrTxClient.create(NODE_URL);
+```
 
+### Methods
+
+1. **Search txs**
 ```ts
+  const queryByHeight = { height: 123456 };
+  const txsByHeight = await txClient.search(queryByHeight);
 
-decentr.blocks.getBlock(blockHeight)
-  .then(console.log);
+  const queryBySentFromOrTo = { sentFromOrTo: 'decentrWalletAddress' };
+  const txsBySentFromOrTo = await txClient.search(queryByHeight);
 
-/*
-CONSOLE OUTPUT:
-
-{
-  "block_id": {
-    "hash": "CCAAD54727918CF22A7E95FD9E8B459B62BBA771F5A67A77DEFB3C3FFCF992C3",
-    "parts": {
-      "total": "1",
-      "hash": "7C2A2979844A897869CE650E03C35E4C6A997A837474123C2D94CAE85AF21DCC"
-    }
-  },
-  "block": {
-    "header": {
-      "version": {
-        "block": "10",
-        "app": "0"
+  const queryByTags = { tags: [
+      {
+        key: 'message.module',
+        value: 'staking',
       },
-      "chain_id": "testnet4",
-      "height": "11248",
-      "time": "2021-03-11T11:27:16.049483366Z",
-      "last_block_id": {
-        "hash": "3F73AAFFD13AD9541C3115E6E7FABB751EFFF8A66725F35E7517B0339F91F43A",
-        "parts": {
-          "total": "1",
-          "hash": "A984481B3227DAAF8126A825413A9F1B466A80D63BDF452133F92419D996DC8B"
-        }
+      {
+        key: 'message.sender',
+        value: 'decentrWalletAddress',
       },
-      "last_commit_hash": "929688CD048DEF64D99D4C739925DF6D779A8ACF590963FABE9D4FDDF58D2BBF",
-      "data_hash": "",
-      "validators_hash": "BE14F8B06ED7F8BA532BEEF4948CEB42C2B063096471233ADFFDE26D901C944B",
-      "next_validators_hash": "BE14F8B06ED7F8BA532BEEF4948CEB42C2B063096471233ADFFDE26D901C944B",
-      "consensus_hash": "048091BC7DDC283F77BFBF91D73C44DA58C3DF8A9CBC867405D8B7F3DAADA22F",
-      "app_hash": "71760D41E109575F6DA179565ACD085466BBDE12441BB3393331EB262B3AFA4F",
-      "last_results_hash": "",
-      "evidence_hash": "",
-      "proposer_address": "279620A2A6636072F5A4E26576EBEA7383F49F0D"
-    },
-    "data": {
-      "txs": null
-    },
-    "evidence": {
-      "evidence": null
-    },
-    "last_commit": {
-      "height": "11247",
-      "round": "0",
-      "block_id": {
-        "hash": "3F73AAFFD13AD9541C3115E6E7FABB751EFFF8A66725F35E7517B0339F91F43A",
-        "parts": {
-          "total": "1",
-          "hash": "A984481B3227DAAF8126A825413A9F1B466A80D63BDF452133F92419D996DC8B"
-        }
-      },
-      "signatures": [
-        {
-          "block_id_flag": 2,
-          "validator_address": "02693DD1D220E641EC96AD131943312DFF1B71A0",
-          "timestamp": "2021-03-11T11:27:16.053413018Z",
-          "signature": "nx1AuHMPMTo5QjXn4nFZrfcdFn7gMPYxdTl0EbiDfrQlsICEPAHq3RUH55uEyuL2ClX9OvCUKdhKu+akYUyACw=="
-        },
-        {
-          "block_id_flag": 2,
-          "validator_address": "279620A2A6636072F5A4E26576EBEA7383F49F0D",
-          "timestamp": "2021-03-11T11:27:16.047697288Z",
-          "signature": "eJsRULPhqhifsWn9RwQsFkgQAJsQdfJ8KJV3s2hy6+RzYBtXF+joQ/bDJMBBVbfTsdLsnJJX8VMWvaTTfGToBQ=="
-        },
-        {
-          "block_id_flag": 2,
-          "validator_address": "4A14E0888B5623FA42FDB33CD8A320B48F1899E2",
-          "timestamp": "2021-03-11T11:27:16.049483366Z",
-          "signature": "3+/nVuaD7H0MgW2FJTuJMDj4m2vuBoQ0MsIWgkXiClVJaVs7MG6fqbVC+TFyjfwV/NIEGeoNLwwaAN8+r5pBBw=="
-        },
-        {
-          "block_id_flag": 2,
-          "validator_address": "54B612929384D59CE870FAF0147E48D3E4F93F1B",
-          "timestamp": "2021-03-11T11:27:16.05413328Z",
-          "signature": "NpPnUPGQA0eQxS754yJ+glhsY/jjeCFW6jvi/i5m15KCoLVU1Hu3Rir1w14JBR4BTPP9X560OKN1bU1Aqh+BAw=="
-        },
-        {
-          "block_id_flag": 2,
-          "validator_address": "5E24F5BF6B4877D5478A75FB2E3EB2B4E9C9F46D",
-          "timestamp": "2021-03-11T11:27:16.049083252Z",
-          "signature": "bha3l+TT6kHp7qhWfta9jpiviL2h0HOblDIOZ0WZRXHPMHoW99ev9cKbN7lBAjOwPU8lIxq0rSqL3R5jexRrBg=="
-        }
-      ]
-    }
-  }
-}
-*/
+    ],
+  };
+  const txsByTags = await txClient.search(queryByHeight);
 ```
+Response of `search` method is an [DecodedIndexedTx](https://github.com/Decentr-net/decentr.js/blob/develop/src/api/tx/types.ts#L10) array.
 
-## Minting
-
-**Get inflation**
+2. **Get by hash**
 ```ts
-decentr.minting.getInflation()
-
-/*
-CONSOLE OUTPUT:
-
-"0.050028961753403722"
-*/
+  const txHash = 'ABCDEF0123456GHIJKL7890';
+  const tx = await txClient.getByHash(txHash);
 ```
+Response of `getByHash` method is an [DecodedIndexedTx](https://github.com/Decentr-net/decentr.js/blob/develop/src/api/tx/types.ts#L10)
 
-## Supply
-
-**Get total supply**
-```ts
-decentr.supply.getTotalSupply()
-
-/*
-CONSOLE OUTPUT:
-
-[{
-  "denom": "udec",
-  "amount": "1493691736827925"
-}]
-*/
-```
-
-**Get coin supply**
-```ts
-decentr.supply.getTotalSupply('udec')
-
-/*
-CONSOLE OUTPUT:
-
-"1493691736827925"
-*/
-```
-
-## Images
-
-**Save image**
-```ts
-const file: File = 'your image file';
-
-const wallet: Wallet = {
-  address:    'decentr1j6e6j53vh95jcq9k9lnsrsvj3h8dkdgmm20zhu',
-  privateKey: '8c313682470073d56d2d8f5b7fde53c072024a9fd9135501125035d53c8a1f60',
-  publicKey:  '03dae8cf229d1db63c8d854bd1c73e280147ebd3bb40df12381d16b0eb071a72b6'
-}
-
-decentr.images.saveImage(image, wallet)
-  .then(console.log)
-
-/*
-CONSOLE OUTPUT:
-
-{
-  hd: "https://domain.com/decentr1j6e6j53vh95jcq9k9lnsrsvj3h8dkdgmm20zhu/abc123"
-  thumb: "https://domain.com/decentr1j6e6j53vh95jcq9k9lnsrsvj3h8dkdgmm20zhu/abc123/thumb"
-}
-*/
-```
-
-
-## Swap 
-
-** Get Fee **
-```ts
-decentr.swap.getFee('decentr1tet7xxem50t6hxfh605ge3r30mau7gl9xch825', 'decentr', amount: 0.00001)
-  .then(console.log);
-
-/*
-CONSOLE OUTPUT:
-
-"0.002"
-*/
-```
-
-** Get Swap by id **
-```ts
-decentr.swap.getSwapById(1)
-  .then(console.log);
-
-/*
-CONSOLE OUTPUT:
-
-{
-  "closureReason": "collecting-timeout-exceeded"
-  "createdAt": "2021-08-16T18:37:54.060126Z"
-  "destinationAddress": "0x088fa3A57D9C44eBA719da2507a8F3E71ad1e430"
-  "destinationNetwork": "decentr"
-  "id": 18
-  "state": "closed"
-  "stateBlock": 9127040
-  "updatedAt": "2021-08-16T20:37:56.994756Z"
-}
-*/
-```
-
-** Get Swap list **
-```ts
-const swapListPaginationOptions: SwapListPaginationOptions = {
-  after: 50,
-  limit: 10,
-}
-
-decentr.swap.getSwapList(swapListPaginationOptions)
-  .then(console.log);
-
-/*
-CONSOLE OUTPUT:
-
-[{
-  "closureReason": "collecting-timeout-exceeded"
-  "createdAt": "2021-08-16T18:37:54.060126Z"
-  "destinationAddress": "0x088fa3A57D9C44eBA719da2507a8F3E71ad1e430"
-  "destinationNetwork": "decentr"
-  "id": 18
-  "state": "closed"
-  "stateBlock": 9127040
-  "updatedAt": "2021-08-16T20:37:56.994756Z"
-}]
-*/
-```
-
-** Create swap **
-```ts
-const wallet: Wallet = {
-  address:    'decentr1j6e6j53vh95jcq9k9lnsrsvj3h8dkdgmm20zhu',
-  privateKey: '8c313682470073d56d2d8f5b7fde53c072024a9fd9135501125035d53c8a1f60',
-  publicKey:  '03dae8cf229d1db63c8d854bd1c73e280147ebd3bb40df12381d16b0eb071a72b6'
-}
-
-decentr.swap.createSwap(wallet, 'decentr1j6e6j53vh95jcq9k9lnsrsvj3h8dkdgmm20zhu', 'decentr')
-  .then(console.log);
-
-/*
-CONSOLE OUTPUT:
-
-{
-  "closureReason": "collecting-timeout-exceeded"
-  "createdAt": "2021-08-16T18:37:54.060126Z"
-  "destinationAddress": "0x088fa3A57D9C44eBA719da2507a8F3E71ad1e430"
-  "destinationNetwork": "decentr"
-  "id": 18
-  "state": "closed"
-  "stateBlock": 9127040
-  "updatedAt": "2021-08-16T20:37:56.994756Z"
-}
-*/
-```
-
-## 🏦 Txs
-
-** Search **
-
-```ts
-
-decentr.txs.search({ messageAction: 'set_like' }) // check TXsSearchParams interface for more params
-  .then(console.log);
-
-/*
-CONSOLE OUTPUT:
-
-{
-  "total_count": "1",
-  "count": "1",
-  "page_number": "1",
-  "page_total": "1",
-  "limit": "30",
-  "txs": [
-    {
-      "height": "72964",
-      "txhash": "33F6C9B80BF758BCB5AC133AC69FD2EC931DDE9AF38843036BF4E9DBA70D5FA9",
-      "raw_log": "[{\"msg_index\":0,\"log\":\"\",\"events\":[{\"type\":\"message\",\"attributes\":[{\"key\":\"action\",\"value\":\"set_like\"}]}]}]",
-      "logs": [
-        {
-          "msg_index": 0,
-          "log": "",
-          "events": [
-            {
-              "type": "message",
-              "attributes": [
-                {
-                  "key": "action",
-                  "value": "set_like"
-                }
-              ]
-            }
-          ]
-        }
-      ],
-      "tx": {
-        "type": "cosmos-sdk/StdTx",
-        "value": {
-          "msg": [
-            {
-              "type": "community/SetLike",
-              "value": {
-                "postOwner": "decentr1exw8026vwdkhczydu0wy2hh8kzmqxthmcslj6e",
-                "postUUID": "f9c6f6ec-8556-11eb-aebe-0242ac11000a",
-                "owner": "decentr1t6zuwl57sn2tkqnrwt6ug8zy3v0xcajt9s7wqh",
-                "weight": 1
-              }
-            }
-          ],
-          "fee": {
-            "amount": [],
-            "gas": "0"
-          },
-          "signatures": [
-            {
-              "pub_key": {
-                "type": "tendermint/PubKeySecp256k1",
-                "value": "Ak+p0asDvre5dbOaPYLslXAIpnyVucSsz+pzz54rosCd"
-              },
-              "signature": "Cp1RQxKk49m0dEYwg80RodJ6+7XocGImN2gvtE/JhyZMsLeMAH4p3tLYOEAZxz7BYOGzsbTqLbaqzcjLQ/p/iw=="
-            }
-          ],
-          "memo": ""
-        }
-      },
-      "timestamp": "2021-03-15T10:26:08Z"
-    },
-  },
-}
-*/
-```
-
-**Get by hash**
-
-```ts
-
-decentr.txs.getByHash('33F6C9B80BF758BCB5AC133AC69FD2EC931DDE9AF38843036BF4E9DBA70D5FA9')
-  .then(console.log);
-
-/*
-CONSOLE OUTPUT:
-
-{
-  "height": "72964",
-  "txhash": "33F6C9B80BF758BCB5AC133AC69FD2EC931DDE9AF38843036BF4E9DBA70D5FA9",
-  "raw_log": "[{\"msg_index\":0,\"log\":\"\",\"events\":[{\"type\":\"message\",\"attributes\":[{\"key\":\"action\",\"value\":\"set_like\"}]}]}]",
-  "logs": [
-    {
-      "msg_index": 0,
-      "log": "",
-      "events": [
-        {
-          "type": "message",
-          "attributes": [
-            {
-              "key": "action",
-              "value": "set_like"
-            }
-          ]
-        }
-      ]
-    }
-  ],
-  "tx": {
-    "type": "cosmos-sdk/StdTx",
-    "value": {
-      "msg": [
-        {
-          "type": "community/SetLike",
-          "value": {
-            "postOwner": "decentr1exw8026vwdkhczydu0wy2hh8kzmqxthmcslj6e",
-            "postUUID": "f9c6f6ec-8556-11eb-aebe-0242ac11000a",
-            "owner": "decentr1t6zuwl57sn2tkqnrwt6ug8zy3v0xcajt9s7wqh",
-            "weight": 1
-          }
-        }
-      ],
-      "fee": {
-        "amount": [],
-        "gas": "0"
-      },
-      "signatures": [
-        {
-          "pub_key": {
-            "type": "tendermint/PubKeySecp256k1",
-            "value": "Ak+p0asDvre5dbOaPYLslXAIpnyVucSsz+pzz54rosCd"
-          },
-          "signature": "Cp1RQxKk49m0dEYwg80RodJ6+7XocGImN2gvtE/JhyZMsLeMAH4p3tLYOEAZxz7BYOGzsbTqLbaqzcjLQ/p/iw=="
-        }
-      ],
-      "memo": ""
-    }
-  },
-  "timestamp": "2021-03-15T10:26:08Z"
-}
-*/
-```
-
-## 🥂 License
+## 🥂 License <a id="license" />
 
 [MIT](./LICENSE.md) as always

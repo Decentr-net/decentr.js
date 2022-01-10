@@ -1,3 +1,2 @@
-export * from './image';
-export * from './sdk';
+export * from './client';
 export * from './types';

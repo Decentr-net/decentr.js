@@ -1,157 +1,37 @@
-import { Bytes } from '@tendermint/types';
-import { ecdsaSign as secp256k1EcdsaSign } from 'secp256k1';
+import { coin, decodeTxRaw } from '@cosmjs/proto-signing';
+import { Coin } from '@cosmjs/stargate';
 
-import {
-  bytesToHex,
-  encodeObjectCharactersToUnicode,
-  fetchJson,
-  hashStringToBytes,
-  hasOwnProperty,
-  hexToBytes,
-  sortObjectKeys,
-} from '../utils';
-import { KeyPair, Wallet } from '../wallet';
-import { AuthHeaders, BaseRequest, Fee, QuerySimulateGasResponse } from './types';
-import { getMinGasPrice } from './operations';
+import { REGISTRY, TxMessageTypeUrl, TxMessageValueMap, TypedEncodeObject } from './registry';
+import { DECENTR_DENOM, DecodedTx } from './types';
 
-const GAS_ADJUSTMENT = 1.35;
-const GAS_LIMIT = 1000000;
-
-export async function blockchainFetch<T>(url: string, queryParameters?: Record<string, string | number>): Promise<T> {
-  const response = await fetchJson<{ height: string; result: T } | T>(url, { queryParameters });
-
-  if (hasOwnProperty(response, 'height') &&
-    hasOwnProperty(response, 'result')
-  ) {
-    return (response as { result: T }).result;
-  }
-
-  return response as T;
+export function createDecentrCoin(amount: number | string): Coin {
+  return coin(amount, DECENTR_DENOM);
 }
 
-export function getSignature<T>(
-  target: T,
-  privateKey: Wallet['privateKey'],
-  options?: {
-    disableEncode?: boolean,
-  },
-): Bytes {
-  let stringToHash = typeof target === 'string'
-    ? target
-    : JSON.stringify(sortObjectKeys(target));
+export function decodeTx(tx: Uint8Array): DecodedTx {
+  const decodedTxRaw = decodeTxRaw(tx);
 
-  if (!options?.disableEncode) {
-    stringToHash = encodeObjectCharactersToUnicode(stringToHash, ['>', '<', '&']);
-  }
-
-  const hashBytes = hashStringToBytes(stringToHash);
-
-  const privateKeyBytes = hexToBytes(privateKey);
-
-  const signedObject = secp256k1EcdsaSign(hashBytes, privateKeyBytes);
-  return signedObject.signature;
-}
-
-export function getAuthHeaders<T>(
-  data: T,
-  keys: KeyPair,
-  options?: { disableEncode?: boolean },
-): AuthHeaders {
-  const signature = getSignature(data, keys.privateKey, options);
-  const signatureHex = bytesToHex(signature);
+  const decodedMessages = decodedTxRaw.body.messages
+    .map((message) => ({
+      typeUrl: message.typeUrl as TxMessageTypeUrl,
+      value: REGISTRY.decode(message),
+    }));
 
   return {
-    'Public-Key': keys.publicKey,
-    Signature: signatureHex,
-  };
-}
-
-export function createBaseRequest({
-    chainId: chain_id,
-    gas,
-    simulate,
-    walletAddress: from,
-  }: {
-    chainId: string;
-    gas?: string;
-    simulate?: boolean;
-    walletAddress: Wallet['address'];
-  }): BaseRequest {
-  return {
-    base_req: {
-      chain_id,
-      from,
-      gas,
-      simulate,
+    ...decodedTxRaw,
+    body: {
+      ...decodedTxRaw.body,
+      messages: decodedMessages,
     },
   };
 }
 
-export async function addGas<T>(
-  body: T,
-  chainId: string,
-  url: string,
-  walletAddress: Wallet['address'],
-): Promise<(BaseRequest & T)> {
-  const bodyToEstimate = {
-    ...createBaseRequest({ chainId, walletAddress }),
-    ...body
-  };
-
-  const estimatedGas = await querySimulateGas(bodyToEstimate, chainId, walletAddress, url);
-
-  const gasWanted = Math.ceil(+estimatedGas * GAS_ADJUSTMENT);
-  const gas = Math.min(gasWanted, GAS_LIMIT).toString();
-
+export function createTypedEncodeObject<K extends keyof TxMessageValueMap>(
+  typeUrl: K,
+  value: TxMessageValueMap[K],
+): TypedEncodeObject<K> {
   return {
-    ...createBaseRequest({ chainId, walletAddress, gas }),
-    ...body,
+    typeUrl,
+    value,
   };
-}
-
-async function querySimulateGas<T>(
-  bodyToEstimate: T,
-  chainId: string,
-  walletAddress: Wallet['address'],
-  url: string
-): Promise<QuerySimulateGasResponse['gas_estimate']> {
-  const gasEstimateRequest = createBaseRequest({
-    chainId,
-    simulate: true,
-    walletAddress,
-  });
-
-  const body = {
-    ...bodyToEstimate,
-    ...gasEstimateRequest,
-  };
-
-  return fetchJson<QuerySimulateGasResponse, BaseRequest & T>(url, {
-    method: 'POST',
-    body
-  })
-      .then(({ gas_estimate }) => gas_estimate);
-}
-
-export function prepareQueryBody<T>(
-  url: string,
-  chainId: string,
-  request: T,
-  owner: Wallet['address'],
-): Promise<(BaseRequest & T)> {
-  return addGas(request, chainId, url, owner);
-}
-
-export async function calculateTransactionFeeAmount(
-  apiUrl: string,
-  gas: string,
-): Promise<Fee[]> {
-  const minGasPrice = await getMinGasPrice(apiUrl).then((price) => price.amount);
-
-  const decAmount = Math.ceil(+minGasPrice * +gas).toString();
-
-  return [{
-    amount: decAmount,
-    denom: 'udec',
-  }];
 }

@@ -1,3 +1,2 @@
-export * from './sdk';
-export * from './swap';
+export * from './client';
 export * from './types';

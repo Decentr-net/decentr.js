@@ -3,6 +3,7 @@ const { IgnorePlugin } = require('webpack');
 module.exports = {
   entry: ['./src/index.ts'],
   output: {
+    filename: 'index.js',
     path: __dirname + '/lib',
     library: 'decentr-js',
     libraryTarget: 'umd',

@@ -12,12 +12,22 @@ module.exports = {
   ],
   plugins: [
   ],
+  ignorePatterns: ['**/*.js', '**/codec/**/*.*'],
   rules: {
     "unicorn/prevent-abbreviations": [
-      "error",
-      {
-        checkFilenames: false,
-      },
+      "off",
+    ],
+    'unicorn/empty-brace-spaces': [
+      'off',
+    ],
+    'unicorn/no-array-for-each': [
+      'off',
+    ],
+    'unicorn/prefer-node-protocol': [
+      'off',
+    ],
+    'unicorn/prefer-object-from-entries': [
+      'off',
     ],
   },
 };

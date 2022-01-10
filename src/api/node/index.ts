@@ -1,3 +1,3 @@
-export * from './node';
-export * from './sdk';
-export * from './types';
+export * from './client';
+
+export { StatusResponse } from '@cosmjs/tendermint-rpc';

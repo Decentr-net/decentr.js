@@ -24,11 +24,6 @@ export enum SwapState {
   WaitingConfirmation = 'waiting-confirmation',
 }
 
-export interface SwapHeaders extends Record<string, string> {
-  readonly 'Public-Key': string;
-  readonly Signature: string;
-}
-
 export interface SwapDetails {
   amount?: string;
   closureReason?: SwapClosureReason;

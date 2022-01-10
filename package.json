@@ -1,6 +1,6 @@
 {
   "name": "decentr-js",
-  "version": "2.11.1",
+  "version": "3.0.1",
   "description": "decentr-js",
   "main": "lib/index.js",
   "types": "lib/types/index.d.ts",
@@ -16,24 +16,26 @@
   "license": "MIT",
   "scripts": {
     "build": "webpack",
+    "watch": "webpack --config webpack.config.dev.js -w",
     "clean": "rimraf lib",
     "lint": "eslint --max-warnings 0 src --ext .ts",
     "prebuild": "npm run clean",
+    "prepack": "npm run build",
     "prepublishOnly": "npm run lint && npm run test && npm run build",
-    "test": "karma start"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "npm run lint",
-      "pre-push": "npm run test"
-    }
+    "test": "karma start",
+    "prepare": "husky install",
+    "proto": "bash scripts/get-proto.sh && bash scripts/define-proto.sh"
   },
   "dependencies": {
+    "@cosmjs/proto-signing": "^0.27.0-rc2",
+    "@cosmjs/stargate": "^0.27.0-rc2",
+    "@cosmjs/tendermint-rpc": "^0.27.0-rc2",
     "@tendermint/belt": "^0.3.0",
-    "axios": "^0.21.1",
+    "axios": "^0.24.0",
     "bech32": "^2.0.0",
     "bip32": "^2.0.6",
     "bip39": "^3.0.2",
+    "cosmjs-types": "^0.4.0",
     "create-hash": "^1.2.0",
     "secp256k1": "^4.0.2"
   },
@@ -45,13 +47,12 @@
     "@types/jasmine": "^3.6.1",
     "@types/node": "^14.14.6",
     "@types/secp256k1": "^4.0.1",
-    "@typescript-eslint/eslint-plugin": "^4.6.1",
-    "@typescript-eslint/parser": "^4.6.1",
-    "copy-webpack-plugin": "^6.4.0",
-    "eslint": "^7.13.0",
-    "eslint-plugin-import": "^2.22.1",
-    "eslint-plugin-unicorn": "^23.0.0",
-    "husky": "^4.3.0",
+    "@typescript-eslint/eslint-plugin": "^5.7.0",
+    "@typescript-eslint/parser": "^5.7.0",
+    "eslint": "^8.5.0",
+    "eslint-plugin-import": "^2.25.3",
+    "eslint-plugin-unicorn": "^39.0.0",
+    "husky": "^7.0.0",
     "jasmine-core": "^3.6.0",
     "karma": "^6.0.0",
     "karma-chrome-launcher": "^3.1.0",
@@ -60,6 +61,7 @@
     "karma-webpack": "^4.0.2",
     "rimraf": "^3.0.2",
     "ts-loader": "^8.0.10",
+    "ts-proto": "^1.96.1",
     "typescript": "^3.5.1",
     "webpack": "^4.44.2",
     "webpack-bundle-analyzer": "^4.1.0",
