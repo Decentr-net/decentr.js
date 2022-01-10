@@ -7,11 +7,6 @@ import {
   UnbondingDelegation,
   Validator,
 } from 'cosmjs-types/cosmos/staking/v1beta1/staking';
-import {
-  MsgBeginRedelegate,
-  MsgDelegate,
-  MsgUndelegate,
-} from 'cosmjs-types/cosmos/staking/v1beta1/tx';
 import { BondStatusString } from '@cosmjs/stargate/build/queries/staking';
 import {
   QueryClient,
@@ -24,6 +19,7 @@ import { Tendermint34Client } from '@cosmjs/tendermint-rpc';
 import { Wallet } from '../../wallet';
 import { createTypedEncodeObject } from '../api-utils';
 import { TxMessageTypeUrl } from '../registry';
+import { DelegateTokensRequest, RedelegateTokensRequest, UndelegateTokensRequest } from './types';
 import { correctValidatorCommission } from './utils';
 import { TransactionSigner } from '../transaction-signer';
 
@@ -141,7 +137,7 @@ export class DecentrStakingClient {
   }
 
   public delegateTokens(
-    request: MsgDelegate,
+    request: DelegateTokensRequest,
     privateKey: Wallet['privateKey'],
     options?: {
       memo?: string,
@@ -161,7 +157,7 @@ export class DecentrStakingClient {
   }
 
   public undelegateTokens(
-    request: MsgUndelegate,
+    request: UndelegateTokensRequest,
     privateKey: Wallet['privateKey'],
     options?: {
       memo?: string,
@@ -181,7 +177,7 @@ export class DecentrStakingClient {
   }
 
   public redelegateTokens(
-    request: MsgBeginRedelegate,
+    request: RedelegateTokensRequest,
     privateKey: Wallet['privateKey'],
     options?: {
       memo?: string,

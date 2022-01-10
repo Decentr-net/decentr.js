@@ -1,4 +1,3 @@
-import { MsgSend } from 'cosmjs-types/cosmos/bank/v1beta1/tx';
 import {
   BankExtension,
   Coin,
@@ -12,6 +11,7 @@ import { DECENTR_DENOM } from '../types';
 import { createTypedEncodeObject } from '../api-utils';
 import { TxMessageTypeUrl } from '../registry';
 import { TransactionSigner } from '../transaction-signer';
+import { SendTokensRequest } from './types';
 
 export class DecentrBankClient {
   private constructor(
@@ -60,7 +60,7 @@ export class DecentrBankClient {
   }
 
   public sendTokens(
-    request: MsgSend,
+    request: SendTokensRequest,
     privateKey: Wallet['privateKey'],
     options?: {
       memo?: string,

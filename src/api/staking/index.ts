@@ -1,4 +1,5 @@
 export * from './client';
+export * from './types';
 
 export { BondStatusString } from '@cosmjs/stargate/build/queries/staking';
 
