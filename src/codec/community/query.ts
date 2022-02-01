@@ -84,16 +84,10 @@ export const GetPostRequest = {
   },
 
   fromJSON(object: any): GetPostRequest {
-    const message = createBaseGetPostRequest();
-    message.postOwner =
-      object.postOwner !== undefined && object.postOwner !== null
-        ? String(object.postOwner)
-        : "";
-    message.postUuid =
-      object.postUuid !== undefined && object.postUuid !== null
-        ? String(object.postUuid)
-        : "";
-    return message;
+    return {
+      postOwner: isSet(object.postOwner) ? String(object.postOwner) : "",
+      postUuid: isSet(object.postUuid) ? String(object.postUuid) : "",
+    };
   },
 
   toJSON(message: GetPostRequest): unknown {
@@ -147,12 +141,9 @@ export const GetPostResponse = {
   },
 
   fromJSON(object: any): GetPostResponse {
-    const message = createBaseGetPostResponse();
-    message.post =
-      object.post !== undefined && object.post !== null
-        ? Post.fromJSON(object.post)
-        : undefined;
-    return message;
+    return {
+      post: isSet(object.post) ? Post.fromJSON(object.post) : undefined,
+    };
   },
 
   toJSON(message: GetPostResponse): unknown {
@@ -217,16 +208,12 @@ export const ListUserPostsRequest = {
   },
 
   fromJSON(object: any): ListUserPostsRequest {
-    const message = createBaseListUserPostsRequest();
-    message.owner =
-      object.owner !== undefined && object.owner !== null
-        ? String(object.owner)
-        : "";
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
+    return {
+      owner: isSet(object.owner) ? String(object.owner) : "",
+      pagination: isSet(object.pagination)
         ? PageRequest.fromJSON(object.pagination)
-        : undefined;
-    return message;
+        : undefined,
+    };
   },
 
   toJSON(message: ListUserPostsRequest): unknown {
@@ -298,13 +285,14 @@ export const ListUserPostsResponse = {
   },
 
   fromJSON(object: any): ListUserPostsResponse {
-    const message = createBaseListUserPostsResponse();
-    message.posts = (object.posts ?? []).map((e: any) => Post.fromJSON(e));
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
+    return {
+      posts: Array.isArray(object?.posts)
+        ? object.posts.map((e: any) => Post.fromJSON(e))
+        : [],
+      pagination: isSet(object.pagination)
         ? PageResponse.fromJSON(object.pagination)
-        : undefined;
-    return message;
+        : undefined,
+    };
   },
 
   toJSON(message: ListUserPostsResponse): unknown {
@@ -362,8 +350,7 @@ export const ModeratorsRequest = {
   },
 
   fromJSON(_: any): ModeratorsRequest {
-    const message = createBaseModeratorsRequest();
-    return message;
+    return {};
   },
 
   toJSON(_: ModeratorsRequest): unknown {
@@ -413,9 +400,11 @@ export const ModeratorsResponse = {
   },
 
   fromJSON(object: any): ModeratorsResponse {
-    const message = createBaseModeratorsResponse();
-    message.moderators = (object.moderators ?? []).map((e: any) => String(e));
-    return message;
+    return {
+      moderators: Array.isArray(object?.moderators)
+        ? object.moderators.map((e: any) => String(e))
+        : [],
+    };
   },
 
   toJSON(message: ModeratorsResponse): unknown {
@@ -477,16 +466,12 @@ export const ListFollowedRequest = {
   },
 
   fromJSON(object: any): ListFollowedRequest {
-    const message = createBaseListFollowedRequest();
-    message.owner =
-      object.owner !== undefined && object.owner !== null
-        ? String(object.owner)
-        : "";
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
+    return {
+      owner: isSet(object.owner) ? String(object.owner) : "",
+      pagination: isSet(object.pagination)
         ? PageRequest.fromJSON(object.pagination)
-        : undefined;
-    return message;
+        : undefined,
+    };
   },
 
   toJSON(message: ListFollowedRequest): unknown {
@@ -558,13 +543,14 @@ export const ListFollowedResponse = {
   },
 
   fromJSON(object: any): ListFollowedResponse {
-    const message = createBaseListFollowedResponse();
-    message.followed = (object.followed ?? []).map((e: any) => String(e));
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
+    return {
+      followed: Array.isArray(object?.followed)
+        ? object.followed.map((e: any) => String(e))
+        : [],
+      pagination: isSet(object.pagination)
         ? PageResponse.fromJSON(object.pagination)
-        : undefined;
-    return message;
+        : undefined,
+    };
   },
 
   toJSON(message: ListFollowedResponse): unknown {
@@ -682,4 +668,8 @@ export type Exact<P, I extends P> = P extends Builtin
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

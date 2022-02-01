@@ -47,12 +47,9 @@ export const BalanceRequest = {
   },
 
   fromJSON(object: any): BalanceRequest {
-    const message = createBaseBalanceRequest();
-    message.address =
-      object.address !== undefined && object.address !== null
-        ? String(object.address)
-        : "";
-    return message;
+    return {
+      address: isSet(object.address) ? String(object.address) : "",
+    };
   },
 
   toJSON(message: BalanceRequest): unknown {
@@ -104,12 +101,11 @@ export const BalanceResponse = {
   },
 
   fromJSON(object: any): BalanceResponse {
-    const message = createBaseBalanceResponse();
-    message.balance =
-      object.balance !== undefined && object.balance !== null
+    return {
+      balance: isSet(object.balance)
         ? DecProto.fromJSON(object.balance)
-        : undefined;
-    return message;
+        : undefined,
+    };
   },
 
   toJSON(message: BalanceResponse): unknown {
@@ -191,4 +187,8 @@ export type Exact<P, I extends P> = P extends Builtin
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

@@ -65,17 +65,17 @@ export const Params = {
   },
 
   fromJSON(object: any): Params {
-    const message = createBaseParams();
-    message.supervisors = (object.supervisors ?? []).map((e: any) => String(e));
-    message.fixedGas =
-      object.fixedGas !== undefined && object.fixedGas !== null
+    return {
+      supervisors: Array.isArray(object?.supervisors)
+        ? object.supervisors.map((e: any) => String(e))
+        : [],
+      fixedGas: isSet(object.fixedGas)
         ? FixedGasParams.fromJSON(object.fixedGas)
-        : undefined;
-    message.minGasPrice =
-      object.minGasPrice !== undefined && object.minGasPrice !== null
+        : undefined,
+      minGasPrice: isSet(object.minGasPrice)
         ? DecCoin.fromJSON(object.minGasPrice)
-        : undefined;
-    return message;
+        : undefined,
+    };
   },
 
   toJSON(message: Params): unknown {
@@ -151,17 +151,14 @@ export const FixedGasParams = {
   },
 
   fromJSON(object: any): FixedGasParams {
-    const message = createBaseFixedGasParams();
-    message.resetAccount =
-      object.resetAccount !== undefined && object.resetAccount !== null
+    return {
+      resetAccount: isSet(object.resetAccount)
         ? Long.fromString(object.resetAccount)
-        : Long.UZERO;
-    message.distributeRewards =
-      object.distributeRewards !== undefined &&
-      object.distributeRewards !== null
+        : Long.UZERO,
+      distributeRewards: isSet(object.distributeRewards)
         ? Long.fromString(object.distributeRewards)
-        : Long.UZERO;
-    return message;
+        : Long.UZERO,
+    };
   },
 
   toJSON(message: FixedGasParams): unknown {
@@ -224,4 +221,8 @@ export type Exact<P, I extends P> = P extends Builtin
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

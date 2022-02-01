@@ -128,28 +128,15 @@ export const PageRequest = {
   },
 
   fromJSON(object: any): PageRequest {
-    const message = createBasePageRequest();
-    message.key =
-      object.key !== undefined && object.key !== null
-        ? bytesFromBase64(object.key)
-        : new Uint8Array();
-    message.offset =
-      object.offset !== undefined && object.offset !== null
+    return {
+      key: isSet(object.key) ? bytesFromBase64(object.key) : new Uint8Array(),
+      offset: isSet(object.offset)
         ? Long.fromString(object.offset)
-        : Long.UZERO;
-    message.limit =
-      object.limit !== undefined && object.limit !== null
-        ? Long.fromString(object.limit)
-        : Long.UZERO;
-    message.countTotal =
-      object.countTotal !== undefined && object.countTotal !== null
-        ? Boolean(object.countTotal)
-        : false;
-    message.reverse =
-      object.reverse !== undefined && object.reverse !== null
-        ? Boolean(object.reverse)
-        : false;
-    return message;
+        : Long.UZERO,
+      limit: isSet(object.limit) ? Long.fromString(object.limit) : Long.UZERO,
+      countTotal: isSet(object.countTotal) ? Boolean(object.countTotal) : false,
+      reverse: isSet(object.reverse) ? Boolean(object.reverse) : false,
+    };
   },
 
   toJSON(message: PageRequest): unknown {
@@ -226,16 +213,12 @@ export const PageResponse = {
   },
 
   fromJSON(object: any): PageResponse {
-    const message = createBasePageResponse();
-    message.nextKey =
-      object.nextKey !== undefined && object.nextKey !== null
+    return {
+      nextKey: isSet(object.nextKey)
         ? bytesFromBase64(object.nextKey)
-        : new Uint8Array();
-    message.total =
-      object.total !== undefined && object.total !== null
-        ? Long.fromString(object.total)
-        : Long.UZERO;
-    return message;
+        : new Uint8Array(),
+      total: isSet(object.total) ? Long.fromString(object.total) : Long.UZERO,
+    };
   },
 
   toJSON(message: PageResponse): unknown {
@@ -328,4 +311,8 @@ export type Exact<P, I extends P> = P extends Builtin
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

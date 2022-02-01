@@ -78,16 +78,12 @@ export const Reward = {
   },
 
   fromJSON(object: any): Reward {
-    const message = createBaseReward();
-    message.receiver =
-      object.receiver !== undefined && object.receiver !== null
-        ? String(object.receiver)
-        : "";
-    message.reward =
-      object.reward !== undefined && object.reward !== null
+    return {
+      receiver: isSet(object.receiver) ? String(object.receiver) : "",
+      reward: isSet(object.reward)
         ? DecProto.fromJSON(object.reward)
-        : undefined;
-    return message;
+        : undefined,
+    };
   },
 
   toJSON(message: Reward): unknown {
@@ -154,15 +150,12 @@ export const MsgDistributeRewards = {
   },
 
   fromJSON(object: any): MsgDistributeRewards {
-    const message = createBaseMsgDistributeRewards();
-    message.owner =
-      object.owner !== undefined && object.owner !== null
-        ? String(object.owner)
-        : "";
-    message.rewards = (object.rewards ?? []).map((e: any) =>
-      Reward.fromJSON(e)
-    );
-    return message;
+    return {
+      owner: isSet(object.owner) ? String(object.owner) : "",
+      rewards: Array.isArray(object?.rewards)
+        ? object.rewards.map((e: any) => Reward.fromJSON(e))
+        : [],
+    };
   },
 
   toJSON(message: MsgDistributeRewards): unknown {
@@ -219,8 +212,7 @@ export const MsgDistributeRewardsResponse = {
   },
 
   fromJSON(_: any): MsgDistributeRewardsResponse {
-    const message = createBaseMsgDistributeRewardsResponse();
-    return message;
+    return {};
   },
 
   toJSON(_: MsgDistributeRewardsResponse): unknown {
@@ -276,16 +268,10 @@ export const MsgResetAccount = {
   },
 
   fromJSON(object: any): MsgResetAccount {
-    const message = createBaseMsgResetAccount();
-    message.owner =
-      object.owner !== undefined && object.owner !== null
-        ? String(object.owner)
-        : "";
-    message.address =
-      object.address !== undefined && object.address !== null
-        ? String(object.address)
-        : "";
-    return message;
+    return {
+      owner: isSet(object.owner) ? String(object.owner) : "",
+      address: isSet(object.address) ? String(object.address) : "",
+    };
   },
 
   toJSON(message: MsgResetAccount): unknown {
@@ -336,8 +322,7 @@ export const MsgResetAccountResponse = {
   },
 
   fromJSON(_: any): MsgResetAccountResponse {
-    const message = createBaseMsgResetAccountResponse();
-    return message;
+    return {};
   },
 
   toJSON(_: MsgResetAccountResponse): unknown {
@@ -393,16 +378,10 @@ export const MsgMint = {
   },
 
   fromJSON(object: any): MsgMint {
-    const message = createBaseMsgMint();
-    message.owner =
-      object.owner !== undefined && object.owner !== null
-        ? String(object.owner)
-        : "";
-    message.coin =
-      object.coin !== undefined && object.coin !== null
-        ? Coin.fromJSON(object.coin)
-        : undefined;
-    return message;
+    return {
+      owner: isSet(object.owner) ? String(object.owner) : "",
+      coin: isSet(object.coin) ? Coin.fromJSON(object.coin) : undefined,
+    };
   },
 
   toJSON(message: MsgMint): unknown {
@@ -452,8 +431,7 @@ export const MsgMintResponse = {
   },
 
   fromJSON(_: any): MsgMintResponse {
-    const message = createBaseMsgMintResponse();
-    return message;
+    return {};
   },
 
   toJSON(_: MsgMintResponse): unknown {
@@ -509,16 +487,10 @@ export const MsgBurn = {
   },
 
   fromJSON(object: any): MsgBurn {
-    const message = createBaseMsgBurn();
-    message.owner =
-      object.owner !== undefined && object.owner !== null
-        ? String(object.owner)
-        : "";
-    message.coin =
-      object.coin !== undefined && object.coin !== null
-        ? Coin.fromJSON(object.coin)
-        : undefined;
-    return message;
+    return {
+      owner: isSet(object.owner) ? String(object.owner) : "",
+      coin: isSet(object.coin) ? Coin.fromJSON(object.coin) : undefined,
+    };
   },
 
   toJSON(message: MsgBurn): unknown {
@@ -568,8 +540,7 @@ export const MsgBurnResponse = {
   },
 
   fromJSON(_: any): MsgBurnResponse {
-    const message = createBaseMsgBurnResponse();
-    return message;
+    return {};
   },
 
   toJSON(_: MsgBurnResponse): unknown {
@@ -679,4 +650,8 @@ export type Exact<P, I extends P> = P extends Builtin
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }
