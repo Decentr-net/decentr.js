@@ -14,7 +14,7 @@ export class CerberusPDVClient {
   private readonly controllerUrl = `${this.url}${this.controllerPath}`;
 
   constructor(
-    private url: string,
+    private readonly url: string,
   ) {
   }
 
@@ -38,12 +38,10 @@ export class CerberusPDVClient {
 
     const headers = getAuthHeaders(path, wallet);
 
-    return fetchJson(this.controllerUrl, { headers });
+    return fetchJson(`${this.url}/${path}`, { headers });
   }
 
   public sendPDV(pdv: PDV[], keyPair: KeyPair): Promise<PDVAddress> {
-    const cerberusAddress = this.controllerUrl;
-
     const body = {
       version: 'v1',
       pdv,
@@ -55,7 +53,7 @@ export class CerberusPDVClient {
       { disableEncode: true },
     );
 
-    return fetchJson<{ id: number }, { version: string; pdv: PDV[] }>(cerberusAddress, {
+    return fetchJson<{ id: number }, { version: string; pdv: PDV[] }>(this.controllerUrl, {
       method: 'POST',
       body,
       headers,
