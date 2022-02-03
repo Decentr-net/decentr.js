@@ -1,10 +1,10 @@
-import { KeyPair } from '../../wallet';
 import { fetchJson, getAuthHeaders } from '../../utils';
+import { KeyPair } from '../../wallet';
 import { SwapDestinationNetwork, SwapDetails, SwapListPaginationOptions } from './types';
 
-export class DecentrSwapClient {
+export class SwapClient {
   constructor(
-    private swapUrl: string,
+    private readonly url: string,
   ) {
   }
 
@@ -13,7 +13,7 @@ export class DecentrSwapClient {
     network: SwapDestinationNetwork,
     amount: number,
   ): Promise<string> {
-    const url = `${this.swapUrl}/v1/fee`;
+    const url = `${this.url}/v1/fee`;
 
     return fetchJson<{ fee: string }>(url, {
       queryParameters: {
@@ -30,7 +30,7 @@ export class DecentrSwapClient {
   ): Promise<SwapDetails> {
     const path = `/v1/swap/${swapId}`
 
-    const url = `${this.swapUrl}${path}`;
+    const url = `${this.url}${path}`;
 
     const headers = getAuthHeaders(path, keys);
 
@@ -45,7 +45,7 @@ export class DecentrSwapClient {
   ): Promise<SwapDetails[]> {
     const path = '/v1/swap';
 
-    const url = `${this.swapUrl}${path}`;
+    const url = `${this.url}${path}`;
 
     const headers = getAuthHeaders(path, keys);
 
@@ -64,7 +64,7 @@ export class DecentrSwapClient {
   ): Promise<SwapDetails> {
     const path = '/v1/swap';
 
-    const url = `${this.swapUrl}${path}`;
+    const url = `${this.url}${path}`;
 
     const body = {
       destinationAddress: address,
