@@ -44,7 +44,8 @@ npm install decentr-js
    4. [Profile](#cerberus-profile)
    5. [Rewards](#cerberus-rewards)
 5. [Theseus API](#theseus-api)
-   1. [Profile](#theseus-profile)
+   1. [Posts](#theseus-posts)
+   2. [Profile](#theseus-profile)
 6. [Vulcan API](#vulcan-api)
    1. [Referral](#vulcan-referral)
    2. [Registration](#vulcan-registration)
@@ -1103,6 +1104,48 @@ const THESEUS_URL = 'https://theseus.mainnet.decentr.xyz';
 
 const theseusClient = new TheseusClient(THESEUS_URL);
 ```
+
+## 📜 Posts <a id="theseus-posts" />
+
+**Posts client has the following interface**
+
+```
+  class TheseusPostsClient {
+    getPost(params: Pick<Post, 'owner' | 'uuid'>, requestedBy: Wallet['address']): Promise<PostResponse>;
+
+    getPosts(filterOptions?: PostsListFilterOptions): Promise<PostsListResponse>;
+  }
+```
+
+**How to get instance of profile client**
+```
+  const postsClient = theseusClient.posts;
+```
+
+### Methods
+
+1. **Get post**
+```ts
+  const postParams = { 
+    owner: 'decentrWalletAddress',
+    uuid: 'post-uuid-1234',
+  };
+  const requestedBy = 'decentrSameOrAnotherWalletAddress';
+  const stats = await profileClient.getPost(postParams, requestedBy);
+```
+Response of `getPost` method is a [PostResponse](https://github.com/Decentr-net/decentr.js/blob/master/src/api/theseus/posts/types.ts#L29)
+
+2. **Get posts**
+```ts
+  const filter = {
+    category: PostCategory.CATEGORY_WORLD_NEWS,
+    requestedBy: 'decentrSameOrAnotherWalletAddress',
+  }; // optional
+  const balance = await profileClient.getPosts(filter);
+```
+Interface of `filter` object described here [PostsListFilterOptions](https://github.com/Decentr-net/decentr.js/blob/master/src/api/theseus/posts/types.ts#L15)
+
+Response of `getPosts` method is an [PostsListResponse](https://github.com/Decentr-net/decentr.js/blob/master/src/api/theseus/posts/types.ts#L40)
 
 ## 📜 Profile <a id="theseus-profile" />
 
