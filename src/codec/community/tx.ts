@@ -73,12 +73,9 @@ export const MsgCreatePost = {
   },
 
   fromJSON(object: any): MsgCreatePost {
-    const message = createBaseMsgCreatePost();
-    message.post =
-      object.post !== undefined && object.post !== null
-        ? Post.fromJSON(object.post)
-        : undefined;
-    return message;
+    return {
+      post: isSet(object.post) ? Post.fromJSON(object.post) : undefined,
+    };
   },
 
   toJSON(message: MsgCreatePost): unknown {
@@ -131,8 +128,7 @@ export const MsgCreatePostResponse = {
   },
 
   fromJSON(_: any): MsgCreatePostResponse {
-    const message = createBaseMsgCreatePostResponse();
-    return message;
+    return {};
   },
 
   toJSON(_: MsgCreatePostResponse): unknown {
@@ -194,20 +190,11 @@ export const MsgDeletePost = {
   },
 
   fromJSON(object: any): MsgDeletePost {
-    const message = createBaseMsgDeletePost();
-    message.postOwner =
-      object.postOwner !== undefined && object.postOwner !== null
-        ? String(object.postOwner)
-        : "";
-    message.postUuid =
-      object.postUuid !== undefined && object.postUuid !== null
-        ? String(object.postUuid)
-        : "";
-    message.owner =
-      object.owner !== undefined && object.owner !== null
-        ? String(object.owner)
-        : "";
-    return message;
+    return {
+      postOwner: isSet(object.postOwner) ? String(object.postOwner) : "",
+      postUuid: isSet(object.postUuid) ? String(object.postUuid) : "",
+      owner: isSet(object.owner) ? String(object.owner) : "",
+    };
   },
 
   toJSON(message: MsgDeletePost): unknown {
@@ -260,8 +247,7 @@ export const MsgDeletePostResponse = {
   },
 
   fromJSON(_: any): MsgDeletePostResponse {
-    const message = createBaseMsgDeletePostResponse();
-    return message;
+    return {};
   },
 
   toJSON(_: MsgDeletePostResponse): unknown {
@@ -311,12 +297,9 @@ export const MsgSetLike = {
   },
 
   fromJSON(object: any): MsgSetLike {
-    const message = createBaseMsgSetLike();
-    message.like =
-      object.like !== undefined && object.like !== null
-        ? Like.fromJSON(object.like)
-        : undefined;
-    return message;
+    return {
+      like: isSet(object.like) ? Like.fromJSON(object.like) : undefined,
+    };
   },
 
   toJSON(message: MsgSetLike): unknown {
@@ -366,8 +349,7 @@ export const MsgSetLikeResponse = {
   },
 
   fromJSON(_: any): MsgSetLikeResponse {
-    const message = createBaseMsgSetLikeResponse();
-    return message;
+    return {};
   },
 
   toJSON(_: MsgSetLikeResponse): unknown {
@@ -423,16 +405,10 @@ export const MsgFollow = {
   },
 
   fromJSON(object: any): MsgFollow {
-    const message = createBaseMsgFollow();
-    message.owner =
-      object.owner !== undefined && object.owner !== null
-        ? String(object.owner)
-        : "";
-    message.whom =
-      object.whom !== undefined && object.whom !== null
-        ? String(object.whom)
-        : "";
-    return message;
+    return {
+      owner: isSet(object.owner) ? String(object.owner) : "",
+      whom: isSet(object.whom) ? String(object.whom) : "",
+    };
   },
 
   toJSON(message: MsgFollow): unknown {
@@ -480,8 +456,7 @@ export const MsgFollowResponse = {
   },
 
   fromJSON(_: any): MsgFollowResponse {
-    const message = createBaseMsgFollowResponse();
-    return message;
+    return {};
   },
 
   toJSON(_: MsgFollowResponse): unknown {
@@ -537,16 +512,10 @@ export const MsgUnfollow = {
   },
 
   fromJSON(object: any): MsgUnfollow {
-    const message = createBaseMsgUnfollow();
-    message.owner =
-      object.owner !== undefined && object.owner !== null
-        ? String(object.owner)
-        : "";
-    message.whom =
-      object.whom !== undefined && object.whom !== null
-        ? String(object.whom)
-        : "";
-    return message;
+    return {
+      owner: isSet(object.owner) ? String(object.owner) : "",
+      whom: isSet(object.whom) ? String(object.whom) : "",
+    };
   },
 
   toJSON(message: MsgUnfollow): unknown {
@@ -594,8 +563,7 @@ export const MsgUnfollowResponse = {
   },
 
   fromJSON(_: any): MsgUnfollowResponse {
-    const message = createBaseMsgUnfollowResponse();
-    return message;
+    return {};
   },
 
   toJSON(_: MsgUnfollowResponse): unknown {
@@ -711,4 +679,8 @@ export type Exact<P, I extends P> = P extends Builtin
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

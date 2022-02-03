@@ -194,13 +194,14 @@ export const Params = {
   },
 
   fromJSON(object: any): Params {
-    const message = createBaseParams();
-    message.moderators = (object.moderators ?? []).map((e: any) => String(e));
-    message.fixedGas =
-      object.fixedGas !== undefined && object.fixedGas !== null
+    return {
+      moderators: Array.isArray(object?.moderators)
+        ? object.moderators.map((e: any) => String(e))
+        : [],
+      fixedGas: isSet(object.fixedGas)
         ? FixedGasParams.fromJSON(object.fixedGas)
-        : undefined;
-    return message;
+        : undefined,
+    };
   },
 
   toJSON(message: Params): unknown {
@@ -292,28 +293,23 @@ export const FixedGasParams = {
   },
 
   fromJSON(object: any): FixedGasParams {
-    const message = createBaseFixedGasParams();
-    message.createPost =
-      object.createPost !== undefined && object.createPost !== null
+    return {
+      createPost: isSet(object.createPost)
         ? Long.fromString(object.createPost)
-        : Long.UZERO;
-    message.deletePost =
-      object.deletePost !== undefined && object.deletePost !== null
+        : Long.UZERO,
+      deletePost: isSet(object.deletePost)
         ? Long.fromString(object.deletePost)
-        : Long.UZERO;
-    message.setLike =
-      object.setLike !== undefined && object.setLike !== null
+        : Long.UZERO,
+      setLike: isSet(object.setLike)
         ? Long.fromString(object.setLike)
-        : Long.UZERO;
-    message.follow =
-      object.follow !== undefined && object.follow !== null
+        : Long.UZERO,
+      follow: isSet(object.follow)
         ? Long.fromString(object.follow)
-        : Long.UZERO;
-    message.unfollow =
-      object.unfollow !== undefined && object.unfollow !== null
+        : Long.UZERO,
+      unfollow: isSet(object.unfollow)
         ? Long.fromString(object.unfollow)
-        : Long.UZERO;
-    return message;
+        : Long.UZERO,
+    };
   },
 
   toJSON(message: FixedGasParams): unknown {
@@ -427,32 +423,16 @@ export const Post = {
   },
 
   fromJSON(object: any): Post {
-    const message = createBasePost();
-    message.owner =
-      object.owner !== undefined && object.owner !== null
-        ? String(object.owner)
-        : "";
-    message.uuid =
-      object.uuid !== undefined && object.uuid !== null
-        ? String(object.uuid)
-        : "";
-    message.title =
-      object.title !== undefined && object.title !== null
-        ? String(object.title)
-        : "";
-    message.previewImage =
-      object.previewImage !== undefined && object.previewImage !== null
+    return {
+      owner: isSet(object.owner) ? String(object.owner) : "",
+      uuid: isSet(object.uuid) ? String(object.uuid) : "",
+      title: isSet(object.title) ? String(object.title) : "",
+      previewImage: isSet(object.previewImage)
         ? String(object.previewImage)
-        : "";
-    message.category =
-      object.category !== undefined && object.category !== null
-        ? categoryFromJSON(object.category)
-        : 0;
-    message.text =
-      object.text !== undefined && object.text !== null
-        ? String(object.text)
-        : "";
-    return message;
+        : "",
+      category: isSet(object.category) ? categoryFromJSON(object.category) : 0,
+      text: isSet(object.text) ? String(object.text) : "",
+    };
   },
 
   toJSON(message: Post): unknown {
@@ -529,24 +509,12 @@ export const Like = {
   },
 
   fromJSON(object: any): Like {
-    const message = createBaseLike();
-    message.owner =
-      object.owner !== undefined && object.owner !== null
-        ? String(object.owner)
-        : "";
-    message.postOwner =
-      object.postOwner !== undefined && object.postOwner !== null
-        ? String(object.postOwner)
-        : "";
-    message.postUuid =
-      object.postUuid !== undefined && object.postUuid !== null
-        ? String(object.postUuid)
-        : "";
-    message.weight =
-      object.weight !== undefined && object.weight !== null
-        ? likeWeightFromJSON(object.weight)
-        : 0;
-    return message;
+    return {
+      owner: isSet(object.owner) ? String(object.owner) : "",
+      postOwner: isSet(object.postOwner) ? String(object.postOwner) : "",
+      postUuid: isSet(object.postUuid) ? String(object.postUuid) : "",
+      weight: isSet(object.weight) ? likeWeightFromJSON(object.weight) : 0,
+    };
   },
 
   toJSON(message: Like): unknown {
@@ -601,4 +569,8 @@ export type Exact<P, I extends P> = P extends Builtin
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

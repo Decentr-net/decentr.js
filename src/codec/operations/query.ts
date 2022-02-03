@@ -39,8 +39,7 @@ export const MinGasPriceRequest = {
   },
 
   fromJSON(_: any): MinGasPriceRequest {
-    const message = createBaseMinGasPriceRequest();
-    return message;
+    return {};
   },
 
   toJSON(_: MinGasPriceRequest): unknown {
@@ -90,12 +89,11 @@ export const MinGasPriceResponse = {
   },
 
   fromJSON(object: any): MinGasPriceResponse {
-    const message = createBaseMinGasPriceResponse();
-    message.minGasPrice =
-      object.minGasPrice !== undefined && object.minGasPrice !== null
+    return {
+      minGasPrice: isSet(object.minGasPrice)
         ? DecCoin.fromJSON(object.minGasPrice)
-        : undefined;
-    return message;
+        : undefined,
+    };
   },
 
   toJSON(message: MinGasPriceResponse): unknown {
@@ -180,4 +178,8 @@ export type Exact<P, I extends P> = P extends Builtin
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }
