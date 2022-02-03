@@ -1,5 +1,5 @@
-import { Coin } from 'cosmjs-types/cosmos/base/v1beta1/coin';
 import {
+  Coin,
   QueryClient,
   setupStakingExtension,
   StargateClient,

@@ -45,7 +45,10 @@ npm install decentr-js
    5. [Rewards](#cerberus-rewards)
 5. [Theseus API](#theseus-api)
    1. [Profile](#theseus-profile)
-6. [License](#license)
+6. [Vulcan API](#vulcan-api)
+   1. [Referral](#vulcan-referral)
+   2. [Registration](#vulcan-registration)
+7. [License](#license)
 
 ## Mnemonic <a id="mnemonic" />
 
@@ -1134,6 +1137,110 @@ Response of `getProfileStats` method is a [ProfileStatistics](https://github.com
 ```
 Response of `getAdvDdvStats` method is an [AdvDdvStatistics](https://github.com/Decentr-net/decentr.js/blob/master/src/api/theseus/profile/types.ts#L1)
 
-## 🥂 License <a id="license" />
+# Using Vulcan api <a id="vulcan-api" />
+
+## Vulcan client
+
+**For less text, we define some basic variables here**
+
+```ts
+import { VulcanClient } from 'decentr-js';
+
+const VULCAN_URL = 'https://vulcan.mainnet.decentr.xyz';
+
+const vulcanClient = new VulcanClient(VULCAN_URL);
+```
+
+## 📜 Referral <a id="vulcan-referral" />
+
+**Referral client has the following interface**
+
+```
+  class VulcanReferralClient {
+    getCode(walletAddress: Wallet['address']): Promise<string>;
+
+    getConfig(): Promise<ReferralConfig>;
+    
+    getStats(walletAddress: Wallet['address']): Promise<ReferralTimeStats>;
+    
+    trackInstall(walletAddress: Wallet['address']): Promise<void>;
+  }
+```
+
+**How to get instance of referral client**
+```
+  const referralClient = vulcanClient.referral;
+```
+
+### Methods
+
+1. **Get code**
+```ts
+  const walletAddress = 'decentrAddress';
+  const code = await referralClient.getCode(walletAddress);
+```
+Response of `getCode` method is a string code like `abc123`
+
+2. **Get configuration**
+```ts
+  const config = await referralClient.getConfig();
+```
+Response of `getConfig` method is an [ReferralConfig](https://github.com/Decentr-net/decentr.js/blob/master/src/api/vulcan/referral/types.ts#L14)
+
+3. **Get statistics**
+```ts
+  const walletAddress = 'decentrAddress';
+  const stats = await referralClient.getStats();
+```
+Response of `getStats` method is an [ReferralTimeStats](https://github.com/Decentr-net/decentr.js/blob/master/src/api/vulcan/referral/types.ts#L28)
+
+4. **Track install**
+```ts
+  const walletAddress = 'decentrAddress';
+  await referralClient.trackInstall(walletAddress);
+```
+
+## 📜 Registration <a id="vulcan-registration" />
+
+**Registration client has the following interface**
+
+```
+  class VulcanReferralClient {
+    register(walletAddress: Wallet['address'], email: string): Promise<void>;
+
+    confirm(email: string, code: string): Promise<void>;
+    
+    hesoyam(walletAddress: Wallet['address']): Promise<void>;
+  }
+```
+
+**How to get instance of registration client**
+```
+  const registrationClient = vulcanClient.registration;
+```
+
+### Methods
+
+1. **Register user**
+```ts
+  const walletAddress = 'decentrAddress';
+  const email = 'email@email.com';
+  await registrationClient.register(walletAddress, email);
+```
+
+2. **Confirm registration**
+```ts
+  const email = 'email@email.com';
+  const code = 'a1b2c3';
+  await referralClient.confirm(email, code);
+```
+
+3. **Hesoyam**
+```ts
+  const walletAddress = 'decentrAddress';
+  await referralClient.hesoyam(walletAddress);
+```
+
+# 🥂 License <a id="license" />
 
 [MIT](./LICENSE.md) as always
