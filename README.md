@@ -26,21 +26,26 @@ npm install decentr-js
 1. [Mnemonic](#mnemonic)
 2. [Wallet](#wallet)
 3. [Decentr API](#decentr-api)
-   1. [Auth](#auth)
-   2. [Bank](#bank)
-   3. [Blocks](#blocks)
-   4. [Community](#community)
-   5. [Distribution](#distribution)
-   6. [Image](#image)
-   7. [Mint](#mint)
-   8. [Node](#node)
-   9. [Operations](#operations)
-   10. [PDV](#pdv)
-   11. [Profile](#profile)
-   12. [Staking](#staking)
-   13. [Token](#token)
-   14. [Tx](#tx)
-4. [License](#license)
+   1. [Status](#decentr-status)
+   2. [Auth](#decentr-auth)
+   3. [Bank](#decentr-bank)
+   4. [Blocks](#decentr-blocks)
+   5. [Community](#decentr-community)
+   6. [Distribution](#decentr-distribution)
+   7. [Mint](#decentr-mint)
+   8. [Operations](#decentr-operations)
+   9. [Staking](#decentr-staking)
+   10. [Token](#decentr-token)
+   11. [Tx](#decentr-tx)
+4. [Cerberus API](#cerberus-api)
+   1. [Configuration](#cerberus-configuration)   
+   2. [Image](#cerberus-image)
+   3. [PDV](#cerberus-pdv)
+   4. [Profile](#cerberus-profile)
+   5. [Rewards](#cerberus-rewards)
+5. [Theseus API](#theseus-api)
+   1. [Profile](#theseus-profile)
+6. [License](#license)
 
 ## Mnemonic <a id="mnemonic" />
 
@@ -85,16 +90,19 @@ import { DecentrClient } from 'decentr-js';
 
 const NODE_URL = 'http://rest.testnet.decentr.xyz:26657'; // blockchain node
 
-const CERBERUS_URL = 'https://cerberus.testnet.decentr.xyz'; // pdv server
-const THESEUS_URL = 'https://theseus.testnet.decentr.xyz'; // offchain server
+const privateKey = 'decentrPrivateKey'; // optional, if you do not need to use sign functionality
 
-const decentrClient = new Decentr(NODE_URL, {
-  cerberus: CERBERUS_URL,
-  theseus: THESEUS_URL,
-});
+const decentrClient = await DecentrClient.create(NODE_URL, privateKey);
 ```
 
-## 📜 Auth <a id="auth" />
+## Status <a id="decentr-status" />
+
+```ts
+  const status = await decentrClient.status();
+```
+Response of `status` method is a [StatusResponse](https://github.com/cosmos/cosmjs/blob/e7b107a0d0419fbd5280645a70153548235617fa/packages/tendermint-rpc/src/tendermint34/responses.ts#L127).
+
+## 📜 Auth <a id="decentr-auth" />
 
 **Auth client has the following interface**
 
@@ -106,12 +114,7 @@ const decentrClient = new Decentr(NODE_URL, {
 
 **How to get instance of auth client**
 ```
-  const authClient = await decentrClient.auth();
-  
-  OR
-  
-  import { DecentrAuthClient } from 'decentr-js'
-  const authClient = await DecentrAuthClient.create(NODE_URL);
+  const authClient = decentrClient.auth;
 ```
 
 ### Methods
@@ -123,7 +126,7 @@ const decentrClient = new Decentr(NODE_URL, {
 ```
 Response of `getAccount` method is an [Account](https://github.com/cosmos/cosmjs/blob/57a56cfa6ae8c06f4c28949a1028dc764816bbe8/packages/stargate/src/accounts.ts#L15) or `null` if account is not exist.
 
-## 📜 Bank <a id="bank" />
+## 📜 Bank <a id="decentr-bank" />
 
 **Bank client has the following interface**
 
@@ -139,7 +142,6 @@ Response of `getAccount` method is an [Account](https://github.com/cosmos/cosmjs
     
     public sendTokens(
       request: MsgSend,
-      privateKey: Wallet['privateKey'],
       options?: {
         memo?: string,
       },
@@ -149,12 +151,7 @@ Response of `getAccount` method is an [Account](https://github.com/cosmos/cosmjs
 
 **How to get instance of bank client**
 ```
-  const bankClient = await decentrClient.bank();
-  
-  OR
-  
-  import { DecentrBankClient } from 'decentr-js'
-  const bankClient = await DecentrBankClient.create(NODE_URL);
+  const bankClient = decentrClient.bank;
 ```
 
 ### Methods
@@ -205,9 +202,8 @@ Response of `getDenomSupply` method is a [Coin](https://github.com/cosmos/cosmjs
       },
     ],
   };
-  const privateKey = '1234567890abcdefghijklmno';
   const memo = 'My gift to decentr user';
-  const transactionSigner = bankClient.sendTokens(message, privateKey, { memo });
+  const transactionSigner = bankClient.sendTokens(message, { memo });
 ```
 
 <a id="transactionSigner"></a>
@@ -222,22 +218,17 @@ Response of `getDenomSupply` method is a [Coin](https://github.com/cosmos/cosmjs
 ```
 Response of `signAndBroadcast` method is a [DeliverTxResponse](https://github.com/cosmos/cosmjs/blob/57a56cfa6ae8c06f4c28949a1028dc764816bbe8/packages/stargate/src/stargateclient.ts#L99).
 
-## 📜 Blocks <a id="blocks" />
+## 📜 Blocks <a id="decentr-blocks" />
 
 **Blocks client has the following interface**
 ```
   class DecentrBlocksClient {
-    getBlock(height?: BlockHeader['height']): Promise<DecodedBlock>;
+    getBlock(height?: BlockHeader['height']): Promise<Block>;
   }
 ```
 **How to get instance of bank client**
 ```
-  const blocksClient = await decentrClient.blocks();
-  
-  OR
-  
-  import { DecentrBlocksClient } from 'decentr-js'
-  const blocksClient = await DecentrBlocksClient.create(NODE_URL);
+  const blocksClient = decentrClient.blocks;
 ```
 
 ### Methods
@@ -249,9 +240,9 @@ Response of `signAndBroadcast` method is a [DeliverTxResponse](https://github.co
 ```
 *Notice*: `height` is an optional param, method will return the latest block if `height` is not supplied.
 
-Response of `getBlock` method is a [DecodedBlock](https://github.com/Decentr-net/decentr.js/blob/develop/src/api/blocks/types.ts#L5).
+Response of `getBlock` method is a [Block](https://github.com/Decentr-net/decentr.js/blob/master/src/api/decentr/blocks/types.ts#L7).
 
-## 📜 Community <a id="community" />
+## 📜 Community <a id="decentr-community" />
 
 **Community client has the following interface**
 ```
@@ -262,7 +253,6 @@ Response of `getBlock` method is a [DecodedBlock](https://github.com/Decentr-net
 
     createPost(
       request: MsgCreatePost['post'],
-      privateKey: Wallet['privateKey'],
       options?: {
         memo?: string,
       },
@@ -270,7 +260,6 @@ Response of `getBlock` method is a [DecodedBlock](https://github.com/Decentr-net
 
     deletePost(
       request: MsgDeletePost,
-      privateKey: Wallet['privateKey'],
       options?: {
         memo?: string,
       },
@@ -278,7 +267,6 @@ Response of `getBlock` method is a [DecodedBlock](https://github.com/Decentr-net
 
     setLike(
       request: MsgSetLike['like'],
-      privateKey: Wallet['privateKey'],
       options?: {
         memo?: string,
       },
@@ -286,7 +274,6 @@ Response of `getBlock` method is a [DecodedBlock](https://github.com/Decentr-net
 
     follow(
       request: MsgFollow,
-      privateKey: Wallet['privateKey'],
       options?: {
         memo?: string,
       },
@@ -294,7 +281,6 @@ Response of `getBlock` method is a [DecodedBlock](https://github.com/Decentr-net
 
     unfollow(
       request: MsgUnfollow,
-      privateKey: Wallet['privateKey'],
       options?: {
         memo?: string,
       },
@@ -303,12 +289,7 @@ Response of `getBlock` method is a [DecodedBlock](https://github.com/Decentr-net
 ```
 **How to get instance of community client**
 ```
-  const communityClient = await decentrClient.community();
-  
-  OR
-  
-  import { DecentrCommunityClient } from 'decentr-js'
-  const communityClient = await DecentrCommunityClient.create(NODE_URL);
+  const communityClient = decentrClient.community;
 ```
 
 ### Methods
@@ -337,8 +318,7 @@ Response of `getFollowees` method is a wallet address array;
     category: PostCategory.CATEGORY_TRAVEL_AND_TOURISM,
     text: 'Post text',
   };
-  const privateKey = '1234567890abcdefghijklmno';
-  const transactionSigner = communityClient.createPost(message, privateKey);
+  const transactionSigner = communityClient.createPost(message);
 ```
 *Notice*: more about `transactionSigner` you can read [here](#transactionSigner)
 
@@ -349,8 +329,7 @@ Response of `getFollowees` method is a wallet address array;
     postUuid: '12345-abcde-67890-fghijk',
     owner: 'decentrInitiatorAddress',
   };
-  const privateKey = '1234567890abcdefghijklmno';
-  const transactionSigner = communityClient.deletePost(message, privateKey);
+  const transactionSigner = communityClient.deletePost(message);
 ```
 *Notice*: more about `transactionSigner` you can read [here](#transactionSigner)
 
@@ -363,8 +342,7 @@ Response of `getFollowees` method is a wallet address array;
     owner: 'decentrInitiatorAddress',
     weight: LikeWeight.LIKE_WEIGHT_UP,
   };
-  const privateKey = '1234567890abcdefghijklmno';
-  const transactionSigner = communityClient.deletePost(message, privateKey);
+  const transactionSigner = communityClient.deletePost(message);
 ```
 *Notice*: more about `transactionSigner` you can read [here](#transactionSigner)
 
@@ -375,8 +353,7 @@ Response of `getFollowees` method is a wallet address array;
     owner: 'decentrFollowerAddress',
     whom: 'decentrWhomToFollowAddress',
   };
-  const privateKey = '1234567890abcdefghijklmno';
-  const transactionSigner = communityClient.deletePost(message, privateKey);
+  const transactionSigner = communityClient.deletePost(message);
 ```
 *Notice*: more about `transactionSigner` you can read [here](#transactionSigner)
 
@@ -387,8 +364,7 @@ Response of `getFollowees` method is a wallet address array;
     owner: 'decentrFollowerAddress',
     whom: 'decentrWhomToUnfollowAddress',
   };
-  const privateKey = '1234567890abcdefghijklmno';
-  const transactionSigner = communityClient.deletePost(message, privateKey);
+  const transactionSigner = communityClient.deletePost(message);
 ```
 *Notice*: more about `transactionSigner` you can read [here](#transactionSigner)
 
@@ -416,7 +392,6 @@ Response of `getFollowees` method is a wallet address array;
 
     setWithdrawAddress(
       request: SetWithdrawAddressRequest,
-      privateKey: Wallet['privateKey'],
       options?: {
         memo?: string,
       },
@@ -424,7 +399,6 @@ Response of `getFollowees` method is a wallet address array;
     
     withdrawDelegatorRewards(
       request: WithdrawDelegatorRewardRequest,
-      privateKey: Wallet['privateKey'],
       options?: {
         memo?: string,
       },
@@ -432,7 +406,6 @@ Response of `getFollowees` method is a wallet address array;
     
     withdrawValidatorRewards(
       request: WithdrawValidatorCommissionRequest,
-      privateKey: Wallet['privateKey'],
       options?: {
         memo?: string,
       },
@@ -441,12 +414,7 @@ Response of `getFollowees` method is a wallet address array;
 ```
 **How to get instance of distribution client**
 ```
-  const distributionClient = await decentrClient.distribution();
-  
-  OR
-  
-  import { DecentrDistributionClient } from 'decentr-js'
-  const distributionClient = await DecentrDistributionClient.create(NODE_URL);
+  const distributionClient = decentrClient.distribution;
 ```
 
 ### Methods
@@ -505,8 +473,7 @@ Response of `getValidatorOutstandingRewards` method is a [Coin](https://github.c
     delegatorAddress: 'decentrDelegatorAddress',
     withdrawAddress: 'decentrWithdrawAddrews',
   };
-  const privateKey = '1234567890abcdefghijklmno';
-  const transactionSigner = distributionClient.setWithdrawAddress(message, privateKey);
+  const transactionSigner = distributionClient.setWithdrawAddress(message);
 ```
 *Notice*: more about `transactionSigner` you can read [here](#transactionSigner)
 
@@ -522,8 +489,7 @@ Response of `getValidatorOutstandingRewards` method is a [Coin](https://github.c
       validatorAddress: 'decentrWithdrawAddrews2',
     },
   ];
-  const privateKey = '1234567890abcdefghijklmno';
-  const transactionSigner = distributionClient.withdrawDelegatorRewards(messages, privateKey);
+  const transactionSigner = distributionClient.withdrawDelegatorRewards(messages);
 ```
 *Notice*: more about `transactionSigner` you can read [here](#transactionSigner)
 
@@ -532,45 +498,11 @@ Response of `getValidatorOutstandingRewards` method is a [Coin](https://github.c
   const message = {
      validatorAddress: 'decentrvaloperValidatorAddress',
   };
-  const privateKey = '1234567890abcdefghijklmno';
-  const transactionSigner = distributionClient.withdrawValidatorRewards(message, privateKey);
+  const transactionSigner = distributionClient.withdrawValidatorRewards(message);
 ```
 *Notice*: more about `transactionSigner` you can read [here](#transactionSigner)
 
-## 📜 Image <a id="image" />
-
-**Image client has the following interface**
-
-```
-  class DecentrImageClient {
-    saveImage(image: File, keyPair: KeyPair): Promise<SaveImageResponse>;
-  }
-```
-
-**How to get instance of image client**
-```
-  const imageClient = decentrClient.image;
-  
-  OR
-  
-  import { DecentrImageClient } from 'decentr-js'
-  const imageClient = new DecentrImageClient(CERBERUS_URL);
-```
-
-### Methods
-
-1. **Save image**
-```ts
-  const image = 'your image file of File interface';
-  const keyPair = {
-    privateKey: '1234567890abcdefghijklmno',
-    publicKey: 'abcdefghijklmno1234567890',
-  };
-  const imageResponse = await imageClient.saveImage(image, keyPair);
-```
-Response of `saveImage` method is an [SaveImageResponse](https://github.com/Decentr-net/decentr.js/blob/develop/src/api/image/types.ts#L1)
-
-## 📜 Mint <a id="mint" />
+## 📜 Mint <a id="decentr-mint" />
 
 **Mint client has the following interface**
 
@@ -582,12 +514,7 @@ Response of `saveImage` method is an [SaveImageResponse](https://github.com/Dece
 
 **How to get instance of mint client**
 ```
-  const mintClient = await decentrClient.mint();
-  
-  OR
-  
-  import { DecentrMintClient } from 'decentr-js'
-  const mintClient = await DecentrMintClient.create(NODE_URL);
+  const mintClient = decentrClient.mint;
 ```
 
 ### Methods
@@ -598,35 +525,7 @@ Response of `saveImage` method is an [SaveImageResponse](https://github.com/Dece
 ```
 Response of `getInflation` method is a string like `0.135`.
 
-## 📜 Node <a id="node" />
-
-**Node client has the following interface**
-
-```
-  class DecentrNodeClient {
-    getNodeInfo(): Promise<StatusResponse>;
-  }
-```
-
-**How to get instance of node client**
-```
-  const nodeClient = await decentrClient.node();
-  
-  OR
-  
-  import { DecentrNodeClient } from 'decentr-js'
-  const nodeClient = await DecentrNodeClient.create(NODE_URL);
-```
-
-### Methods
-
-1. **Get node info**
-```ts
-  const nodeInfo = await nodeClient.getNodeInfo();
-```
-Response of `getNodeInfo` method is a [StatusResponse](https://github.com/cosmos/cosmjs/blob/e7b107a0d0419fbd5280645a70153548235617fa/packages/tendermint-rpc/src/tendermint34/responses.ts#L127).
-
-## 📜 Operations <a id="operations" />
+## 📜 Operations <a id="decentr-operations" />
 
 **Operations client has the following interface**
 
@@ -636,7 +535,6 @@ Response of `getNodeInfo` method is a [StatusResponse](https://github.com/cosmos
 
     resetAccount(
       request: ResetAccountRequest,
-      privateKey: Wallet['privateKey'],
       options?: {
         memo?: string,
       },
@@ -646,12 +544,7 @@ Response of `getNodeInfo` method is a [StatusResponse](https://github.com/cosmos
 
 **How to get instance of operations client**
 ```
-  const operationsClient = await decentrClient.operations();
-  
-  OR
-  
-  import { DecentrOperationsClient } from 'decentr-js'
-  const operationsClient = await DecentrOperationsClient.create(NODE_URL);
+  const operationsClient = decentrClient.operations;
 ```
 
 ### Methods
@@ -668,184 +561,11 @@ Response of `getMinGasPrice` method is a [Coin](https://github.com/cosmos/cosmjs
     owner: 'decentrInitiatorAddress',
     address: 'decentrResetAddress',
   };
-  const privateKey = '1234567890abcdefghijklmno';
-  const transactionSigner = operationsClient.resetAccount(message, privateKey);
+  const transactionSigner = operationsClient.resetAccount(message);
 ```
 *Notice*: more about `transactionSigner` you can read [here](#transactionSigner)
 
-## 📜 PDV <a id="pdv" />
-
-**PDV client has the following interface**
-
-```
-  class DecentrPDVClient {
-    getPDVBlacklist(): Promise<PDVBlacklist>;
-
-    getPDVList(
-      walletAddress: Wallet['address'],
-      paginationOptions?: PDVListPaginationOptions,
-    ): Promise<PDVListItem[]>;
-    
-    getPDVMeta(pdvAddress: number, walletAddress: Wallet['address']): Promise<PDVMeta>;
-    
-    getPDVDetails(pdvAddress: number, wallet: Wallet): Promise<PDVDetails>;
-    
-    getRewards(): Promise<PDVRewards>;
-    
-    sendPDV(pdv: PDV[], keyPair: KeyPair): Promise<PDVAddress>
-  }
-```
-
-**How to get instance of PDV client**
-```
-  const pDVClient = decentrClient.pdv;
-  
-  OR
-  
-  import { DecentrPDVClient } from 'decentr-js'
-  const pDVClient = new DecentrPDVClient(CERBERUS_URL);
-```
-
-### Methods
-
-1. **Get PDV blacklist**
-```ts
-  const pDVBlacklist = await pDVClient.getPDVBlacklist();
-```
-Response of `getPDVBlacklist` method is a [PDVBlacklist](https://github.com/Decentr-net/decentr.js/blob/develop/src/api/pdv/types.ts#L1)
-
-2. **Get PDV list**
-```ts
-  const walletAddress = 'decentrPDVOwnerAddress';
-  const pagination = {
-    limit: 20,
-    from: 12345678, // optional, timestamp of previous PDVListItem
-  };
-  const privateKey = '1234567890abcdefghijklmno';
-  const pdvList = operationsClient.getPDVList(walletAddress, pagination);
-```
-Response of `getPDVList` method is an id (timestamp) array like `[1641748368, 1641744563, 164158725]`
-
-3. **Get PDV meta**
-```ts
-  const walletAddress = 'decentrPDVOwnerAddress';
-  const pDVAddress = 1641748368;
-  const pDVMeta = await pDVClient.getPDVMeta(pDVAddress, walletAddress);
-```
-Response of `getPDVMeta` method is a [PDVMeta](https://github.com/Decentr-net/decentr.js/blob/develop/src/api/pdv/types.ts#L94)
-
-4. **Get PDV details**
-```ts
-  const wallet = { 
-    address: 'decentrPDVOwnerAddress',
-    privateKey: '1234567890abcdefghijklmno',
-    publicKey: 'abcdefghijklmno1234567890',
-  };
-  const pDVAddress = 1641748368;
-  const pDVDetails = await pDVClient.getPDVDetails(pDVAddress, wallet);
-```
-Response of `getPDVDetails` method is a [PDVMeta](https://github.com/Decentr-net/decentr.js/blob/develop/src/api/pdv/types.ts#L89)
-
-5. **Get rewards configuration**
-```ts
-  const rewards = await pDVClient.getRewards();
-```
-Response of `getRewards` method is a [PDVMeta](https://github.com/Decentr-net/decentr.js/blob/develop/src/api/pdv/types.ts#L99)
-
-6. **Send PDV**
-```ts
-  const PDV = []; // array of your PDV's;
-  const keyPair = {
-    privateKey: '1234567890abcdefghijklmno',
-    publicKey: 'abcdefghijklmno1234567890',
-  };
-  const pDVAddress = await pDVClient.sendPDV(pdv, keyPair);
-```
-Response of `sendPDV` method is an id (timestamp) of PDV.
-
-## 📜 Profile <a id="profile" />
-
-**Profile client has the following interface**
-
-```
-  class DecentrProfileClient {
-    setProfile(profile: ProfileUpdate, keyPair: KeyPair): Promise<PDVAddress>;
-
-    getProfile(walletAddress: Wallet['address'], keys?: KeyPair): Promise<Profile>;
-    
-    getProfiles(
-      walletAddresses: Wallet['address'][],
-      keys?: KeyPair,
-    ): Promise<Record<Profile['address'], Profile>>;
-    
-    getStats(walletAddress: Wallet['address']): Promise<ProfileStatistics>;
-  }
-```
-
-**How to get instance of PDV client**
-```
-  const profileClient = decentrClient.profile;
-  
-  OR
-  
-  import { DecentrProfileClient } from 'decentr-js'
-  const profileClient = new DecentrProfileClient(CERBERUS_URL, THESEUS_URL);
-```
-
-### Methods
-
-1. **Set profile**
-```ts
-  import { Gender } from 'decentr-js';
-  const profile = {
-    avatar: 'http://avatar.png',
-    bio: 'bio',
-    birthday: '1991-01-01',
-    emails: ['email@email.com'],
-    firstName: 'firstName',        // maxlength: 64
-    gender: Gender.Male,
-    lastName: 'lastName',          // maxlength: 64
-  } 
-  const keyPair = {
-    privateKey: '1234567890abcdefghijklmno',
-    publicKey: 'abcdefghijklmno1234567890',
-  };
-  const pDVAddress = await profileClient.setProfile(profile, keyPair);
-```
-Response of `sendPDV` method is an id (timestamp) of PDV.
-
-2. **Get profile**
-```ts
-  const walletAddress = 'decentrAddress';
-  const keyPair = {
-    privateKey: '1234567890abcdefghijklmno',
-    publicKey: 'abcdefghijklmno1234567890',
-  };
-  // keyPair is an optional param required to get private profile data (birthday, gender etc.)
-  const profile = await profileClient.getProfile(walletAddress, keyPair);
-```
-Response of `getProfile` method is a [Profile](https://github.com/Decentr-net/decentr.js/blob/develop/src/api/profile/types.ts#L4)
-
-3. **Get profiles**
-```ts
-  const walletAddresses = ['decentrAddress1', 'decentrAddress2'];
-  const keyPair = {
-    privateKey: '1234567890abcdefghijklmno',
-    publicKey: 'abcdefghijklmno1234567890',
-  };
-  // keyPair is an optional param required to get private profile data only for request initiator's profile (birthday, gender etc.)
-  const profiles = await profileClient.getProfiles(walletAddress, keyPair);
-```
-Response of `getProfile` method is an object of type `{ decentrAddress1: profileObj1, decentrAddress2: profileObj2 }`.
-
-4. **Get profile stats**
-```ts
-  const walletAddress = 'decentrAddress';
-  const stats = await pDVClient.getStats(walletAddress);
-```
-Response of `getStats` method is a [ProfileStatistics](https://github.com/Decentr-net/decentr.js/blob/develop/src/api/profile/types.ts#L15)
-
-## 📜 Staking <a id="staking" />
+## 📜 Staking <a id="decentr-staking" />
 
 **Staking client has the following interface**
 ```
@@ -890,7 +610,6 @@ Response of `getStats` method is a [ProfileStatistics](https://github.com/Decent
     
     delegateTokens(
       request: DelegateTokensRequest,
-      privateKey: Wallet['privateKey'],
       options?: {
         memo?: string,
       },
@@ -898,7 +617,6 @@ Response of `getStats` method is a [ProfileStatistics](https://github.com/Decent
     
     undelegateTokens(
       request: UndelegateTokensRequest,
-      privateKey: Wallet['privateKey'],
       options?: {
         memo?: string,
       },
@@ -906,7 +624,6 @@ Response of `getStats` method is a [ProfileStatistics](https://github.com/Decent
     
     redelegateTokens(
       request: RedelegateTokensRequest,
-      privateKey: Wallet['privateKey'],
       options?: {
         memo?: string,
       },
@@ -915,12 +632,7 @@ Response of `getStats` method is a [ProfileStatistics](https://github.com/Decent
 ```
 **How to get instance of staking client**
 ```
-  const stakingClient = await decentrClient.staking();
-  
-  OR
-  
-  import { DecentrStakingClient } from 'decentr-js'
-  const stakingClient = await DecentrStakingClient.create(NODE_URL);
+  const stakingClient = decentrClient.staking;
 ```
 
 ### Methods
@@ -973,7 +685,7 @@ Response of `getValidatorDelegations` method is a [DelegationResponse](https://g
 ```
 Response of `getUnbondingDelegations` method is a [UnbondingDelegation](https://github.com/confio/cosmjs-types/blob/e3e0c4ba52d38af45522f5705c24eb734494b9a4/src/cosmos/staking/v1beta1/staking.ts#L197) array.
 
-5. **Get unbonding delegation**
+8. **Get unbonding delegation**
 ```ts
   const delegatorAddress = 'decentrDelegatorAddress';
   const validatorAddress = 'decentrvaloperValidatorAddress';
@@ -982,7 +694,7 @@ Response of `getUnbondingDelegations` method is a [UnbondingDelegation](https://
 ```
 Response of `getUnbondingDelegation` method is a [UnbondingDelegation](https://github.com/confio/cosmjs-types/blob/e3e0c4ba52d38af45522f5705c24eb734494b9a4/src/cosmos/staking/v1beta1/staking.ts#L197)
 
-6. **Get validator unbonding delegations**
+9. **Get validator unbonding delegations**
 ```ts
   const validatorAddress = 'decentrvaloperValidatorAddress';
   const unboindingDelegations = await stakingClient
@@ -990,7 +702,7 @@ Response of `getUnbondingDelegation` method is a [UnbondingDelegation](https://g
 ```
 Response of `getValidatorUnbondingDelegations` method is a [UnbondingDelegation](https://github.com/confio/cosmjs-types/blob/e3e0c4ba52d38af45522f5705c24eb734494b9a4/src/cosmos/staking/v1beta1/staking.ts#L197) array.
 
-7. **Get redelegations**
+10. **Get redelegations**
 ```ts
   const delegatorAddress = 'decentrDelegatorAddress';
   const sourceValidatorAddress = 'decentrvaloperSourceValidatorAddress';
@@ -1003,20 +715,20 @@ Response of `getValidatorUnbondingDelegations` method is a [UnbondingDelegation]
 ```
 Response of `getRedelegations` method is a [RedelegationResponse](https://github.com/confio/cosmjs-types/blob/e3e0c4ba52d38af45522f5705c24eb734494b9a4/src/cosmos/staking/v1beta1/staking.ts#L283) array.
 
-8. **Get delegator validators**
+11. **Get delegator validators**
 ```ts
   const delegatorAddress = 'decentrDelegatorAddress';
   const validators = await stakingClient.getDelegatorValidators(delegatorAddress);
 ```
 Response of `getDelegatorValidators` method is a [Validator](https://github.com/confio/cosmjs-types/blob/e3e0c4ba52d38af45522f5705c24eb734494b9a4/src/cosmos/staking/v1beta1/staking.ts#L117) array.
 
-8. **Get staking parameters**
+12. **Get staking parameters**
 ```ts
   const parameters = await stakingClient.getStakingParameters();
 ```
 Response of `getStakingParameters` method is a [Params](https://github.com/confio/cosmjs-types/blob/e3e0c4ba52d38af45522f5705c24eb734494b9a4/src/cosmos/staking/v1beta1/staking.ts#L246)
 
-9. **Delegate tokens**
+13. **Delegate tokens**
 ```ts
   const message = {
     delegatorAddress: 'decentrDelegatorAddress',
@@ -1028,12 +740,11 @@ Response of `getStakingParameters` method is a [Params](https://github.com/confi
       },
     ],
   };
-  const privateKey = '1234567890abcdefghijklmno';
-  const transactionSigner = stakingClient.delegateTokens(message, privateKey);
+  const transactionSigner = stakingClient.delegateTokens(message);
 ```
 *Notice*: more about `transactionSigner` you can read [here](#transactionSigner)
 
-9. **Undelegate tokens**
+14. **Undelegate tokens**
 ```ts
   const message = {
     delegatorAddress: 'decentrDelegatorAddress',
@@ -1043,12 +754,11 @@ Response of `getStakingParameters` method is a [Params](https://github.com/confi
       denom: 'udec',
     },
   };
-  const privateKey = '1234567890abcdefghijklmno';
-  const transactionSigner = stakingClient.undelegateTokens(message, privateKey);
+  const transactionSigner = stakingClient.undelegateTokens(message);
 ```
 *Notice*: more about `transactionSigner` you can read [here](#transactionSigner)
 
-9. **Redelegate tokens**
+15. **Redelegate tokens**
 ```ts
   const message = {
     delegatorAddress: 'decentrDelegatorAddress',
@@ -1059,35 +769,23 @@ Response of `getStakingParameters` method is a [Params](https://github.com/confi
       denom: 'udec',
     },
   };
-  const privateKey = '1234567890abcdefghijklmno';
-  const transactionSigner = stakingClient.redelegateTokens(message, privateKey);
+  const transactionSigner = stakingClient.redelegateTokens(message);
 ```
 *Notice*: more about `transactionSigner` you can read [here](#transactionSigner)
 
-## 📜 Token <a id="token" />
+## 📜 Token <a id="decentr-token" />
 
 **Token client has the following interface**
 
 ```
   class DecentrTokenClient {
     getBalance(walletAddress: Wallet['address']): Promise<string>;
-    
-    getAdvDdvStats(): Promise<AdvDdvStatistics>;
-    
-    getDelta(walletAddress: Wallet['address']): Promise<TokenDelta>;
-    
-    getPool(): Promise<TokenPool>;
   }
 ```
 
 **How to get instance of token client**
 ```
-  const tokenClient = await decentrClient.token();
-  
-  OR
-  
-  import { DecentrTokenClient } from 'decentr-js';
-  const tokenClient = await DecentrTokenClient.create(NODE_URL, CERBERUS_URL, THESEUS_URL);
+  const tokenClient = decentrClient.token;
 ```
 
 ### Methods
@@ -1099,27 +797,7 @@ Response of `getStakingParameters` method is a [Params](https://github.com/confi
 ```
 Response of `getBalance` method is a string like `1.001234`.
 
-2. **Get ADV/DDV stats**
-```ts
-  const walletAddress = 'decentrWalletAddress';
-  const balance = await tokenClient.getAdvDdvStats();
-```
-Response of `getAdvDdvStats` method is an [AdvDdvStatistics](https://github.com/Decentr-net/decentr.js/blob/develop/src/api/token/types.ts#L1)
-
-3. **Get delta**
-```ts
-  const walletAddress = 'decentrWalletAddress';
-  const delta = await tokenClient.getDelta(walletAddress);
-```
-Response of `getDelta` method is an [TokenDelta](https://github.com/Decentr-net/decentr.js/blob/develop/src/api/token/types.ts#L12)
-
-4. **Get pool**
-```ts
-  const pool = await tokenClient.getPool();
-```
-Response of `getDelta` method is an [TokenPool](https://github.com/Decentr-net/decentr.js/blob/develop/src/api/token/types.ts#L6)
-
-## 📜 Tx <a id="tx" />
+## 📜 Tx <a id="decentr-tx" />
 
 **Tx client has the following interface**
 
@@ -1133,12 +811,7 @@ Response of `getDelta` method is an [TokenPool](https://github.com/Decentr-net/d
 
 **How to get instance of tx client**
 ```
-  const txClient = await decentrClient.tx();
-  
-  OR
-  
-  import { DecentrTxClient } from 'decentr-js';
-  const txClient = await DecentrTxClient.create(NODE_URL);
+  const txClient = decentrClient.tx;
 ```
 
 ### Methods
@@ -1164,14 +837,302 @@ Response of `getDelta` method is an [TokenPool](https://github.com/Decentr-net/d
   };
   const txsByTags = await txClient.search(queryByHeight);
 ```
-Response of `search` method is an [DecodedIndexedTx](https://github.com/Decentr-net/decentr.js/blob/develop/src/api/tx/types.ts#L10) array.
+Response of `search` method is an [DecodedIndexedTx](https://github.com/Decentr-net/decentr.js/blob/master/src/api/decentr/tx/types.ts#L10) array.
 
 2. **Get by hash**
 ```ts
   const txHash = 'ABCDEF0123456GHIJKL7890';
   const tx = await txClient.getByHash(txHash);
 ```
-Response of `getByHash` method is an [DecodedIndexedTx](https://github.com/Decentr-net/decentr.js/blob/develop/src/api/tx/types.ts#L10)
+Response of `getByHash` method is an [DecodedIndexedTx](https://github.com/Decentr-net/decentr.js/blob/master/src/api/decentr/tx/types.ts#L10)
+
+# Using Cerberus api <a id="cerberus-api" />
+
+## Cerberus client
+
+**For less text, we define some basic variables here**
+
+```ts
+import { CerberusClient } from 'decentr-js';
+
+const CERBERUS_URL = 'https://cerberus.mainnet.decentr.xyz';
+
+const cerberusClient = new CerberusClient(CERBERUS_URL);
+```
+
+## 📜 Configuration <a id="cerberus-configuration" />
+
+**Configuration client has the following interface**
+
+```
+  class CerberusConfigurationClient {
+    getPDVBlacklist(): Promise<PDVBlacklist>;
+
+    getPDVRewards(): Promise<PDVRewards>;
+  }
+```
+
+**How to get instance of configuration client**
+```
+  const configurationClient = cerberusClient.configuration;
+```
+
+### Methods
+
+1. **Get PDV blacklist**
+```ts
+  const pDVBlacklist = await configurationClient.getPDVBlacklist();
+```
+Response of `getPDVBlacklist` method is a [PDVBlacklist](https://github.com/Decentr-net/decentr.js/blob/master/src/api/cerberus/configuration/types.ts#L3)
+
+2. **Get PDV rewards configuration**
+```ts
+  const pDVRewards = await configurationClient.getPDVRewards();
+```
+Response of `getPDVRewards` method is a [PDVRewards](https://github.com/Decentr-net/decentr.js/blob/master/src/api/cerberus/configuration/types.ts#L7)
+
+## 📜 Image <a id="cerberus-image" />
+
+**Image client has the following interface**
+
+```
+  class CerberusImageClient {
+    save(image: File, keyPair: KeyPair): Promise<SaveImageResponse>;
+  }
+```
+
+**How to get instance of image client**
+```
+  const imageClient = cerberusClient.image;
+```
+
+### Methods
+
+1. **Save image**
+```ts
+  const image = 'your image file of File interface';
+  const keyPair = {
+    privateKey: '1234567890abcdefghijklmno',
+    publicKey: 'abcdefghijklmno1234567890',
+  };
+  const imageResponse = await imageClient.saveImage(image, keyPair);
+```
+Response of `saveImage` method is an [SaveImageResponse](https://github.com/Decentr-net/decentr.js/blob/master/src/api/cerberus/image/types.ts#L1)
+
+## 📜 PDV <a id="cerberus-pdv" />
+
+**PDV client has the following interface**
+
+```
+  class CerberusPDVClient {
+    getPDVList(
+      walletAddress: Wallet['address'],
+      paginationOptions?: PDVListPaginationOptions,
+    ): Promise<PDVListItem[]>;
+    
+    getPDVMeta(pdvAddress: number, walletAddress: Wallet['address']): Promise<PDVMeta>;
+    
+    getPDVDetails(pdvAddress: number, wallet: Wallet): Promise<PDVDetails>;
+    
+    sendPDV(pdv: PDV[], keyPair: KeyPair): Promise<PDVAddress>
+  }
+```
+
+**How to get instance of PDV client**
+```
+  const pDVClient = cerberusClient.pdv;
+```
+
+### Methods
+
+1. **Get PDV list**
+```ts
+  const walletAddress = 'decentrPDVOwnerAddress';
+  const pagination = {
+    limit: 20,
+    from: 12345678, // optional, timestamp of previous PDVListItem
+  };
+  const pdvList = operationsClient.getPDVList(walletAddress, pagination);
+```
+Response of `getPDVList` method is an id (timestamp) array like `[1641748368, 1641744563, 164158725]`
+
+2. **Get PDV meta**
+```ts
+  const walletAddress = 'decentrPDVOwnerAddress';
+  const pDVAddress = 1641748368;
+  const pDVMeta = await pDVClient.getPDVMeta(pDVAddress, walletAddress);
+```
+Response of `getPDVMeta` method is a [PDVMeta](https://github.com/Decentr-net/decentr.js/blob/master/src/api/cerberus/pdv/types.ts#L91)
+
+3. **Get PDV details**
+```ts
+  const wallet = { 
+    address: 'decentrPDVOwnerAddress',
+    privateKey: '1234567890abcdefghijklmno',
+    publicKey: 'abcdefghijklmno1234567890',
+  };
+  const pDVAddress = 1641748368;
+  const pDVDetails = await pDVClient.getPDVDetails(pDVAddress, wallet);
+```
+Response of `getPDVDetails` method is a [PDVDetails](https://github.com/Decentr-net/decentr.js/blob/master/src/api/cerberus/pdv/types.ts#L86)
+
+4. **Send PDV**
+```ts
+  const PDV = []; // array of your PDV's;
+  const keyPair = {
+    privateKey: '1234567890abcdefghijklmno',
+    publicKey: 'abcdefghijklmno1234567890',
+  };
+  const pDVAddress = await pDVClient.sendPDV(pdv, keyPair);
+```
+Response of `sendPDV` method is an id (timestamp) of PDV.
+
+## 📜 Profile <a id="cerberus-profile" />
+
+**Profile client has the following interface**
+
+```
+  class CerberusProfileClient {
+    setProfile(profile: ProfileUpdate, keyPair: KeyPair): Promise<PDVAddress>;
+
+    getProfile(walletAddress: Wallet['address'], keys?: KeyPair): Promise<Profile>;
+    
+    getProfiles(
+      walletAddresses: Wallet['address'][],
+      keys?: KeyPair,
+    ): Promise<Record<Profile['address'], Profile>>;
+  }
+```
+
+**How to get instance of PDV client**
+```
+  const profileClient = cerberusClient.profile;
+```
+
+### Methods
+
+1. **Set profile**
+```ts
+  import { Gender } from 'decentr-js';
+  const profile = {
+    avatar: 'http://avatar.png',
+    bio: 'bio',
+    birthday: '1991-01-01',
+    emails: ['email@email.com'],
+    firstName: 'firstName',        // maxlength: 64
+    gender: Gender.Male,
+    lastName: 'lastName',          // maxlength: 64
+  } 
+  const keyPair = {
+    privateKey: '1234567890abcdefghijklmno',
+    publicKey: 'abcdefghijklmno1234567890',
+  };
+  const pDVAddress = await profileClient.setProfile(profile, keyPair);
+```
+Response of `setProfile` method is an id (timestamp) of PDV.
+
+2. **Get profile**
+```ts
+  const walletAddress = 'decentrAddress';
+  const keyPair = {
+    privateKey: '1234567890abcdefghijklmno',
+    publicKey: 'abcdefghijklmno1234567890',
+  };
+  // keyPair is an optional param required to get private profile data (birthday, gender etc.)
+  const profile = await profileClient.getProfile(walletAddress, keyPair);
+```
+Response of `getProfile` method is a [Profile](https://github.com/Decentr-net/decentr.js/blob/master/src/api/cerberus/profile/types.ts#L4)
+
+3. **Get profiles**
+```ts
+  const walletAddresses = ['decentrAddress1', 'decentrAddress2'];
+  const keyPair = {
+    privateKey: '1234567890abcdefghijklmno',
+    publicKey: 'abcdefghijklmno1234567890',
+  };
+  // keyPair is an optional param required to get private profile data only for request initiator profile (birthday, gender etc.)
+  const profiles = await profileClient.getProfiles(walletAddress, keyPair);
+```
+Response of `getProfiles` method is an object of type `{ decentrAddress1: profileObj1, decentrAddress2: profileObj2 }`.
+
+## 📜 Rewards <a id="cerberus-rewards" />
+
+**Rewards client has the following interface**
+
+```
+  class CerberusRewardsClient {
+    getDelta(walletAddress: Wallet['address']): Promise<TokenDelta>;
+    
+    getPool(): Promise<TokenPool>;
+  }
+```
+
+**How to get instance of rewards client**
+```
+  const rewardsClient = cerberusClient.rewards;
+```
+
+### Methods
+
+1. **Get delta**
+```ts
+  const walletAddress = 'decentrWalletAddress';
+  const delta = await tokenClient.getDelta(walletAddress);
+```
+Response of `getDelta` method is an [TokenDelta](https://github.com/Decentr-net/decentr.js/blob/master/src/api/cerberus/rewards/types.ts#L7)
+
+2. **Get pool**
+```ts
+  const pool = await tokenClient.getPool();
+```
+Response of `getPool` method is an [TokenPool](https://github.com/Decentr-net/decentr.js/blob/master/src/api/cerberus/rewards/types.ts#L1)
+
+# Using Theseus api <a id="theseus-api" />
+
+## Theseus client
+
+**For less text, we define some basic variables here**
+
+```ts
+import { TheseusClient } from 'decentr-js';
+
+const THESEUS_URL = 'https://theseus.mainnet.decentr.xyz';
+
+const theseusClient = new TheseusClient(THESEUS_URL);
+```
+
+## 📜 Profile <a id="theseus-profile" />
+
+**Profile client has the following interface**
+
+```
+  class TheseusProfileClient {
+    getProfileStats(walletAddress: Wallet['address']): Promise<ProfileStatistics>;
+
+    getAdvDdvStats(): Promise<AdvDdvStatistics>;
+  }
+```
+
+**How to get instance of profile client**
+```
+  const profileClient = theseusClient.profile;
+```
+
+### Methods
+
+1. **Get profile stats**
+```ts
+  const walletAddress = 'decentrAddress';
+  const stats = await profileClient.getProfileStats(walletAddress);
+```
+Response of `getProfileStats` method is a [ProfileStatistics](https://github.com/Decentr-net/decentr.js/blob/master/src/api/theseus/profile/types.ts#L11)
+
+2. **Get ADV/DDV stats**
+```ts
+  const walletAddress = 'decentrWalletAddress';
+  const balance = await profileClient.getAdvDdvStats();
+```
+Response of `getAdvDdvStats` method is an [AdvDdvStatistics](https://github.com/Decentr-net/decentr.js/blob/master/src/api/theseus/profile/types.ts#L1)
 
 ## 🥂 License <a id="license" />
 
