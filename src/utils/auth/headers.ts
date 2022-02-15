@@ -1,3 +1,5 @@
+import createHash from 'create-hash';
+
 import { createPublicKeyFromPrivateKey, Wallet } from '../../wallet';
 import { bytesToString } from '../convert';
 import { getSignature } from './signature';
@@ -10,7 +12,10 @@ export interface AuthHeaders extends Record<string, string>{
 export function getAuthHeaders<T>(
   data: T,
   privateKey: Wallet['privateKey'],
-  options?: { disableEncode?: boolean },
+  options?: {
+    algorithm?: createHash.algorithm | 'keccak256',
+    disableEncode?: boolean,
+  },
 ): AuthHeaders {
   const signature = getSignature(data, privateKey, options);
   const signatureHex = bytesToString(signature, 'hex');

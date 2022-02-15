@@ -37,6 +37,7 @@
     "bip39": "^3.0.2",
     "cosmjs-types": "^0.4.1",
     "create-hash": "^1.2.0",
+    "keccak256": "^1.0.6",
     "secp256k1": "^4.0.3"
   },
   "devDependencies": {

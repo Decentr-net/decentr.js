@@ -1,8 +1,8 @@
-import { fetchJson, getAuthHeaders } from '../../utils';
-import { Wallet } from '../../wallet';
+import { AuthHeaders, fetchJson, getAuthHeaders } from '../../../utils';
+import { Wallet } from '../../../wallet';
 import { SwapDestinationNetwork, SwapDetails, SwapListPaginationOptions } from './types';
 
-export class SwapClient {
+export class HermesSwapClient {
   constructor(
     private readonly url: string,
   ) {
@@ -32,7 +32,7 @@ export class SwapClient {
 
     const url = `${this.url}${path}`;
 
-    const headers = getAuthHeaders(path, privateKey);
+    const headers = this.getAuthHeaders(path, privateKey);
 
     return fetchJson(url, {
       headers,
@@ -47,7 +47,7 @@ export class SwapClient {
 
     const url = `${this.url}${path}`;
 
-    const headers = getAuthHeaders(path, privateKey);
+    const headers = this.getAuthHeaders(path, privateKey);
 
     return fetchJson(url, {
       headers,
@@ -71,7 +71,7 @@ export class SwapClient {
       destinationNetwork: network,
     };
 
-    const headers = getAuthHeaders(
+    const headers = this.getAuthHeaders(
       `${JSON.stringify(body)}${path}`,
       privateKey,
       { disableEncode: true },
@@ -82,5 +82,22 @@ export class SwapClient {
       body,
       headers,
     });
+  }
+
+  private getAuthHeaders<T>(
+    data: T,
+    privateKey: Wallet['privateKey'],
+    options?: {
+      disableEncode?: boolean,
+    },
+  ): AuthHeaders {
+    return getAuthHeaders(
+      data,
+      privateKey,
+      {
+        ...options,
+        algorithm: 'keccak256',
+      },
+    );
   }
 }
