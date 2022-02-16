@@ -1,6 +1,6 @@
 import { AuthHeaders, fetchJson, getAuthHeaders } from '../../../utils';
 import { Wallet } from '../../../wallet';
-import { SwapDestinationNetwork, SwapDetails, SwapListPaginationOptions } from './types';
+import { SwapDetails, SwapListPaginationOptions } from './types';
 
 export class HermesSwapClient {
   constructor(
@@ -8,21 +8,21 @@ export class HermesSwapClient {
   ) {
   }
 
-  public getFee(
-    address: string,
-    network: SwapDestinationNetwork,
-    amount: number,
-  ): Promise<string> {
-    const url = `${this.url}/v1/fee`;
-
-    return fetchJson<{ fee: string }>(url, {
-      queryParameters: {
-        address,
-        network,
-        amount,
-      },
-    }).then(({ fee }) => fee);
-  }
+  // public getFee(
+  //   address: string,
+  //   network: SwapDestinationNetwork,
+  //   amount: number,
+  // ): Promise<string> {
+  //   const url = `${this.url}/v1/fee`;
+  //
+  //   return fetchJson<{ fee: string }>(url, {
+  //     queryParameters: {
+  //       address,
+  //       network,
+  //       amount,
+  //     },
+  //   }).then(({ fee }) => fee);
+  // }
 
   public getSwapById(
     privateKey: Wallet['privateKey'],
@@ -59,16 +59,16 @@ export class HermesSwapClient {
 
   public createSwap(
     privateKey: Wallet['privateKey'],
-    address: string,
-    network: SwapDestinationNetwork,
+    receiverAddress: Wallet['address'],
+    txHash: string,
   ): Promise<SwapDetails> {
     const path = '/v1/swap';
 
     const url = `${this.url}${path}`;
 
     const body = {
-      destinationAddress: address,
-      destinationNetwork: network,
+      receiverAddress,
+      txHash,
     };
 
     const headers = this.getAuthHeaders(

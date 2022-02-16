@@ -1,41 +1,28 @@
+import { Coin } from '@cosmjs/stargate';
+
 export interface SwapListPaginationOptions {
   after?: number;
   limit?: number;
 }
 
-export enum SwapDestinationNetwork {
-  DEC = 'decentr',
-  ETH = 'ethereum',
-}
-
-export enum SwapClosureReason {
-  CollectingTimeoutExceeded = 'collecting-timeout-exceeded',
-  InsufficientAmount = 'insufficient-amount',
-  LostTransaction = 'lost-transaction',
-  Success = 'success',
-}
-
 export enum SwapState {
-  Closed = 'closed',
-  Collecting = 'collecting',
-  SelfDestructing = 'self-destructing',
-  SendingAssets = 'sending-assets',
+  Pending = 'pending',
+  Lost = 'lost',
+  Rejected = 'rejected',
+  Confirmation = 'confirmation',
+  Sending = 'sending',
   Sent = 'sent',
-  WaitingConfirmation = 'waiting-confirmation',
 }
 
 export interface SwapDetails {
-  amount?: string;
-  closureReason?: SwapClosureReason;
+  amount: Coin;
   createdAt: string;
-  depositAddress?: string;
-  destinationAddress: string;
-  destinationNetwork: SwapDestinationNetwork;
-  fee?: string;
+  decBlock: number;
+  decTxHash: string;
+  ethBlock: number;
+  ethTxHash: string;
   id: number;
-  sourceAddress?: number;
   state: SwapState;
-  stateBlock?: number;
-  tx?: string;
+  stateDescription: string;
   updatedAt?: string;
 }
