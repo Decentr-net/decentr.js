@@ -138,3 +138,10 @@ export async function createWalletFromPrivateKey(privateKey: string): Promise<Wa
     privateKey,
   };
 }
+
+export function createPublicKeyFromPrivateKey(privateKey: string): string {
+  const privateKeyBytes = hexToBytes(privateKey);
+  const publicKeyBytes = secp256k1PublicKeyCreate(privateKeyBytes);
+
+  return bytesToString(publicKeyBytes, 'hex');
+}

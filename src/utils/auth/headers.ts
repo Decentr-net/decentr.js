@@ -1,4 +1,4 @@
-import { KeyPair } from '../../wallet';
+import { createPublicKeyFromPrivateKey, Wallet } from '../../wallet';
 import { bytesToString } from '../convert';
 import { getSignature } from './signature';
 
@@ -9,14 +9,14 @@ export interface AuthHeaders extends Record<string, string>{
 
 export function getAuthHeaders<T>(
   data: T,
-  keys: KeyPair,
+  privateKey: Wallet['privateKey'],
   options?: { disableEncode?: boolean },
 ): AuthHeaders {
-  const signature = getSignature(data, keys.privateKey, options);
+  const signature = getSignature(data, privateKey, options);
   const signatureHex = bytesToString(signature, 'hex');
 
   return {
-    'Public-Key': keys.publicKey,
+    'Public-Key': createPublicKeyFromPrivateKey(privateKey),
     Signature: signatureHex,
   };
 }

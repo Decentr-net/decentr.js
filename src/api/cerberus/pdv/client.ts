@@ -1,5 +1,5 @@
 import { fetchJson, getAuthHeaders } from '../../../utils';
-import { KeyPair, Wallet } from '../../../wallet';
+import { Wallet } from '../../../wallet';
 import {
   PDV,
   PDVAddress,
@@ -36,12 +36,12 @@ export class CerberusPDVClient {
   public getPDVDetails(pdvAddress: PDVAddress, wallet: Wallet): Promise<PDVDetails> {
     const path = `${this.controllerPath}/${wallet.address}/${pdvAddress}`;
 
-    const headers = getAuthHeaders(path, wallet);
+    const headers = getAuthHeaders(path, wallet.privateKey);
 
     return fetchJson(`${this.url}/${path}`, { headers });
   }
 
-  public sendPDV(pdv: PDV[], keyPair: KeyPair): Promise<PDVAddress> {
+  public sendPDV(pdv: PDV[], privateKey: Wallet['privateKey']): Promise<PDVAddress> {
     const body = {
       version: 'v1',
       pdv,
@@ -49,7 +49,7 @@ export class CerberusPDVClient {
 
     const headers = getAuthHeaders(
       `${JSON.stringify(body)}${this.controllerPath}`,
-      keyPair,
+      privateKey,
       { disableEncode: true },
     );
 

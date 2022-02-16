@@ -1,18 +1,9 @@
 import {
   decodeObjectUnicode,
   encodeObjectCharactersToUnicode,
-  getPublicKeyBase64,
 } from './crypto';
 
 describe('utils/crypto', () => {
-
-  it('should generate correct publicKey base64', function() {
-    const privateKeyHex = 'fbf265ca5872907c4dbd33bf87c683d84b96987eb42d4a6c50f335eac57ece3e';
-    const publicKeyBase64 = getPublicKeyBase64(privateKeyHex);
-    const expected = 'A2Y+oEbooAQumYeb9r7jbediO1PMITBnBDiPA5K8ClHh';
-
-    expect(publicKeyBase64).toEqual(expected);
-  });
 
   it('should correctly encode object characters', () => {
     const object = {

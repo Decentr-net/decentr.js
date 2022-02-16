@@ -1,4 +1,8 @@
-import { createWalletFromMnemonic, createWalletFromPrivateKey } from './wallet';
+import {
+  createPublicKeyFromPrivateKey,
+  createWalletFromMnemonic,
+  createWalletFromPrivateKey,
+} from './wallet';
 import { Wallet } from './types';
 
 describe('wallet', () => {
@@ -45,6 +49,16 @@ describe('wallet', () => {
     expect(wallet.privateKey).toEqual(expectedWallet.privateKey);
 
     expect(wallet.publicKey).toEqual(expectedWallet.publicKey);
+  });
+
+  it('should create correct public key from private key', () => {
+    const privateKey = 'e164d4bd087841e8e1928225042fc3d13dc174f25473765df5431809608bc824';
+
+    const publicKey = createPublicKeyFromPrivateKey(privateKey);
+
+    const expectedPublicKey = '02406c54ce3f5580576795686e3e1c5ce9207113843e0f9bad463c7bf566926a63';
+
+    expect(publicKey).toEqual(expectedPublicKey);
   });
 
 })
