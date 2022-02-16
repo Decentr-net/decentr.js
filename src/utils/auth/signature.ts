@@ -1,6 +1,5 @@
 import { Bytes } from '@tendermint/types';
 import { ecdsaSign as secp256k1EcdsaSign } from 'secp256k1';
-import createHash from 'create-hash';
 
 import { Wallet } from '../../wallet';
 import { encodeObjectCharactersToUnicode } from '../crypto';
@@ -11,7 +10,6 @@ export function getSignature<T>(
   target: T,
   privateKey: Wallet['privateKey'],
   options?: {
-    algorithm?: createHash.algorithm | 'keccak256',
     disableEncode?: boolean,
   },
 ): Bytes {

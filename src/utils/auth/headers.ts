@@ -1,5 +1,3 @@
-import createHash from 'create-hash';
-
 import { createPublicKeyFromPrivateKey, Wallet } from '../../wallet';
 import { bytesToString } from '../convert';
 import { getSignature } from './signature';
@@ -13,7 +11,6 @@ export function getAuthHeaders<T>(
   data: T,
   privateKey: Wallet['privateKey'],
   options?: {
-    algorithm?: createHash.algorithm | 'keccak256',
     disableEncode?: boolean,
   },
 ): AuthHeaders {

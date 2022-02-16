@@ -1,18 +1,13 @@
 import { bufferToBytes } from '@tendermint/belt';
 import { Bytes } from '@tendermint/types';
 import createHash from 'create-hash';
-import keccak256 from 'keccak256';
 
 export function hashBody(
   body: Bytes | Buffer | string,
-  alghorithm: createHash.algorithm | 'keccak256' = 'sha256',
+  alghorithm: createHash.algorithm = 'sha256',
 ): Bytes {
   const target = typeof body === 'string' ? body : Buffer.from(body);
-
-  const hashBuffer = alghorithm === 'keccak256'
-    ? keccak256(target)
-    : createHash(alghorithm).update(target).digest();
-
+  const hashBuffer = createHash(alghorithm).update(target).digest();
   return bufferToBytes(hashBuffer);
 }
 

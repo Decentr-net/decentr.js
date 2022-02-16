@@ -1,4 +1,4 @@
-import { AuthHeaders, fetchJson, getAuthHeaders } from '../../../utils';
+import { fetchJson, getAuthHeaders } from '../../../utils';
 import { Wallet } from '../../../wallet';
 import { SwapDetails, SwapListPaginationOptions } from './types';
 
@@ -8,22 +8,6 @@ export class HermesSwapClient {
   ) {
   }
 
-  // public getFee(
-  //   address: string,
-  //   network: SwapDestinationNetwork,
-  //   amount: number,
-  // ): Promise<string> {
-  //   const url = `${this.url}/v1/fee`;
-  //
-  //   return fetchJson<{ fee: string }>(url, {
-  //     queryParameters: {
-  //       address,
-  //       network,
-  //       amount,
-  //     },
-  //   }).then(({ fee }) => fee);
-  // }
-
   public getSwapById(
     privateKey: Wallet['privateKey'],
     swapId: number,
@@ -32,7 +16,7 @@ export class HermesSwapClient {
 
     const url = `${this.url}${path}`;
 
-    const headers = this.getAuthHeaders(path, privateKey);
+    const headers = getAuthHeaders(path, privateKey);
 
     return fetchJson(url, {
       headers,
@@ -47,7 +31,7 @@ export class HermesSwapClient {
 
     const url = `${this.url}${path}`;
 
-    const headers = this.getAuthHeaders(path, privateKey);
+    const headers = getAuthHeaders(path, privateKey);
 
     return fetchJson(url, {
       headers,
@@ -71,7 +55,7 @@ export class HermesSwapClient {
       txHash,
     };
 
-    const headers = this.getAuthHeaders(
+    const headers = getAuthHeaders(
       `${JSON.stringify(body)}${path}`,
       privateKey,
       { disableEncode: true },
@@ -82,22 +66,5 @@ export class HermesSwapClient {
       body,
       headers,
     });
-  }
-
-  private getAuthHeaders<T>(
-    data: T,
-    privateKey: Wallet['privateKey'],
-    options?: {
-      disableEncode?: boolean,
-    },
-  ): AuthHeaders {
-    return getAuthHeaders(
-      data,
-      privateKey,
-      {
-        ...options,
-        algorithm: 'keccak256',
-      },
-    );
   }
 }
