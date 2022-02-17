@@ -1,4 +1,4 @@
-import { fetchJson, getAuthHeaders } from '../../../utils';
+import { AuthHeaders, fetchJson, getAuthHeaders } from '../../../utils';
 import { Wallet } from '../../../wallet';
 import { SwapDetails, SwapListPaginationOptions } from './types';
 
@@ -45,6 +45,7 @@ export class HermesSwapClient {
     privateKey: Wallet['privateKey'],
     receiverAddress: Wallet['address'],
     txHash: string,
+    signature: string,
   ): Promise<SwapDetails> {
     const path = '/v1/swap';
 
@@ -55,16 +56,14 @@ export class HermesSwapClient {
       txHash,
     };
 
-    const headers = getAuthHeaders(
-      `${JSON.stringify(body)}${path}`,
-      privateKey,
-      { disableEncode: true },
-    );
+    const authHeaders: Pick<AuthHeaders, 'Signature'> = {
+      Signature: signature,
+    };
 
     return fetchJson(url, {
       method: 'POST',
       body,
-      headers,
+      headers: authHeaders,
     });
   }
 }
