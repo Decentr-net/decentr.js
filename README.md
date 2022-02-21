@@ -44,8 +44,9 @@ npm install decentr-js
    4. [Profile](#cerberus-profile)
    5. [Rewards](#cerberus-rewards)
 5. [Theseus API](#theseus-api)
-   1. [Posts](#theseus-posts)
-   2. [Profile](#theseus-profile)
+   1. [DDV](#theseus-ddv)
+   2. [Posts](#theseus-posts)
+   3. [Profile](#theseus-profile)
 6. [Vulcan API](#vulcan-api)
    1. [Referral](#vulcan-referral)
    2. [Registration](#vulcan-registration)
@@ -1277,6 +1278,8 @@ Response of `getStats` method is an [ReferralTimeStats](https://github.com/Decen
     confirm(email: string, code: string): Promise<void>;
     
     hesoyam(walletAddress: Wallet['address']): Promise<void>;
+    
+    getStats(): Promise<RegistrationStats>;
   }
 ```
 
@@ -1298,14 +1301,20 @@ Response of `getStats` method is an [ReferralTimeStats](https://github.com/Decen
 ```ts
   const email = 'email@email.com';
   const code = 'a1b2c3';
-  await referralClient.confirm(email, code);
+  await registrationClient.confirm(email, code);
 ```
 
 3. **Hesoyam**
 ```ts
   const walletAddress = 'decentrAddress';
-  await referralClient.hesoyam(walletAddress);
+  await registrationClient.hesoyam(walletAddress);
 ```
+
+4. **Get stats**
+```ts
+  await registrationClient.getStats();
+```
+Response of `getStats` method is an [RegistrationStats](https://github.com/Decentr-net/decentr.js/blob/master/src/api/vulcan/registration/types.ts#L6)
 
 # 🥂 License <a id="license" />
 

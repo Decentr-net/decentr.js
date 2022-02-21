@@ -1,5 +1,6 @@
 import { fetchJson } from '../../../utils';
 import { Wallet } from '../../../wallet';
+import { RegistrationStats } from './types';
 
 export class VulcanRegistrationClient {
   private readonly controllerUrl = `${this.url}/v1`;
@@ -35,6 +36,12 @@ export class VulcanRegistrationClient {
 
   public hesoyam(walletAddress: Wallet['address']): Promise<void> {
     const url = `${this.controllerUrl}/hesoyam/${walletAddress}`;
+
+    return fetchJson(url);
+  }
+
+  public getStats(): Promise<RegistrationStats> {
+    const url = `${this.controllerUrl}/register/stats`;
 
     return fetchJson(url);
   }
