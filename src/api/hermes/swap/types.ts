@@ -16,13 +16,13 @@ export enum SwapState {
 
 export interface SwapDetails {
   amount: Coin;
-  createdAt: string;
-  decBlock: number;
-  decTxHash: string;
-  ethBlock: number;
+  createdAt: number;
+  decBlock?: number;
+  decTxHash?: string;
+  ethBlock?: number;
   ethTxHash: string;
   id: number;
   state: SwapState;
-  stateDescription: string;
-  updatedAt?: string;
+  stateDescription?: string;
+  updatedAt?: number;
 }
