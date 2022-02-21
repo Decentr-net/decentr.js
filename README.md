@@ -1105,6 +1105,29 @@ const THESEUS_URL = 'https://theseus.mainnet.decentr.xyz';
 const theseusClient = new TheseusClient(THESEUS_URL);
 ```
 
+## 📜 DDV <a id="theseus-ddv" />
+
+**DDV client has the following interface**
+
+```
+  class TheseusDDVClient {
+    getStats(): Promise<DDVStats>;
+  }
+```
+
+**How to get instance of ddv client**
+```
+  const ddvClient = theseusClient.ddv;
+```
+
+### Methods
+
+1. **Get stats**
+```ts
+  const stats = await ddvClient.getStats();
+```
+Response of `getStats` method is a [DDVStats](https://github.com/Decentr-net/decentr.js/blob/master/src/api/theseus/ddv/types.ts#L6)
+
 ## 📜 Posts <a id="theseus-posts" />
 
 **Posts client has the following interface**
@@ -1131,7 +1154,7 @@ const theseusClient = new TheseusClient(THESEUS_URL);
     uuid: 'post-uuid-1234',
   };
   const requestedBy = 'decentrSameOrAnotherWalletAddress';
-  const stats = await profileClient.getPost(postParams, requestedBy);
+  const stats = await postsClient.getPost(postParams, requestedBy);
 ```
 Response of `getPost` method is a [PostResponse](https://github.com/Decentr-net/decentr.js/blob/master/src/api/theseus/posts/types.ts#L29)
 
@@ -1141,7 +1164,7 @@ Response of `getPost` method is a [PostResponse](https://github.com/Decentr-net/
     category: PostCategory.CATEGORY_WORLD_NEWS,
     requestedBy: 'decentrSameOrAnotherWalletAddress',
   }; // optional
-  const balance = await profileClient.getPosts(filter);
+  const balance = await postsClient.getPosts(filter);
 ```
 Interface of `filter` object described here [PostsListFilterOptions](https://github.com/Decentr-net/decentr.js/blob/master/src/api/theseus/posts/types.ts#L15)
 
