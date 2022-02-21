@@ -44,8 +44,9 @@ npm install decentr-js
    4. [Profile](#cerberus-profile)
    5. [Rewards](#cerberus-rewards)
 5. [Theseus API](#theseus-api)
-   1. [Posts](#theseus-posts)
-   2. [Profile](#theseus-profile)
+   1. [DDV](#theseus-ddv)
+   2. [Posts](#theseus-posts)
+   3. [Profile](#theseus-profile)
 6. [Vulcan API](#vulcan-api)
    1. [Referral](#vulcan-referral)
    2. [Registration](#vulcan-registration)
@@ -936,6 +937,8 @@ Response of `saveImage` method is an [SaveImageResponse](https://github.com/Dece
     getPDVDetails(pdvAddress: number, wallet: Wallet): Promise<PDVDetails>;
     
     sendPDV(pdv: PDV[], privateKey: Wallet['privateKey']): Promise<PDVAddress>;
+    
+    validate(pdv: PDV[]): Promise<number[]>;
   }
 ```
 
@@ -984,6 +987,13 @@ Response of `getPDVDetails` method is a [PDVDetails](https://github.com/Decentr-
   const pDVAddress = await pDVClient.sendPDV(pdv, privateKey);
 ```
 Response of `sendPDV` method is an id (timestamp) of PDV.
+
+5. **Validate PDV**
+```ts
+  const PDV = []; // array of your PDV's;
+  const invalidPDVIndexes = await pDVClient.validate(pdv);
+```
+Response of `validate` method is an indexes array of invalid PDV.
 
 ## 📜 Profile <a id="cerberus-profile" />
 
@@ -1096,6 +1106,29 @@ const THESEUS_URL = 'https://theseus.mainnet.decentr.xyz';
 const theseusClient = new TheseusClient(THESEUS_URL);
 ```
 
+## 📜 DDV <a id="theseus-ddv" />
+
+**DDV client has the following interface**
+
+```
+  class TheseusDDVClient {
+    getStats(): Promise<DDVStats>;
+  }
+```
+
+**How to get instance of ddv client**
+```
+  const ddvClient = theseusClient.ddv;
+```
+
+### Methods
+
+1. **Get stats**
+```ts
+  const stats = await ddvClient.getStats();
+```
+Response of `getStats` method is a [DDVStats](https://github.com/Decentr-net/decentr.js/blob/master/src/api/theseus/ddv/types.ts#L6)
+
 ## 📜 Posts <a id="theseus-posts" />
 
 **Posts client has the following interface**
@@ -1122,7 +1155,7 @@ const theseusClient = new TheseusClient(THESEUS_URL);
     uuid: 'post-uuid-1234',
   };
   const requestedBy = 'decentrSameOrAnotherWalletAddress';
-  const stats = await profileClient.getPost(postParams, requestedBy);
+  const stats = await postsClient.getPost(postParams, requestedBy);
 ```
 Response of `getPost` method is a [PostResponse](https://github.com/Decentr-net/decentr.js/blob/master/src/api/theseus/posts/types.ts#L29)
 
@@ -1132,7 +1165,7 @@ Response of `getPost` method is a [PostResponse](https://github.com/Decentr-net/
     category: PostCategory.CATEGORY_WORLD_NEWS,
     requestedBy: 'decentrSameOrAnotherWalletAddress',
   }; // optional
-  const balance = await profileClient.getPosts(filter);
+  const balance = await postsClient.getPosts(filter);
 ```
 Interface of `filter` object described here [PostsListFilterOptions](https://github.com/Decentr-net/decentr.js/blob/master/src/api/theseus/posts/types.ts#L15)
 
@@ -1245,6 +1278,8 @@ Response of `getStats` method is an [ReferralTimeStats](https://github.com/Decen
     confirm(email: string, code: string): Promise<void>;
     
     hesoyam(walletAddress: Wallet['address']): Promise<void>;
+    
+    getStats(): Promise<RegistrationStats>;
   }
 ```
 
@@ -1266,14 +1301,20 @@ Response of `getStats` method is an [ReferralTimeStats](https://github.com/Decen
 ```ts
   const email = 'email@email.com';
   const code = 'a1b2c3';
-  await referralClient.confirm(email, code);
+  await registrationClient.confirm(email, code);
 ```
 
 3. **Hesoyam**
 ```ts
   const walletAddress = 'decentrAddress';
-  await referralClient.hesoyam(walletAddress);
+  await registrationClient.hesoyam(walletAddress);
 ```
+
+4. **Get stats**
+```ts
+  await registrationClient.getStats();
+```
+Response of `getStats` method is an [RegistrationStats](https://github.com/Decentr-net/decentr.js/blob/master/src/api/vulcan/registration/types.ts#L6)
 
 # 🥂 License <a id="license" />
 
