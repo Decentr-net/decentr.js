@@ -936,6 +936,8 @@ Response of `saveImage` method is an [SaveImageResponse](https://github.com/Dece
     getPDVDetails(pdvAddress: number, wallet: Wallet): Promise<PDVDetails>;
     
     sendPDV(pdv: PDV[], privateKey: Wallet['privateKey']): Promise<PDVAddress>;
+    
+    validate(pdv: PDV[]): Promise<number[]>;
   }
 ```
 
@@ -984,6 +986,13 @@ Response of `getPDVDetails` method is a [PDVDetails](https://github.com/Decentr-
   const pDVAddress = await pDVClient.sendPDV(pdv, privateKey);
 ```
 Response of `sendPDV` method is an id (timestamp) of PDV.
+
+5. **Validate PDV**
+```ts
+  const PDV = []; // array of your PDV's;
+  const invalidPDVIndexes = await pDVClient.validate(pdv);
+```
+Response of `validate` method is an indexes array of invalid PDV.
 
 ## 📜 Profile <a id="cerberus-profile" />
 
