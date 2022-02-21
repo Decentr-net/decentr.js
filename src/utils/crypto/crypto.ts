@@ -1,14 +1,5 @@
-import { publicKeyCreate } from 'secp256k1';
-
-import { bytesToBase64, getUnicode, hexToBytes } from '../convert';
+import { getUnicode } from '../convert';
 import { deepMapObjectStrings } from '../object';
-
-export function getPublicKeyBase64(privateKeyHex: string): string {
-  const privateKeyBytes = hexToBytes(privateKeyHex);
-  const publicKeyBytes = publicKeyCreate(privateKeyBytes);
-
-  return bytesToBase64(publicKeyBytes);
-}
 
 export function encodeObjectCharactersToUnicode<T>(
   target: T,

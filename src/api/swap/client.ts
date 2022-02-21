@@ -1,5 +1,5 @@
 import { fetchJson, getAuthHeaders } from '../../utils';
-import { KeyPair } from '../../wallet';
+import { Wallet } from '../../wallet';
 import { SwapDestinationNetwork, SwapDetails, SwapListPaginationOptions } from './types';
 
 export class SwapClient {
@@ -25,14 +25,14 @@ export class SwapClient {
   }
 
   public getSwapById(
-    keys: KeyPair,
+    privateKey: Wallet['privateKey'],
     swapId: number,
   ): Promise<SwapDetails> {
     const path = `/v1/swap/${swapId}`
 
     const url = `${this.url}${path}`;
 
-    const headers = getAuthHeaders(path, keys);
+    const headers = getAuthHeaders(path, privateKey);
 
     return fetchJson(url, {
       headers,
@@ -40,14 +40,14 @@ export class SwapClient {
   }
 
   public getSwapList(
-    keys: KeyPair,
+    privateKey: Wallet['privateKey'],
     swapListPaginationOptions?: SwapListPaginationOptions,
   ): Promise<SwapDetails[]> {
     const path = '/v1/swap';
 
     const url = `${this.url}${path}`;
 
-    const headers = getAuthHeaders(path, keys);
+    const headers = getAuthHeaders(path, privateKey);
 
     return fetchJson(url, {
       headers,
@@ -58,7 +58,7 @@ export class SwapClient {
   }
 
   public createSwap(
-    keys: KeyPair,
+    privateKey: Wallet['privateKey'],
     address: string,
     network: SwapDestinationNetwork,
   ): Promise<SwapDetails> {
@@ -73,7 +73,7 @@ export class SwapClient {
 
     const headers = getAuthHeaders(
       `${JSON.stringify(body)}${path}`,
-      keys,
+      privateKey,
       { disableEncode: true },
     );
 

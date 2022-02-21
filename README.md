@@ -901,7 +901,7 @@ Response of `getPDVRewards` method is a [PDVRewards](https://github.com/Decentr-
 
 ```
   class CerberusImageClient {
-    save(image: File, keyPair: KeyPair): Promise<SaveImageResponse>;
+    save(image: File, privateKey: Wallet['privateKey']): Promise<SaveImageResponse>;
   }
 ```
 
@@ -915,11 +915,8 @@ Response of `getPDVRewards` method is a [PDVRewards](https://github.com/Decentr-
 1. **Save image**
 ```ts
   const image = 'your image file of File interface';
-  const keyPair = {
-    privateKey: '1234567890abcdefghijklmno',
-    publicKey: 'abcdefghijklmno1234567890',
-  };
-  const imageResponse = await imageClient.saveImage(image, keyPair);
+  const privateKey = '1234567890abcdefghijklmno';
+  const imageResponse = await imageClient.saveImage(image, privateKey);
 ```
 Response of `saveImage` method is an [SaveImageResponse](https://github.com/Decentr-net/decentr.js/blob/master/src/api/cerberus/image/types.ts#L1)
 
@@ -938,7 +935,7 @@ Response of `saveImage` method is an [SaveImageResponse](https://github.com/Dece
     
     getPDVDetails(pdvAddress: number, wallet: Wallet): Promise<PDVDetails>;
     
-    sendPDV(pdv: PDV[], keyPair: KeyPair): Promise<PDVAddress>
+    sendPDV(pdv: PDV[], privateKey: Wallet['privateKey']): Promise<PDVAddress>;
   }
 ```
 
@@ -983,11 +980,8 @@ Response of `getPDVDetails` method is a [PDVDetails](https://github.com/Decentr-
 4. **Send PDV**
 ```ts
   const PDV = []; // array of your PDV's;
-  const keyPair = {
-    privateKey: '1234567890abcdefghijklmno',
-    publicKey: 'abcdefghijklmno1234567890',
-  };
-  const pDVAddress = await pDVClient.sendPDV(pdv, keyPair);
+  const privateKey: '1234567890abcdefghijklmno';
+  const pDVAddress = await pDVClient.sendPDV(pdv, privateKey);
 ```
 Response of `sendPDV` method is an id (timestamp) of PDV.
 
@@ -997,13 +991,19 @@ Response of `sendPDV` method is an id (timestamp) of PDV.
 
 ```
   class CerberusProfileClient {
-    setProfile(profile: ProfileUpdate, keyPair: KeyPair): Promise<PDVAddress>;
+    setProfile(
+      profile: ProfileUpdate,
+      privateKey: Wallet['privateKey'],
+    ): Promise<PDVAddress>;
 
-    getProfile(walletAddress: Wallet['address'], keys?: KeyPair): Promise<Profile>;
+    getProfile(
+      walletAddress: Wallet['address'],
+      privateKey: Wallet['privateKey'],
+   ): Promise<Profile>;
     
     getProfiles(
       walletAddresses: Wallet['address'][],
-      keys?: KeyPair,
+      privateKey: Wallet['privateKey'],
     ): Promise<Record<Profile['address'], Profile>>;
   }
 ```
@@ -1027,35 +1027,26 @@ Response of `sendPDV` method is an id (timestamp) of PDV.
     gender: Gender.Male,
     lastName: 'lastName',          // maxlength: 64
   } 
-  const keyPair = {
-    privateKey: '1234567890abcdefghijklmno',
-    publicKey: 'abcdefghijklmno1234567890',
-  };
-  const pDVAddress = await profileClient.setProfile(profile, keyPair);
+  const privateKey = '1234567890abcdefghijklmno';
+  const pDVAddress = await profileClient.setProfile(profile, privateKey);
 ```
 Response of `setProfile` method is an id (timestamp) of PDV.
 
 2. **Get profile**
 ```ts
   const walletAddress = 'decentrAddress';
-  const keyPair = {
-    privateKey: '1234567890abcdefghijklmno',
-    publicKey: 'abcdefghijklmno1234567890',
-  };
-  // keyPair is an optional param required to get private profile data (birthday, gender etc.)
-  const profile = await profileClient.getProfile(walletAddress, keyPair);
+  const privateKey = '1234567890abcdefghijklmno';
+  // privateKey is an optional param required to get private profile data (birthday, gender etc.)
+  const profile = await profileClient.getProfile(walletAddress, privateKey);
 ```
 Response of `getProfile` method is a [Profile](https://github.com/Decentr-net/decentr.js/blob/master/src/api/cerberus/profile/types.ts#L4)
 
 3. **Get profiles**
 ```ts
   const walletAddresses = ['decentrAddress1', 'decentrAddress2'];
-  const keyPair = {
-    privateKey: '1234567890abcdefghijklmno',
-    publicKey: 'abcdefghijklmno1234567890',
-  };
-  // keyPair is an optional param required to get private profile data only for request initiator profile (birthday, gender etc.)
-  const profiles = await profileClient.getProfiles(walletAddress, keyPair);
+  const privateKey = '1234567890abcdefghijklmno';
+  // privateKey is an optional param required to get private profile data only for request initiator profile (birthday, gender etc.)
+  const profiles = await profileClient.getProfiles(walletAddress, privateKey);
 ```
 Response of `getProfiles` method is an object of type `{ decentrAddress1: profileObj1, decentrAddress2: profileObj2 }`.
 

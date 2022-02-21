@@ -1,19 +1,21 @@
 import { EncodeObject } from '@cosmjs/proto-signing';
-import {
-  DeliverTxResponse,
-  GasPrice,
-  isDeliverTxFailure,
-  SigningStargateClient,
-} from '@cosmjs/stargate';
+import { DeliverTxResponse, GasPrice, SigningStargateClient } from '@cosmjs/stargate';
 
 import { coerceArray } from '../../utils';
 import { Wallet } from '../../wallet';
 import { BroadcastClientError } from './types';
 
-function assertIsBroadcastSuccess(result: DeliverTxResponse): void {
-  if (isDeliverTxFailure(result)) {
-    throw new BroadcastClientError(result.code);
+function castError(error: Error): DeliverTxResponse | never {
+  const numberRegExp = new RegExp(/\d+/g);
+  const regExpResult = numberRegExp.exec(error?.message);
+  const codeString = regExpResult?.[0];
+  const code = codeString && Number.parseInt(codeString);
+
+  if (code) {
+    throw new BroadcastClientError(code);
   }
+
+  throw error;
 }
 
 export class TransactionSigner {
@@ -41,12 +43,9 @@ export class TransactionSigner {
   }
 
   public async signAndBroadcast(): Promise<DeliverTxResponse> {
-    const result = await this.signingStargateClient
-      .signAndBroadcast(this.signerAddress, this.messages, this.gasAdjustment, this.options?.memo);
-
-    assertIsBroadcastSuccess(result);
-
-    return result;
+    return this.signingStargateClient
+      .signAndBroadcast(this.signerAddress, this.messages, this.gasAdjustment, this.options?.memo)
+      .catch(castError);
   }
 }
 

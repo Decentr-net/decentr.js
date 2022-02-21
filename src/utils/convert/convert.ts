@@ -2,23 +2,17 @@ import { bufferToBytes } from '@tendermint/belt';
 import { Bytes } from '@tendermint/types';
 import createHash from 'create-hash';
 
-export function hashBytes(bytes: Bytes | Buffer, alghorithm: createHash.algorithm): Bytes {
-  const coercedBuffer = (bytes instanceof Buffer) ? bytes : Buffer.from(bytes);
-  const hashBuffer = createHash(alghorithm).update(coercedBuffer).digest();
-  return bufferToBytes(hashBuffer);
-}
-
-export function hashStringToBytes(target: string, alghorithm: createHash.algorithm = 'sha256'): Bytes {
+export function hashBody(
+  body: Bytes | Buffer | string,
+  alghorithm: createHash.algorithm = 'sha256',
+): Bytes {
+  const target = typeof body === 'string' ? body : Buffer.from(body);
   const hashBuffer = createHash(alghorithm).update(target).digest();
   return bufferToBytes(hashBuffer);
 }
 
-export function bytesToHex(bytes: Bytes): string {
-  return Buffer.from(bytes).toString('hex');
-}
-
-export function bytesToBase64(bytes: Bytes): string {
-  return Buffer.from(bytes).toString('base64');
+export function bytesToString(bytes: Bytes, encoding: 'hex' | 'base64'): string {
+  return Buffer.from(bytes).toString(encoding);
 }
 
 export function hexToBytes(hex: string): Bytes {

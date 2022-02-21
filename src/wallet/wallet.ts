@@ -6,7 +6,7 @@ import { mnemonicToSeedSync as bip39mnemonicToSeedSync } from 'bip39';
 import { publicKeyCreate as secp256k1PublicKeyCreate } from 'secp256k1';
 import { DirectSecp256k1Wallet } from '@cosmjs/proto-signing';
 
-import { bytesToHex, hashBytes, hexToBytes } from '../utils';
+import { bytesToString, hashBody, hexToBytes } from '../utils';
 import {
   DECENTR_DERIVATION_PATH,
   DECENTR_VALIDATOR_WALLET_PREFIX,
@@ -63,8 +63,8 @@ function createKeyPairFromMasterKey(
  * @returns Bech32-encoded address
  */
 function createAddress(publicKey: Bytes, prefix: string): Bech32String {
-  const hash1 = hashBytes(publicKey, 'sha256');
-  const hash2 = hashBytes(hash1, 'ripemd160');
+  const hash1 = hashBody(publicKey, 'sha256');
+  const hash2 = hashBody(hash1, 'ripemd160');
   const words = bech32.toWords(hash2);
 
   return bech32.encode(prefix, words);
@@ -89,8 +89,8 @@ function createWalletFromMasterKey(masterKey: BIP32Interface): Wallet {
   return {
     address,
     validatorAddress,
-    privateKey: bytesToHex(privateKeyBytes),
-    publicKey: bytesToHex(publicKeyBytes),
+    privateKey: bytesToString(privateKeyBytes, 'hex'),
+    publicKey: bytesToString(publicKeyBytes, 'hex'),
   };
 }
 
@@ -134,7 +134,14 @@ export async function createWalletFromPrivateKey(privateKey: string): Promise<Wa
   return {
     address: account.address,
     validatorAddress: validatorAccount.address,
-    publicKey: bytesToHex(account.pubkey),
+    publicKey: bytesToString(account.pubkey, 'hex'),
     privateKey,
   };
+}
+
+export function createPublicKeyFromPrivateKey(privateKey: string): string {
+  const privateKeyBytes = hexToBytes(privateKey);
+  const publicKeyBytes = secp256k1PublicKeyCreate(privateKeyBytes);
+
+  return bytesToString(publicKeyBytes, 'hex');
 }

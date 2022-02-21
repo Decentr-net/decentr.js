@@ -3,7 +3,7 @@ import { ecdsaSign as secp256k1EcdsaSign } from 'secp256k1';
 
 import { Wallet } from '../../wallet';
 import { encodeObjectCharactersToUnicode } from '../crypto';
-import { hashStringToBytes, hexToBytes } from '../convert';
+import { hashBody, hexToBytes } from '../convert';
 import { sortObjectKeys } from '../object';
 
 export function getSignature<T>(
@@ -21,7 +21,7 @@ export function getSignature<T>(
     stringToHash = encodeObjectCharactersToUnicode(stringToHash, ['>', '<', '&']);
   }
 
-  const hashBytes = hashStringToBytes(stringToHash);
+  const hashBytes = hashBody(stringToHash);
 
   const privateKeyBytes = hexToBytes(privateKey);
 
