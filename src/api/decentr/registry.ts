@@ -14,6 +14,9 @@ import {
   MsgEditValidator,
   MsgUndelegate,
 } from 'cosmjs-types/cosmos/staking/v1beta1/tx';
+import { MsgTransfer } from 'cosmjs-types/ibc/applications/transfer/v1/tx';
+import { MsgAcknowledgement } from 'cosmjs-types/ibc/core/channel/v1/tx';
+import { MsgUpdateClient } from 'cosmjs-types/ibc/core/client/v1/tx';
 import { GeneratedType, Registry } from '@cosmjs/proto-signing';
 import { defaultRegistryTypes } from '@cosmjs/stargate';
 
@@ -30,7 +33,6 @@ import {
   MsgMint,
   MsgResetAccount,
 } from '../../codec/operations/tx';
-import { MsgTransfer } from 'cosmjs-types/ibc/applications/transfer/v1/tx';
 
 export enum TxMessageTypeUrl {
   BankSend = '/cosmos.bank.v1beta1.MsgSend',
@@ -45,7 +47,9 @@ export enum TxMessageTypeUrl {
   DistributionWithdrawValidatorCommission = '/cosmos.distribution.v1beta1.MsgWithdrawValidatorCommission',
   GovDeposit = '/cosmos.gov.v1beta1.MsgDeposit',
   GovVote = '/cosmos.gov.v1beta1.MsgVote',
+  IbcMsgAcknowledgement = '/ibc.core.channel.v1.MsgAcknowledgement',
   IbcMsgTransfer = '/ibc.applications.transfer.v1.MsgTransfer',
+  IbcMsgUpdateClient = '/ibc.core.client.v1.MsgUpdateClient',
   OperationsBurn = '/operations.MsgBurn',
   OperationsDistributeRewards = '/operations.MsgDistributeRewards',
   OperationsMint = '/operations.MsgMint',
@@ -69,7 +73,9 @@ const REGISTRY_MAP: Record<TxMessageTypeUrl, GeneratedType> = {
   [TxMessageTypeUrl.DistributionSetWithdrawAddress]: MsgSetWithdrawAddress,
   [TxMessageTypeUrl.DistributionWithdrawDelegatorReward]: MsgWithdrawDelegatorReward,
   [TxMessageTypeUrl.DistributionWithdrawValidatorCommission]: MsgWithdrawValidatorCommission,
+  [TxMessageTypeUrl.IbcMsgAcknowledgement]: MsgAcknowledgement,
   [TxMessageTypeUrl.IbcMsgTransfer]: MsgTransfer,
+  [TxMessageTypeUrl.IbcMsgUpdateClient]: MsgUpdateClient,
   [TxMessageTypeUrl.GovDeposit]: MsgDeposit,
   [TxMessageTypeUrl.GovVote]: MsgVote,
   [TxMessageTypeUrl.OperationsBurn]: MsgBurn,
@@ -95,7 +101,9 @@ export interface TxMessageValueMap {
   [TxMessageTypeUrl.DistributionSetWithdrawAddress]: MsgSetWithdrawAddress,
   [TxMessageTypeUrl.DistributionWithdrawDelegatorReward]: MsgWithdrawDelegatorReward,
   [TxMessageTypeUrl.DistributionWithdrawValidatorCommission]: MsgWithdrawValidatorCommission,
+  [TxMessageTypeUrl.IbcMsgAcknowledgement]: MsgAcknowledgement,
   [TxMessageTypeUrl.IbcMsgTransfer]: MsgTransfer,
+  [TxMessageTypeUrl.IbcMsgUpdateClient]: MsgUpdateClient,
   [TxMessageTypeUrl.GovDeposit]: MsgDeposit,
   [TxMessageTypeUrl.GovVote]: MsgVote,
   [TxMessageTypeUrl.OperationsBurn]: MsgBurn,
