@@ -30,6 +30,7 @@ import {
   MsgMint,
   MsgResetAccount,
 } from '../../codec/operations/tx';
+import { MsgTransfer } from 'cosmjs-types/ibc/applications/transfer/v1/tx';
 
 export enum TxMessageTypeUrl {
   BankSend = '/cosmos.bank.v1beta1.MsgSend',
@@ -44,6 +45,7 @@ export enum TxMessageTypeUrl {
   DistributionWithdrawValidatorCommission = '/cosmos.distribution.v1beta1.MsgWithdrawValidatorCommission',
   GovDeposit = '/cosmos.gov.v1beta1.MsgDeposit',
   GovVote = '/cosmos.gov.v1beta1.MsgVote',
+  IbcMsgTransfer = '/ibc.applications.transfer.v1.MsgTransfer',
   OperationsBurn = '/operations.MsgBurn',
   OperationsDistributeRewards = '/operations.MsgDistributeRewards',
   OperationsMint = '/operations.MsgMint',
@@ -67,6 +69,7 @@ const REGISTRY_MAP: Record<TxMessageTypeUrl, GeneratedType> = {
   [TxMessageTypeUrl.DistributionSetWithdrawAddress]: MsgSetWithdrawAddress,
   [TxMessageTypeUrl.DistributionWithdrawDelegatorReward]: MsgWithdrawDelegatorReward,
   [TxMessageTypeUrl.DistributionWithdrawValidatorCommission]: MsgWithdrawValidatorCommission,
+  [TxMessageTypeUrl.IbcMsgTransfer]: MsgTransfer,
   [TxMessageTypeUrl.GovDeposit]: MsgDeposit,
   [TxMessageTypeUrl.GovVote]: MsgVote,
   [TxMessageTypeUrl.OperationsBurn]: MsgBurn,
@@ -92,6 +95,7 @@ export interface TxMessageValueMap {
   [TxMessageTypeUrl.DistributionSetWithdrawAddress]: MsgSetWithdrawAddress,
   [TxMessageTypeUrl.DistributionWithdrawDelegatorReward]: MsgWithdrawDelegatorReward,
   [TxMessageTypeUrl.DistributionWithdrawValidatorCommission]: MsgWithdrawValidatorCommission,
+  [TxMessageTypeUrl.IbcMsgTransfer]: MsgTransfer,
   [TxMessageTypeUrl.GovDeposit]: MsgDeposit,
   [TxMessageTypeUrl.GovVote]: MsgVote,
   [TxMessageTypeUrl.OperationsBurn]: MsgBurn,
