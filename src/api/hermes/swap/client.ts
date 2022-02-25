@@ -1,27 +1,11 @@
-import { fetchJson, getAuthHeaders } from '../../utils';
-import { Wallet } from '../../wallet';
-import { SwapDestinationNetwork, SwapDetails, SwapListPaginationOptions } from './types';
+import { AuthHeaders, fetchJson, getAuthHeaders } from '../../../utils';
+import { Wallet } from '../../../wallet';
+import { SwapDetails, SwapListPaginationOptions } from './types';
 
-export class SwapClient {
+export class HermesSwapClient {
   constructor(
     private readonly url: string,
   ) {
-  }
-
-  public getFee(
-    address: string,
-    network: SwapDestinationNetwork,
-    amount: number,
-  ): Promise<string> {
-    const url = `${this.url}/v1/fee`;
-
-    return fetchJson<{ fee: string }>(url, {
-      queryParameters: {
-        address,
-        network,
-        amount,
-      },
-    }).then(({ fee }) => fee);
   }
 
   public getSwapById(
@@ -59,28 +43,27 @@ export class SwapClient {
 
   public createSwap(
     privateKey: Wallet['privateKey'],
-    address: string,
-    network: SwapDestinationNetwork,
+    receiverAddress: Wallet['address'],
+    txHash: string,
+    signature: string,
   ): Promise<SwapDetails> {
     const path = '/v1/swap';
 
     const url = `${this.url}${path}`;
 
     const body = {
-      destinationAddress: address,
-      destinationNetwork: network,
+      receiverAddress,
+      txHash,
     };
 
-    const headers = getAuthHeaders(
-      `${JSON.stringify(body)}${path}`,
-      privateKey,
-      { disableEncode: true },
-    );
+    const authHeaders: Pick<AuthHeaders, 'Signature'> = {
+      Signature: signature,
+    };
 
     return fetchJson(url, {
       method: 'POST',
       body,
-      headers,
+      headers: authHeaders,
     });
   }
 }

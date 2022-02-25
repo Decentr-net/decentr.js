@@ -10,7 +10,9 @@ export interface AuthHeaders extends Record<string, string>{
 export function getAuthHeaders<T>(
   data: T,
   privateKey: Wallet['privateKey'],
-  options?: { disableEncode?: boolean },
+  options?: {
+    disableEncode?: boolean,
+  },
 ): AuthHeaders {
   const signature = getSignature(data, privateKey, options);
   const signatureHex = bytesToString(signature, 'hex');
