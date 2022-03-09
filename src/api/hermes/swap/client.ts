@@ -1,6 +1,6 @@
 import { AuthHeaders, fetchJson, getAuthHeaders } from '../../../utils';
 import { Wallet } from '../../../wallet';
-import { SwapDetails, SwapListPaginationOptions } from './types';
+import { SwapConfiguration, SwapDetails, SwapListPaginationOptions } from './types';
 
 export class HermesSwapClient {
   constructor(
@@ -8,11 +8,17 @@ export class HermesSwapClient {
   ) {
   }
 
+  public getConfig(): Promise<SwapConfiguration> {
+    const url = `${this.url}/v1/config`;
+
+    return fetchJson(url);
+  }
+
   public getSwapById(
     privateKey: Wallet['privateKey'],
     swapId: number,
   ): Promise<SwapDetails> {
-    const path = `/v1/swap/${swapId}`
+    const path = `/v1/swap/${swapId}`;
 
     const url = `${this.url}${path}`;
 
