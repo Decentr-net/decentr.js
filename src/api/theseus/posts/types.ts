@@ -15,6 +15,8 @@ export interface Post extends BlockchainPost {
 export interface PostsListFilterOptions {
   after?: string;  // `Post['owner']/Post['uuid']`
   category?: PostCategory;
+  excludeNegative?: boolean;
+  excludeNeutral?: boolean;
   followedBy?: Post['owner'];
   from?: Post['createdAt'];
   likedBy?: Post['owner'];

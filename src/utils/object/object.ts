@@ -48,19 +48,22 @@ export function deepMapObjectStrings<T, U>(target: T, mapFunction: (value: strin
   return target;
 }
 
+type PrimitiveObjectValue = Array<string | number> | string | number | boolean;
+type PrimitiveObject = Record<string, PrimitiveObjectValue>;
+
 export function removeEmptyValuesFromPrimitiveObject(
-  target: Partial<Record<string, Array<string | number> | string | number>>,
-): Partial<Record<string, Array<string | number> | string | number>> {
+  target: Partial<PrimitiveObject>,
+): Partial<PrimitiveObject> {
   if (typeof target !== 'object') {
     return target;
   }
 
-  const result: Record<string, Array<string | number> | string | number> = {};
+  const result: Partial<PrimitiveObject> = {};
 
   Object.keys(target)
     .filter((key) => !valueIsEmpty(target[key]))
     .forEach((key) => {
-      result[key] = target[key] as Array<string | number> | string | number;
+      result[key] = target[key];
     });
 
   return result;

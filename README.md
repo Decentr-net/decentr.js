@@ -1157,7 +1157,7 @@ Response of `getStats` method is a [DDVStats](https://github.com/Decentr-net/dec
   const requestedBy = 'decentrSameOrAnotherWalletAddress';
   const stats = await postsClient.getPost(postParams, requestedBy);
 ```
-Response of `getPost` method is a [PostResponse](https://github.com/Decentr-net/decentr.js/blob/master/src/api/theseus/posts/types.ts#L29)
+Response of `getPost` method is a [PostResponse](https://github.com/Decentr-net/decentr.js/blob/master/src/api/theseus/posts/types.ts#L31)
 
 2. **Get posts**
 ```ts
