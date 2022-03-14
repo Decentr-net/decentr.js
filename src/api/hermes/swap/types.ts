@@ -1,5 +1,10 @@
 import { Coin } from '@cosmjs/stargate';
 
+export interface SwapConfiguration {
+  contractAddress: string;
+  escrowAddress: string;
+}
+
 export interface SwapListPaginationOptions {
   after?: number;
   limit?: number;

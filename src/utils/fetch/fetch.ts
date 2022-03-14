@@ -2,7 +2,7 @@ import axios from 'axios';
 import { removeEmptyValuesFromPrimitiveObject } from '../object';
 import { coerceArray } from '../array'
 
-type QueryParametersObject = Partial<Record<string, Array<string | number> | string | number>>;
+type QueryParametersObject = Record<string, Array<string | number> | string | number | boolean>;
 
 const createQuery = (queryParametersObject: QueryParametersObject): string => {
   const urlSearchParameters = new URLSearchParams();

@@ -1,4 +1,4 @@
-const { IgnorePlugin } = require('webpack');
+const { IgnorePlugin, ProvidePlugin } = require('webpack');
 
 module.exports = {
   entry: ['./src/index.ts'],
@@ -12,6 +12,13 @@ module.exports = {
   },
   resolve: {
     extensions: ['.tsx', '.ts', '.js'],
+    fallback: {
+      buffer: require.resolve('buffer/'),
+      crypto: false,
+      path: false,
+      stream: require.resolve('stream-browserify'),
+      util: false,
+    },
   },
   module: {
     rules: [
@@ -33,6 +40,11 @@ module.exports = {
     ],
   },
   plugins: [
-    new IgnorePlugin(/^\.\/wordlists\/(?!english)/, /bip39\/src$/),
+    new IgnorePlugin({
+      resourceRegExp: /^\.\/wordlists\/(?!english)|bip39\/src$/,
+    }),
+    new ProvidePlugin({
+      Buffer: ['buffer', 'Buffer'],
+    }),
   ],
 }
