@@ -145,3 +145,11 @@ export function createPublicKeyFromPrivateKey(privateKey: string): string {
 
   return bytesToString(publicKeyBytes, 'hex');
 }
+
+export function verifyWalletAddress(address: Wallet['address']): boolean {
+  try {
+    return !!bech32.decode(address);
+  } catch {
+    return false;
+  }
+}
