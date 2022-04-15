@@ -15,13 +15,12 @@
   },
   "license": "MIT",
   "scripts": {
-    "build": "webpack",
-    "watch": "webpack --config webpack.config.dev.js -w",
+    "build": "npm run clean && webpack",
+    "watch": "npm run clean && webpack --config webpack.config.dev.js -w",
     "clean": "rimraf lib",
     "lint": "eslint --max-warnings 0 src --ext .ts",
-    "prebuild": "npm run clean",
     "prepack": "npm run build",
-    "prepublishOnly": "npm run lint && npm run test && npm run build",
+    "prepublishOnly": "npm run clean && npm run lint && npm run test",
     "test": "karma start",
     "prepare": "husky install",
     "proto": "bash scripts/get-proto.sh && bash scripts/define-proto.sh"
