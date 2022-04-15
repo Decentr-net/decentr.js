@@ -20,7 +20,7 @@
     "clean": "rimraf lib",
     "lint": "eslint --max-warnings 0 src --ext .ts",
     "prepack": "npm run build",
-    "prepublishOnly": "npm run clean && npm run lint && npm run test",
+    "prepublishOnly": "npm run lint && npm run test",
     "test": "karma start",
     "prepare": "husky install",
     "proto": "bash scripts/get-proto.sh && bash scripts/define-proto.sh"
