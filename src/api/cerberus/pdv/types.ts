@@ -83,7 +83,15 @@ export interface PDVListPaginationOptions {
 
 export type PDVListItem = PDVAddress;
 
+export enum PDVDevice {
+  Android = 'android',
+  Desktop = 'desktop',
+  IOS = 'ios',
+  Unspecified = '',
+}
+
 export interface PDVDetails {
+  device?: PDVDevice;
   version: string;
   pdv: PDV[];
 }
