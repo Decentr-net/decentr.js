@@ -3,8 +3,9 @@ import {
   MsgDelegate,
   MsgUndelegate,
 } from 'cosmjs-types/cosmos/staking/v1beta1/tx';
+import { BondStatus } from 'cosmjs-types/cosmos/staking/v1beta1/staking';
 
-export { BondStatusString } from '@cosmjs/stargate/build/queries/staking';
+export type BondStatusString = Exclude<keyof typeof BondStatus, 'BOND_STATUS_UNSPECIFIED'>;
 
 export {
   BondStatus,

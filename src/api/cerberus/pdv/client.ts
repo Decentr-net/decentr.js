@@ -4,15 +4,11 @@ import {
   PDV,
   PDVAddress,
   PDVDetails,
+  PDVDevice,
   PDVListItem,
   PDVListPaginationOptions,
   PDVMeta,
 } from './types';
-
-interface PDVRequest {
-  version: string;
-  pdv: PDV[];
-}
 
 export class CerberusPDVClient {
   private readonly controllerPath = '/v1/pdv';
@@ -46,8 +42,12 @@ export class CerberusPDVClient {
     return fetchJson(`${this.url}/${path}`, { headers });
   }
 
-  public sendPDV(pdv: PDV[], privateKey: Wallet['privateKey']): Promise<PDVAddress> {
-    const body = this.buildPDVBody(pdv);
+  public sendPDV(
+    pdv: PDV[],
+    privateKey: Wallet['privateKey'],
+    device: PDVDevice = PDVDevice.Unspecified,
+  ): Promise<PDVAddress> {
+    const body = this.buildPDVBody(pdv, device);
 
     const headers = getAuthHeaders(
       `${JSON.stringify(body)}${this.controllerPath}`,
@@ -55,7 +55,7 @@ export class CerberusPDVClient {
       { disableEncode: true },
     );
 
-    return fetchJson<{ id: number }, PDVRequest>(this.controllerUrl, {
+    return fetchJson<{ id: number }, PDVDetails>(this.controllerUrl, {
       method: 'POST',
       body,
       headers,
@@ -63,9 +63,9 @@ export class CerberusPDVClient {
   }
 
   public validate(pdv: PDV[]): Promise<number[]> {
-    const body = this.buildPDVBody(pdv);
+    const body = this.buildPDVBody(pdv, PDVDevice.Unspecified);
 
-    return fetchJson<{ bool: boolean; invalidPDV: number[] }, PDVRequest>(
+    return fetchJson<{ bool: boolean; invalidPDV: number[] }, PDVDetails>(
       `${this.controllerUrl}/validate`,
       {
         method: 'POST',
@@ -74,9 +74,10 @@ export class CerberusPDVClient {
     ).then(({ invalidPDV }) => invalidPDV || []);
   }
 
-  private buildPDVBody(pdv: PDV[]): PDVRequest {
+  private buildPDVBody(pdv: PDV[], device: PDVDevice): PDVDetails {
     return {
       version: 'v1',
+      device,
       pdv,
     };
   }
