@@ -112,7 +112,7 @@ Response of `status` method is a [StatusResponse](https://github.com/cosmos/cosm
 **Auth client has the following interface**
 
 ```
-  class DecentrAuthClient {
+  class AuthClient {
     getAccount(walletAddress: Wallet['address']): Promise<Account | null>;
   }
 ```
@@ -136,7 +136,7 @@ Response of `getAccount` method is an [Account](https://github.com/cosmos/cosmjs
 **Bank client has the following interface**
 
 ```
-  class DecentrBankClient {
+  class BankClient {
     getBalance(walletAddress: Wallet['address']): Promise<Coin[]>;
 
     getDenomBalance(walletAddress: Wallet['address'], denom: string): Promise<Coin>;
@@ -227,7 +227,7 @@ Response of `signAndBroadcast` method is a [DeliverTxResponse](https://github.co
 
 **Blocks client has the following interface**
 ```
-  class DecentrBlocksClient {
+  class BlocksClient {
     getBlock(height?: BlockHeader['height']): Promise<Block>;
   }
 ```
@@ -245,13 +245,13 @@ Response of `signAndBroadcast` method is a [DeliverTxResponse](https://github.co
 ```
 *Notice*: `height` is an optional param, method will return the latest block if `height` is not supplied.
 
-Response of `getBlock` method is a [Block](https://github.com/Decentr-net/decentr.js/blob/master/src/api/decentr/blocks/types.ts#L7).
+Response of `getBlock` method is a [Block](https://github.com/Decentr-net/decentr.js/blob/master/src/api/blockchain/cosmos/blocks/types.ts#L7).
 
 ## 📜 Community <a id="decentr-community" />
 
 **Community client has the following interface**
 ```
-  class DecentrCommunityClient {
+  class CommunityClient {
     getModeratorAddresses(): Promise<Wallet['address'][]>;
 
     getFollowees(follower: Wallet['address']): Promise<Wallet['address'][]>;
@@ -377,7 +377,7 @@ Response of `getFollowees` method is a wallet address array;
 
 **Distribution client has the following interface**
 ```
-  class DecentrDistributionClient {
+  class DistributionClient {
     getCommunityPool(): Promise<Coin[]>;
 
     getDistributionParameters(): Promise<Params>;
@@ -512,7 +512,7 @@ Response of `getValidatorOutstandingRewards` method is a [Coin](https://github.c
 **Mint client has the following interface**
 
 ```
-  class DecentrMintClient {
+  class MintClient {
     getInflation(): Promise<string>;
   }
 ```
@@ -535,7 +535,7 @@ Response of `getInflation` method is a string like `0.135`.
 **Operations client has the following interface**
 
 ```
-  class DecentrOperationsClient {
+  class OperationsClient {
     getMinGasPrice(): Promise<Coin>;
 
     resetAccount(
@@ -574,7 +574,7 @@ Response of `getMinGasPrice` method is a [Coin](https://github.com/cosmos/cosmjs
 
 **Staking client has the following interface**
 ```
-  class DecentrStakingClient {
+  class StakingClient {
     getPool(): Promise<Pool>;
 
     getValidators(status: BondStatusString): Promise<Validator[]>;
@@ -783,7 +783,7 @@ Response of `getStakingParameters` method is a [Params](https://github.com/confi
 **Token client has the following interface**
 
 ```
-  class DecentrTokenClient {
+  class TokenClient {
     getBalance(walletAddress: Wallet['address']): Promise<string>;
   }
 ```
@@ -807,7 +807,7 @@ Response of `getBalance` method is a string like `1.001234`.
 **Tx client has the following interface**
 
 ```
-  class DecentrTxClient {
+  class TxClient {
     search(query: SearchTxQuery,filter: SearchTxFilter = {}): Promise<DecodedIndexedTx[]>
     
     getByHash(hash: IndexedTx['hash']): Promise<DecodedIndexedTx>;
@@ -842,14 +842,14 @@ Response of `getBalance` method is a string like `1.001234`.
   };
   const txsByTags = await txClient.search(queryByHeight);
 ```
-Response of `search` method is an [DecodedIndexedTx](https://github.com/Decentr-net/decentr.js/blob/master/src/api/decentr/tx/types.ts#L10) array.
+Response of `search` method is an [DecodedIndexedTx](https://github.com/Decentr-net/decentr.js/blob/master/src/api/blockchain/cosmos/tx/types.ts#L11) array.
 
 2. **Get by hash**
 ```ts
   const txHash = 'ABCDEF0123456GHIJKL7890';
   const tx = await txClient.getByHash(txHash);
 ```
-Response of `getByHash` method is an [DecodedIndexedTx](https://github.com/Decentr-net/decentr.js/blob/master/src/api/decentr/tx/types.ts#L10)
+Response of `getByHash` method is an [DecodedIndexedTx](https://github.com/Decentr-net/decentr.js/blob/master/src/api/blockchain/cosmos/tx/types.ts#L11)
 
 # Using Cerberus api <a id="cerberus-api" />
 
