@@ -112,18 +112,18 @@ export function createWalletFromMnemonic(
 
 export function createSecp256k1WalletFromPrivateKey(
   privateKey: string,
-  validator = false,
+  prefix = DECENTR_WALLET_PREFIX,
 ): Promise<DirectSecp256k1Wallet> {
   return DirectSecp256k1Wallet.fromKey(
     hexToBytes(privateKey),
-    validator ? DECENTR_VALIDATOR_WALLET_PREFIX : DECENTR_WALLET_PREFIX,
+    prefix,
   );
 }
 
 export async function createWalletFromPrivateKey(privateKey: string): Promise<Wallet> {
   const wallet = await createSecp256k1WalletFromPrivateKey(privateKey);
 
-  const validatorWallet = await createSecp256k1WalletFromPrivateKey(privateKey, true);
+  const validatorWallet = await createSecp256k1WalletFromPrivateKey(privateKey, DECENTR_VALIDATOR_WALLET_PREFIX);
 
   const account = await wallet.getAccounts()
     .then((accounts) => accounts[0]);
