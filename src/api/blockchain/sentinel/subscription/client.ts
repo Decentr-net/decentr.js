@@ -61,7 +61,7 @@ export class SubscriptionClient {
     },
   ): TransactionSigner {
     const message = createTypedEncodeObject(
-      TxMessageTypeUrl.SubscribeToNode,
+      TxMessageTypeUrl.SubscriptionSubscribeToNode,
       request,
     );
 
