@@ -1,12 +1,12 @@
 import { QueryClient } from '@cosmjs/stargate';
 import { Tendermint34Client } from '@cosmjs/tendermint-rpc';
+import Long from 'long';
 
+import { PageRequest } from '../../../../codec/cosmos/base/query/v1beta1/pagination';
 import { Node } from '../../../../codec/sentinel/node/v1/node';
 import { Params } from '../../../../codec/sentinel/node/v1/params';
-import {
-  QueryNodesForProviderRequest,
-  QueryNodesRequest,
-} from '../../../../codec/sentinel/node/v1/querier';
+import { QueryNodesForProviderRequest } from '../../../../codec/sentinel/node/v1/querier';
+import { Status } from '../../../../codec/sentinel/types/v1/status';
 import { Wallet } from '../../../../wallet';
 import { setupNodeExtension } from './extension';
 
@@ -21,8 +21,15 @@ export class NodeClient {
   ) {
   }
 
-  public getNodes(request: QueryNodesRequest): Promise<Node[]> {
-    return this.queryClient.node.getNodes(request);
+  public getNodes(status: Status): Promise<Node[]> {
+    const pagination = PageRequest.fromPartial({
+      limit: Long.fromValue('10000'),
+    });
+
+    return this.queryClient.node.getNodes({
+      status,
+      pagination,
+    });
   }
 
   public getNodesForProvider(request: QueryNodesForProviderRequest): Promise<Node[]> {
