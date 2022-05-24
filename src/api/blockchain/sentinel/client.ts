@@ -16,6 +16,7 @@ import { PlanClient } from './plan';
 import { ProviderClient } from './provider';
 import { SessionClient } from './session';
 import { SubscriptionClient } from './subscription';
+import { SwapClient } from './swap';
 
 export class SentinelClient extends CosmosClient {
   public readonly deposit = new DepositClient(this.tmClient);
@@ -24,6 +25,7 @@ export class SentinelClient extends CosmosClient {
   public readonly provider = new ProviderClient(this.tmClient);
   public readonly session = new SessionClient(this.tmClient);
   public readonly subscription = new SubscriptionClient(this.tmClient, this.transactionSignerFactory);
+  public readonly swap = new SwapClient(this.transactionSignerFactory);
 
   constructor(
     stargateClient: StargateClient,
