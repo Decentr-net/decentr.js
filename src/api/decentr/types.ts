@@ -7,7 +7,7 @@ import {
 } from './registry';
 
 export { decodeTxRaw } from '@cosmjs/proto-signing';
-export { Coin, DeliverTxResponse } from '@cosmjs/stargate';
+export { Coin, DeliverTxResponse, GasPrice as Price } from '@cosmjs/stargate';
 
 export const DECENTR_DENOM = 'udec';
 
