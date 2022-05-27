@@ -1,7 +1,7 @@
 import { GasPrice, SigningStargateClient, StargateClient } from '@cosmjs/stargate';
 import { Tendermint34Client } from '@cosmjs/tendermint-rpc';
 
-import { fetchJson } from '../../../utils';
+import { fetchJson, FetchOptions } from '../../../utils';
 import { createSecp256k1WalletFromPrivateKey, Wallet } from '../../../wallet';
 import { CosmosClient } from '../cosmos/client';
 import { OperationsClient } from '../decentr/operations';
@@ -37,10 +37,13 @@ export class SentinelClient extends CosmosClient {
     super(stargateClient, tmClient, transactionSignerFactory);
   }
 
-  public static getNodeStatus(url: string): Promise<SentinelNodeStatus> {
+  public static getNodeStatus(
+    url: string,
+    options: Pick<FetchOptions, 'timeout'> = {},
+  ): Promise<SentinelNodeStatus> {
     const endpoint = url + '/status';
 
-    return fetchJson<{ result: SentinelNodeStatus }>(endpoint)
+    return fetchJson<{ result: SentinelNodeStatus }>(endpoint, options)
       .then((response) => response.result);
   }
 
