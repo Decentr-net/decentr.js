@@ -10,12 +10,12 @@ import {
   QueryQuotasRequest,
   QuerySubscriptionRequest,
   QuerySubscriptionsForAddressRequest,
-  QuerySubscriptionsRequest
+  QuerySubscriptionsRequest,
 } from '../../../../codec/sentinel/subscription/v1/querier';
 import { TransactionSigner, TransactionSignerFactory } from '../../transaction-signer';
-import { setupSubscriptionExtension } from './extension';
 import { createTypedEncodeObject } from '../../api-utils';
 import { TxMessageTypeUrl } from '../registry';
+import { setupSubscriptionExtension } from './extension';
 import { SubscribeToNodeRequest } from './types';
 
 export class SubscriptionClient {

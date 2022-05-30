@@ -4,7 +4,6 @@ import { Tendermint34Client } from '@cosmjs/tendermint-rpc';
 import { fetchJson, FetchOptions } from '../../../utils';
 import { createSecp256k1WalletFromPrivateKey, Wallet } from '../../../wallet';
 import { CosmosClient } from '../cosmos/client';
-import { OperationsClient } from '../decentr/operations';
 import { REGISTRY } from '../registry';
 import {
   createErrorTransactionSignerFactory,
@@ -56,7 +55,7 @@ export class SentinelClient extends CosmosClient {
     const tmClient = await Tendermint34Client.connect(nodeUrl);
 
     const transactionSignerFactory = privateKey
-      ? await this.createTransactionSignerFactory(nodeUrl, tmClient, privateKey)
+      ? await this.createTransactionSignerFactory(nodeUrl, privateKey)
       : createErrorTransactionSignerFactory();
 
     return new SentinelClient(
@@ -66,27 +65,13 @@ export class SentinelClient extends CosmosClient {
     );
   }
 
-  private static async getGasPrice(tmClient: Tendermint34Client): Promise<GasPrice> {
-    const operationsClient = new OperationsClient(
-      tmClient,
-      createErrorTransactionSignerFactory(),
-    );
-
-    const minGasPrice = await operationsClient.getMinGasPrice();
-
-    return GasPrice.fromString(minGasPrice.amount + minGasPrice.denom);
-  }
-
   private static async createTransactionSignerFactory(
     nodeUrl: string,
-    tmClient: Tendermint34Client,
     privateKey: Wallet['privateKey'],
   ): Promise<TransactionSignerFactory> {
     const wallet = await createSecp256k1WalletFromPrivateKey(privateKey, 'sent');
 
-    tmClient = await Tendermint34Client.connect('https://terpsichore.mainnet.decentr.xyz');
-
-    const gasPrice = await this.getGasPrice(tmClient);
+    const gasPrice = GasPrice.fromString('0.1udvpn');
 
     const signingStargateClient = await SigningStargateClient.connectWithSigner(
       nodeUrl,
