@@ -26,7 +26,7 @@ export class SentinelClient extends CosmosClient {
   public readonly provider = new ProviderClient(this.tmClient);
   public readonly session = new SessionClient(this.tmClient);
   public readonly subscription = new SubscriptionClient(this.tmClient, this.transactionSignerFactory);
-  public readonly swap = new SwapClient(this.transactionSignerFactory);
+  public readonly swap = new SwapClient(this.tmClient, this.transactionSignerFactory);
 
   constructor(
     stargateClient: StargateClient,
