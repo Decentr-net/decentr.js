@@ -5,6 +5,8 @@ import { TypedEncodeObject } from './registry';
 
 export { decodeTxRaw } from '@cosmjs/proto-signing';
 export { Coin, DeliverTxResponse, GasPrice as Price } from '@cosmjs/stargate';
+export { Decimal } from '@cosmjs/math';
+export { default as Long } from 'long';
 
 export const DECENTR_DENOM = 'udec';
 

@@ -38,6 +38,10 @@ export class TransactionSigner {
   public simulate(): Promise<number> {
     return this.signingStargateClient
       .simulate(this.signerAddress, this.messages, this.options?.memo)
+      .then((gas) => {
+        console.log(gas);
+        return gas;
+      })
       .then((gas) => gas * +this.gasPrice.amount * this.gasAdjustment)
       .then((fee) => +fee.toFixed(6));
   }

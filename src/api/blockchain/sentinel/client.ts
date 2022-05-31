@@ -48,14 +48,17 @@ export class SentinelClient extends CosmosClient {
 
   public static async create(
     nodeUrl: string,
-    privateKey?: Wallet['privateKey'],
+    signOptions?: {
+      gasPrice: GasPrice,
+      privateKey: Wallet['privateKey'],
+    },
   ): Promise<SentinelClient> {
     const stargateClient = await StargateClient.connect(nodeUrl);
 
     const tmClient = await Tendermint34Client.connect(nodeUrl);
 
-    const transactionSignerFactory = privateKey
-      ? await this.createTransactionSignerFactory(nodeUrl, privateKey)
+    const transactionSignerFactory = signOptions
+      ? await this.createTransactionSignerFactory(nodeUrl, signOptions.gasPrice, signOptions.privateKey)
       : createErrorTransactionSignerFactory();
 
     return new SentinelClient(
@@ -67,11 +70,10 @@ export class SentinelClient extends CosmosClient {
 
   private static async createTransactionSignerFactory(
     nodeUrl: string,
+    gasPrice: GasPrice,
     privateKey: Wallet['privateKey'],
   ): Promise<TransactionSignerFactory> {
     const wallet = await createSecp256k1WalletFromPrivateKey(privateKey, 'sent');
-
-    const gasPrice = GasPrice.fromString('0.1udvpn');
 
     const signingStargateClient = await SigningStargateClient.connectWithSigner(
       nodeUrl,
