@@ -16,26 +16,24 @@ const createQuery = (queryParametersObject: QueryParametersObject): string => {
   return urlSearchParameters.toString();
 };
 
+export interface FetchOptions<D = Partial<Record<string, unknown>>> {
+  method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
+  body?: D;
+  headers?: Record<string, string>;
+  queryParameters?: QueryParametersObject;
+  timeout?: number;
+}
+
 export function fetchJson<T>(url: string): Promise<T>;
 
 export function fetchJson<T, D = Partial<Record<string, unknown>>>(
   url: string,
-  options: {
-    method?: 'GET' | 'POST' | 'PUT' | 'DELETE',
-    body?: D,
-    headers?: Record<string, string>,
-    queryParameters?: QueryParametersObject,
-  },
+  options: FetchOptions<D>,
 ): Promise<T>;
 
 export function fetchJson<T, D>(
   url: string,
-  options?: {
-    method?: 'GET' | 'POST' | 'PUT' | 'DELETE',
-    body?: D,
-    headers?: Record<string, string>,
-    queryParameters?: QueryParametersObject,
-  },
+  options?: FetchOptions<D>,
 ): Promise<T> {
   const fullUrl = options && options.queryParameters
     ? url + '?' + createQuery(options.queryParameters)
@@ -49,7 +47,8 @@ export function fetchJson<T, D>(
       ? (typeof options.body === 'string'
         ? options.body
         : JSON.stringify(options.body))
-      : undefined
+      : undefined,
+    timeout: options?.timeout,
   })
     .then((response) => response.data);
 }

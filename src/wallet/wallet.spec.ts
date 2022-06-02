@@ -1,4 +1,5 @@
 import {
+  transformWalletAddress,
   createPublicKeyFromPrivateKey,
   createWalletFromMnemonic,
   createWalletFromPrivateKey,
@@ -59,6 +60,16 @@ describe('wallet', () => {
     const expectedPublicKey = '02406c54ce3f5580576795686e3e1c5ce9207113843e0f9bad463c7bf566926a63';
 
     expect(publicKey).toEqual(expectedPublicKey);
+  });
+
+  it('should create new address by prefix', () => {
+    const address = 'decentr1pkt9czt8yqnmek529s7mkde9zp5p7efw4xxh7w';
+
+    const newAddress = transformWalletAddress(address, 'sent');
+
+    const expectedAddress = 'sent1pkt9czt8yqnmek529s7mkde9zp5p7efw9nk6mf';
+
+    expect(newAddress).toEqual(expectedAddress);
   });
 
 })
