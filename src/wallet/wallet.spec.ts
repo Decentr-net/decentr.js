@@ -1,5 +1,5 @@
 import {
-  createOtherAddressByPrefix,
+  transformWalletAddress,
   createPublicKeyFromPrivateKey,
   createWalletFromMnemonic,
   createWalletFromPrivateKey,
@@ -65,7 +65,7 @@ describe('wallet', () => {
   it('should create new address by prefix', () => {
     const address = 'decentr1pkt9czt8yqnmek529s7mkde9zp5p7efw4xxh7w';
 
-    const newAddress = createOtherAddressByPrefix(address, 'sent');
+    const newAddress = transformWalletAddress(address, 'sent');
 
     const expectedAddress = 'sent1pkt9czt8yqnmek529s7mkde9zp5p7efw9nk6mf';
 
