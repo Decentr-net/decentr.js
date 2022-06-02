@@ -1,6 +1,6 @@
 import { LikeWeight, Post as BlockchainPost } from '../../../codec/community/community';
 import { Wallet } from '../../../wallet';
-import { PostCategory } from '../../decentr';
+import { PostCategory } from '../../blockchain/decentr';
 import { ProfileStatistics } from '../profile';
 
 export interface Post extends BlockchainPost {

@@ -146,7 +146,10 @@ export function createPublicKeyFromPrivateKey(privateKey: string): string {
   return bytesToString(publicKeyBytes, 'hex');
 }
 
-export function createOtherAddressByPrefix(address: Wallet['address'], prefix: string): string {
+export function transformWalletAddress(
+  address: Wallet['address'],
+  prefix: string,
+): Wallet['address'] {
   const decodedAddress = bech32.decode(address);
 
   return bech32.encode(prefix, decodedAddress.words);
