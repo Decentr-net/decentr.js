@@ -16,7 +16,7 @@ import { TransactionSigner, TransactionSignerFactory } from '../../transaction-s
 import { createTypedEncodeObject } from '../../api-utils';
 import { TxMessageTypeUrl } from '../registry';
 import { setupSubscriptionExtension } from './extension';
-import { SubscribeToNodeRequest } from './types';
+import { CancelSubscriptionRequest, SubscribeToNodeRequest, SubscriptionAddQuotaRequest } from './types';
 
 export class SubscriptionClient {
   private readonly queryClient = QueryClient.withExtensions(
@@ -62,6 +62,34 @@ export class SubscriptionClient {
   ): TransactionSigner {
     const message = createTypedEncodeObject(
       TxMessageTypeUrl.SubscriptionSubscribeToNode,
+      request,
+    );
+
+    return this.transactionSignerFactory(message, options);
+  }
+
+  public cancelSubscription(
+    request: CancelSubscriptionRequest,
+    options?: {
+      memo?: string,
+    },
+  ): TransactionSigner {
+    const message = createTypedEncodeObject(
+      TxMessageTypeUrl.SubscriptionCancel,
+      request,
+    );
+
+    return this.transactionSignerFactory(message, options);
+  }
+
+  public addQuota(
+    request: SubscriptionAddQuotaRequest,
+    options?: {
+      memo?: string,
+    },
+  ): TransactionSigner {
+    const message = createTypedEncodeObject(
+      TxMessageTypeUrl.SubscriptionAddQuota,
       request,
     );
 

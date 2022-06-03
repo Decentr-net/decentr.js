@@ -1,4 +1,8 @@
-import { MsgSubscribeToNodeRequest } from '../../../../codec/sentinel/subscription/v1/msg';
+import {
+  MsgAddQuotaRequest,
+  MsgCancelRequest,
+  MsgSubscribeToNodeRequest,
+} from '../../../../codec/sentinel/subscription/v1/msg';
 
 export {
   Params as SentinelSubscriptionParams,
@@ -11,3 +15,7 @@ export {
 } from '../../../../codec/sentinel/subscription/v1/subscription';
 
 export type SubscribeToNodeRequest = MsgSubscribeToNodeRequest;
+
+export type CancelSubscriptionRequest = MsgCancelRequest;
+
+export type SubscriptionAddQuotaRequest = MsgAddQuotaRequest;
