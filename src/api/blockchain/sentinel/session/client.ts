@@ -9,7 +9,11 @@ import {
   QuerySessionsForAddressRequest,
   QuerySessionsRequest,
 } from '../../../../codec/sentinel/session/v1/querier';
+import { createTypedEncodeObject } from '../../api-utils';
 import { setupSessionExtension } from './extension';
+import { EndSessionRequest, StartSessionRequest, UpdateSessionRequest } from './types';
+import { TransactionSigner, TransactionSignerFactory } from '../../transaction-signer';
+import { TxMessageTypeUrl } from '../registry';
 
 export class SessionClient {
   private readonly queryClient = QueryClient.withExtensions(
@@ -19,6 +23,7 @@ export class SessionClient {
 
   constructor(
     private readonly tmClient: Tendermint34Client,
+    private readonly transactionSignerFactory: TransactionSignerFactory,
   ) {
   }
 
@@ -36,5 +41,47 @@ export class SessionClient {
 
   public getParams(request: QueryParamsRequest): Promise<Params | undefined> {
     return this.queryClient.session.getParams(request);
+  }
+
+  public startSession(
+    request: StartSessionRequest,
+    options?: {
+      memo?: string,
+    },
+  ): TransactionSigner {
+    const message = createTypedEncodeObject(
+      TxMessageTypeUrl.SessionStart,
+      request,
+    );
+
+    return this.transactionSignerFactory(message, options);
+  }
+
+  public updateSession(
+    request: UpdateSessionRequest,
+    options?: {
+      memo?: string,
+    },
+  ): TransactionSigner {
+    const message = createTypedEncodeObject(
+      TxMessageTypeUrl.SessionUpdate,
+      request,
+    );
+
+    return this.transactionSignerFactory(message, options);
+  }
+
+  public endSession(
+    request: EndSessionRequest,
+    options?: {
+      memo?: string,
+    },
+  ): TransactionSigner {
+    const message = createTypedEncodeObject(
+      TxMessageTypeUrl.SessionEnd,
+      request,
+    );
+
+    return this.transactionSignerFactory(message, options);
   }
 }
