@@ -19,45 +19,44 @@ function castError(error: Error): DeliverTxResponse | never {
 }
 
 export class TransactionSigner {
-  private readonly gasAdjustment = 1.3;
+  protected readonly messages: EncodeObject[];
 
-  private readonly messages: EncodeObject[];
+  private readonly gasAdjustment = 1.3;
 
   constructor(
     private readonly signingStargateClient: SigningStargateClient,
     private readonly signerAddress: Wallet['address'],
     private readonly gasPrice: GasPrice,
     messages: EncodeObject | EncodeObject[],
-    private readonly options?: {
-      readonly memo?: string,
-    },
   ) {
     this.messages = coerceArray(messages);
   }
 
-  public simulate(): Promise<number> {
+  public simulate(memo?: string): Promise<number> {
     return this.signingStargateClient
-      .simulate(this.signerAddress, this.messages, this.options?.memo)
-      .then((gas) => {
-        console.log(gas);
-        return gas;
-      })
+      .simulate(this.signerAddress, this.messages, memo)
       .then((gas) => gas * +this.gasPrice.amount * this.gasAdjustment)
       .then((fee) => +fee.toFixed(6));
   }
 
-  public async signAndBroadcast(): Promise<DeliverTxResponse> {
+  public async signAndBroadcast(memo?: string): Promise<DeliverTxResponse> {
     return this.signingStargateClient
-      .signAndBroadcast(this.signerAddress, this.messages, this.gasAdjustment, this.options?.memo)
+      .signAndBroadcast(this.signerAddress, this.messages, this.gasAdjustment, memo)
       .catch(castError);
+  }
+
+  public concat(txSigner: TransactionSigner): TransactionSigner {
+    return new TransactionSigner(
+      this.signingStargateClient,
+      this.signerAddress,
+      this.gasPrice,
+      [...this.messages, ...txSigner.messages],
+    );
   }
 }
 
 export type TransactionSignerFactory = ((
   messages: EncodeObject | EncodeObject[],
-  options?: {
-    memo?: string,
-  },
 ) => TransactionSigner) | (() => never);
 
 export const createErrorTransactionSignerFactory = (): TransactionSignerFactory => {
@@ -72,9 +71,6 @@ export const createTransactionSignerFactory = (
   gasPrice: GasPrice,
 ): TransactionSignerFactory => (
   messages: EncodeObject | EncodeObject[],
-  options?: {
-    memo?: string,
-  },
 ): TransactionSigner => {
-  return new TransactionSigner(signingStargateClient, signerAddress, gasPrice, messages, options)
+  return new TransactionSigner(signingStargateClient, signerAddress, gasPrice, messages)
 };

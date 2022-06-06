@@ -47,23 +47,17 @@ export class BankClient {
 
   public sendTokens(
     request: SendTokensRequest,
-    options?: {
-      memo?: string,
-    },
   ): TransactionSigner {
     const message = createTypedEncodeObject(
       TxMessageTypeUrl.BankSend,
       request,
     );
 
-    return this.transactionSignerFactory(message, options);
+    return this.transactionSignerFactory(message);
   }
 
   public sendIbcTokens(
     request: SendIbcTokensRequest,
-    options?: {
-      memo?: string,
-    },
   ): TransactionSigner {
     const timeoutTimestampSeconds = Math.ceil(Date.now() / 1000) + request.timeoutSec;
 
@@ -75,6 +69,6 @@ export class BankClient {
       }),
     );
 
-    return this.transactionSignerFactory(message, options);
+    return this.transactionSignerFactory(message);
   }
 }
