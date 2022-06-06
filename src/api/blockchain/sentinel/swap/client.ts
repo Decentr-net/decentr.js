@@ -40,15 +40,12 @@ export class SwapClient {
 
   public swap(
     request: SwapRequest,
-    options?: {
-      memo?: string,
-    },
   ): TransactionSigner {
     const message = createTypedEncodeObject(
       TxMessageTypeUrl.Swap,
       request,
     );
 
-    return this.transactionSignerFactory(message, options);
+    return this.transactionSignerFactory(message);
   }
 }

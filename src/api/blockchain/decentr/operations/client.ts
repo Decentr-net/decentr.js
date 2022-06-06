@@ -27,15 +27,12 @@ export class OperationsClient {
 
   public resetAccount(
     request: ResetAccountRequest,
-    options?: {
-      memo?: string,
-    },
   ): TransactionSigner {
     const message = createTypedEncodeObject(
       TxMessageTypeUrl.OperationsResetAccount,
       request,
     );
 
-    return this.transactionSignerFactory(message, options);
+    return this.transactionSignerFactory(message);
   }
 }

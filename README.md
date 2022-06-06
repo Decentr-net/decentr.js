@@ -146,10 +146,7 @@ Response of `getAccount` method is an [Account](https://github.com/cosmos/cosmjs
     getDenomSupply(denom: string): Promise<Coin>;
     
     public sendTokens(
-      request: MsgSend,
-      options?: {
-        memo?: string,
-      },
+      request: SendTokensRequest,
     ): TransactionSigner;
   }
 ```
@@ -207,8 +204,7 @@ Response of `getDenomSupply` method is a [Coin](https://github.com/cosmos/cosmjs
       },
     ],
   };
-  const memo = 'My gift to decentr user';
-  const transactionSigner = bankClient.sendTokens(message, { memo });
+  const transactionSigner = bankClient.sendTokens(message);
 ```
 
 <a id="transactionSigner"></a>
@@ -219,7 +215,7 @@ Response of `getDenomSupply` method is a [Coin](https://github.com/cosmos/cosmjs
 ```
 
 ```ts
-  const transaction = await transactionSigner.signAndBroadcast();
+  const transaction = await transactionSigner.signAndBroadcast('My gift to decentr user');
 ```
 Response of `signAndBroadcast` method is a [DeliverTxResponse](https://github.com/cosmos/cosmjs/blob/57a56cfa6ae8c06f4c28949a1028dc764816bbe8/packages/stargate/src/stargateclient.ts#L99).
 
@@ -258,37 +254,22 @@ Response of `getBlock` method is a [Block](https://github.com/Decentr-net/decent
 
     createPost(
       request: MsgCreatePost['post'],
-      options?: {
-        memo?: string,
-      },
     ): TransactionSigner;
 
     deletePost(
       request: MsgDeletePost,
-      options?: {
-        memo?: string,
-      },
     ): TransactionSigner;
 
     setLike(
       request: MsgSetLike['like'],
-      options?: {
-        memo?: string,
-      },
     ): TransactionSigner;
 
     follow(
       request: MsgFollow,
-      options?: {
-        memo?: string,
-      },
     ): TransactionSigner;
 
     unfollow(
       request: MsgUnfollow,
-      options?: {
-        memo?: string,
-      },
     ): TransactionSigner;
   }
 ```
@@ -397,23 +378,14 @@ Response of `getFollowees` method is a wallet address array;
 
     setWithdrawAddress(
       request: SetWithdrawAddressRequest,
-      options?: {
-        memo?: string,
-      },
     ): TransactionSigner;
     
     withdrawDelegatorRewards(
       request: WithdrawDelegatorRewardRequest,
-      options?: {
-        memo?: string,
-      },
     ): TransactionSigner;
     
     withdrawValidatorRewards(
       request: WithdrawValidatorCommissionRequest,
-      options?: {
-        memo?: string,
-      },
     ): TransactionSigner;
   }
 ```
@@ -540,9 +512,6 @@ Response of `getInflation` method is a string like `0.135`.
 
     resetAccount(
       request: ResetAccountRequest,
-      options?: {
-        memo?: string,
-      },
     ): TransactionSigner;
   }
 ```
@@ -615,23 +584,14 @@ Response of `getMinGasPrice` method is a [Coin](https://github.com/cosmos/cosmjs
     
     delegateTokens(
       request: DelegateTokensRequest,
-      options?: {
-        memo?: string,
-      },
     ): TransactionSigner;
     
     undelegateTokens(
       request: UndelegateTokensRequest,
-      options?: {
-        memo?: string,
-      },
     ): TransactionSigner;
     
     redelegateTokens(
       request: RedelegateTokensRequest,
-      options?: {
-        memo?: string,
-      },
     ): TransactionSigner;
   }
 ```

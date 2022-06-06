@@ -45,43 +45,34 @@ export class SessionClient {
 
   public startSession(
     request: StartSessionRequest,
-    options?: {
-      memo?: string,
-    },
   ): TransactionSigner {
     const message = createTypedEncodeObject(
       TxMessageTypeUrl.SessionStart,
       request,
     );
 
-    return this.transactionSignerFactory(message, options);
+    return this.transactionSignerFactory(message);
   }
 
   public updateSession(
     request: UpdateSessionRequest,
-    options?: {
-      memo?: string,
-    },
   ): TransactionSigner {
     const message = createTypedEncodeObject(
       TxMessageTypeUrl.SessionUpdate,
       request,
     );
 
-    return this.transactionSignerFactory(message, options);
+    return this.transactionSignerFactory(message);
   }
 
   public endSession(
     request: EndSessionRequest,
-    options?: {
-      memo?: string,
-    },
   ): TransactionSigner {
     const message = createTypedEncodeObject(
       TxMessageTypeUrl.SessionEnd,
       request,
     );
 
-    return this.transactionSignerFactory(message, options);
+    return this.transactionSignerFactory(message);
   }
 }

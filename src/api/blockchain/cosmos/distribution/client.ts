@@ -83,43 +83,34 @@ export class DistributionClient {
 
   public setWithdrawAddress(
     request: SetWithdrawAddressRequest,
-    options?: {
-      memo?: string,
-    },
   ): TransactionSigner {
     const message = createTypedEncodeObject(
       TxMessageTypeUrl.DistributionSetWithdrawAddress,
       request,
     );
 
-    return this.transactionSignerFactory(message, options);
+    return this.transactionSignerFactory(message);
   }
 
   public withdrawDelegatorRewards(
     request: WithdrawDelegatorRewardRequest,
-    options?: {
-      memo?: string,
-    },
   ): TransactionSigner {
     const messages = request.map((msg) => createTypedEncodeObject(
       TxMessageTypeUrl.DistributionWithdrawDelegatorReward,
       msg,
     ));
 
-    return this.transactionSignerFactory(messages, options);
+    return this.transactionSignerFactory(messages);
   }
 
   public withdrawValidatorRewards(
     request: WithdrawValidatorCommissionRequest,
-    options?: {
-      memo?: string,
-    },
   ): TransactionSigner {
     const message = createTypedEncodeObject(
       TxMessageTypeUrl.DistributionWithdrawValidatorCommission,
       request,
     );
 
-    return this.transactionSignerFactory(message, options);
+    return this.transactionSignerFactory(message);
   }
 }

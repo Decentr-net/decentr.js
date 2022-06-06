@@ -56,43 +56,34 @@ export class SubscriptionClient {
 
   public subscribeToNode(
     request: SubscribeToNodeRequest,
-    options?: {
-      memo?: string,
-    },
   ): TransactionSigner {
     const message = createTypedEncodeObject(
       TxMessageTypeUrl.SubscriptionSubscribeToNode,
       request,
     );
 
-    return this.transactionSignerFactory(message, options);
+    return this.transactionSignerFactory(message);
   }
 
   public cancelSubscription(
     request: CancelSubscriptionRequest,
-    options?: {
-      memo?: string,
-    },
   ): TransactionSigner {
     const message = createTypedEncodeObject(
       TxMessageTypeUrl.SubscriptionCancel,
       request,
     );
 
-    return this.transactionSignerFactory(message, options);
+    return this.transactionSignerFactory(message);
   }
 
   public addQuota(
     request: SubscriptionAddQuotaRequest,
-    options?: {
-      memo?: string,
-    },
   ): TransactionSigner {
     const message = createTypedEncodeObject(
       TxMessageTypeUrl.SubscriptionAddQuota,
       request,
     );
 
-    return this.transactionSignerFactory(message, options);
+    return this.transactionSignerFactory(message);
   }
 }
