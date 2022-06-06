@@ -19,9 +19,9 @@ function castError(error: Error): DeliverTxResponse | never {
 }
 
 export class TransactionSigner {
-  private readonly gasAdjustment = 1.3;
+  protected readonly messages: EncodeObject[];
 
-  private readonly messages: EncodeObject[];
+  private readonly gasAdjustment = 1.3;
 
   constructor(
     private readonly signingStargateClient: SigningStargateClient,
@@ -43,6 +43,15 @@ export class TransactionSigner {
     return this.signingStargateClient
       .signAndBroadcast(this.signerAddress, this.messages, this.gasAdjustment, memo)
       .catch(castError);
+  }
+
+  public concat(txSigner: TransactionSigner): TransactionSigner {
+    return new TransactionSigner(
+      this.signingStargateClient,
+      this.signerAddress,
+      this.gasPrice,
+      [...this.messages, ...txSigner.messages],
+    );
   }
 }
 
