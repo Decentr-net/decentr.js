@@ -9,6 +9,7 @@ import {
   QuerySessionsForAddressRequest,
   QuerySessionsRequest,
 } from '../../../../codec/sentinel/session/v1/querier';
+import { coerceArray } from '../../../../utils';
 import { createTypedEncodeObject } from '../../api-utils';
 import { setupSessionExtension } from './extension';
 import { EndSessionRequest, StartSessionRequest, UpdateSessionRequest } from './types';
@@ -68,11 +69,12 @@ export class SessionClient {
   public endSession(
     request: EndSessionRequest,
   ): TransactionSigner {
-    const message = createTypedEncodeObject(
-      TxMessageTypeUrl.SessionEnd,
-      request,
-    );
+    const messages = coerceArray(request)
+      .map((message) => createTypedEncodeObject(
+        TxMessageTypeUrl.SessionEnd,
+        message,
+      ));
 
-    return this.transactionSignerFactory(message);
+    return this.transactionSignerFactory(messages);
   }
 }

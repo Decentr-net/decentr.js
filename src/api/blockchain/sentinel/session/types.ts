@@ -11,4 +11,4 @@ export type StartSessionRequest = MsgStartRequest;
 
 export type UpdateSessionRequest = MsgUpdateRequest;
 
-export type EndSessionRequest = MsgEndRequest;
+export type EndSessionRequest = MsgEndRequest | MsgEndRequest[];
