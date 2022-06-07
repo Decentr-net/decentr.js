@@ -4,7 +4,7 @@ import { DecodedTxRaw } from '@cosmjs/proto-signing';
 import { TypedEncodeObject } from './registry';
 
 export { decodeTxRaw } from '@cosmjs/proto-signing';
-export { Coin, DeliverTxResponse, GasPrice as Price } from '@cosmjs/stargate';
+export { Coin, DeliverTxResponse, GasPrice as Price, TimeoutError } from '@cosmjs/stargate';
 export { Decimal } from '@cosmjs/math';
 
 export const DECENTR_DENOM = 'udec';
@@ -43,6 +43,9 @@ export enum BroadcastErrorCode {
 }
 
 export class BroadcastClientError {
-  constructor(public readonly broadcastErrorCode: BroadcastErrorCode) {
+  constructor(
+    public readonly broadcastErrorCode: BroadcastErrorCode,
+    public readonly message: string,
+  ) {
   }
 }
