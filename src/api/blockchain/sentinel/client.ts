@@ -1,4 +1,9 @@
-import { GasPrice, SigningStargateClient, StargateClient } from '@cosmjs/stargate';
+import {
+  GasPrice,
+  SigningStargateClient,
+  SigningStargateClientOptions,
+  StargateClient,
+} from '@cosmjs/stargate';
 import { Tendermint34Client } from '@cosmjs/tendermint-rpc';
 
 import { fetchJson, FetchOptions } from '../../../utils';
@@ -18,6 +23,11 @@ import { SessionClient } from './session';
 import { SubscriptionClient } from './subscription';
 import { SwapClient } from './swap';
 import { SentinelNodeStatus } from './types';
+
+interface SentinelClientSigningOptions extends Pick<SigningStargateClientOptions, 'broadcastTimeoutMs' | 'broadcastPollIntervalMs'> {
+  gasPrice: GasPrice,
+  privateKey: Wallet['privateKey'],
+}
 
 export class SentinelClient extends CosmosClient {
   public readonly deposit = new DepositClient(this.tmClient);
@@ -48,17 +58,14 @@ export class SentinelClient extends CosmosClient {
 
   public static async create(
     nodeUrl: string,
-    signOptions?: {
-      gasPrice: GasPrice,
-      privateKey: Wallet['privateKey'],
-    },
+    options?: SentinelClientSigningOptions,
   ): Promise<SentinelClient> {
     const stargateClient = await StargateClient.connect(nodeUrl);
 
     const tmClient = await Tendermint34Client.connect(nodeUrl);
 
-    const transactionSignerFactory = signOptions
-      ? await this.createTransactionSignerFactory(nodeUrl, signOptions.gasPrice, signOptions.privateKey)
+    const transactionSignerFactory = options
+      ? await this.createTransactionSignerFactory(nodeUrl, options)
       : createErrorTransactionSignerFactory();
 
     return new SentinelClient(
@@ -70,16 +77,17 @@ export class SentinelClient extends CosmosClient {
 
   private static async createTransactionSignerFactory(
     nodeUrl: string,
-    gasPrice: GasPrice,
-    privateKey: Wallet['privateKey'],
+    options: SentinelClientSigningOptions,
   ): Promise<TransactionSignerFactory> {
-    const wallet = await createSecp256k1WalletFromPrivateKey(privateKey, 'sent');
+    const wallet = await createSecp256k1WalletFromPrivateKey(options.privateKey, 'sent');
 
     const signingStargateClient = await SigningStargateClient.connectWithSigner(
       nodeUrl,
       wallet,
       {
-        gasPrice,
+        gasPrice: options.gasPrice,
+        broadcastPollIntervalMs: options.broadcastPollIntervalMs,
+        broadcastTimeoutMs: options.broadcastTimeoutMs,
         registry: REGISTRY,
       },
     );
@@ -90,7 +98,7 @@ export class SentinelClient extends CosmosClient {
     return createTransactionSignerFactory(
       signingStargateClient,
       signerAddress,
-      gasPrice,
+      options.gasPrice,
     );
   }
 }
