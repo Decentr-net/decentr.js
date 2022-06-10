@@ -1,5 +1,11 @@
 import { Bech32String, Bytes } from '@tendermint/types';
 
+export enum WalletPrefix {
+  Decentr = 'decentr',
+  DecentrValidator = 'decentrvaloper',
+  Sentinel = 'sent',
+}
+
 /**
  * A private and public key pair.
  */

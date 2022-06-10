@@ -7,12 +7,8 @@ import { publicKeyCreate as secp256k1PublicKeyCreate } from 'secp256k1';
 import { DirectSecp256k1Wallet } from '@cosmjs/proto-signing';
 
 import { bytesToString, hashBody, hexToBytes } from '../utils';
-import {
-  DECENTR_DERIVATION_PATH,
-  DECENTR_VALIDATOR_WALLET_PREFIX,
-  DECENTR_WALLET_PREFIX,
-} from './constants';
-import { KeyPairBytes, Wallet } from './types';
+import { DECENTR_DERIVATION_PATH } from './constants';
+import { KeyPairBytes, Wallet, WalletPrefix } from './types';
 
 /**
  * Derive a BIP32 master key from a mnemonic.
@@ -83,8 +79,8 @@ function createWalletFromMasterKey(masterKey: BIP32Interface): Wallet {
     publicKey: publicKeyBytes,
   } = createKeyPairFromMasterKey(masterKey);
 
-  const address = createAddress(publicKeyBytes, DECENTR_WALLET_PREFIX);
-  const validatorAddress = createAddress(publicKeyBytes, DECENTR_VALIDATOR_WALLET_PREFIX);
+  const address = createAddress(publicKeyBytes, WalletPrefix.Decentr);
+  const validatorAddress = createAddress(publicKeyBytes, WalletPrefix.DecentrValidator);
 
   return {
     address,
@@ -112,7 +108,7 @@ export function createWalletFromMnemonic(
 
 export function createSecp256k1WalletFromPrivateKey(
   privateKey: string,
-  prefix = DECENTR_WALLET_PREFIX,
+  prefix: WalletPrefix | string = WalletPrefix.Decentr,
 ): Promise<DirectSecp256k1Wallet> {
   return DirectSecp256k1Wallet.fromKey(
     hexToBytes(privateKey),
@@ -123,7 +119,7 @@ export function createSecp256k1WalletFromPrivateKey(
 export async function createWalletFromPrivateKey(privateKey: string): Promise<Wallet> {
   const wallet = await createSecp256k1WalletFromPrivateKey(privateKey);
 
-  const validatorWallet = await createSecp256k1WalletFromPrivateKey(privateKey, DECENTR_VALIDATOR_WALLET_PREFIX);
+  const validatorWallet = await createSecp256k1WalletFromPrivateKey(privateKey, WalletPrefix.DecentrValidator);
 
   const account = await wallet.getAccounts()
     .then((accounts) => accounts[0]);
