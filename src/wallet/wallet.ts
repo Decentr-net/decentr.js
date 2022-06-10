@@ -119,17 +119,14 @@ export function createSecp256k1WalletFromPrivateKey(
 export async function createWalletFromPrivateKey(privateKey: string): Promise<Wallet> {
   const wallet = await createSecp256k1WalletFromPrivateKey(privateKey);
 
-  const validatorWallet = await createSecp256k1WalletFromPrivateKey(privateKey, WalletPrefix.DecentrValidator);
-
   const account = await wallet.getAccounts()
     .then((accounts) => accounts[0]);
 
-  const validatorAccount = await validatorWallet.getAccounts()
-    .then((accounts) => accounts[0]);
+  const validatorAddress = transformWalletAddress(account.address, WalletPrefix.DecentrValidator);
 
   return {
     address: account.address,
-    validatorAddress: validatorAccount.address,
+    validatorAddress,
     publicKey: bytesToString(account.pubkey, 'hex'),
     privateKey,
   };
