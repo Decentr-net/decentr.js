@@ -1,4 +1,5 @@
 import { fetchJson, FetchOptions } from '../../../utils';
+import { WalletPrefix } from '../../../wallet';
 import { CosmosClient, CosmosClientSigningOptions } from '../cosmos/client';
 import { DepositClient } from './deposit';
 import { NodeClient } from './node';
@@ -35,7 +36,7 @@ export class SentinelClient extends CosmosClient {
     return this.createExtendedClient(
       SentinelClient,
       nodeUrl,
-      options && { ...options, walletPrefix: 'sent' },
+      options && { ...options, walletPrefix: WalletPrefix.Sentinel },
     );
   }
 }

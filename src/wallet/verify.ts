@@ -1,20 +1,13 @@
 import { bech32 } from 'bech32';
 
-import { DECENTR_WALLET_PREFIX } from './constants';
-import { Wallet } from './types';
+import { Wallet, WalletPrefix } from './types';
 
 export class WalletAddressVerifier {
-  public static verify(address: Wallet['address']): boolean {
+  public static verify(address: Wallet['address'], prefix?: WalletPrefix | string): boolean {
     try {
-      return !!bech32.decode(address);
-    } catch {
-      return false;
-    }
-  }
+      const decoded = bech32.decode(address);
 
-  public static verifyDecentr(address: Wallet['address']): boolean {
-    try {
-      return bech32.decode(address).prefix === DECENTR_WALLET_PREFIX;
+      return prefix ? decoded.prefix === prefix : !!decoded;
     } catch {
       return false;
     }
