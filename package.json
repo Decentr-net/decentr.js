@@ -1,6 +1,6 @@
 {
   "name": "decentr-js",
-  "version": "5.1.2",
+  "version": "5.1.3",
   "description": "decentr-js",
   "main": "lib/index.js",
   "types": "lib/types/index.d.ts",
