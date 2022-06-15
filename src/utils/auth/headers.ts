@@ -12,10 +12,11 @@ export function getAuthHeaders<T>(
   privateKey: Wallet['privateKey'],
   options?: {
     disableEncode?: boolean,
+    signatureEncoding?: 'hex' | 'base64',
   },
 ): AuthHeaders {
   const signature = getSignature(data, privateKey, options);
-  const signatureHex = bytesToString(signature, 'hex');
+  const signatureHex = bytesToString(signature, options?.signatureEncoding || 'hex');
 
   return {
     'Public-Key': createPublicKeyFromPrivateKey(privateKey),

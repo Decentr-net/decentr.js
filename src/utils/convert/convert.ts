@@ -16,7 +16,7 @@ export function bytesToString(bytes: Bytes, encoding: 'hex' | 'base64'): string 
 }
 
 export function hexToBytes(hex: string): Bytes {
-  return new Uint8Array(Buffer.from(hex, 'hex'))
+  return new Uint8Array(Buffer.from(hex, 'hex'));
 }
 
 export function getUnicode(target: string): string {
