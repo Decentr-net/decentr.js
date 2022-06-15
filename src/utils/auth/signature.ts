@@ -6,26 +6,37 @@ import { encodeObjectCharactersToUnicode } from '../crypto';
 import { hashBody, hexToBytes } from '../convert';
 import { sortObjectKeys } from '../object';
 
-export function getSignature<T>(
-  target: T,
+export function getSignature(
+  target: unknown,
   privateKey: Wallet['privateKey'],
   options?: {
     disableEncode?: boolean,
   },
 ): Bytes {
-  let stringToHash = typeof target === 'string'
-    ? target
-    : JSON.stringify(sortObjectKeys(target));
+  const targetToHash = (target as Bytes).byteLength
+    ? target as Bytes
+    : prepareObjectToHash(target, options);
 
-  if (!options?.disableEncode) {
-    stringToHash = encodeObjectCharactersToUnicode(stringToHash, ['>', '<', '&']);
-  }
-
-  const hashBytes = hashBody(stringToHash);
+  const hashBytes = hashBody(targetToHash);
 
   const privateKeyBytes = hexToBytes(privateKey);
 
   const signedObject = secp256k1EcdsaSign(hashBytes, privateKeyBytes);
 
   return signedObject.signature;
+}
+
+function prepareObjectToHash<T>(
+  target: T,
+  options?: {
+    disableEncode?: boolean,
+  },
+): string {
+  const stringToHash = typeof target === 'string'
+    ? target
+    : JSON.stringify(sortObjectKeys(target));
+
+  return options?.disableEncode
+    ? stringToHash
+    : encodeObjectCharactersToUnicode(stringToHash, ['>', '<', '&']);
 }
