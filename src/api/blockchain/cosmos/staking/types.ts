@@ -5,7 +5,7 @@ import {
 } from 'cosmjs-types/cosmos/staking/v1beta1/tx';
 import { BondStatus } from 'cosmjs-types/cosmos/staking/v1beta1/staking';
 
-export type BondStatusString = Exclude<keyof typeof BondStatus, 'BOND_STATUS_UNSPECIFIED'>;
+export type BondStatusString = Exclude<keyof typeof BondStatus, 'BOND_STATUS_UNSPECIFIED' | 'UNRECOGNIZED'>;
 
 export {
   BondStatus,
