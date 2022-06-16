@@ -6,6 +6,7 @@ export {
   transformWalletAddress,
   Wallet,
   WalletAddressVerifier,
+  WalletPrefix,
 } from './wallet';
 
 export { protoTimestampToDate, correctDecodedFloatNumber, correctDecodedCoin } from './utils';

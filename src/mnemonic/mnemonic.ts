@@ -3,7 +3,7 @@ import { randomBytes as nodeRandomBytes } from 'crypto';
 
 const ENTROPY_LENGTH = 32;
 
-function getWebCryptoRandomBytesBuffer(): Buffer {
+export function getWebCryptoRandomBytesBuffer(): Buffer {
   const chunkSize: number = ENTROPY_LENGTH / 4;
   const randomValuesContainer = new Uint32Array(chunkSize);
   window.crypto.getRandomValues(randomValuesContainer);

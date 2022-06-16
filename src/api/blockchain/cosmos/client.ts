@@ -113,6 +113,7 @@ export class CosmosClient {
       signingStargateClient,
       signerAddress,
       options.gasPrice,
+      options.privateKey,
     );
   }
 

@@ -59,22 +59,47 @@ export class TransactionSigner {
   }
 }
 
-export type TransactionSignerFactory = ((
-  messages: EncodeObject | EncodeObject[],
-) => TransactionSigner) | (() => never);
+export type TransactionSignerFactory = {
+  getPrivateKey(): Wallet['privateKey'];
+} & ({
+  (messages: EncodeObject | EncodeObject[]): TransactionSigner;
+} | {
+  (): never;
+});
+
+const createSignerFactory = (
+  func: Omit<TransactionSignerFactory, 'getPrivateKey'>,
+  privateKey?: Wallet['privateKey'],
+): TransactionSignerFactory => {
+  const factory = func as TransactionSignerFactory;
+
+  factory.getPrivateKey = () => {
+    if (!privateKey) {
+      throw new Error('No private key provided');
+    }
+
+    return privateKey;
+  }
+
+  return factory;
+};
 
 export const createErrorTransactionSignerFactory = (): TransactionSignerFactory => {
-  return () => {
-    throw new Error('No wallet provided to sign transactions');
-  };
+  return createSignerFactory(
+    () => { throw new Error('No wallet provided to sign transactions') },
+  );
 };
 
 export const createTransactionSignerFactory = (
   signingStargateClient: SigningStargateClient,
   signerAddress: Wallet['address'],
   gasPrice: GasPrice,
-): TransactionSignerFactory => (
-  messages: EncodeObject | EncodeObject[],
-): TransactionSigner => {
-  return new TransactionSigner(signingStargateClient, signerAddress, gasPrice, messages)
-};
+  privateKey: Wallet['privateKey']
+): TransactionSignerFactory => {
+  return createSignerFactory(
+    (messages: EncodeObject | EncodeObject[]): TransactionSigner => {
+      return new TransactionSigner(signingStargateClient, signerAddress, gasPrice, messages);
+    },
+    privateKey,
+  );
+}
