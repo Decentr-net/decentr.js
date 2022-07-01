@@ -39,6 +39,7 @@ export enum BroadcastErrorCode {
   TxInMemPoolCache,
   MemPoolIsFull,
   TxTooLarge,
+  AccountNotFound,
   Panic = 111_222,
 }
 

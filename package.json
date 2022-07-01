@@ -1,6 +1,6 @@
 {
   "name": "decentr-js",
-  "version": "5.2.0",
+  "version": "5.2.1",
   "description": "decentr-js",
   "main": "lib/index.js",
   "types": "lib/types/index.d.ts",
@@ -55,8 +55,8 @@
     "@typescript-eslint/parser": "^5.14.0",
     "eslint": "^8.10.0",
     "eslint-plugin-import": "^2.25.4",
-    "eslint-plugin-unicorn": "^42.0.0",
-    "husky": "^7.0.0",
+    "eslint-plugin-unicorn": "^43.0.0",
+    "husky": "^8.0.0",
     "jasmine-core": "^4.0.1",
     "karma": "^6.3.17",
     "karma-chrome-launcher": "^3.1.0",

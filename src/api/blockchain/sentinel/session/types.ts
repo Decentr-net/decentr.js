@@ -1,4 +1,9 @@
-import { MsgEndRequest, MsgStartRequest, MsgUpdateRequest } from '../../../../codec/sentinel/session/v1/msg';
+import {
+  MsgEndRequest,
+  MsgStartRequest,
+  MsgUpdateRequest,
+} from '../../../../codec/sentinel/session/v1/msg';
+import { AddSessionResponse } from './wireguard';
 
 export {
   Params as SentinelSessionParams,
@@ -13,11 +18,6 @@ export type UpdateSessionRequest = MsgUpdateRequest;
 
 export type EndSessionRequest = MsgEndRequest | MsgEndRequest[];
 
-export interface AddSessionResponse {
-  ipV4: string;
-  ipV6: string;
-  host: string;
-  port: number;
-  hostPublicKey: string;
+export interface SessionConnectInfo extends AddSessionResponse {
   wgPrivateKey: string;
 }
