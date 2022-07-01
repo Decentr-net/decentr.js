@@ -17,6 +17,13 @@ export interface DecodedTx extends Omit<DecodedTxRaw, 'body'> {
   readonly body: DecodedTxBody;
 }
 
+export class BroadcastUnknownError {
+  constructor(
+    public log: string,
+  ) {
+  }
+}
+
 export enum BroadcastErrorCode {
   Undefined = 1,
   ParseError,

@@ -3,7 +3,7 @@ import { DeliverTxResponse, GasPrice, SigningStargateClient, TimeoutError } from
 
 import { coerceArray } from '../../utils';
 import { Wallet } from '../../wallet';
-import { BroadcastClientError } from './types';
+import { BroadcastClientError, BroadcastUnknownError } from './types';
 
 function castError(error: TimeoutError | Error): never {
   if (error instanceof TimeoutError) {
@@ -19,7 +19,7 @@ function castError(error: TimeoutError | Error): never {
     throw new BroadcastClientError(code, error?.message || '');
   }
 
-  throw error;
+  throw new BroadcastUnknownError(error.message);
 }
 
 export class TransactionSigner {
