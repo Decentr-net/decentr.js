@@ -1,11 +1,11 @@
 /* eslint-disable */
-import Long from "long";
-import * as _m0 from "protobufjs/minimal";
 import {
   PageRequest,
   PageResponse,
 } from "../../../cosmos/base/query/v1beta1/pagination";
-import { Deposit } from "../../../sentinel/deposit/v1/deposit";
+import { Deposit } from "./deposit";
+import Long from "long";
+import * as _m0 from "protobufjs/minimal";
 
 export const protobufPackage = "sentinel.deposit.v1";
 

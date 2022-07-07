@@ -1,12 +1,12 @@
 /* eslint-disable */
-import Long from "long";
-import * as _m0 from "protobufjs/minimal";
 import {
   PageRequest,
   PageResponse,
 } from "../../../cosmos/base/query/v1beta1/pagination";
-import { Provider } from "../../../sentinel/provider/v1/provider";
-import { Params } from "../../../sentinel/provider/v1/params";
+import { Provider } from "./provider";
+import { Params } from "./params";
+import Long from "long";
+import * as _m0 from "protobufjs/minimal";
 
 export const protobufPackage = "sentinel.provider.v1";
 

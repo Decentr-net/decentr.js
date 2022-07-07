@@ -1,7 +1,7 @@
 /* eslint-disable */
+import { Post, Like } from "./community";
 import Long from "long";
 import * as _m0 from "protobufjs/minimal";
-import { Post, Like } from "../community/community";
 
 export const protobufPackage = "community";
 

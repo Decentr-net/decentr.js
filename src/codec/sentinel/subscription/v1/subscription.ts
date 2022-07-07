@@ -1,13 +1,9 @@
 /* eslint-disable */
+import { Coin } from "../../../cosmos/base/v1beta1/coin";
+import { Status, statusFromJSON, statusToJSON } from "../../types/v1/status";
+import { Timestamp } from "../../../google/protobuf/timestamp";
 import Long from "long";
 import * as _m0 from "protobufjs/minimal";
-import { Coin } from "../../../cosmos/base/v1beta1/coin";
-import {
-  Status,
-  statusFromJSON,
-  statusToJSON,
-} from "../../../sentinel/types/v1/status";
-import { Timestamp } from "../../../google/protobuf/timestamp";
 
 export const protobufPackage = "sentinel.subscription.v1";
 
@@ -142,14 +138,14 @@ export const Subscription = {
 
   fromJSON(object: any): Subscription {
     return {
-      id: isSet(object.id) ? Long.fromString(object.id) : Long.UZERO,
+      id: isSet(object.id) ? Long.fromValue(object.id) : Long.UZERO,
       owner: isSet(object.owner) ? String(object.owner) : "",
       node: isSet(object.node) ? String(object.node) : "",
       price: isSet(object.price) ? Coin.fromJSON(object.price) : undefined,
       deposit: isSet(object.deposit)
         ? Coin.fromJSON(object.deposit)
         : undefined,
-      plan: isSet(object.plan) ? Long.fromString(object.plan) : Long.UZERO,
+      plan: isSet(object.plan) ? Long.fromValue(object.plan) : Long.UZERO,
       denom: isSet(object.denom) ? String(object.denom) : "",
       expiry: isSet(object.expiry)
         ? fromJsonTimestamp(object.expiry)

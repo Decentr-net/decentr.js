@@ -1,7 +1,4 @@
 /* eslint-disable */
-import Long from "long";
-import * as _m0 from "protobufjs/minimal";
-
 export const protobufPackage = "sentinel.types.v1";
 
 export enum Status {
@@ -43,12 +40,8 @@ export function statusToJSON(object: Status): string {
       return "STATUS_INACTIVE_PENDING";
     case Status.STATUS_INACTIVE:
       return "STATUS_INACTIVE";
+    case Status.UNRECOGNIZED:
     default:
-      return "UNKNOWN";
+      return "UNRECOGNIZED";
   }
-}
-
-if (_m0.util.Long !== Long) {
-  _m0.util.Long = Long as any;
-  _m0.configure();
 }

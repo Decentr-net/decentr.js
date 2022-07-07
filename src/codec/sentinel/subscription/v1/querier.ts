@@ -1,18 +1,14 @@
 /* eslint-disable */
-import Long from "long";
-import * as _m0 from "protobufjs/minimal";
 import {
   PageRequest,
   PageResponse,
 } from "../../../cosmos/base/query/v1beta1/pagination";
-import {
-  Status,
-  statusFromJSON,
-  statusToJSON,
-} from "../../../sentinel/types/v1/status";
-import { Subscription } from "../../../sentinel/subscription/v1/subscription";
-import { Quota } from "../../../sentinel/subscription/v1/quota";
-import { Params } from "../../../sentinel/subscription/v1/params";
+import { Status, statusFromJSON, statusToJSON } from "../../types/v1/status";
+import { Subscription } from "./subscription";
+import { Quota } from "./quota";
+import { Params } from "./params";
+import Long from "long";
+import * as _m0 from "protobufjs/minimal";
 
 export const protobufPackage = "sentinel.subscription.v1";
 
@@ -255,7 +251,7 @@ export const QuerySubscriptionRequest = {
 
   fromJSON(object: any): QuerySubscriptionRequest {
     return {
-      id: isSet(object.id) ? Long.fromString(object.id) : Long.UZERO,
+      id: isSet(object.id) ? Long.fromValue(object.id) : Long.UZERO,
     };
   },
 
@@ -319,7 +315,7 @@ export const QueryQuotaRequest = {
 
   fromJSON(object: any): QueryQuotaRequest {
     return {
-      id: isSet(object.id) ? Long.fromString(object.id) : Long.UZERO,
+      id: isSet(object.id) ? Long.fromValue(object.id) : Long.UZERO,
       address: isSet(object.address) ? String(object.address) : "",
     };
   },
@@ -386,7 +382,7 @@ export const QueryQuotasRequest = {
 
   fromJSON(object: any): QueryQuotasRequest {
     return {
-      id: isSet(object.id) ? Long.fromString(object.id) : Long.UZERO,
+      id: isSet(object.id) ? Long.fromValue(object.id) : Long.UZERO,
       pagination: isSet(object.pagination)
         ? PageRequest.fromJSON(object.pagination)
         : undefined,

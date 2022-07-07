@@ -1,8 +1,8 @@
 /* eslint-disable */
+import { Duration } from "../../../google/protobuf/duration";
+import { Bandwidth } from "../../types/v1/bandwidth";
 import Long from "long";
 import * as _m0 from "protobufjs/minimal";
-import { Duration } from "../../../google/protobuf/duration";
-import { Bandwidth } from "../../../sentinel/types/v1/bandwidth";
 
 export const protobufPackage = "sentinel.session.v1";
 
@@ -56,7 +56,7 @@ export const Proof = {
 
   fromJSON(object: any): Proof {
     return {
-      id: isSet(object.id) ? Long.fromString(object.id) : Long.UZERO,
+      id: isSet(object.id) ? Long.fromValue(object.id) : Long.UZERO,
       duration: isSet(object.duration)
         ? Duration.fromJSON(object.duration)
         : undefined,

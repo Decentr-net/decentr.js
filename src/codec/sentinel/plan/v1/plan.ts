@@ -1,14 +1,10 @@
 /* eslint-disable */
-import Long from "long";
-import * as _m0 from "protobufjs/minimal";
 import { Duration } from "../../../google/protobuf/duration";
-import {
-  Status,
-  statusFromJSON,
-  statusToJSON,
-} from "../../../sentinel/types/v1/status";
+import { Status, statusFromJSON, statusToJSON } from "../../types/v1/status";
 import { Timestamp } from "../../../google/protobuf/timestamp";
+import Long from "long";
 import { Coin } from "../../../cosmos/base/v1beta1/coin";
+import * as _m0 from "protobufjs/minimal";
 
 export const protobufPackage = "sentinel.plan.v1";
 
@@ -103,7 +99,7 @@ export const Plan = {
 
   fromJSON(object: any): Plan {
     return {
-      id: isSet(object.id) ? Long.fromString(object.id) : Long.UZERO,
+      id: isSet(object.id) ? Long.fromValue(object.id) : Long.UZERO,
       provider: isSet(object.provider) ? String(object.provider) : "",
       price: Array.isArray(object?.price)
         ? object.price.map((e: any) => Coin.fromJSON(e))

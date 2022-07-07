@@ -1,12 +1,12 @@
 /* eslint-disable */
-import Long from "long";
-import * as _m0 from "protobufjs/minimal";
 import {
   PageRequest,
   PageResponse,
 } from "../../../cosmos/base/query/v1beta1/pagination";
-import { Swap } from "../../../sentinel/swap/v1/swap";
-import { Params } from "../../../sentinel/swap/v1/params";
+import { Swap } from "./swap";
+import { Params } from "./params";
+import Long from "long";
+import * as _m0 from "protobufjs/minimal";
 
 export const protobufPackage = "sentinel.swap.v1";
 

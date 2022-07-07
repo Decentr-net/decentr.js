@@ -1,13 +1,9 @@
 /* eslint-disable */
-import Long from "long";
-import * as _m0 from "protobufjs/minimal";
 import { Duration } from "../../../google/protobuf/duration";
-import {
-  Status,
-  statusFromJSON,
-  statusToJSON,
-} from "../../../sentinel/types/v1/status";
+import { Status, statusFromJSON, statusToJSON } from "../../types/v1/status";
+import Long from "long";
 import { Coin } from "../../../cosmos/base/v1beta1/coin";
+import * as _m0 from "protobufjs/minimal";
 
 export const protobufPackage = "sentinel.plan.v1";
 
@@ -198,7 +194,7 @@ export const MsgSetStatusRequest = {
   fromJSON(object: any): MsgSetStatusRequest {
     return {
       from: isSet(object.from) ? String(object.from) : "",
-      id: isSet(object.id) ? Long.fromString(object.id) : Long.UZERO,
+      id: isSet(object.id) ? Long.fromValue(object.id) : Long.UZERO,
       status: isSet(object.status) ? statusFromJSON(object.status) : 0,
     };
   },
@@ -274,7 +270,7 @@ export const MsgAddNodeRequest = {
   fromJSON(object: any): MsgAddNodeRequest {
     return {
       from: isSet(object.from) ? String(object.from) : "",
-      id: isSet(object.id) ? Long.fromString(object.id) : Long.UZERO,
+      id: isSet(object.id) ? Long.fromValue(object.id) : Long.UZERO,
       address: isSet(object.address) ? String(object.address) : "",
     };
   },
@@ -353,7 +349,7 @@ export const MsgRemoveNodeRequest = {
   fromJSON(object: any): MsgRemoveNodeRequest {
     return {
       from: isSet(object.from) ? String(object.from) : "",
-      id: isSet(object.id) ? Long.fromString(object.id) : Long.UZERO,
+      id: isSet(object.id) ? Long.fromValue(object.id) : Long.UZERO,
       address: isSet(object.address) ? String(object.address) : "",
     };
   },

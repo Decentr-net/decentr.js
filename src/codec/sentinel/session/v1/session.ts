@@ -1,14 +1,10 @@
 /* eslint-disable */
+import { Duration } from "../../../google/protobuf/duration";
+import { Bandwidth } from "../../types/v1/bandwidth";
+import { Status, statusFromJSON, statusToJSON } from "../../types/v1/status";
+import { Timestamp } from "../../../google/protobuf/timestamp";
 import Long from "long";
 import * as _m0 from "protobufjs/minimal";
-import { Duration } from "../../../google/protobuf/duration";
-import { Bandwidth } from "../../../sentinel/types/v1/bandwidth";
-import {
-  Status,
-  statusFromJSON,
-  statusToJSON,
-} from "../../../sentinel/types/v1/status";
-import { Timestamp } from "../../../google/protobuf/timestamp";
 
 export const protobufPackage = "sentinel.session.v1";
 
@@ -114,9 +110,9 @@ export const Session = {
 
   fromJSON(object: any): Session {
     return {
-      id: isSet(object.id) ? Long.fromString(object.id) : Long.UZERO,
+      id: isSet(object.id) ? Long.fromValue(object.id) : Long.UZERO,
       subscription: isSet(object.subscription)
-        ? Long.fromString(object.subscription)
+        ? Long.fromValue(object.subscription)
         : Long.UZERO,
       node: isSet(object.node) ? String(object.node) : "",
       address: isSet(object.address) ? String(object.address) : "",
