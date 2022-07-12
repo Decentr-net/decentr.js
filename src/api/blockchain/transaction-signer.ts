@@ -40,7 +40,8 @@ export class TransactionSigner {
     return this.signingStargateClient
       .simulate(this.signerAddress, this.messages, memo)
       .then((gas) => gas * +this.gasPrice.amount * this.gasAdjustment)
-      .then((fee) => +fee.toFixed(6));
+      .then((fee) => +fee.toFixed(6))
+      .catch(castError);
   }
 
   public signAndBroadcast(memo?: string): Promise<DeliverTxResponse> {

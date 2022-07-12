@@ -1,17 +1,13 @@
 /* eslint-disable */
-import Long from "long";
-import * as _m0 from "protobufjs/minimal";
 import {
   PageRequest,
   PageResponse,
 } from "../../../cosmos/base/query/v1beta1/pagination";
-import {
-  Status,
-  statusFromJSON,
-  statusToJSON,
-} from "../../../sentinel/types/v1/status";
-import { Session } from "../../../sentinel/session/v1/session";
-import { Params } from "../../../sentinel/session/v1/params";
+import { Status, statusFromJSON, statusToJSON } from "../../types/v1/status";
+import { Session } from "./session";
+import { Params } from "./params";
+import Long from "long";
+import * as _m0 from "protobufjs/minimal";
 
 export const protobufPackage = "sentinel.session.v1";
 
@@ -232,7 +228,7 @@ export const QuerySessionRequest = {
 
   fromJSON(object: any): QuerySessionRequest {
     return {
-      id: isSet(object.id) ? Long.fromString(object.id) : Long.UZERO,
+      id: isSet(object.id) ? Long.fromValue(object.id) : Long.UZERO,
     };
   },
 

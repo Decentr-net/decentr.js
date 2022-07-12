@@ -1,7 +1,7 @@
 /* eslint-disable */
+import { DecProto } from "../cosmos/base/v1beta1/coin";
 import Long from "long";
 import * as _m0 from "protobufjs/minimal";
-import { DecProto } from "../cosmos/base/v1beta1/coin";
 
 export const protobufPackage = "token";
 

@@ -79,8 +79,9 @@ export function categoryToJSON(object: Category): string {
       return "CATEGORY_CRYPTO_AND_BLOCKCHAIN";
     case Category.CATEGORY_SPORTS:
       return "CATEGORY_SPORTS";
+    case Category.UNRECOGNIZED:
     default:
-      return "UNKNOWN";
+      return "UNRECOGNIZED";
   }
 }
 
@@ -117,8 +118,9 @@ export function likeWeightToJSON(object: LikeWeight): string {
       return "LIKE_WEIGHT_UP";
     case LikeWeight.LIKE_WEIGHT_DOWN:
       return "LIKE_WEIGHT_DOWN";
+    case LikeWeight.UNRECOGNIZED:
     default:
-      return "UNKNOWN";
+      return "UNRECOGNIZED";
   }
 }
 
@@ -295,19 +297,17 @@ export const FixedGasParams = {
   fromJSON(object: any): FixedGasParams {
     return {
       createPost: isSet(object.createPost)
-        ? Long.fromString(object.createPost)
+        ? Long.fromValue(object.createPost)
         : Long.UZERO,
       deletePost: isSet(object.deletePost)
-        ? Long.fromString(object.deletePost)
+        ? Long.fromValue(object.deletePost)
         : Long.UZERO,
       setLike: isSet(object.setLike)
-        ? Long.fromString(object.setLike)
+        ? Long.fromValue(object.setLike)
         : Long.UZERO,
-      follow: isSet(object.follow)
-        ? Long.fromString(object.follow)
-        : Long.UZERO,
+      follow: isSet(object.follow) ? Long.fromValue(object.follow) : Long.UZERO,
       unfollow: isSet(object.unfollow)
-        ? Long.fromString(object.unfollow)
+        ? Long.fromValue(object.unfollow)
         : Long.UZERO,
     };
   },

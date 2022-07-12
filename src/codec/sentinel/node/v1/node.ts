@@ -1,13 +1,9 @@
 /* eslint-disable */
-import Long from "long";
-import * as _m0 from "protobufjs/minimal";
-import {
-  Status,
-  statusFromJSON,
-  statusToJSON,
-} from "../../../sentinel/types/v1/status";
+import { Status, statusFromJSON, statusToJSON } from "../../types/v1/status";
 import { Timestamp } from "../../../google/protobuf/timestamp";
+import Long from "long";
 import { Coin } from "../../../cosmos/base/v1beta1/coin";
+import * as _m0 from "protobufjs/minimal";
 
 export const protobufPackage = "sentinel.node.v1";
 

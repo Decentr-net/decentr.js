@@ -1,7 +1,7 @@
 /* eslint-disable */
+import { Proof } from "./proof";
 import Long from "long";
 import * as _m0 from "protobufjs/minimal";
-import { Proof } from "../../../sentinel/session/v1/proof";
 
 export const protobufPackage = "sentinel.session.v1";
 
@@ -83,7 +83,7 @@ export const MsgStartRequest = {
   fromJSON(object: any): MsgStartRequest {
     return {
       from: isSet(object.from) ? String(object.from) : "",
-      id: isSet(object.id) ? Long.fromString(object.id) : Long.UZERO,
+      id: isSet(object.id) ? Long.fromValue(object.id) : Long.UZERO,
       node: isSet(object.node) ? String(object.node) : "",
     };
   },
@@ -240,10 +240,8 @@ export const MsgEndRequest = {
   fromJSON(object: any): MsgEndRequest {
     return {
       from: isSet(object.from) ? String(object.from) : "",
-      id: isSet(object.id) ? Long.fromString(object.id) : Long.UZERO,
-      rating: isSet(object.rating)
-        ? Long.fromString(object.rating)
-        : Long.UZERO,
+      id: isSet(object.id) ? Long.fromValue(object.id) : Long.UZERO,
+      rating: isSet(object.rating) ? Long.fromValue(object.rating) : Long.UZERO,
     };
   },
 

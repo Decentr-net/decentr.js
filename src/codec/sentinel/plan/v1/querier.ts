@@ -1,17 +1,13 @@
 /* eslint-disable */
-import Long from "long";
-import * as _m0 from "protobufjs/minimal";
-import {
-  Status,
-  statusFromJSON,
-  statusToJSON,
-} from "../../../sentinel/types/v1/status";
+import { Status, statusFromJSON, statusToJSON } from "../../types/v1/status";
 import {
   PageRequest,
   PageResponse,
 } from "../../../cosmos/base/query/v1beta1/pagination";
-import { Plan } from "../../../sentinel/plan/v1/plan";
-import { Node } from "../../../sentinel/node/v1/node";
+import { Plan } from "./plan";
+import Long from "long";
+import { Node } from "../../node/v1/node";
+import * as _m0 from "protobufjs/minimal";
 
 export const protobufPackage = "sentinel.plan.v1";
 
@@ -243,7 +239,7 @@ export const QueryPlanRequest = {
 
   fromJSON(object: any): QueryPlanRequest {
     return {
-      id: isSet(object.id) ? Long.fromString(object.id) : Long.UZERO,
+      id: isSet(object.id) ? Long.fromValue(object.id) : Long.UZERO,
     };
   },
 
@@ -310,7 +306,7 @@ export const QueryNodesForPlanRequest = {
 
   fromJSON(object: any): QueryNodesForPlanRequest {
     return {
-      id: isSet(object.id) ? Long.fromString(object.id) : Long.UZERO,
+      id: isSet(object.id) ? Long.fromValue(object.id) : Long.UZERO,
       pagination: isSet(object.pagination)
         ? PageRequest.fromJSON(object.pagination)
         : undefined,

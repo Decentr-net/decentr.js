@@ -1,7 +1,7 @@
 /* eslint-disable */
+import { Coin } from "../../../cosmos/base/v1beta1/coin";
 import Long from "long";
 import * as _m0 from "protobufjs/minimal";
-import { Coin } from "../../../cosmos/base/v1beta1/coin";
 
 export const protobufPackage = "sentinel.subscription.v1";
 
@@ -199,7 +199,7 @@ export const MsgSubscribeToPlanRequest = {
   fromJSON(object: any): MsgSubscribeToPlanRequest {
     return {
       from: isSet(object.from) ? String(object.from) : "",
-      id: isSet(object.id) ? Long.fromString(object.id) : Long.UZERO,
+      id: isSet(object.id) ? Long.fromValue(object.id) : Long.UZERO,
       denom: isSet(object.denom) ? String(object.denom) : "",
     };
   },
@@ -269,7 +269,7 @@ export const MsgCancelRequest = {
   fromJSON(object: any): MsgCancelRequest {
     return {
       from: isSet(object.from) ? String(object.from) : "",
-      id: isSet(object.id) ? Long.fromString(object.id) : Long.UZERO,
+      id: isSet(object.id) ? Long.fromValue(object.id) : Long.UZERO,
     };
   },
 
@@ -348,7 +348,7 @@ export const MsgAddQuotaRequest = {
   fromJSON(object: any): MsgAddQuotaRequest {
     return {
       from: isSet(object.from) ? String(object.from) : "",
-      id: isSet(object.id) ? Long.fromString(object.id) : Long.UZERO,
+      id: isSet(object.id) ? Long.fromValue(object.id) : Long.UZERO,
       address: isSet(object.address) ? String(object.address) : "",
       bytes: isSet(object.bytes) ? String(object.bytes) : "",
     };
@@ -436,7 +436,7 @@ export const MsgUpdateQuotaRequest = {
   fromJSON(object: any): MsgUpdateQuotaRequest {
     return {
       from: isSet(object.from) ? String(object.from) : "",
-      id: isSet(object.id) ? Long.fromString(object.id) : Long.UZERO,
+      id: isSet(object.id) ? Long.fromValue(object.id) : Long.UZERO,
       address: isSet(object.address) ? String(object.address) : "",
       bytes: isSet(object.bytes) ? String(object.bytes) : "",
     };
