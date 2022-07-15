@@ -56,13 +56,15 @@ export class CosmosClient {
     nodeUrl: string,
     options?: CosmosClientSigningOptions,
   ): Promise<T> {
+    const hasRequiredSigningOptions = options?.privateKey && options.gasPrice;
+
     const tmClient = await Tendermint34Client.connect(nodeUrl);
 
-    const stargateClient = options
+    const stargateClient = hasRequiredSigningOptions
       ? await this.createSigningStargateClient(nodeUrl, options)
       : await StargateClient.connect(nodeUrl);
 
-    const transactionSignerFactory = options
+    const transactionSignerFactory = hasRequiredSigningOptions
       ? await this.createTransactionSignerFactory(
         stargateClient as SigningStargateClient,
         options,
