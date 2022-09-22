@@ -50,6 +50,7 @@ npm install decentr-js
 6. [Vulcan API](#vulcan-api)
    1. [Referral](#vulcan-referral)
    2. [Registration](#vulcan-registration)
+   3. [Loan](#vulcan-loan)
 7. [License](#license)
 
 ## Mnemonic <a id="mnemonic" />
@@ -1275,6 +1276,35 @@ Response of `getStats` method is an [ReferralTimeStats](https://github.com/Decen
   await registrationClient.getStats();
 ```
 Response of `getStats` method is an [RegistrationStats](https://github.com/Decentr-net/decentr.js/blob/master/src/api/vulcan/registration/types.ts#L6)
+
+
+## 📜 Loan <a id="vulcan-loan" />
+
+**Loan client has the following interface**
+
+```
+  class VulcanLoanClient {
+    requestLoan(loan: Loan): Promise<void>;
+  }
+```
+
+**How to get instance of loan client**
+```
+  const loanClient = vulcanClient.loan;
+```
+
+### Methods
+
+1. **Request loan**
+```ts
+  const loan = {
+    firstName: "John",
+    lastName: "Doe", *(Optional)*
+    pdvRate: 1.12345678,
+    walletAddress: "decentrAddress"
+  }
+  await loanClient.requestLoan(loan);
+```
 
 # 🥂 License <a id="license" />
 
