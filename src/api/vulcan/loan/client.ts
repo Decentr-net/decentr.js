@@ -1,8 +1,8 @@
 import { fetchJson } from '../../../utils';
 import { Loan } from './types';
 
-export class VulcanLoanService {
-  private readonly controllerUrl = `${this.url}/v1`;
+export class VulcanLoanClient {
+  private readonly controllerUrl = `${this.url}/v1/dloan`;
 
   constructor(
     private readonly url: string,
@@ -10,7 +10,7 @@ export class VulcanLoanService {
   }
 
   public requestLoan(loan: Loan): Promise<void> {
-    const url = `${this.controllerUrl}/dloan`;
+    const url = this.controllerUrl;
     return fetchJson(url, {
       method: 'POST',
       body: loan,
