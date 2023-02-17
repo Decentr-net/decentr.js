@@ -22,18 +22,27 @@ function castError(error: TimeoutError | Error): never {
   throw new BroadcastUnknownError(error.message);
 }
 
+export interface TransactionSignerExtraOptions {
+  gasAdjustment?: number;
+}
+
 export class TransactionSigner {
+  private static DEFAULT_GAS_ADJUSTMENT = 1.3;
+
   protected readonly messages: EncodeObject[];
 
-  private readonly gasAdjustment = 1.3;
+  private readonly gasAdjustment;
 
   constructor(
     private readonly signingStargateClient: SigningStargateClient,
     private readonly signerAddress: Wallet['address'],
     private readonly gasPrice: GasPrice,
     messages: EncodeObject | EncodeObject[],
+    extra?: TransactionSignerExtraOptions,
   ) {
     this.messages = coerceArray(messages);
+
+    this.gasAdjustment = extra?.gasAdjustment || TransactionSigner.DEFAULT_GAS_ADJUSTMENT;
   }
 
   public simulate(memo?: string): Promise<number> {
@@ -95,11 +104,12 @@ export const createTransactionSignerFactory = (
   signingStargateClient: SigningStargateClient,
   signerAddress: Wallet['address'],
   gasPrice: GasPrice,
-  privateKey: Wallet['privateKey']
+  privateKey: Wallet['privateKey'],
+  extra?: TransactionSignerExtraOptions,
 ): TransactionSignerFactory => {
   return createSignerFactory(
     (messages: EncodeObject | EncodeObject[]): TransactionSigner => {
-      return new TransactionSigner(signingStargateClient, signerAddress, gasPrice, messages);
+      return new TransactionSigner(signingStargateClient, signerAddress, gasPrice, messages, extra);
     },
     privateKey,
   );

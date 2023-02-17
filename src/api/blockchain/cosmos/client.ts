@@ -11,6 +11,7 @@ import { REGISTRY } from '../registry';
 import {
   createErrorTransactionSignerFactory,
   createTransactionSignerFactory,
+  TransactionSignerExtraOptions,
   TransactionSignerFactory,
 } from '../transaction-signer';
 import { AuthClient } from './auth';
@@ -21,7 +22,9 @@ import { MintClient } from './mint';
 import { StakingClient } from './staking';
 import { TxClient } from './tx';
 
-export interface CosmosClientSigningOptions extends Pick<SigningStargateClientOptions, 'broadcastTimeoutMs' | 'broadcastPollIntervalMs'> {
+export interface CosmosClientSigningOptions
+  extends Pick<SigningStargateClientOptions, 'broadcastTimeoutMs' | 'broadcastPollIntervalMs'>, TransactionSignerExtraOptions
+{
   gasPrice: GasPrice;
   privateKey: Wallet['privateKey'];
   walletPrefix?: string;
@@ -101,7 +104,7 @@ export class CosmosClient {
 
   protected static async createTransactionSignerFactory(
     signingStargateClient: SigningStargateClient,
-    options: Pick<CosmosClientSigningOptions, 'privateKey' | 'walletPrefix' | 'gasPrice'>
+    options: Pick<CosmosClientSigningOptions, 'privateKey' | 'walletPrefix' | 'gasPrice' | 'gasAdjustment'>
   ): Promise<TransactionSignerFactory> {
     const wallet = await createSecp256k1WalletFromPrivateKey(
       options.privateKey,
@@ -116,6 +119,9 @@ export class CosmosClient {
       signerAddress,
       options.gasPrice,
       options.privateKey,
+      {
+        gasAdjustment: options.gasAdjustment,
+      },
     );
   }
 
